@@ -1,4 +1,4 @@
-package storage;
+package database;
 
 import java.util.Stack;
 import application.UndoData;

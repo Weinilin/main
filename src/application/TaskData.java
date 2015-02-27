@@ -1,11 +1,8 @@
 package application;
 
-import java.io.Serializable;
-
-public class TaskData implements Serializable	{
+public class TaskData {
 	/****Attribute****/
-	private static final long serialVersionUID = 0;
-	
+	private String taskID;
 	private String taskType;
 	private String description;
 	private DateTime startDateTime;
@@ -16,13 +13,14 @@ public class TaskData implements Serializable	{
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type
-	public TaskData(String taskType, String description, DateTime startDateTime, DateTime endDateTime, DateTime deadline, String status) {
-		taskType = this.taskType;
-		description = this.description;
-		startDateTime = this.startDateTime;
-		endDateTime = this.endDateTime;
-		deadline = this.deadline;
-		status = this.status;
+	public TaskData(String taskID, String taskType, String description, DateTime startDateTime, DateTime endDateTime, DateTime deadline, String status) {
+		this.taskID = taskID;
+		this.taskType = taskType;
+		this.description = description;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.deadline = deadline;
+		this.status = status;
 	}
 	
 	public void setStartDateTime(DateTime newStartDateTime) {
@@ -67,6 +65,10 @@ public class TaskData implements Serializable	{
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getTaskID() {
+		return taskID;
 	}
 
 }

@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Fri Feb 27 18:00:23 SGT 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.2.2 - (1181258): instance a816c00e-014b-ca7a-d740-00000e9f0398 
+on database directory /Users/yxchng/Desktop/main/TaskManagerDatabase  with class loader sun.misc.Launcher$AppClassLoader@2a139a55 
+Loaded from file:/Users/yxchng/Desktop/main/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_20-b26
+user.dir=/Users/yxchng/Desktop/main
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

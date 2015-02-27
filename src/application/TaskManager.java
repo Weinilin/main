@@ -1,6 +1,6 @@
 package application;
 
-import storage.Database;
+import database.Database;
 
 class TaskManager	{
 	
