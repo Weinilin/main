@@ -22,17 +22,14 @@ public class Database {
 	
 	public void addTimeTask(TaskData taskData) {
 		timeTasks.add(taskData);
-		serializeTimeTasksDatabase();
 	}
 	
 	public void addDeadlines(TaskData taskData) {
 		deadlines.add(taskData);
-		serializeDeadlinesDatabase();
 	}
 	
 	public void addFloatingTask(TaskData taskData) {
 		deadlines.add(taskData);
-		serializeFloatingTasksDatabase();
 	}
 	
 	//Assume no error for the moment
@@ -104,62 +101,20 @@ public class Database {
 	}
 	
 	public void serializeDatabase() {
-		serializeFloatingTasksDatabase();
-		serializeDeadlinesDatabase();
-		serializeTimeTasksDatabase();
+		
 	}
 
 	
 	private void serializeFloatingTasksDatabase() {
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Floating tasks.ser", true);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(deadlines);
-			out.close();
-			fileOut.close();
-		} catch (FileNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("1");
-		} catch (IOException e) {
-			//e.printStackTrace();
-			System.out.println("2");
-		}
+		
 	}
 	
 	private void serializeDeadlinesDatabase() {
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Deadlines.ser");
-			ObjectOutputStream out = new AppendingObjectOutputStream(fileOut) {
-	            protected void writeStreamHeader() throws IOException {
-	                reset();
-	            }
-	        };
-			out.writeObject(deadlines);
-			out.close();
-			fileOut.close();
-		} catch (FileNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("3");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("4");
-		}
+		
 	}
 	
 	private void serializeTimeTasksDatabase() {
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Time tasks.ser", true);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(timeTasks);
-			out.close();
-			fileOut.close();
-		} catch (FileNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("5");
-		} catch (IOException e) {
-			//e.printStackTrace();
-			System.out.println("6");
-		}
+		
 	}
 	
 	private void readFromExistingDatabase() {
@@ -170,57 +125,14 @@ public class Database {
 	
 	private void readFloatingTasksDatabase() {
 		
-		try {
-			FileInputStream fileIn = new FileInputStream("FloatingTasks.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			floatingTasks = (ArrayList<TaskData>) in.readObject();
-			in.close();
-			fileIn.close();
-		} catch (IOException e) {
-			//e.printStackTrace();
-			System.out.println("IOException1 is encoutered!");
-			//System.exit(0);
-		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("FloatingTasks.ser does not exist!");
-			//System.exit(0);
-		}
 	}
 	
 	public void readDeadlinesDatabase() {
-		try {
-			FileInputStream fileIn = new FileInputStream("Deadlines.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			deadlines = (ArrayList<TaskData>) in.readObject();
-			in.close();
-			fileIn.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("IOException2 is encoutered!");
-			//System.exit(0);
-		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("Deadlines.ser does not exist!");
-			//System.exit(0);
-		}
+		
 	}
 	
 	private void readTimeTasksDatabase() {
-		try {
-			FileInputStream fileIn = new FileInputStream("TimeTasks.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			timeTasks = (ArrayList<TaskData>) in.readObject();
-			in.close();
-			fileIn.close();
-		} catch (IOException e) {
-			//e.printStackTrace();
-			System.out.println("IOException3 is encoutered!");
-			//System.exit(0);
-		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
-			System.out.println("TimeTasks.ser does not exist!");
-			//System.exit(0);
-		}
+		
 	}
 
 	public ArrayList<TaskData> statusSearch(String status) {
