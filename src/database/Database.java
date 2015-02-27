@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
-import application.DateTime;
 import application.TaskData;
 
 public class Database {
@@ -17,16 +17,21 @@ public class Database {
 	private static final String COMMAND_CREATE_TABLE = "create table TaskList(Task_ID varchar(5), Task_Type varchar(20), "
 			+ "Description varchar(60), Start_Date_Time varchar(20), End_Date_Time varchar(20), Deadline varchar(20), Status varchar(20))";
 	private static final String SEARCH_KEYWORD = "select $s from TaskList";
-	private static final String[] headings = {
-		"Task ID: ", 
-		"Task type: ",
-		"Description: ",
-		"Start Date Time: ",
-		"End Date Time: ",
-		"Deadline: ",
-		"Status: "
+	private static final String[] fields = {
+		"Task ID", 
+		"Task type",
+		"Description",
+		"Start Date Time",
+		"End Date Time",
+		"Deadline",
+		"Status"
 	};
-	private static final String COMMAND_ADD = "insert into %s values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')";
+	private static final String COMMAND_ADD = "insert into TaskList values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')";
+	private static final String COMMAND_RETRIEVE_DATA = "SELECT * FROM TaskList";
+	
+	private static ArrayList<TaskData> deadlines;
+	private static ArrayList<TaskData> timeTasks;
+	private static ArrayList<TaskData> floatingTasks;
 	
 	
 	public static void createDatabase() {
@@ -42,11 +47,11 @@ public class Database {
 		System.out.println("Database is successfully created!");
 	}
 	
-	public static void queryDatabase() {		
+	public static void readDatabase() {		
 		try {
 			Connection connection = DriverManager.getConnection(CONNECTION_URL);
 			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM TaskList");
+			ResultSet resultSet = statement.executeQuery(COMMAND_RETRIEVE_DATA);
 			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 			int columnCount = resultSetMetaData.getColumnCount();
 			
@@ -54,7 +59,9 @@ public class Database {
 			while (resultSet.next()) {
 				System.out.println("");
 				for (int x = 1; x <= columnCount; x++) {
-					System.out.format("%20s", resultSet.getString(x));
+					System.out.format("%-20s", fields[x-1]);
+					System.out.print(": ");
+					System.out.format("%-60s", resultSet.getString(x));
 					System.out.println();
 				}
 			}
@@ -70,33 +77,15 @@ public class Database {
 	}
 	
 	private static String getAddCommand(TaskData taskData) {
+		String taskID = taskData.getTaskID();
 		String taskType = taskData.getTaskType();
 		String description = taskData.getDescription();
-		
-		String startDateTime;
-		if (taskData.getStartDateTime() != null) {
-			startDateTime = taskData.getStartDateTime().formatDateTime();
-		} else {
-			startDateTime = "n.a.";
-		}
-		
-		String endDateTime;
-		if (taskData.getEndDateTime() != null) {
-			endDateTime = taskData.getEndDateTime().formatDateTime();
-		} else {
-			endDateTime = "n.a.";
-		}
-		
-		String deadline;
-		if (taskData.getDeadLine() != null) {
-			deadline = taskData.getDeadLine().formatDateTime();
-		} else {
-			deadline = "n.a.";
-		}
+		String startDateTime = taskData.getStartDateTime();
+		String endDateTime = taskData.getEndDateTime();
+		String deadline = taskData.getDeadLine();
 		String status = taskData.getStatus();
-		String taskID = taskData.getTaskID();
 		
-		String addCommand = String.format(COMMAND_ADD, "TaskList", taskID, taskType, description, startDateTime, endDateTime, deadline, status);
+		String addCommand = String.format(COMMAND_ADD, taskID, taskType, description, startDateTime, endDateTime, deadline, status);
 		
 		return addCommand;
 	}
@@ -123,7 +112,7 @@ public class Database {
 		
 	}
 	
-	public boolean isDatabaseCreated() {
+	public static boolean isDatabaseCreated() {
 		try {
 			Connection connection = DriverManager.getConnection(CONNECTION_URL);
 			Statement statement = connection.createStatement();
@@ -135,22 +124,24 @@ public class Database {
 	}
 
 	public static void main (String[] args) throws SQLException {
-		//Database.createDatabase();
-		
-		DateTime deadline1 = new DateTime(1993,01,07,5,41);
-		TaskData data1 = new TaskData("1", "deadline", "data1", null, null, deadline1, "uncompleted"); 
+		if (!isDatabaseCreated()) {
+			Database.createDatabase();
 
-		DateTime deadline2 = new DateTime(1993,02,17,5,41);
-		TaskData data2 = new TaskData("2", "deadline", "data2", null, null, deadline2, "uncompleted");
+			DateTime deadline1 = new DateTime(1993,01,07,5,41);
+			TaskData data1 = new TaskData("1", "deadline", "data1", null, null, deadline1, "uncompleted"); 
 
-		DateTime deadline3 = new DateTime(1993,04,04,5,41);
-		TaskData data3 = new TaskData("3", "deadline", "dummy", null, null, deadline3, "uncompleted");
+			DateTime deadline2 = new DateTime(1993,02,17,5,41);
+			TaskData data2 = new TaskData("2", "deadline", "data2", null, null, deadline2, "uncompleted");
 
-		Database.addData(data3);
-		Database.addData(data2);
-		Database.addData(data1);
+			DateTime deadline3 = new DateTime(1993,04,04,5,41);
+			TaskData data3 = new TaskData("3", "deadline", "dummy", null, null, deadline3, "uncompleted");
 
-		Database.queryDatabase();
+			Database.addData(data3);
+			Database.addData(data2);
+			Database.addData(data1);
+		}
+
+		Database.readDatabase();
 	}
 
 }

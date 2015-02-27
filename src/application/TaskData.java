@@ -5,15 +5,15 @@ public class TaskData {
 	private String taskID;
 	private String taskType;
 	private String description;
-	private DateTime startDateTime;
-	private DateTime endDateTime;
-	private DateTime deadline;
+	private String startDateTime;
+	private String endDateTime;
+	private String deadline;
 	private String status;
 	
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type
-	public TaskData(String taskID, String taskType, String description, DateTime startDateTime, DateTime endDateTime, DateTime deadline, String status) {
+	public TaskData(String taskID, String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskID = taskID;
 		this.taskType = taskType;
 		this.description = description;
@@ -23,15 +23,15 @@ public class TaskData {
 		this.status = status;
 	}
 	
-	public void setStartDateTime(DateTime newStartDateTime) {
+	public void setStartDateTime(String newStartDateTime) {
 		startDateTime = newStartDateTime;
 	}
 	
-	public void setEndDateTime(DateTime newEndDateTime) {
+	public void setEndDateTime(String newEndDateTime) {
 		endDateTime = newEndDateTime;
 	}
 	
-	public void setDeadline(DateTime newDeadline) {
+	public void setDeadline(String newDeadline) {
 		deadline = newDeadline;
 	}
 
@@ -47,15 +47,15 @@ public class TaskData {
 		return taskType;
 	}
 	
-	public DateTime getStartDateTime() {	
+	public String getStartDateTime() {	
 		return startDateTime;
 	}
 	
-	public DateTime getEndDateTime(){
+	public String getEndDateTime(){
 		return endDateTime;
 	}
 	
-	public DateTime getDeadLine(){
+	public String getDeadLine(){
 		return deadline;
 	}
 	
