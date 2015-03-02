@@ -3,7 +3,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class DateTime {
+public class DateTime {
 	/****Attribute****/
 	private int year;
 	private int month;

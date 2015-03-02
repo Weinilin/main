@@ -1,11 +1,2 @@
-/DateTime.class
-/TaskData.class
-/TaskManager.class
-/handler/
-/parser/
-/storage/
-/ui/
-/DateTimeComparator.class
-/TaskDataComparator.class
-/UndoData.class
 /application/
+/storage/

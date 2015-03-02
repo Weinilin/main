@@ -12,37 +12,81 @@ import application.TaskData;
 
 public class Database {
 	//should this be static?
-	private ArrayList<TaskData> completedTasks;
-	private ArrayList<TaskData> uncompletedTasks;
+	private ArrayList<TaskData> deadlines;
+	private ArrayList<TaskData> timeTasks;
+	private ArrayList<TaskData> floatingTasks;
 	
 	public Database() {
 		setEnvironment();
 	}
 	
-	public void addTask(TaskData taskdata) {
-		uncompletedTasks.add(taskdata);
+	public void addTimeTask(TaskData taskData) {
+		timeTasks.add(taskData);
+	}
+	
+	public void addDeadlines(TaskData taskData) {
+		deadlines.add(taskData);
+	}
+	
+	public void addFloatingTask(TaskData taskData) {
+		deadlines.add(taskData);
 	}
 	
 	//Assume no error for the moment
-	public void deleteCompletedTask(int taskDataIndex) {
-		if (completedTasks.contains(taskDataIndex)) {
-			completedTasks.remove(taskDataIndex);
+	public void deleteTimeTask(int taskDataIndex) {
+		if (isValidTimeTaskIndex(taskDataIndex)) {
+			timeTasks.remove(taskDataIndex);
 		} 
 	}
 	
 	//Assume no error for the moment
-	public void deleteUncompletedTask(int taskDataIndex) {
-		if (uncompletedTasks.contains(taskDataIndex)) {
-			uncompletedTasks.remove(taskDataIndex);
+	public void deleteDeadlines(int taskDataIndex) {
+		if (isValidDeadlinesIndex(taskDataIndex)) {
+			deadlines.remove(taskDataIndex);
 		}
 	}
 	
-	public ArrayList<TaskData> getCompletedTasks() {
-		return completedTasks;
+	//Assume no error for the moment
+	public void deleteFloatingTasks(int taskDataIndex) {
+		if (isValidFloatingTasksIndex(taskDataIndex)) {
+			deadlines.remove(taskDataIndex);
+		}
+	}
+		
+	private boolean isValidTimeTaskIndex(int taskDataIndex) {
+		if (taskDataIndex < timeTasks.size() && taskDataIndex >= 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public ArrayList<TaskData> getUncompletedTasks() {
-		return uncompletedTasks;
+	private boolean isValidDeadlinesIndex(int taskDataIndex) {
+		if (taskDataIndex < deadlines.size() && taskDataIndex >= 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isValidFloatingTasksIndex(int taskDataIndex) {
+		if (taskDataIndex < deadlines.size() && taskDataIndex >= 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public ArrayList<TaskData> getDeadlines() {
+		return deadlines;
+	}
+	
+	public ArrayList<TaskData> getTimeTasks() {
+		return timeTasks;
+	}
+	
+	public ArrayList<TaskData> getFloatingTasks() {
+		return deadlines;
 	}
 	
 	public void setEnvironment() {
@@ -51,74 +95,138 @@ public class Database {
 	}
 	
 	public void initializeMemory() {
-		completedTasks = new ArrayList<TaskData>();
-		uncompletedTasks = new ArrayList<TaskData>();
+		deadlines = new ArrayList<TaskData>();
+		deadlines = new ArrayList<TaskData>();
+		timeTasks = new ArrayList<TaskData>();
 	}
 	
 	public void serializeDatabase() {
-		serializeCompletedTasksDatabase();
-		serializeUncompletedTasksDatabase();
+		
 	}
 
 	
-	private void serializeCompletedTasksDatabase() {
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Completed tasks.ser");
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(completedTasks);
-			out.close();
-			fileOut.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void serializeFloatingTasksDatabase() {
+		
 	}
 	
-	private void serializeUncompletedTasksDatabase() {
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Uncompleted tasks.ser");
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(completedTasks);
-			out.close();
-			fileOut.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void serializeDeadlinesDatabase() {
+		
+	}
+	
+	private void serializeTimeTasksDatabase() {
+		
 	}
 	
 	private void readFromExistingDatabase() {
-		readCompletedTasksDatabase();
-		readUncompletedTasksDatabase();
+		readFloatingTasksDatabase();
+		readDeadlinesDatabase();
+		readTimeTasksDatabase();
 	}
 	
-	private void readCompletedTasksDatabase() {
-		try {
-			FileInputStream fileIn = new FileInputStream("Completed tasks.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			completedTasks = (ArrayList<TaskData>) in.readObject();
-			in.close();
-			fileIn.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	private void readFloatingTasksDatabase() {
+		
 	}
 	
-	private void readUncompletedTasksDatabase() {
-		try {
-			FileInputStream fileIn = new FileInputStream("Uncompleted tasks.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			uncompletedTasks = (ArrayList<TaskData>) in.readObject();
-			in.close();
-			fileIn.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public void readDeadlinesDatabase() {
+		
 	}
+	
+	private void readTimeTasksDatabase() {
+		
+	}
+
+	public ArrayList<TaskData> statusSearch(String status) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+
+		if (isValidStatus(status)) {
+			searchResults.addAll(statusSearch(timeTasks, status));
+			searchResults.addAll(statusSearch(deadlines, status));
+			searchResults.addAll(statusSearch(floatingTasks, status));
+		}
+		
+		return searchResults;
+	}
+	
+	private boolean isValidStatus(String status) {
+		if (status.equals("completed")) {
+			return true;
+		}
+		
+		if (status.equals("uncompleted")) {
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	private ArrayList<TaskData> statusSearch(ArrayList<TaskData> taskList, String statusEnquired) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+		
+		for (int i = 0; i < deadlines.size(); i++) {
+			TaskData currentTask = deadlines.get(i);
+			String status = currentTask.getStatus();
+			
+			if (status.equals(statusEnquired)) {
+				searchResults.add(currentTask);
+			}
+		}
+		
+		return searchResults;
+	}
+	
+
+	public ArrayList<TaskData> descriptionSearch(String searchedItem) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+		
+		searchResults.addAll(descriptionSearch(timeTasks, searchedItem));
+		searchResults.addAll(descriptionSearch(deadlines, searchedItem));
+		searchResults.addAll(descriptionSearch(floatingTasks, searchedItem));
+
+		return searchResults;
+	}
+
+	private ArrayList<TaskData> descriptionSearch(ArrayList<TaskData> taskList, String searchedItem) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+
+		for (int i = 0; i < taskList.size(); i++) {
+			TaskData currentTask = taskList.get(i);
+			String description = currentTask.getDescription();
+			
+			if (description.contains(searchedItem)) {
+				searchResults.add(currentTask);
+			}
+		}
+
+		return searchResults;
+	}
+
+	
+
+	public ArrayList<TaskData> timeSearch(long startDateTimeInMilliseconds, long endDateTimeInMilliseconds) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+		
+		searchResults.addAll(timeSearch(timeTasks, startDateTimeInMilliseconds, endDateTimeInMilliseconds));
+		searchResults.addAll(timeSearch(deadlines, startDateTimeInMilliseconds, endDateTimeInMilliseconds));
+		searchResults.addAll(timeSearch(floatingTasks, startDateTimeInMilliseconds, endDateTimeInMilliseconds));
+
+		return searchResults;
+		
+	}
+	
+	private ArrayList<TaskData> timeSearch(ArrayList<TaskData> taskList, long lowerBound, long upperBound) {
+		ArrayList<TaskData> searchResults = new ArrayList<TaskData>();
+		
+		for (int i = 0; i < taskList.size(); i++) {
+			TaskData currentTask = taskList.get(i);
+			long startDateTimeInMilliseconds = currentTask.getStartDateTime().getDateTimeInMilliseconds();
+
+			if (startDateTimeInMilliseconds >= lowerBound || startDateTimeInMilliseconds <= upperBound) {
+				searchResults.add(currentTask);
+			}
+		}
+
+		return searchResults;
+	}
+
 }
