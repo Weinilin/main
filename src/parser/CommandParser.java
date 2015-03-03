@@ -1,4 +1,5 @@
-package src.parser;
+
+
 
 public class CommandParser {
 	public static final String ADD_STATEMENT = new String("add");
@@ -12,7 +13,7 @@ public class CommandParser {
 
 	}
 
-	public String determineCommandType(String userCommand){
+	public static String determineCommandType(String userCommand){
 		String commandType = getFirstWord(userCommand);
 
 		if(commandType.equals(ADD_STATEMENT)){
@@ -36,7 +37,7 @@ public class CommandParser {
 		return commandType;
 	}
 
-	private String getFirstWord(String userCommand) {
+	private static String getFirstWord(String userCommand) {
 		String splitOfCommand[] = userCommand.split(" ", 2);
 		String firstWord = splitOfCommand[0];
 		return firstWord;
