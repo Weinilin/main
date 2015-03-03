@@ -1,3 +1,7 @@
+/**
+ *  handle adding a task to the task list
+ *
+ */
 package handler;
 
 public class AddHandler {

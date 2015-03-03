@@ -10,6 +10,10 @@ public class TaskData {
 	private String deadline;
 	private String status;
 	
+	// dummy constructor delete in futre
+	public TaskData() {
+		
+	}
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type

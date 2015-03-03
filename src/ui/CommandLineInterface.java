@@ -1,5 +1,5 @@
 import java.util.Scanner;
-
+import handler.CommandHandler;
 
 
 public class CommandLineInterface {
@@ -12,16 +12,17 @@ public class CommandLineInterface {
 
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
+		TaskList taskList = new TaskList();
+		CommandHandler commandHandler = new CommandHandler(taskList);
 		String userCommand, commandType, message;
 		//get to display all file.
-				DisplayHandler....
+		//		DisplayHandler....
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 	
 		while(true){
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.next();
-			commandType = CommandParser.determineCommandType(userCommand);
-			message = CommandHandler.executeCommand(userCommand, commandType);
+			message = commandHandler.processCommand(userCommand);
 			printMessageToUser(message);
 		}
 	}
