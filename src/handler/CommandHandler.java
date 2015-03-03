@@ -14,6 +14,7 @@ import database.Database;
 public class CommandHandler {
 
 	TaskList taskList = new TaskList();
+	Database db = new Database();
 	
 	public CommandHandler(TaskList taskList) {
 		this.taskList = taskList;
