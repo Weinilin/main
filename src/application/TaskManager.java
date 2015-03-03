@@ -10,7 +10,6 @@ class TaskManager	{
 	
 	public static void initProgram() {
 		Database database = new Database();
-		database.setEnvironment();
 	}
 	
 	

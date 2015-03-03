@@ -30,6 +30,7 @@ public class Database {
 	private static final String COMMAND_ADD = "insert into TaskList values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')";
 	private static final String COMMAND_RETRIEVE_DATA = "SELECT * FROM TaskList";
 	
+	
 	private static final int COLUMN_COUNT = 7;
 	
 	private static ArrayList<TaskData> deadlines;
