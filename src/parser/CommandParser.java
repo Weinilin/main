@@ -15,7 +15,7 @@ public class CommandParser {
 	public CommandParser(){
 
 	}
-
+	//return command type
 	public static String determineCommandType(String userCommand){
 		String commandType = getFirstWord(userCommand);
 
