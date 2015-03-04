@@ -8,7 +8,7 @@ public class TaskData {
 	private String startDateTime;
 	private String endDateTime;
 	private String deadline;
-	private String status;
+	private boolean status;
 	
 	// dummy constructor delete in futre
 	public TaskData() {
@@ -17,7 +17,7 @@ public class TaskData {
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type
-	public TaskData(String taskID, String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	public TaskData(String taskID, String taskType, String description, String startDateTime, String endDateTime, String deadline, boolean status) {
 		this.taskID = taskID;
 		this.taskType = taskType;
 		this.description = description;
@@ -39,7 +39,7 @@ public class TaskData {
 		deadline = newDeadline;
 	}
 
-	public void setStatus(String newStatus) {
+	public void setStatus(boolean newStatus) {
 		status = newStatus;
 	}
 	
@@ -63,7 +63,7 @@ public class TaskData {
 		return deadline;
 	}
 	
-	public String getStatus(){
+	public boolean getStatus(){
 		return status;
 	}
 	

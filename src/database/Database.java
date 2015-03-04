@@ -76,7 +76,7 @@ public class Database {
 				}
 				
 				TaskData taskData = new TaskData(parametersOfTaskData[0], parametersOfTaskData[1], parametersOfTaskData[2], parametersOfTaskData[3], 
-						parametersOfTaskData[4], parametersOfTaskData[5], parametersOfTaskData[6]);
+						parametersOfTaskData[4], parametersOfTaskData[5], Boolean.parseBoolean(parametersOfTaskData[6]));
 				
 				String taskType = parametersOfTaskData[1];
 				
@@ -164,7 +164,7 @@ public class Database {
 		String startDateTime = taskData.getStartDateTime();
 		String endDateTime = taskData.getEndDateTime();
 		String deadline = taskData.getDeadLine();
-		String status = taskData.getStatus();
+		boolean status = taskData.getStatus();
 		
 		String addCommand = String.format(COMMAND_ADD, taskID, taskType, description, startDateTime, endDateTime, deadline, status);
 		

@@ -2,11 +2,11 @@
 
 
 public class CommandParser {
-	public static final String ADD_STATEMENT = new String("add");
-	public static final String DISPLAY = new String("display"); 
-	public static final String DELETE_STATEMENT = new String("delete"); 
-	public static final String SEARCH_BY_KEYWORD = new String("search");
-	public static final String EXIT = new String("exit"); 
+	private static final String ADD_STATEMENT = new String("add");
+	private static final String DISPLAY = new String("display"); 
+	private static final String DELETE_STATEMENT = new String("delete"); 
+	private static final String SEARCH_BY_KEYWORD = new String("search");
+	private static final String EXIT = new String("exit"); 
 	private static final String COMMAND_ERROR = "Unknown Command \n";
 
 	public CommandParser(){
