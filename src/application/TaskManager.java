@@ -1,21 +1,15 @@
 package application;
 
-import database.Database;
+import application.TaskList;
+import handler.CommandHandler;
+import ui.CommandLineInterface;
 
 class TaskManager	{
 	
-	public TaskManager()	{
-		
+	public static void main (String[] args)	{		
+		CommandLineInterface cli = new CommandLineInterface();
+		cli.userInput();
 	}
 	
-	public static void initProgram() {
-		Database database = new Database();
-	}
-	
-	
-	public static void main (String[] args)	{
-		initProgram();
-	}
-	
-	
+
 }

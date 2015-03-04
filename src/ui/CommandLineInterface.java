@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.Scanner;
+
+import application.TaskList;
 import handler.CommandHandler;
 
 
@@ -21,7 +23,7 @@ public class CommandLineInterface {
 		//		DisplayHandler....
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
-		while(true){
+		while (true) {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.next();
 			message = commandHandler.processCommand(userCommand);
@@ -34,4 +36,5 @@ public class CommandLineInterface {
 		System.out.printf(message);
 	}
 
+	
 }

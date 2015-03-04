@@ -1,6 +1,4 @@
-package ui;
-
-import application.TaskData;
+package application;
 
 import java.util.ArrayList;
 import java.util.List;
