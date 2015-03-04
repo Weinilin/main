@@ -7,7 +7,7 @@
  */
 package handler;
 
-import ui.TaskList;
+import application.TaskList;
 import parser.CommandParser;
 import database.Database;
 
@@ -18,6 +18,7 @@ public class CommandHandler {
 	
 	public CommandHandler(TaskList taskList) {
 		this.taskList = taskList;
+		db.createDatabase();
 	}
 	
 	public String processCommand(String userInput) {
@@ -30,9 +31,12 @@ public class CommandHandler {
 	
 	// dummy for now
 	private String executeCommand(String command, String userInput) {
-		/*swtich (command) {
-	
-		}*/
+		switch (command) {
+			case "add":
+				break;
+			default:
+				break;
+		}
 		return "";
 	}
 }
