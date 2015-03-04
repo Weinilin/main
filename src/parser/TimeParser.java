@@ -1,14 +1,15 @@
+package parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class TimeParser {
-	public static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
-	public static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |- |-|)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
-	public static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon";
-	public static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
-	public static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from)";
-	public static final String INVALID_TIME = "Time entered is invalid";
+	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
+	private static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |- |-|)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+	private static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon";
+	private static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
+	private static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from)";
+	private static final String INVALID_TIME = "Time entered is invalid";
 	private static final int TIME_FORMAT_1 = 1;
 	private static final int TIME_FORMAT_2 = 2;
 	private static final int TIME_FORMAT_3 = 3;

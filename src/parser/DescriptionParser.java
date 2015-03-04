@@ -1,4 +1,4 @@
-
+package parser;
 
 
 public class DescriptionParser {
@@ -15,9 +15,9 @@ public class DescriptionParser {
 	private static final String DATE_KEYWORD5 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
 			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
-	public static final String TIME_KEYWORD_1 = "\\b(on |at |from |to |- |-|)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
-	public static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |)noon";
-	public static final String TIME_KEYWORD_3 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
+	private static final String TIME_KEYWORD_1 = "\\b(on |at |from |to |- |-|)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+	private static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |)noon";
+	private static final String TIME_KEYWORD_3 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
 	
 	public DescriptionParser(){
 		
