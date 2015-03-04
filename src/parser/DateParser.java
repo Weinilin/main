@@ -1,11 +1,16 @@
+package parser;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DateParser {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+
+public class DateParser {
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
 	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d+(\\s|\\S)"
 			+ "(jan|january|feb|february|mar|march|apr|april|may|jun|june"
@@ -51,7 +56,47 @@ public class DateParser {
 	private static final int DATE_FORMAT_5 = 5;
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
+	
+	private int year;
+	private int month;
+	private int day;
+	private int hour;
+	private int minute;
+	
+	public DateParser(String dateTime) {
+		parseFormattedString(dateTime);
+	}
 
+	//need another constructor for parsing unformatted string
+
+	private void parseFormattedString(String dateTime) {
+		day = Integer.parseInt(dateTime.substring(0, 2));
+		month = Integer.parseInt(dateTime.substring(3, 5));
+		year = Integer.parseInt(dateTime.substring(6, 10));
+		hour = Integer.parseInt(dateTime.substring(12, 14));
+		minute = Integer.parseInt(dateTime.substring(14, 16));
+	}
+
+	public long getDateTimeInMilliseconds() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String formattedDateTime = formatDateTime();
+		Date date = null;
+
+		try {
+			date = sdf.parse(formattedDateTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		long dateTimeInMilliseconds = date.getTime();
+
+		return dateTimeInMilliseconds;
+	}
+
+	public String formatDateTime() {
+		String formattedDateTime = day + "/" + month + "/" + year + " " + hour + ":" + minute ;
+		return formattedDateTime;
+	}
 
 	public DateParser(){
 	}

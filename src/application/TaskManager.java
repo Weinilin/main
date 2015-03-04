@@ -1,6 +1,6 @@
 package application;
 
-import storage.Database;
+import database.Database;
 
 class TaskManager	{
 	
@@ -10,7 +10,6 @@ class TaskManager	{
 	
 	public static void initProgram() {
 		Database database = new Database();
-		database.setEnvironment();
 	}
 	
 	

@@ -1,27 +1,30 @@
-import java.util.Scanner;
+package ui;
 
+import java.util.Scanner;
+import handler.CommandHandler;
 
 
 public class CommandLineInterface {
 
-	public static final String COMMAND_MESSAGE = new String("Command: \n");
-	public static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
+	private static final String COMMAND_MESSAGE = new String("Command: \n");
+	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
 
 	public CommandLineInterface(){
 	} 	
 
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
-		String userCommand, commandType, message;
+		TaskList taskList = new TaskList();
+		CommandHandler commandHandler = new CommandHandler(taskList);
+		String userCommand, message;
 		//get to display all file.
-				DisplayHandler....
+		//		DisplayHandler....
 		printMessageToUser(String.format(WELCOME_MESSAGE));
-	
+
 		while(true){
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.next();
-			commandType = CommandParser.determineCommandType(userCommand);
-			message = CommandHandler.executeCommand(userCommand, commandType);
+			message = commandHandler.processCommand(userCommand);
 			printMessageToUser(message);
 		}
 	}

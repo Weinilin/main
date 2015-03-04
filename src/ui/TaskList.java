@@ -1,7 +1,6 @@
 package ui;
 
 import application.TaskData;
-import application.TaskDataComparator;
 
 import java.util.ArrayList;
 import java.util.List;
