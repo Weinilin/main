@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class DateParser {
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
 	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d+(\\s|\\S)"
@@ -56,13 +55,13 @@ public class DateParser {
 	private static final int DATE_FORMAT_5 = 5;
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
-	
+
 	private int year;
 	private int month;
 	private int day;
 	private int hour;
 	private int minute;
-	
+
 	public DateParser(String dateTime) {
 		parseFormattedString(dateTime);
 	}
@@ -100,7 +99,12 @@ public class DateParser {
 
 	public DateParser(){
 	}
-
+	/**
+	 * 
+	 * @param userInput
+	 * @return String in the format of dd/mm/yyyy 
+	 * and return the current date if nothing is detected
+	 */
 	public String extractDate(String userInput){
 		String dateOfTheTask = "";
 
