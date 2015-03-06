@@ -15,16 +15,13 @@ public class CommandHandler {
 
 	TaskList taskList = new TaskList();
 	
-	public CommandHandler(TaskList taskList) {
-		this.taskList = taskList;
+	public CommandHandler() {
+		
 	}
 	
 	public String processCommand(String userInput) {
-		CommandParser cp = new CommandParser();
-		String userCommand = cp.determineCommandType(userInput);
-		executeCommand(userCommand, userInput);
-		
-		return "";
+		String userCommand = CommandParser.determineCommandType(userInput);
+		return executeCommand(userCommand, userInput);
 	}
 	
 	// dummy for now

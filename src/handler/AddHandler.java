@@ -12,7 +12,7 @@ import application.TaskData;
  */
 public class AddHandler {
 
-	public AddHandler() {
+	protected AddHandler() {
 		
 	}
 	/**
@@ -22,7 +22,7 @@ public class AddHandler {
 	 * @param taskList - list of tasks
 	 * @return - true if successfully added
 	 */
-	public boolean addTask(String taskInformation, TaskList taskList) {
+	protected boolean addTask(String taskInformation, TaskList taskList) {
 		// parsing the parameters of the taskData
 		
 		//
@@ -55,7 +55,8 @@ public class AddHandler {
 		
 		return null;
 	}
-	public String getHelp() {
+	
+	protected String getHelp() {
 		return "add <task informatino>\n to TaskManager";
 	}
 }

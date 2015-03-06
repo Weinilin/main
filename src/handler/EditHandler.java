@@ -11,7 +11,7 @@ import application.TaskData;
  */
 public class EditHandler {
 
-	public EditHandler() {
+	protected EditHandler() {
 		
 	}
 	/**
@@ -22,13 +22,13 @@ public class EditHandler {
 	 * @param taskList
 	 * @return
 	 */
-	public boolean editTask(String taskInformation, TaskList taskList) {
+	protected boolean editTask(String taskInformation, TaskList taskList) {
 		DeleteHandler dh = new DeleteHandler();
 		AddHandler ah = new AddHandler();
 		TaskData oldTask = new TaskData();
 		TaskData newTask = ah.createNewTask(taskInformation);	
 		try  {
-			oldTask = dh.deletTask(taskInformation, taskList);
+			oldTask = dh.deleteTask(taskInformation, taskList);
 			ah.addTask(newTask, taskList);
 		} catch (IndexOutOfBoundsException iob) {
 			return false;

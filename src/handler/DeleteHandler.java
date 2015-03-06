@@ -12,9 +12,10 @@ import parser.IndexParser;
  */
 public class DeleteHandler {
 
-	public DeleteHandler() {
+	protected DeleteHandler() {
 		
 	}
+	
 	/**
 	 * remove a task from taskList
 	 * 
@@ -23,7 +24,7 @@ public class DeleteHandler {
 	 * @return removed taskdata if success, null if no legal index entered
 	 * @throws IndexOutOfBoundsException if the index entered is larger then the size
 	 */
-	public TaskData deletTask(String taskInformation, TaskList taskList) throws IndexOutOfBoundsException  {
+	protected TaskData deleteTask(String taskInformation, TaskList taskList) throws IndexOutOfBoundsException  {
 		IndexParser ip = new IndexParser();
 		TaskData removedTask = new TaskData();
 		int index = ip.extractIndex(taskInformation);

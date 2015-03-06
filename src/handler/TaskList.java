@@ -3,19 +3,19 @@ package handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileNotFoundException;
 
 import application.TaskData;
 
 /**
- * collects TaskData and make changes to the collection
+ * collects TaskData and manage the TaskDatas
  */
+
 public class TaskList {
 
 	private List<TaskData> taskList = new ArrayList<TaskData>();
 	private int size = 0;
 	
-	public TaskList() {
+	protected TaskList() {
 		
 	}
 	
@@ -26,7 +26,7 @@ public class TaskList {
 	 * @param newTask - new task created
 	 * @return true - if the operation is success.
 	 */
-	public boolean addTask(TaskData newTask) {
+	protected boolean addTask(TaskData newTask) {
 		size++;
 		return taskList.add(newTask);	
 	}
@@ -38,7 +38,7 @@ public class TaskList {
 	 * @return removedTask - deleted Task
 	 * @throws IndexOutOfBoundsException - if index if out of range of the list
 	 */
-	public TaskData deleteTask(int index) throws IndexOutOfBoundsException {
+	protected TaskData deleteTask(int index) throws IndexOutOfBoundsException {
 		TaskData removedTask = new TaskData();
 		try {
 			removedTask = taskList.remove(index);
@@ -55,23 +55,21 @@ public class TaskList {
 	 * @param keyword
 	 * @return result arraylist containing the index that contains the keyword
 	 */
-	public ArrayList<Integer> searchTask(String keyword) {
-		ArrayList<Integer> foundTaskIndex = new ArrayList<Integer>();
-		int indexCounter = 1;
+	protected String searchTask(String keyword) {
+		String result = new String();
 		for (TaskData task: taskList) {
 			if (task.getDescription().contains(keyword)) {
-				foundTaskIndex.add(indexCounter);
+				result += task.toString();
 			}
-			indexCounter++;
 		}
-		return foundTaskIndex;
+		return result;
 	}
 	
 	/**
 	 * display all the tasks in the list
 	 * @return formatted taskData
 	 */
-	public String displayTask() {
+	protected String displayTask() {
 		String taskListString = new String(); 
 		for (TaskData td: taskList) {
 			taskListString += td.toString();
@@ -81,16 +79,21 @@ public class TaskList {
 	}
 	
 	/**
-	 * displaythe selected taskData by the an arraylist of index given
+	 * display the selected taskData by the an arraylist of index given
+	 * 
 	 * @param indexOfDisplay - ArrayList that stores the indexes wish to display
 	 * @return formatted taskData
 	 */
-	public String displayTask(ArrayList<Integer> indexOfDisplay) {
+	protected String displayTask(ArrayList<Integer> indexOfDisplay) {
 		String taskListString = new String(); 
 		for (int i: indexOfDisplay) {
 			taskListString += taskList.get(i).toString();
 		}
 		
 		return taskListString;
+	}
+	
+	protected int getSize() {
+		return size;
 	}
 }
