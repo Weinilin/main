@@ -1,6 +1,4 @@
-/**
- * collects TaskData and make changes to the collection
- */
+
 package handler;
 
 import java.util.ArrayList;
@@ -9,6 +7,9 @@ import java.io.FileNotFoundException;
 
 import application.TaskData;
 
+/**
+ * collects TaskData and make changes to the collection
+ */
 public class TaskList {
 
 	private List<TaskData> taskList = new ArrayList<TaskData>();
