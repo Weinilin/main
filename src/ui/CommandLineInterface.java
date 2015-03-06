@@ -2,8 +2,8 @@ package ui;
 
 import java.util.Scanner;
 
-import application.TaskList;
 import handler.CommandHandler;
+import handler.TaskList;
 
 
 public class CommandLineInterface {

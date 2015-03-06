@@ -7,7 +7,6 @@ package handler;
 
 import database.Database;
 import application.TaskData;
-import application.TaskList;
 
 public class AddHandler {
 
