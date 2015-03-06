@@ -1,3 +1,9 @@
+package handler;
+
+import java.util.logging.Logger;
+
+import parser.CommandParser;
+
 /**
  * Construct by passing a TaskList to the constructor 
  * 
@@ -5,28 +11,17 @@
  * handlers by different command given by user
  * and returns a feedback to ui
  */
-package handler;
-
-import application.TaskList;
-import parser.CommandParser;
-import database.Database;
-
 public class CommandHandler {
 
 	TaskList taskList = new TaskList();
-	Database db = new Database();
 	
-	public CommandHandler(TaskList taskList) {
-		this.taskList = taskList;
-		db.createDatabase();
+	public CommandHandler() {
+		
 	}
 	
 	public String processCommand(String userInput) {
-		CommandParser cp = new CommandParser();
-		String userCommand = cp.determineCommandType(userInput);
-		executeCommand(userCommand, userInput);
-		
-		return "";
+		String userCommand = CommandParser.determineCommandType(userInput);
+		return executeCommand(userCommand, userInput);
 	}
 	
 	// dummy for now

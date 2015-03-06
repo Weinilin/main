@@ -1,7 +1,7 @@
 package application;
 
-import application.TaskList;
 import handler.CommandHandler;
+import handler.TaskList;
 import ui.CommandLineInterface;
 
 class TaskManager	{

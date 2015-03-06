@@ -2,8 +2,8 @@ package ui;
 
 import java.util.Scanner;
 
-import application.TaskList;
 import handler.CommandHandler;
+import handler.TaskList;
 
 
 public class CommandLineInterface {
@@ -16,17 +16,17 @@ public class CommandLineInterface {
 
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
-		TaskList taskList = new TaskList();
-		CommandHandler commandHandler = new CommandHandler(taskList);
+		CommandHandler commandHandler = new CommandHandler();
+		commandHandler.processCommand("display");
 		String userCommand, message;
-		//get to display all file.
-		//		DisplayHandler....
+	
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
 		while (true) {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
-			userCommand = scanner.next();
+			userCommand = scanner.nextLine();
 			message = commandHandler.processCommand(userCommand);
+			commandHandler.processCommand("display");
 			printMessageToUser(message);
 		}
 	}
