@@ -115,9 +115,12 @@ public class DateParser {
 		userInput = switchAllToLowerCase(userInput);
 		for(int i = 0; i <= 6; i++){
 			dateOfTheTask = selectDetectionMethod(userInput, i);
-			if(dateOfTheTask.size() == 2){
+			//System.out.println("dsize: "+dateOfTheTask.size()
+			//		+ " i: "+ i);
+			if(dateOfTheTask.size() != 0 && dateOfTheTask.get(0) != ""){
+				//System.out.println("date: "+dateOfTheTask.get(0));
 				break;
-			}
+			}	
 			//	if(isDateFormatRight(dateOfTheTask)){
 			//	break;
 			//	}
@@ -165,7 +168,6 @@ public class DateParser {
 			dateOfTheTask = date.format(cal.getTime());
 			dates.add(dateOfTheTask);
 		}
-
 		return dates;
 	}
 
@@ -177,10 +179,9 @@ public class DateParser {
 
 		while(containDate.find()){
 			uniqueKeyword = containDate.group();
+			uniqueKeyword = removeToAndFrom(uniqueKeyword);
+			dateOfTheTask = divideDate(uniqueKeyword);
 		}
-
-		uniqueKeyword = removeToAndFrom(uniqueKeyword);
-		dateOfTheTask = divideDate(uniqueKeyword);
 
 		return dateOfTheTask;
 	}
