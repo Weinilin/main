@@ -32,6 +32,7 @@ public class LogicController {
 	// dummy for now
 	private String executeCommand(String command, String userInput) {
 		String feedback = new String();
+		userInput = userInput.replaceFirst(command, "");
 		switch (command) {
 			case "add":
 				AddHandler ah = new AddHandler(memory);
@@ -61,6 +62,10 @@ public class LogicController {
 			case "show":
 				ShowHandler sh = new ShowHandler(memory);
 				feedback = sh.showTask(userInput);
+				break;
+			case "exit":
+				feedback = "Goodbye!";
+				System.exit(0);
 				break;
 			default:
 				break;

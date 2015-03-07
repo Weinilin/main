@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class TaskTypeParser {
 
-	public String extractTaskType(ArrayList<String> storageOfTime) {
+	public static String extractTaskType(ArrayList<String> storageOfTime) {
 		int numberOfTimeInput = getNumberOfTimeInput(storageOfTime);
 		String taskType;
 
@@ -22,7 +22,7 @@ public class TaskTypeParser {
 		return taskType;
 	}
 
-	private int getNumberOfTimeInput(ArrayList<String> storageOfTime) {
+	private static int getNumberOfTimeInput(ArrayList<String> storageOfTime) {
 		int numberOfTimeInput = storageOfTime.size();
 		return numberOfTimeInput;
 	}

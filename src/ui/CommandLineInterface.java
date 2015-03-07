@@ -3,7 +3,6 @@ package ui;
 import java.util.Scanner;
 
 import logic.LogicController;
-import logic.TaskList;
 
 
 public class CommandLineInterface {
