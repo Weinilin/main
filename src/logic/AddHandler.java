@@ -71,14 +71,14 @@ public class AddHandler {
 		String startDateTime = new String("-");
 		String endDateTime = new String("-");
 		switch (taskType) {
-			case "deadlinesTask":
+			case "deadline":
 				deadline = date + " " + time.get(0);
 				break;
-			case "timedTask":
+			case "time task":
 				startDateTime = date + " " + time.get(0);
 				endDateTime = date + " " + time.get(1);
 				break;
-			case "floatingTask":
+			case "floating task":
 				break;
 			default:
 				break;

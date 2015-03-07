@@ -25,7 +25,7 @@ public class TimeParser {
 			//	System.out.println("check main: " + storageOfTime.get(0));
 		}
 
-		checkIfAllTimeInvalid(storageOfTime);
+		//checkIfAllTimeInvalid(storageOfTime);
 		return storageOfTime;
 	}
 

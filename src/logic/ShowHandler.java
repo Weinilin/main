@@ -33,8 +33,7 @@ public class ShowHandler {
 		else {
 			ArrayList<TaskData> task = memory.getTaskList();
 			for (TaskData td: task) {
-				result += td.toString();
-				result += "\n";
+				result += td.toString() + "\n";
 			}
 		}
 		
@@ -49,15 +48,16 @@ public class ShowHandler {
 	 * @return formatted string of tasks, message if no task if found
 	 */
 	protected String showTask(String keyword) {
+		int i = 1;
 		String result = new String();
 		ArrayList<TaskData> searchList = memory.searchTask(keyword);
 		if (searchList.isEmpty()) {
-			return "No task containing " + keyword;
+			return "No task containing " + keyword +"\n";
 		}
 		else {
 			for (TaskData td: searchList) {
-				result += td.toString();
-				result += "\n";
+				result += i + ". \n" + td.toString() + "\n";
+				i++;
 			}
 			return result;
 		}

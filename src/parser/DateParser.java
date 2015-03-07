@@ -68,8 +68,8 @@ public class DateParser {
 
 	public DateParser() {
 	}
+	
 	//need another constructor for parsing unformatted string
-
 	private void parseFormattedString(String dateTime) {
 		day = Integer.parseInt(dateTime.substring(0, 2));
 		month = Integer.parseInt(dateTime.substring(3, 5));
