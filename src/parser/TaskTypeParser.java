@@ -11,13 +11,13 @@ public class TaskTypeParser {
 		String taskType;
 
 		if(numberOfTimeInput == 2){
-			taskType = "timedTask";
+			taskType = "time task";
 		}
 		else if(numberOfTimeInput == 1){
-			taskType = "deadlinesTask";
+			taskType = "deadlines";
 		}
 		else{
-			taskType = "floatingTask";
+			taskType = "floating task";
 		}
 		return taskType;
 	}

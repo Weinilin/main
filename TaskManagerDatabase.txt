@@ -1,7 +1,0 @@
-Task Type           : qq
-Description         : q
-Start Time          : q
-End Time            : q
-Deadline            : q
-Status              : q
-

@@ -7,7 +7,7 @@ import logic.LogicController;
 
 public class CommandLineInterface {
 
-	private static final String COMMAND_MESSAGE = new String("Command: \n");
+	private static final String COMMAND_MESSAGE = new String("Command: ");
 	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
 
 	public CommandLineInterface(){

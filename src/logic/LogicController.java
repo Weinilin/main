@@ -32,19 +32,19 @@ public class LogicController {
 	// dummy for now
 	private String executeCommand(String command, String userInput) {
 		String feedback = new String();
-		userInput = userInput.replaceFirst(command, "");
+		userInput = userInput.replaceFirst(command, "").trim();
 		switch (command) {
 			case "add":
 				AddHandler ah = new AddHandler(memory);
 				if (ah.addTask(userInput)) {
-					feedback = "Successfully added " + userInput;
+					feedback = "Successfully added " + userInput + "\n";
 				}
 				break;
 			case "delete":
 				DeleteHandler dh = new DeleteHandler(memory);
 				TaskData removedTask= dh.deleteTask(userInput);
 				if (removedTask != null) {
-					feedback = "Successfully deleted " + removedTask.toString();
+					feedback = "Successfully deleted: \n" + removedTask.toString();
 				}
 				else {
 					feedback = "Please check your input";
