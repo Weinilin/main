@@ -15,7 +15,12 @@ public class CommandParser {
 	public CommandParser(){
 
 	}
-	//return command type
+	
+	/**
+	 * use to detect different command Type(add, undo, mark, edit, show, delete)
+	 * @param userCommand
+	 * @return command type
+	 */
 	public static String determineCommandType(String userCommand){
 		String commandType = getFirstWord(userCommand);
 
@@ -52,6 +57,11 @@ public class CommandParser {
 		return commandType;
 	}
 
+	/**
+	 * To extract the first word of the string
+	 * @param userCommand
+	 * @return the first word of the string 
+	 */
 	private static String getFirstWord(String userCommand) {
 		String splitOfCommand[] = userCommand.split(" ", 2);
 		String firstWord = splitOfCommand[0];
