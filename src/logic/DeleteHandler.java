@@ -1,7 +1,7 @@
 /*
  *  @author A0114463Ms
  */
-package handler;
+package logic;
 
 import application.TaskData;
 import parser.IndexParser;

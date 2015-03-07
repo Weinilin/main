@@ -1,4 +1,4 @@
-package handler;
+package logic;
 
 import java.util.logging.Logger;
 
@@ -12,11 +12,11 @@ import application.TaskData;
  * handlers by different command given by user
  * and returns a feedback to ui
  */
-public class CommandHandler {
+public class LogicController {
 
 	TaskList taskList = new TaskList();
 	
-	public CommandHandler() {
+	public LogicController() {
 		
 	}
 	

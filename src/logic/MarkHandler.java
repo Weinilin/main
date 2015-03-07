@@ -1,4 +1,4 @@
-package handler;
+package logic;
 
 public class MarkHandler {
 

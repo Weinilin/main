@@ -2,8 +2,8 @@ package ui;
 
 import java.util.Scanner;
 
-import handler.CommandHandler;
-import handler.TaskList;
+import logic.LogicController;
+import logic.TaskList;
 
 
 public class CommandLineInterface {
@@ -16,7 +16,7 @@ public class CommandLineInterface {
 
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
-		CommandHandler commandHandler = new CommandHandler();
+		LogicController commandHandler = new LogicController();
 		commandHandler.processCommand("display");
 		String userCommand, message;
 	

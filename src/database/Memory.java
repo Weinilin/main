@@ -15,8 +15,8 @@ public class Memory {
 	
 	private ArrayList<TaskData> taskList = new ArrayList<TaskData>();
 	
-	public Memory() {
-		initMemory();
+	public Memory(Database db) {
+		initMemory(db);
 	}
 	
 	/**
@@ -114,8 +114,8 @@ public class Memory {
 		Database.writeToDatabase(taskList);
 	}
 	
-	private void initMemory() {
-		taskList = Database.readDatabase();
+	private void initMemory(Database db) {
+		taskList = db.readDatabase();
 	}
 	
 	public ArrayList<TaskData> getTaskList() {
@@ -124,12 +124,13 @@ public class Memory {
 	
 	public void display() {
 		for (int i = 0; i < taskList.size(); i++) {
-			taskList.get(i).displayTask();
+			System.out.print(taskList.get(i));
 		}
 	}
 	
 	public static void main(String[] args) {
-		Memory memory = new Memory();
+		Database db = new Database();
+		Memory memory = new Memory(db);
 		Scanner sc = new Scanner(System.in);
 
 		while (!sc.nextLine().equals("exit")) {
