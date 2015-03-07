@@ -65,11 +65,22 @@ public class Memory {
 	 * @param keyword
 	 * @return result arraylist containing the index that contains the keyword
 	 */
-	public ArrayList<TaskData> searchTask(String keyword) {
+	public ArrayList<TaskData> searchDescription(String keyword) {
 		ArrayList<TaskData> searchList = new ArrayList<TaskData>();
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskData task = taskList.get(i);
 			if (task.getDescription().contains(keyword)) {
+				searchList.add(task);
+			}
+		}
+		return searchList;
+	}
+	
+	public ArrayList<TaskData> searchStatus(String status) {
+		ArrayList<TaskData> searchList = new ArrayList<TaskData>();
+		for (int i = 0; i < taskList.size(); i++) {
+			TaskData task = taskList.get(i);
+			if (task.getStatus().contains(status)) {
 				searchList.add(task);
 			}
 		}

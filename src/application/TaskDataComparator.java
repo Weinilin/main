@@ -12,8 +12,12 @@ public class TaskDataComparator implements Comparator<TaskData> {
 	public int compare(TaskData taskData1, TaskData taskData2) {
 		if (isEqualPrecedence(taskData1, taskData2)) {
 			return comparePrecedence(taskData1, taskData2);
+		} else if (isDeadline(taskData1)) {
+			return compareDeadline(taskData1, taskData2);
+		} else if (isTimeTask(taskData1)) {
+			return compareTimeTask(taskData1, taskData2);
 		} else {
-			return compareTime(taskData1, taskData2);
+			return compareFloatingTask(taskData1, taskData2);
 		}
 	}
 	
@@ -28,7 +32,23 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		return false;
 	}
 	
-	private int compareTime(TaskData taskData1, TaskData taskData2) {
+	private boolean isDeadline(TaskData taskData) {
+		if (taskData.getStatus().equals("deadline")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isTimeTask(TaskData taskData) {
+		if (taskData.getStatus().equals("time task")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private int compareDeadline(TaskData taskData1, TaskData taskData2) {
 		DateParser dateParser1 = new DateParser(taskData1.getDeadline());
 		long deadline1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
 		
@@ -40,6 +60,27 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		} else {
 			return 1;
 		}
+	}
+	
+	private int compareTimeTask(TaskData taskData1, TaskData taskData2) {
+		DateParser dateParser1 = new DateParser(taskData1.getStartDateTime());
+		long deadline1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
+		
+		DateParser dateParser2 = new DateParser(taskData2.getStartDateTime());
+		long deadline2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
+		
+		if (deadline1InMilliseconds <= deadline2InMilliseconds) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+	
+	private int compareFloatingTask(TaskData taskData1, TaskData taskData2) {
+		String description1 = taskData1.getDescription();
+		String description2 = taskData2.getDescription();
+		
+		return description1.compareTo(description2);
 	}
 	
 	private int comparePrecedence(TaskData taskData1, TaskData taskData2) {
