@@ -7,10 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import application.TaskData;
-import application.TaskDataComparator;
 
 public class Database {
 	private static File database;
@@ -25,7 +23,7 @@ public class Database {
 	}
 	
 	//this should only be called by logic at the start of the program
-	public static void createDatabase() {
+	private static void createDatabase() {
     	database = new File(databaseName);
     	if (!database.exists()) {
             try {
@@ -36,7 +34,7 @@ public class Database {
         }
 	}
 	
-	public static ArrayList<TaskData> readDatabase() {
+	public ArrayList<TaskData> readDatabase() {
 		BufferedReader reader = null;
 		ArrayList<TaskData> taskList = new ArrayList<TaskData> ();
 		
@@ -64,7 +62,7 @@ public class Database {
 		return taskList;
 	}
 	
-	public static void writeToDatabase(ArrayList<TaskData> taskList) {		
+	public void writeToDatabase(ArrayList<TaskData> taskList) {		
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(database));
