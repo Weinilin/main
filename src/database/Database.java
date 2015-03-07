@@ -17,7 +17,7 @@ public class Database {
 	private static String databaseName = "TaskManagerDatabase.txt" ;
 	
 	public Database() {
-		
+		createDatabase();
 	}
 
 	public static void setDatabaseLocation() {

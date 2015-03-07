@@ -29,7 +29,7 @@ public class TaskData {
 	//1. need to check validity of data
 	//2. separate constructor for different task type
 
-	public TaskData(String taskID, String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	public TaskData(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
 		this.startDateTime = startDateTime;
@@ -94,6 +94,14 @@ public class TaskData {
 		return description;
 	}
 	
+	public boolean isDone() {
+		if (status.equals("done")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	public String toString() {
 		String str = "";
@@ -122,10 +130,4 @@ public class TaskData {
 		
 		return str;
 	}
-	
-	public static void main(String[] str) {
-		TaskData newTaskData = new TaskData("superman", "superman", "superman", "superman", "superman", "superman", "superman" );
-		System.out.println(newTaskData);
-	}
-
 }
