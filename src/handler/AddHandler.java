@@ -12,8 +12,10 @@ import application.TaskData;
  */
 public class AddHandler {
 
-	protected AddHandler() {
-		
+	TaskList taskList = new TaskList();
+	
+	protected AddHandler(TaskList taskList) {
+		this.taskList = taskList;
 	}
 	/**
 	 * add a new task to TaskList by input from user
@@ -22,7 +24,7 @@ public class AddHandler {
 	 * @param taskList - list of tasks
 	 * @return - true if successfully added
 	 */
-	protected boolean addTask(String taskInformation, TaskList taskList) {
+	protected boolean addTask(String taskInformation) {
 		// parsing the parameters of the taskData
 		
 		//
@@ -42,7 +44,7 @@ public class AddHandler {
 	 * @param taskList
 	 * @return true if success
 	 */
-	protected boolean addTask(TaskData newTask, TaskList taskList) {
+	protected boolean addTask(TaskData newTask) {
 		return taskList.addTask(newTask);
 	}
 	
