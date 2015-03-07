@@ -308,9 +308,9 @@ public class TimeParser {
 
 	private String switchToPMHour(String time) {
 		int timeHour = 13, timeNormal = 1;
-		if(time.length() == 1){
+	
 			while(timeHour != 24){
-				if(time.charAt(0) == '1' && time.charAt(1) == '2'){
+				if(time.length() > 1 && time.charAt(0) == '1' && time.charAt(1) == '2'){
 					time = "12";
 					break;
 				}
@@ -321,7 +321,7 @@ public class TimeParser {
 				timeHour++;
 				timeNormal++;
 			}
-		}
+		
 		return time;		
 	}
 

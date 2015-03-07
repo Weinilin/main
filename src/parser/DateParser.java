@@ -1,15 +1,16 @@
 package parser;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateParser {
+	private static final String  DATE_KEYWORD_FOR_TIMED = "\\bfrom (\\d+[/]\\d+[/]\\d+) to (\\d+[/]\\d+[/]\\d+)\\b";
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
 	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d+(\\s|\\S)"
 			+ "(jan|january|feb|february|mar|march|apr|april|may|jun|june"
@@ -48,6 +49,7 @@ public class DateParser {
 	private static final String YEAR_TEXT = "year";
 	private static final String FORTNIGHT_TEXT = "fortnight";
 	private static final String INVALID_TEXT = "date entered do not exist!";
+	private static final int  DATE_FORMAT_0 = 0;
 	private static final int DATE_FORMAT_1 = 1;
 	private static final int DATE_FORMAT_2 = 2;
 	private static final int DATE_FORMAT_3 = 3;
@@ -105,15 +107,12 @@ public class DateParser {
 	 * @return String in the format of dd/mm/yyyy 
 	 * and return the current date if nothing is detected
 	 */
-	public String extractDate(String userInput){
-		String dateOfTheTask = "";
+	public ArrayList<String> extractDate(String userInput){
+		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
-		for(int i = 1; i <= 6; i++){
+		for(int i = 0; i <= 6; i++){
 			dateOfTheTask = selectDetectionMethod(userInput, i);
-			if(isDateFormatRight(dateOfTheTask)){
-				break;
-			}
 		}
 
 		return dateOfTheTask;
@@ -124,32 +123,72 @@ public class DateParser {
 		return userInput;
 	}
 
-	private String selectDetectionMethod(String userInput, int dateFormat) {
+	private ArrayList<String> selectDetectionMethod(String userInput, int dateFormat) {
 		String dateOfTheTask = "";
+		ArrayList<String> date = new ArrayList<String>();
 
 		System.out.println("dateFormat: "+dateFormat);
-		if(dateFormat == DATE_FORMAT_1){
+		if(dateFormat == DATE_FORMAT_0){
+			date = spotDateFormatForTimed(userInput);
+		}
+		else if(dateFormat == DATE_FORMAT_1){
 			dateOfTheTask = spotDateFormat1(userInput);
+			date.set(0, dateOfTheTask);
 		}
 		else if(dateFormat == DATE_FORMAT_2){
 			dateOfTheTask = spotDateFormat2(userInput);
+			date.set(0, dateOfTheTask);
 		}
 		else if(dateFormat == DATE_FORMAT_3){
 			dateOfTheTask = spotDateFormat3(userInput);	
+			date.set(0, dateOfTheTask);
 		}
 		else if(dateFormat == DATE_FORMAT_4){
 			dateOfTheTask = spotDateFormat4(userInput);	
+			date.set(0, dateOfTheTask);
 		}
 		else if(dateFormat == DATE_FORMAT_5){
 			dateOfTheTask = spotDateFormat5(userInput);	
+			date.set(0, dateOfTheTask);
 		}
 		else{
-			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
+			DateFormat date1 = new SimpleDateFormat(DATE_FORMAT);
 			Calendar cal = Calendar.getInstance();
-			dateOfTheTask = date.format(cal.getTime());
+			dateOfTheTask = date1.format(cal.getTime());
+			date.set(0, dateOfTheTask);
 		}
 
-		return dateOfTheTask;
+		return date;
+	}
+
+	private ArrayList<String> spotDateFormatForTimed(String userInput) {
+		String dateOfTheTask = "", uniqueKeyword = "";
+		Pattern dateDetector = Pattern.compile(DATE_KEYWORD_FOR_TIMED);
+		Matcher containDate = dateDetector.matcher(userInput);
+
+		while(containDate.find()){
+			uniqueKeyword = containDate.group();
+		}
+		
+		ArrayList<String> timedDate = new ArrayList<String>();
+		uniqueKeyword = deleteConstructor(uniqueKeyword);
+		timedDate = breakDateIntoTwo(uniqueKeyword);
+		return timedDate;
+	}
+
+	private String deleteConstructor(String uniqueKeyword) {
+		uniqueKeyword = uniqueKeyword.replaceAll(" to ", " ");
+		uniqueKeyword = uniqueKeyword.replaceAll("from", "");
+		
+		return uniqueKeyword;
+	}
+
+	private ArrayList<String> breakDateIntoTwo(String uniqueKeyword) {
+		ArrayList<String> timedDate = new ArrayList<String>();
+		String[] dates = uniqueKeyword.split(" ");
+		timedDate.set(0, dates[0]);
+		timedDate.set(1,  dates[1]);
+		return timedDate;
 	}
 
 	private String spotDateFormat5(String userInput) {
