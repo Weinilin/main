@@ -2,6 +2,8 @@ package logic;
 
 import java.util.logging.Logger;
 
+import database.Memory;
+import database.Database;
 import parser.CommandParser;
 import application.TaskData;
 
@@ -14,10 +16,12 @@ import application.TaskData;
  */
 public class LogicController {
 
-	TaskList taskList = new TaskList();
+	private Memory memory;
+	private Database database;
 	
 	public LogicController() {
-		
+		Database database = new Database();
+		memory = new Memory(database);
 	}
 	
 	public String processCommand(String userInput) {
@@ -30,13 +34,13 @@ public class LogicController {
 		String feedback = new String();
 		switch (command) {
 			case "add":
-				AddHandler ah = new AddHandler(taskList);
+				AddHandler ah = new AddHandler(memory);
 				if (ah.addTask(userInput)) {
 					feedback = "Successfully added " + userInput;
 				}
 				break;
 			case "delete":
-				DeleteHandler dh = new DeleteHandler(taskList);
+				DeleteHandler dh = new DeleteHandler(memory);
 				TaskData removedTask= dh.deleteTask(userInput);
 				if (removedTask != null) {
 					feedback = "Successfully deleted " + removedTask.toString();
@@ -46,7 +50,7 @@ public class LogicController {
 				}
 				break;
 			case "edit":
-				EditHandler eh = new EditHandler(taskList);
+				EditHandler eh = new EditHandler(memory);
 				if (eh.editTask(userInput)) {
 					feedback = "Updated to " + userInput;
 				}
@@ -55,7 +59,7 @@ public class LogicController {
 				}
 				break;
 			case "show":
-				ShowHandler sh = new ShowHandler(taskList);
+				ShowHandler sh = new ShowHandler(memory);
 				feedback = sh.showTask(userInput);
 				break;
 			default:
