@@ -170,7 +170,12 @@ public class DateParser {
 		}
 		return dates;
 	}
-
+	/**
+	 * is to detect times in format of from dd/mm/yyyy to dd/mm/yyyy and 
+	 * divide the two times separately into arraylist.
+	 * @param userInput
+	 * @return ArrayList<String> of times im hour format
+	 */
 	private ArrayList<String> spotDateFormat0(String userInput) {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 		String uniqueKeyword = "";
@@ -185,7 +190,12 @@ public class DateParser {
 
 		return dateOfTheTask;
 	}
-
+	/**
+	 * divide the dates of String separately.
+	 * so that each date is store different index in arraylist
+	 * @param uniqueKeyword
+	 * @return ArrayList<String> of times
+	 */
 	private ArrayList<String> divideDate(String uniqueKeyword) {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 		uniqueKeyword  = uniqueKeyword.trim();
