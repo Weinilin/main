@@ -52,8 +52,9 @@ public class AddHandler {
 	}
 	
 	/**
-	 * parsing and create a new task
-	 * @param taskInformation
+	 * parse and create a new task
+	 * 
+	 * @param taskInformation - information to be included in the task
 	 * @return new taskdata
 	 */
 	protected static TaskData createNewTask(String taskInformation) {

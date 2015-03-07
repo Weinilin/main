@@ -29,7 +29,15 @@ public class LogicController {
 		return executeCommand(userCommand, userInput);
 	}
 	
-	// dummy for now
+	/**
+	 * execute command by creating different handler object
+	 * associating to the memory object so that it deals
+	 * with the list of tasks
+	 * 
+	 * @param command - command extracted from user
+	 * @param userInput - parameters of command
+	 * @return - feedback string to be displayed on console
+	 */
 	private String executeCommand(String command, String userInput) {
 		String feedback = new String();
 		userInput = userInput.replaceFirst(command, "").trim();
