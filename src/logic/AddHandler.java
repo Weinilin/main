@@ -75,8 +75,8 @@ public class AddHandler {
 				deadline = date.get(0) + " " + time.get(0);
 				break;
 			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(0);
-				endDateTime = date.get(1) + " " + time.get(1);
+				startDateTime = date.get(0)+ " " + time.get(1);
+				endDateTime = date.get(1) + " " + time.get(0);
 				break;
 			case "floating task":
 				break;
