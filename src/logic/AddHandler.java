@@ -3,7 +3,14 @@
  */
 package logic;
 
+import java.util.ArrayList;
+
+import parser.DateParser;
+import parser.DescriptionParser;
+import parser.TaskTypeParser;
+import parser.TimeParser;
 import application.TaskData;
+import database.Memory;
 
 /**
  *  handle adding a task to the task list
@@ -12,10 +19,10 @@ import application.TaskData;
  */
 public class AddHandler {
 
-	TaskList taskList = new TaskList();
+	private Memory memory;
 	
-	protected AddHandler(TaskList taskList) {
-		this.taskList = taskList;
+	protected AddHandler(Memory memory) {
+		this.memory = memory;
 	}
 	/**
 	 * add a new task to TaskList by input from user
@@ -25,12 +32,8 @@ public class AddHandler {
 	 * @return - true if successfully added
 	 */
 	protected boolean addTask(String taskInformation) {
-		// parsing the parameters of the taskData
-		
-		//
 		TaskData newTask = createNewTask(taskInformation);
-		if (taskList.addTask(newTask)) {
-			// write changes to file
+		if (memory.addTask(newTask)) {
 			return true;
 		} else {
 			return false;
@@ -45,7 +48,7 @@ public class AddHandler {
 	 * @return true if success
 	 */
 	protected boolean addTask(TaskData newTask) {
-		return taskList.addTask(newTask);
+		return memory.addTask(newTask);
 	}
 	
 	/**
@@ -53,10 +56,39 @@ public class AddHandler {
 	 * @param taskInformation
 	 * @return new taskdata
 	 */
-	protected TaskData createNewTask(String taskInformation) {
+	protected static TaskData createNewTask(String taskInformation) {
+		String description = DescriptionParser.getDescription(taskInformation);
 		
-		return null;
+		DateParser dp = new DateParser();
+		String date = dp.extractDate(taskInformation);
+		
+		TimeParser tp = new TimeParser();
+		ArrayList<String> time = tp.extractTime(taskInformation);
+		
+		String taskType = TaskTypeParser.extractTaskType(time);
+		
+		String deadline = new String("-");
+		String startDateTime = new String("-");
+		String endDateTime = new String("-");
+		switch (taskType) {
+			case "deadlinesTask":
+				deadline = date + " " + time.get(0);
+				break;
+			case "timedTask":
+				startDateTime = date + " " + time.get(0);
+				endDateTime = date + " " + time.get(1);
+				break;
+			case "floatingTask":
+				break;
+			default:
+				break;
+		}
+
+		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
+		return newTask;
 	}
+	
+	
 	
 	protected String getHelp() {
 		return "add <task informatino>\n to TaskManager";

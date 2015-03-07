@@ -3,6 +3,7 @@
  */
 package logic;
 
+import database.Memory;
 import application.TaskData;
 
 /**
@@ -11,10 +12,10 @@ import application.TaskData;
  */
 public class EditHandler {
 
-	TaskList taskList = new TaskList();
+	private Memory memory;
 	
-	protected EditHandler(TaskList taskList) {
-		this.taskList = taskList;
+	protected EditHandler(Memory memory) {
+		this.memory = memory;
 	}
 	/**
 	 * update a task by removing the task at index and 
@@ -26,10 +27,10 @@ public class EditHandler {
 	 * @throws IndexOutOfBoundsException if the number entered is out of range or invalid
 	 */
 	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {
-		DeleteHandler dh = new DeleteHandler(taskList);
-		AddHandler ah = new AddHandler(taskList);
+		DeleteHandler dh = new DeleteHandler(memory);
+		AddHandler ah = new AddHandler(memory);
 		TaskData oldTask = new TaskData();
-		TaskData newTask = ah.createNewTask(taskInformation);	
+		TaskData newTask = AddHandler.createNewTask(taskInformation);	
 		try  {
 			oldTask = dh.deleteTask(taskInformation);
 			ah.addTask(newTask);

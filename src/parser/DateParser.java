@@ -66,6 +66,8 @@ public class DateParser {
 		parseFormattedString(dateTime);
 	}
 
+	public DateParser() {
+	}
 	//need another constructor for parsing unformatted string
 
 	private void parseFormattedString(String dateTime) {
@@ -97,8 +99,7 @@ public class DateParser {
 		return formattedDateTime;
 	}
 
-	public DateParser(){
-	}
+
 	/**
 	 * 
 	 * @param userInput
@@ -127,7 +128,7 @@ public class DateParser {
 	private String selectDetectionMethod(String userInput, int dateFormat) {
 		String dateOfTheTask = "";
 
-		System.out.println("dateFormat: "+dateFormat);
+		//System.out.println("dateFormat: "+dateFormat);
 		if(dateFormat == DATE_FORMAT_1){
 			dateOfTheTask = spotDateFormat1(userInput);
 		}

@@ -23,7 +23,7 @@ public class DescriptionParser {
 		
 	}
 	
-	public String getDescription(String userInput){
+	public static String getDescription(String userInput){
 		String description;
 		userInput = userInput.replaceAll(DATE_KEYWORD1, "");
 		userInput = userInput.replaceAll(DATE_KEYWORD2, "");

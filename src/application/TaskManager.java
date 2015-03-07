@@ -1,7 +1,6 @@
 package application;
 
 import logic.LogicController;
-import logic.TaskList;
 import ui.CommandLineInterface;
 
 class TaskManager	{
