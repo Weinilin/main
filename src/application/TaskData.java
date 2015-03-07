@@ -29,7 +29,7 @@ public class TaskData {
 	//1. need to check validity of data
 	//2. separate constructor for different task type
 
-	public TaskData(String taskID, String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	public TaskData(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
 		this.startDateTime = startDateTime;
@@ -94,14 +94,18 @@ public class TaskData {
 		return description;
 	}
 	
-	public String toString() {
-		String str = "";
-		String.format("%20s", "TaskType: ");
-		str = str + taskType + "\n" + description + "\n" + startDateTime + "\n" + endDateTime + "\n" + deadline + "\n" + status + "\n";
-		return str;
+	public boolean isDone() {
+		if (status.equals("done")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public void displayTask() {
+	
+	public String toString() {
+		String str = "";
+		
 		String[] dataField = {
 			"Task Type",
 			"Description",
@@ -121,13 +125,9 @@ public class TaskData {
 		};
 		
 		for (int i = 0; i < dataField.length; i++) {
-			System.out.printf("%-20s", dataField[i]);
-			System.out.print(": ");
-			System.out.printf("%s", data[i]);
-			System.out.println();
+			str += String.format("%-20s", dataField[i]) + ": " + String.format("%s", data[i]) + "\n";
 		}
 		
-		System.out.println();
+		return str;
 	}
-
 }
