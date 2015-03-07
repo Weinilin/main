@@ -10,7 +10,7 @@ public class TaskDataComparator implements Comparator<TaskData> {
 	private static final int PRECEDENCE_FLOATING_TASK = 1;
 	
 	public int compare(TaskData taskData1, TaskData taskData2) {
-		if (isEqualPrecedence(taskData1, taskData2)) {
+		if (!isEqualPrecedence(taskData1, taskData2)) {
 			return comparePrecedence(taskData1, taskData2);
 		} else if (isDeadline(taskData1)) {
 			return compareDeadline(taskData1, taskData2);
@@ -28,12 +28,12 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		if (precedenceOfTaskData1 == precedenceOfTaskData2) {
 			return true;
 		}
-		
+
 		return false;
 	}
 	
 	private boolean isDeadline(TaskData taskData) {
-		if (taskData.getStatus().equals("deadline")) {
+		if (taskData.getTaskType().equals("deadline")) {
 			return true;
 		} else {
 			return false;
@@ -41,13 +41,13 @@ public class TaskDataComparator implements Comparator<TaskData> {
 	}
 	
 	private boolean isTimeTask(TaskData taskData) {
-		if (taskData.getStatus().equals("time task")) {
+		if (taskData.getTaskType().equals("time task")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	private int compareDeadline(TaskData taskData1, TaskData taskData2) {
 		DateParser dateParser1 = new DateParser(taskData1.getDeadline());
 		long deadline1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
@@ -64,12 +64,12 @@ public class TaskDataComparator implements Comparator<TaskData> {
 	
 	private int compareTimeTask(TaskData taskData1, TaskData taskData2) {
 		DateParser dateParser1 = new DateParser(taskData1.getStartDateTime());
-		long deadline1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
+		long startDateTime1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
 		
 		DateParser dateParser2 = new DateParser(taskData2.getStartDateTime());
-		long deadline2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
+		long startDateTime2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
 		
-		if (deadline1InMilliseconds <= deadline2InMilliseconds) {
+		if (startDateTime1InMilliseconds <= startDateTime2InMilliseconds) {
 			return -1;
 		} else {
 			return 1;
@@ -88,9 +88,9 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		int precedenceOfTaskData2 = getPrecedence(taskData2);
 		
 		if (precedenceOfTaskData1 <= precedenceOfTaskData2) {
-			return -1;
-		} else {
 			return 1;
+		} else {
+			return -1;
 		}
 	}
 	

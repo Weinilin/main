@@ -76,7 +76,7 @@ public class DateParser {
 		day = Integer.parseInt(dateTime.substring(0, 2));
 		month = Integer.parseInt(dateTime.substring(3, 5));
 		year = Integer.parseInt(dateTime.substring(6, 10));
-		hour = Integer.parseInt(dateTime.substring(12, 14));
+		hour = Integer.parseInt(dateTime.substring(11, 13));
 		minute = Integer.parseInt(dateTime.substring(14, 16));
 	}
 
