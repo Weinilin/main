@@ -60,7 +60,7 @@ public class AddHandler {
 		String description = DescriptionParser.getDescription(taskInformation);
 		
 		DateParser dp = new DateParser();
-		String date = dp.extractDate(taskInformation);
+		ArrayList<String> date = dp.extractDate(taskInformation);
 		
 		TimeParser tp = new TimeParser();
 		ArrayList<String> time = tp.extractTime(taskInformation);
@@ -72,11 +72,11 @@ public class AddHandler {
 		String endDateTime = new String("-");
 		switch (taskType) {
 			case "deadline":
-				deadline = date + " " + time.get(0);
+				deadline = date.get(0) + " " + time.get(0);
 				break;
 			case "time task":
-				startDateTime = date + " " + time.get(0);
-				endDateTime = date + " " + time.get(1);
+				startDateTime = date.get(0)+ " " + time.get(0);
+				endDateTime = date.get(1) + " " + time.get(1);
 				break;
 			case "floating task":
 				break;
