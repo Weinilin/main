@@ -115,6 +115,8 @@ public class Memory {
 	public void markDone(int index) {
 		TaskData task = taskList.get(index - 1);
 		task.setStatus(DONE);
+		Collections.sort(taskList, new TaskDataComparator());
+		database.writeToDatabase(taskList);
 	}
 	
 	public void editTaskType(int index, String newTaskType) {
