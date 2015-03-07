@@ -67,6 +67,15 @@ public class LogicController {
 				feedback = "Goodbye!";
 				System.exit(0);
 				break;
+			case "mark":
+				MarkHandler mh = new MarkHandler(memory);
+				if (mh.markTaskDone(userInput)) {
+					feedback = "Successfully marked. ";
+				}
+				else {
+					feedback = "Please check your input";
+				}
+				break;
 			default:
 				break;
 		}
