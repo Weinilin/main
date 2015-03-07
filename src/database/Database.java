@@ -48,7 +48,7 @@ public class Database {
 
 				for ( int i = 0; i < 6; i++ ) {
 					currentLine = reader.readLine();
-					String processedLine = currentLine.trim();
+					String processedLine = currentLine.substring(22).trim();
 					unprocessedTask.add(processedLine);
 				}
 				currentLine = reader.readLine();

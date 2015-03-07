@@ -27,13 +27,14 @@ public class ShowHandler {
 	 */
 	protected String showTask() {
 		String result = new String();
-		if (memory.getSize() == 0) {
+		if (memory.getTaskList().size() == 0) {
 			result = "There is no task.";
 		}
 		else {
 			ArrayList<TaskData> task = memory.getTaskList();
 			for (TaskData td: task) {
 				result += td.toString();
+				result += "\n";
 			}
 		}
 		
@@ -56,6 +57,7 @@ public class ShowHandler {
 		else {
 			for (TaskData td: searchList) {
 				result += td.toString();
+				result += "\n";
 			}
 			return result;
 		}
