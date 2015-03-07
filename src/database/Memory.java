@@ -136,41 +136,129 @@ public class Memory {
 	public void display() {
 		for (int i = 0; i < taskList.size(); i++) {
 			System.out.print(taskList.get(i));
+			System.out.println();
 		}
 	}
 	
 	public static void main(String[] args) {
 		Database db = new Database();
 		Memory memory = new Memory(db);
-		Scanner sc = new Scanner(System.in);
 
-		while (!sc.nextLine().equals("exit")) {
-			ArrayList<String> taskData = new ArrayList<String>();
-			System.out.println("Enter Task Type: ");
-			String taskType = sc.nextLine();
-			taskData.add(taskType);
-			System.out.println("Enter Task Description: ");
-			String description = sc.nextLine();
-			taskData.add(description);
-			System.out.println("Enter Start Date Time: ");
-			String startDateTime = sc.nextLine();
-			taskData.add(startDateTime);
-			System.out.println("Enter End Date Time: ");
-			String endDateTime = sc.nextLine();
-			taskData.add(endDateTime);
-			System.out.println("Enter Deadline");
-			String deadline = sc.nextLine();
-			taskData.add(endDateTime);
-			System.out.println("Enter status: ");
-			String status = sc.nextLine();
-			taskData.add(status);
-			TaskData newTaskData = new TaskData(taskData);
-			memory.addTask(newTaskData);
-		}
+		
+		ArrayList<String> taskData1 = new ArrayList<String>();
+		String taskType = "time task";
+		taskData1.add(taskType);
+		String description = "task 1";
+		taskData1.add(description);
+		String startDateTime = "04/04/2015 17:00";
+		taskData1.add(startDateTime);
+		String endDateTime = "04/04/2015 18:00";
+		taskData1.add(endDateTime);
+		String deadline = "-";
+		taskData1.add(deadline);
+		String status = "not done";
+		taskData1.add(status);
+		TaskData newTaskData1 = new TaskData(taskData1);
+		memory.addTask(newTaskData1);
+		
+		ArrayList<String> taskData2 = new ArrayList<String>();
+		taskType = "time task";
+		taskData2.add(taskType);
+		description = "task 2";
+		taskData2.add(description);
+		startDateTime = "04/04/2015 14:00";
+		taskData2.add(startDateTime);
+		endDateTime = "04/04/2015 15:00";
+		taskData2.add(endDateTime);
+		deadline = "-";
+		taskData2.add(deadline);
+		status = "not done";
+		taskData2.add(status);
+		TaskData newTaskData2 = new TaskData(taskData2);
+		memory.addTask(newTaskData2);
+		
+		ArrayList<String> taskData3 = new ArrayList<String>();
+		taskType = "time task";
+		taskData3.add(taskType);
+		description = "task 3";
+		taskData3.add(description);
+		startDateTime = "26/07/2015 19:00";
+		taskData3.add(startDateTime);
+		endDateTime = "26/07/2015 20:00";
+		taskData3.add(endDateTime);
+		deadline = "-";
+		taskData3.add(deadline);
+		status = "not done";
+		taskData3.add(status);
+		TaskData newTaskData3 = new TaskData(taskData3);
+		memory.addTask(newTaskData3);
+		
+		ArrayList<String> taskData4 = new ArrayList<String>();
+		taskType = "deadline";
+		taskData4.add(taskType);
+		description = "task 4";
+		taskData4.add(description);
+		startDateTime = "-";
+		taskData4.add(startDateTime);
+		endDateTime = "-";
+		taskData4.add(endDateTime);
+		deadline = "05/05/2015 04:00";
+		taskData4.add(deadline);
+		status = "not done";
+		taskData4.add(status);
+		TaskData newTaskData4 = new TaskData(taskData4);
+		memory.addTask(newTaskData4);
+		
+		ArrayList<String> taskData5 = new ArrayList<String>();
+		taskType = "deadline";
+		taskData5.add(taskType);
+		description = "task 5";
+		taskData5.add(description);
+		startDateTime = "-";
+		taskData5.add(startDateTime);
+		endDateTime = "-";
+		taskData5.add(endDateTime);
+		deadline = "01/01/2015 09:00";
+		taskData5.add(deadline);
+		status = "not done";
+		taskData5.add(status);
+		TaskData newTaskData5 = new TaskData(taskData5);
+		memory.addTask(newTaskData5);
+		
+		ArrayList<String> taskData6 = new ArrayList<String>();
+		taskType = "floating task";
+		taskData6.add(taskType);
+		description = "task 6";
+		taskData6.add(description);
+		startDateTime = "-";
+		taskData6.add(startDateTime);
+		endDateTime = "-";
+		taskData6.add(endDateTime);
+		deadline = "-";
+		taskData6.add(deadline);
+		status = "not done";
+		taskData6.add(status);
+		TaskData newTaskData6 = new TaskData(taskData6);
+		memory.addTask(newTaskData6);
+		
+		ArrayList<String> taskData7 = new ArrayList<String>();
+		taskType = "floating task";
+		taskData7.add(taskType);
+		description = "abukhari";
+		taskData7.add(description);
+		startDateTime = "-";
+		taskData7.add(startDateTime);
+		endDateTime = "-";
+		taskData7.add(endDateTime);
+		deadline = "-";
+		taskData7.add(deadline);
+		status = "not done";
+		taskData7.add(status);
+		TaskData newTaskData7 = new TaskData(taskData7);
+		memory.addTask(newTaskData7);
+		
 		memory.display();
-		System.out.println("---");
-		memory.deleteTask(2);
-		memory.display();
+		
 
 		
 	}
