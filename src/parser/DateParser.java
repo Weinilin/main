@@ -1,16 +1,12 @@
-package parser;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-// try again
 public class DateParser {
+	private static final String  DATE_KEYWORD_FOR_TIMED = "from (\\d+[/]\\d+[/]\\d+) to (\\d+[/]\\d+[/]\\d+)";
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
 	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d+(\\s|\\S)"
 			+ "(jan|january|feb|february|mar|march|apr|april|may|jun|june"
@@ -49,6 +45,7 @@ public class DateParser {
 	private static final String YEAR_TEXT = "year";
 	private static final String FORTNIGHT_TEXT = "fortnight";
 	private static final String INVALID_TEXT = "date entered do not exist!";
+	private static final int DATE_FORMAT_0 = 0;
 	private static final int DATE_FORMAT_1 = 1;
 	private static final int DATE_FORMAT_2 = 2;
 	private static final int DATE_FORMAT_3 = 3;
@@ -57,64 +54,19 @@ public class DateParser {
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
 
-	private int year;
-	private int month;
-	private int day;
-	private int hour;
-	private int minute;
-
-	public DateParser(String dateTime) {
-		parseFormattedString(dateTime);
-	}
-
-	//need another constructor for parsing unformatted string
-
-	private void parseFormattedString(String dateTime) {
-		day = Integer.parseInt(dateTime.substring(0, 2));
-		month = Integer.parseInt(dateTime.substring(3, 5));
-		year = Integer.parseInt(dateTime.substring(6, 10));
-		hour = Integer.parseInt(dateTime.substring(12, 14));
-		minute = Integer.parseInt(dateTime.substring(14, 16));
-	}
-
-	public long getDateTimeInMilliseconds() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String formattedDateTime = formatDateTime();
-		Date date = null;
-
-		try {
-			date = sdf.parse(formattedDateTime);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		long dateTimeInMilliseconds = date.getTime();
-
-		return dateTimeInMilliseconds;
-	}
-
-	public String formatDateTime() {
-		String formattedDateTime = day + "/" + month + "/" + year + " " + hour + ":" + minute ;
-		return formattedDateTime;
-	}
 
 	public DateParser(){
 	}
-	/**
-	 * 
-	 * @param userInput
-	 * @return String in the format of dd/mm/yyyy 
-	 * and return the current date if nothing is detected
-	 */
-	public String extractDate(String userInput){
-		String dateOfTheTask = "";
+
+	public ArrayList<String> extractDate(String userInput){
+		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
 		for(int i = 1; i <= 6; i++){
 			dateOfTheTask = selectDetectionMethod(userInput, i);
-			if(isDateFormatRight(dateOfTheTask)){
-				break;
-			}
+		//	if(isDateFormatRight(dateOfTheTask)){
+			//	break;
+		//	}
 		}
 
 		return dateOfTheTask;
@@ -125,32 +77,73 @@ public class DateParser {
 		return userInput;
 	}
 
-	private String selectDetectionMethod(String userInput, int dateFormat) {
+	private ArrayList<String> selectDetectionMethod(String userInput, int dateFormat) {
 		String dateOfTheTask = "";
-
-		System.out.println("dateFormat: "+dateFormat);
-		if(dateFormat == DATE_FORMAT_1){
-			dateOfTheTask = spotDateFormat1(userInput);
+        ArrayList<String> dates = new ArrayList<String>();
+        
+		//System.out.println("dateFormat: "+dateFormat);
+		if(dateFormat == DATE_FORMAT_0){
+			dates = spotDateFormat0(userInput);
+		}
+		else if(dateFormat == DATE_FORMAT_1){
+			dates.set(0, spotDateFormat1(userInput));
+			
 		}
 		else if(dateFormat == DATE_FORMAT_2){
-			dateOfTheTask = spotDateFormat2(userInput);
+			//dateOfTheTask = spotDateFormat2(userInput);
+			dates.set(0, spotDateFormat2(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_3){
-			dateOfTheTask = spotDateFormat3(userInput);	
+			//dateOfTheTask = spotDateFormat3(userInput);	
+			dates.set(0, spotDateFormat3(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_4){
-			dateOfTheTask = spotDateFormat4(userInput);	
+			//dateOfTheTask = spotDateFormat4(userInput);
+			dates.set(0, spotDateFormat4(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_5){
-			dateOfTheTask = spotDateFormat5(userInput);	
+			//dateOfTheTask = spotDateFormat5(userInput);	
+			dates.set(0, spotDateFormat5(userInput));
 		}
 		else{
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar cal = Calendar.getInstance();
 			dateOfTheTask = date.format(cal.getTime());
+			dates.set(0, dateOfTheTask);
 		}
 
+		return dates;
+	}
+
+	private ArrayList<String> spotDateFormat0(String userInput) {
+		ArrayList<String> dateOfTheTask = new ArrayList<String>();
+		String uniqueKeyword = "";
+		Pattern dateDetector = Pattern.compile(DATE_KEYWORD_FOR_TIMED);
+		Matcher containDate = dateDetector.matcher(userInput);
+
+		while(containDate.find()){
+			uniqueKeyword = containDate.group();
+		}
+
+		uniqueKeyword = removeToAndFrom(uniqueKeyword);
+		dateOfTheTask = divideDate(uniqueKeyword);
+
 		return dateOfTheTask;
+	}
+
+	private ArrayList<String> divideDate(String uniqueKeyword) {
+		ArrayList<String> dateOfTheTask = new ArrayList<String>();
+		String[] dates = uniqueKeyword.split(" ");
+		dateOfTheTask.set(0, dates[0]);
+		dateOfTheTask.set(1, dates[1]);
+		
+		return dateOfTheTask;
+	}
+
+	private String removeToAndFrom(String uniqueKeyword) {
+		uniqueKeyword = uniqueKeyword.replaceAll("from", "");
+		uniqueKeyword = uniqueKeyword.replaceAll("to ", "");
+		return uniqueKeyword;
 	}
 
 	private String spotDateFormat5(String userInput) {
@@ -369,7 +362,7 @@ public class DateParser {
 
 	private String removeAllOtherThanNumberOfDay(String uniqueKeyword) {
 		String numberOfDaysFromNow = uniqueKeyword.replaceAll(UNWANTED_ALPHA, EMPTY_STRING);
-		System.out.println("number: "+ numberOfDaysFromNow);
+		//System.out.println("number: "+ numberOfDaysFromNow);
 		return numberOfDaysFromNow;
 	}
 
@@ -386,7 +379,7 @@ public class DateParser {
 		while(containDate.find()){
 			dateOfTheTask = containDate.group();
 
-			System.out.println("dateOFTASKfeb: "+dateOfTheTask);
+			//System.out.println("dateOFTASKfeb: "+dateOfTheTask);
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar calendar = Calendar.getInstance();
 			int day = getDay(dateOfTheTask);
@@ -398,7 +391,7 @@ public class DateParser {
 			int month = detectMonthByWord(dateOfTheTask) - 1;
 			calendar.set(Calendar.MONTH, month);
 			dateOfTheTask = date.format(calendar.getTime());
-			System.out.println("FEVdate: "+dateOfTheTask);
+			//System.out.println("FEVdate: "+dateOfTheTask);
 			if(isDateValid2(dateOfTheTask)){
 				dateOfTheTask = INVALID_TEXT;
 			}
@@ -495,7 +488,7 @@ public class DateParser {
 			month = 12;
 		}
 
-		System.out.println("month: "+ month);
+		//System.out.println("month: "+ month);
 		return month;
 	}
 
@@ -513,18 +506,18 @@ public class DateParser {
 
 			partsOfString = splitTheStringIntoPart(dateOfTheTask);
 			int day = extractDayAndYear(partsOfString, calendar);
-			System.out.println("1. day : "+ day);
+			//System.out.println("1. day : "+ day);
 			calendar.set(Calendar.DATE, day);
 
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			dateOfTheTask = date.format(calendar.getTime());
-			System.out.println("1. date : "+ dateOfTheTask);
+			//System.out.println("1. date : "+ dateOfTheTask);
 
 			int month = extractMonthByNumber(partsOfString) - 1;
 			calendar.set(Calendar.MONTH, month);
-			System.out.println("1. month : "+ month);
+		//	System.out.println("1. month : "+ month);
 			dateOfTheTask = date.format(calendar.getTime());
-			System.out.println("1. date : "+ dateOfTheTask);
+			//System.out.println("1. date : "+ dateOfTheTask);
 			if(isDateValid1(dateOfTheTask)){
 				dateOfTheTask = INVALID_TEXT;
 			}
@@ -573,7 +566,7 @@ public class DateParser {
 		else{
 			day = Integer.parseInt(partsOfString[0]);
 		}
-		System.out.println("year: "+year);
+		//System.out.println("year: "+year);
 		return day;
 	}
 
@@ -591,7 +584,7 @@ public class DateParser {
 
 	private int extractMonthByNumber(String[] partsOfString) {
 		int month;
-		System.out.println("length: "+partsOfString.length);
+		//System.out.println("length: "+partsOfString.length);
 		month = Integer.parseInt(partsOfString[1]);
 		return month;
 	}
