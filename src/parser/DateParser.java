@@ -141,29 +141,29 @@ public class DateParser {
 			dates = spotDateFormat0(userInput);
 		}
 		else if(dateFormat == DATE_FORMAT_1){
-			dates.set(0, spotDateFormat1(userInput));
+			dates.add(spotDateFormat1(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_2){
 			//dateOfTheTask = spotDateFormat2(userInput);
-			dates.set(0, spotDateFormat2(userInput));
+			dates.add(spotDateFormat2(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_3){
 			//dateOfTheTask = spotDateFormat3(userInput);	
-			dates.set(0, spotDateFormat3(userInput));
+			dates.add(spotDateFormat3(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_4){
 			//dateOfTheTask = spotDateFormat4(userInput);
-			dates.set(0, spotDateFormat4(userInput));
+			dates.add(spotDateFormat4(userInput));
 		}
 		else if(dateFormat == DATE_FORMAT_5){
 			//dateOfTheTask = spotDateFormat5(userInput);	
-			dates.set(0, spotDateFormat5(userInput));
+			dates.add(spotDateFormat5(userInput));
 		}
 		else{
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar cal = Calendar.getInstance();
 			dateOfTheTask = date.format(cal.getTime());
-			dates.set(0, dateOfTheTask);
+			dates.add(dateOfTheTask);
 		}
 
 		return dates;
@@ -187,10 +187,13 @@ public class DateParser {
 
 	private ArrayList<String> divideDate(String uniqueKeyword) {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
+		uniqueKeyword  = uniqueKeyword.trim();
+		//System.out.println("0. date:"+uniqueKeyword);
 		String[] dates = uniqueKeyword.split(" ");
-		dateOfTheTask.set(0, dates[0]);
+		//System.out.println("1. date: "+dates[0]);
+		dateOfTheTask.add(dates[0]);
 	//	System.out.println("1. date: "+dateOfTheTask.get(0));
-		dateOfTheTask.set(1, dates[1]);
+		dateOfTheTask.add(dates[1]);
 		//System.out.println("2. date: "+dateOfTheTask.get(1));
 
 		return dateOfTheTask;
