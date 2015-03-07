@@ -94,14 +94,10 @@ public class TaskData {
 		return description;
 	}
 	
+	
 	public String toString() {
 		String str = "";
-		String.format("%20s", "TaskType: ");
-		str = str + taskType + "\n" + description + "\n" + startDateTime + "\n" + endDateTime + "\n" + deadline + "\n" + status + "\n";
-		return str;
-	}
-	
-	public void displayTask() {
+		
 		String[] dataField = {
 			"Task Type",
 			"Description",
@@ -121,13 +117,15 @@ public class TaskData {
 		};
 		
 		for (int i = 0; i < dataField.length; i++) {
-			System.out.printf("%-20s", dataField[i]);
-			System.out.print(": ");
-			System.out.printf("%s", data[i]);
-			System.out.println();
+			str += String.format("%-20s", dataField[i]) + ": " + String.format("%s", data[i]) + "\n";
 		}
 		
-		System.out.println();
+		return str;
+	}
+	
+	public static void main(String[] str) {
+		TaskData newTaskData = new TaskData("superman", "superman", "superman", "superman", "superman", "superman", "superman" );
+		System.out.println(newTaskData);
 	}
 
 }

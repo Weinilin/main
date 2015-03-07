@@ -12,10 +12,13 @@ import java.util.Collections;
 import application.TaskData;
 import application.TaskDataComparator;
 
-class Database {
+public class Database {
 	private static File database;
 	private static String databaseName = "TaskManagerDatabase.txt" ;
 	
+	public Database() {
+		
+	}
 
 	public static void setDatabaseLocation() {
 		
