@@ -14,7 +14,7 @@ public class TaskTypeParser {
 			taskType = "time task";
 		}
 		else if(numberOfTimeInput == 1){
-			taskType = "deadlines";
+			taskType = "deadline";
 		}
 		else{
 			taskType = "floating task";

@@ -50,7 +50,7 @@ public class ShowHandler {
 	protected String showTask(String keyword) {
 		int i = 1;
 		String result = new String();
-		ArrayList<TaskData> searchList = memory.searchTask(keyword);
+		ArrayList<TaskData> searchList = memory.searchDescription(keyword);
 		if (searchList.isEmpty()) {
 			return "No task containing " + keyword +"\n";
 		}
