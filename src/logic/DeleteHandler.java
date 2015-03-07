@@ -3,6 +3,7 @@
  */
 package logic;
 
+import database.Memory;
 import application.TaskData;
 import parser.IndexParser;
 
@@ -12,10 +13,10 @@ import parser.IndexParser;
  */
 public class DeleteHandler {
 
-	TaskList taskList = new TaskList();
+	private Memory memory;
 	
-	protected DeleteHandler(TaskList taskList) {
-		this.taskList = taskList;
+	protected DeleteHandler(Memory memory) {
+		this.memory = memory;
 	}
 	
 	/**
@@ -31,7 +32,7 @@ public class DeleteHandler {
 		TaskData removedTask = new TaskData();
 		int index = ip.extractIndex(taskInformation);
 		try {
-			removedTask = taskList.deleteTask(index);
+			removedTask = memory.deleteTask(index);
 		} catch (IndexOutOfBoundsException iob) {
 			return removedTask;
 		} 

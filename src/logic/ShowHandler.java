@@ -1,5 +1,9 @@
 package logic;
 
+import java.util.ArrayList;
+
+import database.Memory;
+import application.TaskData;
 
 /**
  * showing all tasks in the taskList by passing no
@@ -8,10 +12,10 @@ package logic;
  */
 public class ShowHandler {
 
-	TaskList taskList = new TaskList();
+	private Memory memory;
 	
-	protected ShowHandler(TaskList taskList) {
-		this.taskList = taskList;
+	protected ShowHandler(Memory memory) {
+		this.memory = memory;
 	}
 	
 	/**
@@ -22,15 +26,19 @@ public class ShowHandler {
 	 * 		   the list is empty
 	 */
 	protected String showTask() {
-		String feedback = new String();
-		if (taskList.getSize() == 0) {
-			feedback = "There is no task.";
+		String result = new String();
+		if (memory.getTaskList().size() == 0) {
+			result = "There is no task.";
 		}
 		else {
-			feedback = taskList.displayTask();
+			ArrayList<TaskData> task = memory.getTaskList();
+			for (TaskData td: task) {
+				result += td.toString();
+				result += "\n";
+			}
 		}
 		
-		return feedback;
+		return result;
 	}
 	
 	/**
@@ -41,13 +49,17 @@ public class ShowHandler {
 	 * @return formatted string of tasks, message if no task if found
 	 */
 	protected String showTask(String keyword) {
-		String feedback = new String();
-		feedback = taskList.searchTask(keyword);
-		if (feedback.trim().equals("")) {
+		String result = new String();
+		ArrayList<TaskData> searchList = memory.searchTask(keyword);
+		if (searchList.isEmpty()) {
 			return "No task containing " + keyword;
 		}
 		else {
-			return feedback;
+			for (TaskData td: searchList) {
+				result += td.toString();
+				result += "\n";
+			}
+			return result;
 		}
 	}
 }

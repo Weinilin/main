@@ -81,7 +81,7 @@ public class TimeParser {
 			userInput = userInput.replaceAll(time, "");
 			timeList = time.split("-|to");
 
-			System.out.println("1time: "+time);
+			//System.out.println("1time: "+time);
 			timeList[1] = changeToHourFormat(timeList[1]);
 			storageOfTime = selectAndAddCorrectTime(storageOfTime, timeList[1]);
 			String amTime1 = changeToHourFormat(timeList[0]+"am");
@@ -92,12 +92,12 @@ public class TimeParser {
 			int amTime1stNum = get1stNumber(amTime1);
 			int pmTime1stNum = get1stNumber(pmTime1);
 			int time1stNum = get1stNumber(timeList[1]);
-			System.out.println("1time: "+(amTime1stNum < time1stNum)  + (pmTime1stNum < time1stNum));
-			System.out.println("1time: "+amTime1stNum+" pm: "+pmTime1stNum+" time: "+time1stNum);
-		
+			//System.out.println("1time: "+(amTime1stNum < time1stNum)  + (pmTime1stNum < time1stNum));
+			//System.out.println("1time: "+amTime1stNum+" pm: "+pmTime1stNum+" time: "+time1stNum);
+
 			toBeAdded = detectWhichOneIsRight(toBeAdded, amTime1, pmTime1,
 					amTime1stNum, pmTime1stNum, time1stNum);
-				storageOfTime.add(toBeAdded);
+			storageOfTime.add(toBeAdded);
 
 		}
 		return storageOfTime;
@@ -169,7 +169,7 @@ public class TimeParser {
 			if(checkValid24HourTime(time)){
 				userInput = userInput.replaceAll(time, "");
 				time = removeUnwantedParts(time);
-				System.out.println("24Htime: "+time);
+				//System.out.println("24Htime: "+time);
 				int index = getIndex(time);
 				time = time.substring(0, index) + ":" + time.substring(index+1);
 				storageOfTime.add(time);
@@ -206,7 +206,7 @@ public class TimeParser {
 			userInput = userInput.replaceAll(TIME_KEYWORD_3, "");
 			storageOfTime.add("12:00");      
 		}  
-		System.out.println("2.timeDe: "+storageOfTime.get(0));
+		//System.out.println("2.timeDe: "+storageOfTime.get(0));
 		return storageOfTime;
 	}
 
@@ -219,9 +219,9 @@ public class TimeParser {
 			String time = matchedWithTime.group();
 			if(checkValid12HourTime(time)){
 				userInput = userInput.replaceAll(time, "");
-				System.out.println("1. beforeTime: "+time);
+				//System.out.println("1. beforeTime: "+time);
 				time = changeToHourFormat(time);
-				System.out.println("1. afterTime: "+time);
+				//System.out.println("1. afterTime: "+time);
 				storageOfTime.add(time);
 			} 
 			else{
@@ -308,19 +308,18 @@ public class TimeParser {
 
 	private String switchToPMHour(String time) {
 		int timeHour = 13, timeNormal = 1;
-		if(time.length() == 1){
-			while(timeHour != 24){
-				if(time.charAt(0) == '1' && time.charAt(1) == '2'){
-					time = "12";
-					break;
-				}
-				if(time.charAt(0) == (char)(timeNormal + 48)){
-					time = String.valueOf(timeHour);
-					break;
-				}
-				timeHour++;
-				timeNormal++;
+
+		while(timeHour != 24){
+			if(time.length() == 2 && time.charAt(0) == '1' && time.charAt(1) == '2'){
+				time = "12";
+				break;
 			}
+			if(time.charAt(0) == (char)(timeNormal + 48)){
+				time = String.valueOf(timeHour);
+				break;
+			}
+			timeHour++;
+			timeNormal++;
 		}
 		return time;		
 	}

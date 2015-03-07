@@ -1,3 +1,5 @@
+package parser;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,12 +56,66 @@ public class DateParser {
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
 
+<<<<<<< HEAD
 
 	public DateParser(){
 	}
 
 	public ArrayList<String> extractDate(String userInput){
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
+=======
+	private int year;
+	private int month;
+	private int day;
+	private int hour;
+	private int minute;
+
+	public DateParser(String dateTime) {
+		parseFormattedString(dateTime);
+	}
+
+	public DateParser() {
+	}
+	//need another constructor for parsing unformatted string
+
+	private void parseFormattedString(String dateTime) {
+		day = Integer.parseInt(dateTime.substring(0, 2));
+		month = Integer.parseInt(dateTime.substring(3, 5));
+		year = Integer.parseInt(dateTime.substring(6, 10));
+		hour = Integer.parseInt(dateTime.substring(12, 14));
+		minute = Integer.parseInt(dateTime.substring(14, 16));
+	}
+
+	public long getDateTimeInMilliseconds() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String formattedDateTime = formatDateTime();
+		Date date = null;
+
+		try {
+			date = sdf.parse(formattedDateTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		long dateTimeInMilliseconds = date.getTime();
+
+		return dateTimeInMilliseconds;
+	}
+
+	public String formatDateTime() {
+		String formattedDateTime = day + "/" + month + "/" + year + " " + hour + ":" + minute ;
+		return formattedDateTime;
+	}
+
+
+	/**
+	 * 
+	 * @param userInput
+	 * @return String in the format of dd/mm/yyyy 
+	 * and return the current date if nothing is detected
+	 */
+	public ArrayList<String> extractDate(String userInput){
+		String dateOfTheTask = "";
 
 		userInput = switchAllToLowerCase(userInput);
 		for(int i = 1; i <= 6; i++){
@@ -79,6 +135,7 @@ public class DateParser {
 
 	private ArrayList<String> selectDetectionMethod(String userInput, int dateFormat) {
 		String dateOfTheTask = "";
+
         ArrayList<String> dates = new ArrayList<String>();
         
 		//System.out.println("dateFormat: "+dateFormat);
@@ -87,7 +144,6 @@ public class DateParser {
 		}
 		else if(dateFormat == DATE_FORMAT_1){
 			dates.set(0, spotDateFormat1(userInput));
-			
 		}
 		else if(dateFormat == DATE_FORMAT_2){
 			//dateOfTheTask = spotDateFormat2(userInput);
