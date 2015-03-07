@@ -11,8 +11,10 @@ import application.TaskData;
  */
 public class EditHandler {
 
-	protected EditHandler() {
-		
+	TaskList taskList = new TaskList();
+	
+	protected EditHandler(TaskList taskList) {
+		this.taskList = taskList;
 	}
 	/**
 	 * update a task by removing the task at index and 
@@ -20,16 +22,17 @@ public class EditHandler {
 	 * 
 	 * @param taskInformation
 	 * @param taskList
-	 * @return
+	 * @return true if success deletion
+	 * @throws IndexOutOfBoundsException if the number entered is out of range or invalid
 	 */
-	protected boolean editTask(String taskInformation, TaskList taskList) {
-		DeleteHandler dh = new DeleteHandler();
-		AddHandler ah = new AddHandler();
+	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {
+		DeleteHandler dh = new DeleteHandler(taskList);
+		AddHandler ah = new AddHandler(taskList);
 		TaskData oldTask = new TaskData();
 		TaskData newTask = ah.createNewTask(taskInformation);	
 		try  {
-			oldTask = dh.deleteTask(taskInformation, taskList);
-			ah.addTask(newTask, taskList);
+			oldTask = dh.deleteTask(taskInformation);
+			ah.addTask(newTask);
 		} catch (IndexOutOfBoundsException iob) {
 			return false;
 		}

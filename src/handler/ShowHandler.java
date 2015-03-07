@@ -8,7 +8,10 @@ package handler;
  */
 public class ShowHandler {
 
-	protected ShowHandler() {
+	TaskList taskList = new TaskList();
+	
+	protected ShowHandler(TaskList taskList) {
+		this.taskList = taskList;
 	}
 	
 	/**
@@ -18,7 +21,7 @@ public class ShowHandler {
 	 * @return String of all tasks, no task message will be shown if 
 	 * 		   the list is empty
 	 */
-	protected String showTask(TaskList taskList) {
+	protected String showTask() {
 		String feedback = new String();
 		if (taskList.getSize() == 0) {
 			feedback = "There is no task.";
@@ -37,7 +40,7 @@ public class ShowHandler {
 	 * @param taskList - taskList to be shown
 	 * @return formatted string of tasks, message if no task if found
 	 */
-	protected String showTask(String keyword, TaskList taskList) {
+	protected String showTask(String keyword) {
 		String feedback = new String();
 		feedback = taskList.searchTask(keyword);
 		if (feedback.trim().equals("")) {
