@@ -81,22 +81,22 @@ public class DateParser {
 	}
 
 
-		public long getDateTimeInMilliseconds() {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			String formattedDateTime = formatDateTime();
-			Date date = null;
+	public long getDateTimeInMilliseconds() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		String formattedDateTime = formatDateTime();
+		Date date = null;
 
-			try {
-				date = sdf.parse(formattedDateTime);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
-			long dateTimeInMilliseconds = date.getTime();
-
-			return dateTimeInMilliseconds;
+		try {
+			date = sdf.parse(formattedDateTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-	
+
+		long dateTimeInMilliseconds = date.getTime();
+
+		return dateTimeInMilliseconds;
+	}
+
 	public String formatDateTime() {
 		String formattedDateTime = day + "/" + month + "/" + year + " " + hour + ":" + minute ;
 		return formattedDateTime;
@@ -193,7 +193,7 @@ public class DateParser {
 		String[] dates = uniqueKeyword.split(" ");
 		//System.out.println("1. date: "+dates[0]);
 		dateOfTheTask.add(dates[0]);
-	//	System.out.println("1. date: "+dateOfTheTask.get(0));
+		//	System.out.println("1. date: "+dateOfTheTask.get(0));
 		dateOfTheTask.add(dates[1]);
 		//System.out.println("2. date: "+dateOfTheTask.get(1));
 
