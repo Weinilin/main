@@ -73,6 +73,7 @@ public class LogicController {
 				break;
 			case "exit":
 				feedback = "Goodbye!";
+				System.out.println(feedback);
 				System.exit(0);
 				break;
 			case "mark":
