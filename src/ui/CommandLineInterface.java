@@ -16,7 +16,7 @@ public class CommandLineInterface {
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
-		commandHandler.processCommand("display");
+		commandHandler.executeCommand("display");
 		String userCommand, message;
 	
 		printMessageToUser(String.format(WELCOME_MESSAGE));
@@ -24,8 +24,8 @@ public class CommandLineInterface {
 		while (true) {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
-			message = commandHandler.processCommand(userCommand);
-			commandHandler.processCommand("display");
+			message = commandHandler.executeCommand(userCommand);
+			commandHandler.executeCommand("display");
 			printMessageToUser(message);
 		}
 	}

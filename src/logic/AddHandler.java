@@ -29,15 +29,17 @@ public class AddHandler {
 	 * 
 	 * @param taskInformation - the parameters user given
 	 * @param taskList - list of tasks
-	 * @return - true if successfully added
+	 * @return - Strin of new task
 	 */
-	protected boolean addTask(String taskInformation) {
+	protected String addTask(String taskInformation) {
 		TaskData newTask = createNewTask(taskInformation);
 		if (memory.addTask(newTask)) {
-			return true;
-		} else {
-			return false;
-		}
+			return newTask.toString();
+		} 
+		else {
+			// It shall never come here
+			return null;
+		}	
 	}
 	
 	/**
