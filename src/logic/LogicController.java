@@ -24,9 +24,9 @@ public class LogicController {
 		memory = new Memory(database);
 	}
 	
-	public String processCommand(String userInput) {
+	public String executeCommand(String userInput) {
 		String userCommand = CommandParser.determineCommandType(userInput);
-		return executeCommand(userCommand, userInput);
+		return execute(userCommand, userInput);
 	}
 	
 	/**
@@ -38,13 +38,13 @@ public class LogicController {
 	 * @param userInput - parameters of command
 	 * @return - feedback string to be displayed on console
 	 */
-	private String executeCommand(String command, String userInput) {
+	public String execute(String command, String userInput) {
 		String feedback = new String();
 		userInput = userInput.replaceFirst(command, "").trim();
 		switch (command) {
 			case "add":
 				AddHandler ah = new AddHandler(memory);
-				if (ah.addTask(userInput)) {
+				if (ah.addTask(userInput) != null) {
 					feedback = "Successfully added " + userInput + "\n";
 				}
 				break;
