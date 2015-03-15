@@ -61,7 +61,7 @@ public class LogicController {
 			case "edit":
 				EditHandler eh = new EditHandler(memory);
 				if (eh.editTask(userInput)) {
-					feedback = "Updated to " + userInput;
+					feedback = "Updated to " + userInput + "\n";
 				}
 				else {
 					feedback = "Please check your input";
@@ -79,7 +79,7 @@ public class LogicController {
 			case "mark":
 				MarkHandler mh = new MarkHandler(memory);
 				if (mh.markTaskDone(userInput)) {
-					feedback = "Successfully marked. ";
+					feedback = "Successfully marked. " + userInput + "\n";
 				}
 				else {
 					feedback = "Please check your input";
