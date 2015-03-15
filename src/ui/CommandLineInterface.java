@@ -9,12 +9,16 @@ public class CommandLineInterface {
 
 	private static final String COMMAND_MESSAGE = new String("Command: ");
 	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
+	private Scanner scanner;
 
 	public CommandLineInterface(){
 	} 	
 
+	/**
+	 * Scan the user input and execute the command.
+	 */
 	public void userInput(){
-		Scanner scanner = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
 		commandHandler.executeCommand("show");
 		String userCommand, message;
@@ -30,7 +34,10 @@ public class CommandLineInterface {
 		}
 	}
 
-	//print all of the different type of message using this method
+	/**
+	 * Print all of the message to the user
+	 * @param message
+	 */
 	public void printMessageToUser(String message){
 		System.out.printf(message);
 	}
