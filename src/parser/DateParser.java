@@ -109,7 +109,7 @@ public class DateParser {
 	 * @return String in the format of dd/mm/yyyy 
 	 * and return the current date if nothing is detected
 	 */
-	public ArrayList<String> extractDate(String userInput){
+	public ArrayList<String> extractDate(String userInput) {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
@@ -139,7 +139,6 @@ public class DateParser {
 
 		ArrayList<String> dates = new ArrayList<String>();
 
-		//System.out.println("dateFormat: "+dateFormat);
 		if(dateFormat == DATE_FORMAT_0){
 			dates = spotDateFormat0(userInput);
 		}
@@ -170,6 +169,7 @@ public class DateParser {
 		}
 		return dates;
 	}
+	
 	/**
 	 * is to detect times in format of from dd/mm/yyyy to dd/mm/yyyy and 
 	 * divide the two times separately into arraylist.
@@ -190,6 +190,7 @@ public class DateParser {
 
 		return dateOfTheTask;
 	}
+	
 	/**
 	 * divide the dates of String separately.
 	 * so that each date is store different index in arraylist

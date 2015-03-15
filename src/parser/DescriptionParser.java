@@ -30,7 +30,7 @@ public class DescriptionParser {
 	 * @param userInput
 	 * @return the description 
 	 */
-	public String getDescription(String userInput) {
+	public static String getDescription(String userInput) {
 		String description;
 		userInput = userInput.replaceAll(DATE_KEYWORD_FOR_TIMED , "");
 		userInput = userInput.replaceAll(DATE_KEYWORD1, "");

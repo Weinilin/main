@@ -22,7 +22,7 @@ public class CommandParser {
 	 * @param userCommand
 	 * @return command type
 	 */
-	public String determineCommandType(String userCommand) {
+	public static String determineCommandType(String userCommand) {
 		String commandType = getFirstWord(userCommand);
 		try {
 			if(commandType.equals(ADD_STATEMENT)){
@@ -57,7 +57,7 @@ public class CommandParser {
 	 * @param userCommand
 	 * @return the first word which is the command type to the caller
 	 */
-	private String getFirstWord(String userCommand) {
+	private static String getFirstWord(String userCommand) {
 		String splitOfCommand[] = userCommand.split(" ", 2);
 		String firstWord = splitOfCommand[0];
 		return firstWord;
