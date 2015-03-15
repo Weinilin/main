@@ -16,7 +16,7 @@ public class CommandLineInterface {
 	public void userInput(){
 		Scanner scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
-		commandHandler.executeCommand("display");
+		commandHandler.executeCommand("show");
 		String userCommand, message;
 	
 		printMessageToUser(String.format(WELCOME_MESSAGE));

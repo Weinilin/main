@@ -21,11 +21,16 @@ public class DescriptionParser {
 	private static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon";
 	private static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
 	
-	public DescriptionParser(){
+	public DescriptionParser() {
 		
 	}
 	
-	public static String getDescription(String userInput){
+	/**
+	 * Get the description.
+	 * @param userInput
+	 * @return the description 
+	 */
+	public String getDescription(String userInput) {
 		String description;
 		userInput = userInput.replaceAll(DATE_KEYWORD_FOR_TIMED , "");
 		userInput = userInput.replaceAll(DATE_KEYWORD1, "");
