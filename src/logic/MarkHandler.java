@@ -15,7 +15,7 @@ public class MarkHandler {
 	
 	protected boolean markTaskDone(String taskInformation) throws IndexOutOfBoundsException  {
 		IndexParser ip = new IndexParser();
-		int index = ip.extractIndex(taskInformation);
+		int index = ip.getIndex(taskInformation);
 		try {
 			memory.markDone(index);
 			

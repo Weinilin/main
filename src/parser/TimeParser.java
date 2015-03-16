@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 public class TimeParser {
 	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
-	private static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |- |-|)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
-	private static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon";
-	private static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
+	private static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+	private static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
+	//private static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
 	private static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from)";
 	private static final String INVALID_TIME = "Time entered is invalid";
 	private static final int TIME_FORMAT_1 = 1;
@@ -15,16 +15,19 @@ public class TimeParser {
 	private static final int TIME_FORMAT_3 = 3;
 	private static final int TIME_FORMAT_4 = 4;
 	private static String userInput;
+	private int numberOfTime;
 
 
-	public ArrayList<String> extractTime(String userInput) {
+	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
 		TimeParser.userInput = userInput;
 		for(int i = 1; i <= 4; i++){
 			storageOfTime = goThroughTimeFormat(i, storageOfTime);
-			//	System.out.println("check main: " + storageOfTime.get(0));
+			System.out.println("2 time: "+ storageOfTime.get(0)+" 2: "+storageOfTime.get(1));
+			if(!storageOfTime.isEmpty()){
+				break;
+			}
 		}
-
 		//checkIfAllTimeInvalid(storageOfTime);
 		return storageOfTime;
 	}
@@ -53,7 +56,7 @@ public class TimeParser {
 		return numberOfInvalidMsg;
 	}
 
-	private ArrayList<String> goThroughTimeFormat(int timeFormat, 
+	private static ArrayList<String> goThroughTimeFormat(int timeFormat, 
 			ArrayList<String> storageOfTime) {
 		if(timeFormat == TIME_FORMAT_1){
 			storageOfTime = detectUsingFormat1(storageOfTime);
@@ -64,13 +67,20 @@ public class TimeParser {
 		else if(timeFormat == TIME_FORMAT_3){
 			storageOfTime = detectUsingFormat3(storageOfTime);
 		}
-		else if(timeFormat == TIME_FORMAT_4){
-			storageOfTime = detectUsingFormat4(storageOfTime);
-		}
+		//else if(timeFormat == TIME_FORMAT_4){
+		//	storageOfTime = detectUsingFormat4(storageOfTime);
+		//	}
 		return storageOfTime;
 	}
 
-	private ArrayList<String> detectUsingFormat1(ArrayList<String> storageOfTime) {
+	/**
+	 * detect start time and end time. 
+	 * detect HH:MM/12hour format pm/am/none to/- HH:MM/12hour format pm/am
+	 * example 12:30 - 1pm/12pm to 1:30pm
+	 * @param storageOfTime
+	 * @return arrayList containing all of the time.
+	 */
+	private static ArrayList<String> detectUsingFormat1(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_1);
 		Matcher matchedWithTime = timeDetector.matcher(userInput);
 		String[] timeList;
@@ -81,29 +91,40 @@ public class TimeParser {
 			userInput = userInput.replaceAll(time, "");
 			timeList = time.split("-|to");
 
-			//System.out.println("1time: "+time);
+			System.out.println("1time: "+time);
 			timeList[1] = changeToHourFormat(timeList[1]);
-			storageOfTime = selectAndAddCorrectTime(storageOfTime, timeList[1]);
-			String amTime1 = changeToHourFormat(timeList[0]+"am");
-			String pmTime1 = changeToHourFormat(timeList[0]+"pm");
-			if(!checkValid24HourTime(amTime1) && !checkValid24HourTime(pmTime1)){
-				storageOfTime.add(INVALID_TIME);
+			if(timeList[0].contains("am") || timeList[0].contains("pm")){
+				timeList[0] = changeToHourFormat(timeList[0]);
+			} else {
+				String amTime1 = changeToHourFormat(timeList[0]+"am");
+				String pmTime1 = changeToHourFormat(timeList[0]+"pm");
+				//	if(!checkValid24HourTime(amTime1) && !checkValid24HourTime(pmTime1)){
+				//	storageOfTime.add(INVALID_TIME);
+				//	}
+				int amTime1stNum = get1stNumber(amTime1);
+				int pmTime1stNum = get1stNumber(pmTime1);
+				int time1stNum = get1stNumber(timeList[1]);
+
+				toBeAdded = detectWhichOneIsRight(toBeAdded, amTime1, pmTime1,
+						amTime1stNum, pmTime1stNum, time1stNum);
+				storageOfTime.add(toBeAdded);	
 			}
-			int amTime1stNum = get1stNumber(amTime1);
-			int pmTime1stNum = get1stNumber(pmTime1);
-			int time1stNum = get1stNumber(timeList[1]);
-			//System.out.println("1time: "+(amTime1stNum < time1stNum)  + (pmTime1stNum < time1stNum));
-			//System.out.println("1time: "+amTime1stNum+" pm: "+pmTime1stNum+" time: "+time1stNum);
-
-			toBeAdded = detectWhichOneIsRight(toBeAdded, amTime1, pmTime1,
-					amTime1stNum, pmTime1stNum, time1stNum);
-			storageOfTime.add(toBeAdded);
-
+			storageOfTime.add(timeList[1]);
 		}
 		return storageOfTime;
 	}
 
-	private String detectWhichOneIsRight(String toBeAdded, String amTime1,
+	/**
+	 * detect the start time when pm/am is not added right next to start time. 
+	 * @param toBeAdded
+	 * @param amTime1
+	 * @param pmTime1
+	 * @param amTime1stNum
+	 * @param pmTime1stNum
+	 * @param time1stNum
+	 * @return the right timing when switch to hour format when am or pm is not on the back of the time.
+	 */
+	private static String detectWhichOneIsRight(String toBeAdded, String amTime1,
 			String pmTime1, int amTime1stNum, int pmTime1stNum, int time1stNum) {
 		if(amTime1stNum < time1stNum && pmTime1stNum < time1stNum){
 			toBeAdded = whenBothLessThan(amTime1, pmTime1, amTime1stNum,
@@ -121,7 +142,15 @@ public class TimeParser {
 		return toBeAdded;
 	}
 
-	private String whenBothLessThan(String amTime1, String pmTime1,
+	/**when both start time hour format is less than the end time.
+	 * 
+	 * @param amTime1
+	 * @param pmTime1
+	 * @param amTime1stNum
+	 * @param pmTime1stNum
+	 * @return the right start time when the am/pm is not input. 
+	 */
+	private static String whenBothLessThan(String amTime1, String pmTime1,
 			int amTime1stNum, int pmTime1stNum) {
 		String toBeAdded;
 		if(amTime1stNum < pmTime1stNum){
@@ -133,33 +162,18 @@ public class TimeParser {
 		return toBeAdded;
 	}
 
-	private ArrayList<String> selectAndAddCorrectTime(ArrayList<String> storageOfTime, String timeList) {
-		if(checkValid24HourTime(timeList)){
-			storageOfTime.add(timeList); 
-
-		}
-		else{
-			storageOfTime.add(INVALID_TIME);
-		}
-		return storageOfTime;
-	}
-
-	private int get1stNumber(String pmTime1) {
+	/**
+	 * get the HH of the time in hour format(HH:MM)
+	 * @param pmTime1
+	 * @return HH
+	 */
+	private static int get1stNumber(String pmTime1) {
 		int index = getIndex(pmTime1);
 		int partOfString1 = Integer.parseInt(pmTime1.substring(0, index));
 		return partOfString1;
 	}
 
-	private int spotIndexOfTimeWithAMPM(String[] timeList) {
-		int index = -1;
-		for(int i = 0; i < timeList.length; i++){
-			if(timeList[i].contains("am") || timeList[i].contains("pm")){
-				index = i;
-			}
-		}
-		return index;
-	}
-
+	/*
 	private ArrayList<String> detectUsingFormat4(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_4);
 		Matcher matchedWithTime = timeDetector.matcher(userInput);
@@ -181,7 +195,7 @@ public class TimeParser {
 
 		return storageOfTime;
 	}
-
+	 */
 	private boolean checkValid24HourTime(String time) {
 		time = removeUnwantedParts(time);
 		boolean validTime = false;
@@ -197,20 +211,12 @@ public class TimeParser {
 		return validTime;
 	}
 
-	private ArrayList<String> detectUsingFormat3(ArrayList<String> storageOfTime) {
-		Pattern timeDetector = 
-				Pattern.compile(TIME_KEYWORD_3);
-		Matcher matchedWithTime = timeDetector.matcher(userInput);
-
-		while (matchedWithTime.find()) {
-			userInput = userInput.replaceAll(TIME_KEYWORD_3, "");
-			storageOfTime.add("12:00");      
-		}  
-		//System.out.println("2.timeDe: "+storageOfTime.get(0));
-		return storageOfTime;
-	}
-
-	private ArrayList<String> detectUsingFormat2(ArrayList<String> storageOfTime) {
+	/**
+	 * detect HH:MM/HH with pm and am behind.
+	 * @param storageOfTime
+	 * @return storage of time containing the time detected.
+	 */
+	private static ArrayList<String> detectUsingFormat2(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = 
 				Pattern.compile(TIME_KEYWORD_2);
 		Matcher matchedWithTime = timeDetector.matcher(userInput);
@@ -232,8 +238,30 @@ public class TimeParser {
 		return storageOfTime;
 
 	}
+	/**
+	 * detect noon, midnight
+	 * @param storageOfTime
+	 * @return storage of time containing the time detected.
+	 */
+	private static ArrayList<String> detectUsingFormat3(ArrayList<String> storageOfTime) {
+		Pattern timeDetector = 
+				Pattern.compile(TIME_KEYWORD_3);
+		Matcher matchedWithTime = timeDetector.matcher(userInput);
 
-	private boolean checkValid12HourTime(String time) {
+		while (matchedWithTime.find()) {
+			userInput = userInput.replaceAll(TIME_KEYWORD_3, "");
+			String time = matchedWithTime.group();
+			if(time.contains("noon")){
+				storageOfTime.add("12:00");
+			} else if(time.contains("midnight")){
+				storageOfTime.add("00:00");
+			}
+		}  
+		//System.out.println("2.timeDe: "+storageOfTime.get(0));
+		return storageOfTime;
+	}
+
+	private static boolean checkValid12HourTime(String time) {
 		boolean validTime = false;
 		String amOrPM = getAmOrPm(time);
 		time = removeUnwantedParts(time);
@@ -256,7 +284,12 @@ public class TimeParser {
 		return validTime;
 	}
 
-	private String getAmOrPm(String time) {	
+	/**
+	 * detect the time contain am or pm
+	 * @param time
+	 * @return am or pm depend which one is detected.
+	 */
+	private static String getAmOrPm(String time) {	
 		String amOrPm = "";
 		if(time.contains("am")){
 			amOrPm = "am";
@@ -267,8 +300,12 @@ public class TimeParser {
 		return amOrPm;
 	}
 
-	private String changeToHourFormat(String time) {
-
+	/**
+	 * change all of the time inputed to hour format(HH:MM)
+	 * @param time
+	 * @return time in hour format (HH:MM)
+	 */
+	private static String changeToHourFormat(String time) {
 		if(time.contains("am")){
 			time = removeUnwantedParts(time);
 			int index = getIndex(time);	
@@ -297,8 +334,12 @@ public class TimeParser {
 		}
 		return time;
 	}
-
-	private int getIndex(String time) {
+	/**
+	 * get the index of the separation of the HH and MM which is either : or .
+	 * @param time
+	 * @return the index of : or . depend which is detect
+	 */
+	private static int getIndex(String time) {
 		int index = time.indexOf(".");
 		if(index == -1){
 			index = time.indexOf(":");
@@ -306,7 +347,12 @@ public class TimeParser {
 		return index;
 	}
 
-	private String switchToPMHour(String time) {
+	/**
+	 * if pm is detected behind the time, switch it to hour format from hour at 13 onwards to 00
+	 * @param time
+	 * @return hour format for time in pm.
+	 */
+	private static String switchToPMHour(String time) {
 		int timeHour = 13, timeNormal = 1;
 
 		while(timeHour != 24){
@@ -323,10 +369,20 @@ public class TimeParser {
 		}
 		return time;		
 	}
-
-	public String removeUnwantedParts(String timeWithUnwantedPart) {
+	
+	/**
+	 * remove the conjunction
+	 * @param timeWithUnwantedPart
+	 * @return time free from conjunction
+	 */
+	public static String removeUnwantedParts(String timeWithUnwantedPart) {
 		String time;
 		time  = timeWithUnwantedPart.replaceAll(TO_BE_REMOVED_KEYWORD, "");
 		return time;
+	}
+
+	public int getNumberOfTime() {
+
+		return 0;
 	}
 }

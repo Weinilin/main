@@ -18,10 +18,11 @@ public class CommandLineInterface {
 	 * Scan the user input and execute the command.
 	 */
 	public void userInput(){
+		String userCommand, message, display;
 		scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
-		commandHandler.executeCommand("show");
-		String userCommand, message;
+		display = commandHandler.executeCommand("show");
+		printMessageToUser(display);
 	
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
@@ -29,8 +30,9 @@ public class CommandLineInterface {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
-			commandHandler.executeCommand("display");
+			display = commandHandler.executeCommand("show");
 			printMessageToUser(message);
+			printMessageToUser(display);
 		}
 	}
 

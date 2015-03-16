@@ -68,7 +68,7 @@ public class AddHandler {
 		TimeParser tp = new TimeParser();
 		ArrayList<String> time = tp.extractTime(taskInformation);
 		
-		String taskType = TaskTypeParser.extractTaskType(time);
+		String taskType = TaskTypeParser.getTaskType();
 		
 		String deadline = new String("-");
 		String startDateTime = new String("-");
