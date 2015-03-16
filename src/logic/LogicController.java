@@ -25,7 +25,7 @@ public class LogicController {
 	}
 	
 	public String executeCommand(String userInput) {
-		String userCommand = CommandParser.determineCommandType(userInput);
+		String userCommand = CommandParser.getCommandType(userInput);
 		return execute(userCommand, userInput);
 	}
 	

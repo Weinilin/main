@@ -30,7 +30,7 @@ public class DeleteHandler {
 	protected TaskData deleteTask(String taskInformation) throws IndexOutOfBoundsException  {
 		IndexParser ip = new IndexParser();
 		TaskData removedTask = new TaskData();
-		int index = ip.extractIndex(taskInformation);
+		int index = ip.getIndex(taskInformation);
 		try {
 			removedTask = memory.deleteTask(index);
 		} catch (IndexOutOfBoundsException iob) {
