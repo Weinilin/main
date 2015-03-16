@@ -29,10 +29,11 @@ public class AddHandler {
 	 * 
 	 * @param taskInformation - the parameters user given
 	 * @param taskList - list of tasks
-	 * @return - Strin of new task
+	 * @return - String of new task
 	 */
 	protected String addTask(String taskInformation) {
 		TaskData newTask = createNewTask(taskInformation);
+		assert (newTask != null);	// a non empty task is created
 		if (memory.addTask(newTask)) {
 			return newTask.toString();
 		} 
@@ -65,8 +66,7 @@ public class AddHandler {
 		DateParser dp = new DateParser();
 		ArrayList<String> date = dp.extractDate(taskInformation);
 		
-		TimeParser tp = new TimeParser();
-		ArrayList<String> time = tp.extractTime(taskInformation);
+		ArrayList<String> time = TimeParser.extractTime(taskInformation);
 		
 		String taskType = TaskTypeParser.getTaskType();
 		
