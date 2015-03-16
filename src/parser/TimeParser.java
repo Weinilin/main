@@ -8,27 +8,40 @@ public class TimeParser {
 	private static final String TIME_KEYWORD_2 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_3 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
 	//private static final String TIME_KEYWORD_4 = "\\b(\\d+[:.]\\d+(\\s|)(-|to|))\\b";
+	private static final String TIME_KEYWORD_4 = "(before midnight|before noon)";
+	private static final String DEADLINE_KEYWORD = "(due|by)";
 	private static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from)";
 	private static final String INVALID_TIME = "Time entered is invalid";
 	private static final int TIME_FORMAT_1 = 1;
 	private static final int TIME_FORMAT_2 = 2;
 	private static final int TIME_FORMAT_3 = 3;
 	private static final int TIME_FORMAT_4 = 4;
-	private static String userInput;
+	private static String detectUserInput;
 	private int numberOfTime;
 
 
 	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
-		TimeParser.userInput = userInput;
+		TimeParser.detectUserInput = userInput;
 		for(int i = 1; i <= 4; i++){
 			storageOfTime = goThroughTimeFormat(i, storageOfTime);
-			System.out.println("2 time: "+ storageOfTime.get(0)+" 2: "+storageOfTime.get(1));
-			if(!storageOfTime.isEmpty()){
-				break;
-			}
 		}
-		//checkIfAllTimeInvalid(storageOfTime);
+		if(!userInput.contains("due") && !userInput.contains("by")){
+			String hourTimeInString;
+			if(storageOfTime.size() == 1){
+				int hourTime =  get1stNumber(storageOfTime.get(0)); //take note if 2am -->String
+				hourTime = hourTime + 1;
+				if (hourTime < 10) {
+					hourTimeInString = "0" + hourTime;
+				} else {
+					hourTimeInString = "" + hourTime;
+				}
+				String minTime = get2ndNumber(storageOfTime.get(0));
+				String endTime = hourTimeInString +":" + minTime;
+				storageOfTime.add(endTime);
+			} 
+		}		
+		//System.out.println("2 time: "+ storageOfTime.get(0)+" 2: "+storageOfTime.get(1));
 		return storageOfTime;
 	}
 
@@ -67,9 +80,9 @@ public class TimeParser {
 		else if(timeFormat == TIME_FORMAT_3){
 			storageOfTime = detectUsingFormat3(storageOfTime);
 		}
-		//else if(timeFormat == TIME_FORMAT_4){
-		//	storageOfTime = detectUsingFormat4(storageOfTime);
-		//	}
+		else if(timeFormat == TIME_FORMAT_4){
+			storageOfTime = detectUsingFormat4(storageOfTime);
+		}
 		return storageOfTime;
 	}
 
@@ -82,13 +95,13 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat1(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_1);
-		Matcher matchedWithTime = timeDetector.matcher(userInput);
+		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		String[] timeList;
 		String toBeAdded = "";
 
 		while (matchedWithTime.find()) {
 			String time = matchedWithTime.group();
-			userInput = userInput.replaceAll(time, "");
+			detectUserInput = detectUserInput.replaceAll(time, "");
 			timeList = time.split("-|to");
 
 			System.out.println("1time: "+time);
@@ -173,6 +186,16 @@ public class TimeParser {
 		return partOfString1;
 	}
 
+	/**
+	 * get the MM of the time in hour format(HH:MM)
+	 * @param pmTime1
+	 * @return HH
+	 */
+	private static String get2ndNumber(String pmTime1) {
+		int index = getIndex(pmTime1);
+		String partOfString2 = pmTime1.substring(index + 1);
+		return partOfString2;
+	}
 	/*
 	private ArrayList<String> detectUsingFormat4(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_4);
@@ -219,12 +242,12 @@ public class TimeParser {
 	private static ArrayList<String> detectUsingFormat2(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = 
 				Pattern.compile(TIME_KEYWORD_2);
-		Matcher matchedWithTime = timeDetector.matcher(userInput);
+		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 
 		while (matchedWithTime.find()) {
 			String time = matchedWithTime.group();
 			if(checkValid12HourTime(time)){
-				userInput = userInput.replaceAll(time, "");
+				detectUserInput = detectUserInput.replaceAll(time, "");
 				//System.out.println("1. beforeTime: "+time);
 				time = changeToHourFormat(time);
 				//System.out.println("1. afterTime: "+time);
@@ -246,15 +269,38 @@ public class TimeParser {
 	private static ArrayList<String> detectUsingFormat3(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = 
 				Pattern.compile(TIME_KEYWORD_3);
-		Matcher matchedWithTime = timeDetector.matcher(userInput);
+		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 
 		while (matchedWithTime.find()) {
-			userInput = userInput.replaceAll(TIME_KEYWORD_3, "");
+			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_3, "");
 			String time = matchedWithTime.group();
 			if(time.contains("noon")){
 				storageOfTime.add("12:00");
 			} else if(time.contains("midnight")){
 				storageOfTime.add("00:00");
+			}
+		}  
+		//System.out.println("2.timeDe: "+storageOfTime.get(0));
+		return storageOfTime;
+	}
+
+	/**
+	 * detect before noon and before midnight 
+	 * @param storageOfTime
+	 * @return the time in hour format.
+	 */
+	private static ArrayList<String> detectUsingFormat4(ArrayList<String> storageOfTime) {
+		Pattern timeDetector = 
+				Pattern.compile(TIME_KEYWORD_4);
+		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+
+		while (matchedWithTime.find()) {
+			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_4, "");
+			String time = matchedWithTime.group();
+			if(time.contains("noon")){
+				storageOfTime.add("11:59");
+			} else if(time.contains("midnight")){
+				storageOfTime.add("23:59");
 			}
 		}  
 		//System.out.println("2.timeDe: "+storageOfTime.get(0));
@@ -334,6 +380,7 @@ public class TimeParser {
 		}
 		return time;
 	}
+	
 	/**
 	 * get the index of the separation of the HH and MM which is either : or .
 	 * @param time
@@ -369,7 +416,7 @@ public class TimeParser {
 		}
 		return time;		
 	}
-	
+
 	/**
 	 * remove the conjunction
 	 * @param timeWithUnwantedPart
@@ -381,7 +428,7 @@ public class TimeParser {
 		return time;
 	}
 
-	public int getNumberOfTime() {
+	public static int getNumberOfTime() {
 
 		return 0;
 	}
