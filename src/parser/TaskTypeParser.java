@@ -11,8 +11,8 @@ public class TaskTypeParser {
 	 * @param storageOfTime
 	 * @return the task type.
 	 */
-	public static String extractTaskType(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = getNumberOfTimeInput(storageOfTime);
+	public static String getTaskType() {
+		int numberOfTimeInput = TimeParser.getNumberOfTime();	
 		String taskType;
 
 		if(numberOfTimeInput == 2){

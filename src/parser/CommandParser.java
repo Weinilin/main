@@ -18,11 +18,11 @@ public class CommandParser {
 	}
 
 	/**
-	 * use to detect different command Type(add, undo, mark, edit, show, delete)
+	 * use to detect different command Type(add, undo, mark, edit, show, delete, search,help, exit)
 	 * @param userCommand
 	 * @return command type
 	 */
-	public static String determineCommandType(String userCommand) {
+	public static String getCommandType(String userCommand) {
 		String commandType = getFirstWord(userCommand);
 		try {
 			if(commandType.equals(ADD_STATEMENT)){
@@ -46,8 +46,8 @@ public class CommandParser {
 			} else {
 				throw new NoSuchElementException("Invalid Command!");
 			}
-		} catch (NullPointerException e) {
-			System.err.println("InvalidCommandException: " + e.getMessage());
+		} catch (NoSuchElementException e1) {
+			System.err.println("InvalidCommandException: " + e1.getMessage());
 		}
 		return commandType;
 	}

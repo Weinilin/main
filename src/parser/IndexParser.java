@@ -16,10 +16,10 @@ public class IndexParser {
 	 * entered by the user. Since the program could not execute the command without the
 	 * index (a digit) being detect.
 	 */
-	public int extractIndex(String userInput) {
+	public int getIndex(String userInput) {
 		int index = 0;
 		try {
-			String number = getIndex(userInput);
+			String number = getNumber(userInput);
 			index = Integer.parseInt(number);
 		} catch (NoSuchElementException e) {
 			System.err.println("NoDigitException: " + e.getMessage());
@@ -34,7 +34,7 @@ public class IndexParser {
 	 * @throws NoSuchElementException ---> when no digit is detect, the user never key in the 
 	 * index and the command could not be execute without the index.
 	 */	
-	private String getIndex(String userInput) throws NoSuchElementException {
+	private String getNumber(String userInput) throws NoSuchElementException {
 		String number = ""; 
 		Pattern indexDetector = Pattern.compile("\\d+");
 		Matcher indexMatch = indexDetector.matcher(userInput);
