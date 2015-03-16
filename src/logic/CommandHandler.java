@@ -44,6 +44,7 @@ abstract class CommandHandler {
 	 */
 	static TaskData createNewTask(String taskInformation) {
 		String description = DescriptionParser.getDescription(taskInformation);
+		assert (description.trim() != ""); // ensure that the task has some description for it
 		
 		DateParser dp = new DateParser();
 		ArrayList<String> date = dp.extractDate(taskInformation);
