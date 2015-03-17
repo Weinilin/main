@@ -12,10 +12,11 @@ import java.util.logging.Logger;;
 /**
  * CommandHandler for "add" function.
  * 
- * To add a new task, type "add [task information]"
+ * Adding tasks is achieved by "add [task information]"
  * New task included in parameter invokes the static method createNewTask
  * in CommandHandler abstract class through various parsers.
  * The new task is added to the memory 
+ * 
  * @author A0114463M
  *
  */
