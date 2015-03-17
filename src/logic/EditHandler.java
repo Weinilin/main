@@ -30,7 +30,7 @@ public class EditHandler {
 		DeleteHandler dh = new DeleteHandler(memory);
 		AddHandler ah = new AddHandler(memory);
 		TaskData oldTask = new TaskData();
-		TaskData newTask = AddHandler.createNewTask(taskInformation.substring(taskInformation.indexOf(" ")));	
+		TaskData newTask = CommandHandler.createNewTask(taskInformation.substring(taskInformation.indexOf(" ")));	
 		try  {
 			oldTask = dh.deleteTask(taskInformation);
 			ah.addTask(newTask);

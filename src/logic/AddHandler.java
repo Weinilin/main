@@ -29,10 +29,11 @@ public class AddHandler {
 	 * 
 	 * @param taskInformation - the parameters user given
 	 * @param taskList - list of tasks
-	 * @return - Strin of new task
+	 * @return - String of new task
 	 */
 	protected String addTask(String taskInformation) {
-		TaskData newTask = createNewTask(taskInformation);
+		TaskData newTask = CommandHandler.createNewTask(taskInformation);
+		assert (newTask != null);	// a non empty task is created
 		if (memory.addTask(newTask)) {
 			return newTask.toString();
 		} 
@@ -53,45 +54,7 @@ public class AddHandler {
 		return memory.addTask(newTask);
 	}
 	
-	/**
-	 * parse and create a new task
-	 * 
-	 * @param taskInformation - information to be included in the task
-	 * @return new taskdata
-	 */
-	protected static TaskData createNewTask(String taskInformation) {
-		String description = DescriptionParser.getDescription(taskInformation);
-		
-		DateParser dp = new DateParser();
-		ArrayList<String> date = dp.extractDate(taskInformation);
-		
-		TimeParser tp = new TimeParser();
-		ArrayList<String> time = tp.extractTime(taskInformation);
-		
-		String taskType = TaskTypeParser.getTaskType();
-		
-		String deadline = new String("-");
-		String startDateTime = new String("-");
-		String endDateTime = new String("-");
-		switch (taskType) {
-			case "deadline":
-				deadline = date.get(0) + " " + time.get(0);
-				break;
-			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(1);
-				endDateTime = date.get(1) + " " + time.get(0);
-				break;
-			case "floating task":
-				break;
-			default:
-				break;
-		}
 
-		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
-		return newTask;
-	}
-	
-	
 	
 	protected String getHelp() {
 		return "add <task informatino>\n to TaskManager";
