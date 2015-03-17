@@ -12,7 +12,7 @@ public class TaskTypeParser {
 	 * @return the task type.
 	 */
 	public static String getTaskType() {
-		int numberOfTimeInput = TimeParser.getNumberOfTime();	
+		int numberOfTimeInput = DateTimeParser.getNumberOfTime();	
 		String taskType;
 
 		if(numberOfTimeInput == 2){
@@ -25,16 +25,6 @@ public class TaskTypeParser {
 			taskType = "floating task";
 		}
 		return taskType;
-	}
-
-	/**
-	 * Get the number of time stored in the arrayList(storageOfTime)
-	 * @param storageOfTime
-	 * @return the number of time stored.
-	 */
-	private static int getNumberOfTimeInput(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = storageOfTime.size();
-		return numberOfTimeInput;
 	}
 }
 

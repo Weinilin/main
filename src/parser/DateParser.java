@@ -19,7 +19,7 @@ public class DateParser {
 	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))|(\\w+ day(s|) after)|(next(\\s\\w+\\s)day(s|))"
 			+ "|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
 	private static final String DATE_KEYWORD5 ="\\b(tomorrow|(the\\s|)following day|(the\\s|)next day"
-			+ "|(after today)|today|(after tomorrow)|fortnight)\\b";
+			+ "|(after today)|today|(after tomorrow)|fortnight|(the\\s|)next year)\\b";
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
 			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
@@ -40,6 +40,7 @@ public class DateParser {
 	private static final String TODAY_TEXT = "today";
 	private static final String TOMORROW_TEXT = "tomorrow";
 	private static final String NEXT_DAY_TEXT = "next day";
+	private static final String NEXT_YEAR_TEXT = "next year";
 	private static final String FOLLOWING_DAY_TEXT = "following day";
 	private static final String AFTER_TODAY_TEXT = "after today";
 	private static final String AFTER_TOMORROW_TEXT = "after tomorrow";
@@ -57,6 +58,7 @@ public class DateParser {
 	private static final int DATE_FORMAT_6 = 6;
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
+	private static String detectUserInput;
 
 	private int year;
 	private int month;
@@ -113,14 +115,11 @@ public class DateParser {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
+		detectUserInput = userInput;
 		for (int i = 0; i <= 6; i++) {
-			dateOfTheTask = selectDetectionMethod(userInput, i);
-			//System.out.println("dsize: "+dateOfTheTask.size()
-			//		+ " i: "+ i);
-			if (dateOfTheTask.size() != 0 && dateOfTheTask.get(0) != "") {
-				//System.out.println("date: "+dateOfTheTask.get(0));
-				break;
-			}	
+			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask);
+			System.out.println("dsize: "+dateOfTheTask
+					+ " i: "+ i);
 		}
 
 		return dateOfTheTask;
@@ -131,28 +130,23 @@ public class DateParser {
 		return userInput;
 	}
 
-	private static ArrayList<String> selectDetectionMethod(String userInput, int dateFormat) {
-		String dateOfTheTask = "";
+	private static ArrayList<String> selectDetectionMethod(int dateFormat,
+			ArrayList<String> dates) {
 
-		ArrayList<String> dates = new ArrayList<String>();
-
-		//if(dateFormat == DATE_FORMAT_0){
-		//dates = spotDateFormat0(userInput);
-		//}
 		if (dateFormat == DATE_FORMAT_1) {
-			dates = spotDateFormat1(userInput, dates);
+			dates = spotDateFormat1(detectUserInput, dates);
 		} else if (dateFormat == DATE_FORMAT_2) {
-			dates = spotDateFormat2(userInput, DATE_KEYWORD2, dates);
+			dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
 		} else if (dateFormat == DATE_FORMAT_3) {	
-			dates = spotDateFormat2(userInput,DATE_KEYWORD3, dates);
+			dates = spotDateFormat2(detectUserInput,DATE_KEYWORD3, dates);
 		} else if (dateFormat == DATE_FORMAT_4) {
-			dates = spotDateFormat4(userInput, dates);
+			dates = spotDateFormat4(detectUserInput, dates);
 		} else if (dateFormat == DATE_FORMAT_5) {	
-			dates = spotDateFormat5(userInput, dates);
+			dates = spotDateFormat5(detectUserInput, dates);
 		} else if (dateFormat == DATE_FORMAT_6) {
-			dates = spotDateFormat6(userInput, dates);
+			dates = spotDateFormat6(detectUserInput, dates);
 		}
-		
+
 		return dates;
 	}
 
@@ -219,6 +213,7 @@ public class DateParser {
 
 		while (containDate.find()) {
 			uniqueKeyword = containDate.group();
+			detectUserInput = detectUserInput.replaceAll(uniqueKeyword, "");
 			dateOfTheTask = getUsingDateFormat6(uniqueKeyword);	
 			storageOfDate.add(dateOfTheTask);
 		}
@@ -245,6 +240,7 @@ public class DateParser {
 
 		while (containDate.find()) {
 			uniqueKeyword = containDate.group();
+			detectUserInput = detectUserInput.replaceAll(DATE_KEYWORD5, "");
 			dateOfTheTask = getUsingDateFormat5(uniqueKeyword);	
 			storageOfDate.add(dateOfTheTask);
 		}
@@ -309,6 +305,7 @@ public class DateParser {
 
 		while (containDate.find()) {
 			uniqueKeyword = containDate.group();
+			detectUserInput = detectUserInput.replaceAll(DATE_KEYWORD4, "");
 			dateOfTask = getUsingDateFormat4(uniqueKeyword);	
 			storageOfDate.add(dateOfTask);
 		}
@@ -346,6 +343,9 @@ public class DateParser {
 		} else if(uniqueKeyword.contains(NEXT_DAY_TEXT)) {
 			numberOfDays = 1;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
+		} else if(uniqueKeyword.contains(NEXT_YEAR_TEXT)) {
+			int numberOfYear = 1;
+			dateOfTask = addToTheCurrentDateByYear(numberOfYear);
 		} else if(uniqueKeyword.contains(FOLLOWING_DAY_TEXT)) {
 			numberOfDays = 1;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
@@ -458,6 +458,7 @@ public class DateParser {
 
 		while(containDate.find()){
 			dateOfTheTask = containDate.group();
+			detectUserInput = detectUserInput.replaceAll(keyword, "");
 			//System.out.println("dateOFTASKfeb: "+dateOfTheTask);
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar calendar = Calendar.getInstance();
@@ -600,6 +601,7 @@ public class DateParser {
 		while (containDate.find()) {
 			Calendar calendar = Calendar.getInstance();
 			dateOfTheTask = containDate.group();
+			detectUserInput = detectUserInput.replaceAll(DATE_KEYWORD1, "");
 
 			dateOfTheTask = dateOfTheTask.replaceAll("on |from |at |to ", "");
 			partsOfString = splitTheStringIntoPart(dateOfTheTask);

@@ -8,6 +8,7 @@ import java.util.Calendar;
 public class DateTimeParser {
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String TIME_FORMAT = "HH:mm";
+	private static int numberOfTime;
 
 	public DateTimeParser() {
 
@@ -25,7 +26,8 @@ public class DateTimeParser {
 
 		storageOfTime = addInMissingTime(storageOfTime, storageOfDate);
 		storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
-
+		setNumberOfTime(storageOfTime);
+		
 		storageOfTime = addDashWhenEmpty(storageOfTime);
 		storageOfDate = addDashWhenEmpty(storageOfDate);
 
@@ -186,5 +188,21 @@ public class DateTimeParser {
 		Calendar cal = Calendar.getInstance();
 		String timeOfTheTask = dateFormat.format(cal.getTime());
 		return timeOfTheTask;
+	}
+    
+	/**
+	 * set the number of time stored in arrayList
+	 * @param storageOfParameters
+	 */
+	public static void setNumberOfTime(ArrayList<String> storageOfParameters) {
+		numberOfTime = storageOfParameters.size();
+	}
+	
+	/**
+	 * return the number of time detected and stored in arrayList
+	 * @return the number of time detected
+	 */
+	public static int getNumberOfTime() {
+		return numberOfTime;
 	}
 }
