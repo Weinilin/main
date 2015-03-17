@@ -20,7 +20,9 @@ abstract class CommandHandler {
 	 */
 	private Memory memory;
 	
-	/*
+	abstract String getAliases();
+	
+	/**
 	 * execute the command based on the input from user (such as "add",
 	 * "delete", etc) and the parameter for executing the command. Return
 	 * the feedback as a String object for now.
@@ -28,9 +30,9 @@ abstract class CommandHandler {
 	 *@param parameter - parameter for executing the command based on user input
 	 *@return feedback String to UI after each execution of the command
 	 */
-	abstract String execute(String command, String parameter);
+	abstract String execute(String command, String parameter, Memory memory);
 	
-	/*
+	/**
 	 * get help String for each of the commands when user types "[command] help"
 	 */
 	abstract public String getHelp();
@@ -40,14 +42,13 @@ abstract class CommandHandler {
 	 * It will call the respective parsers to get information about the new
 	 * task
 	 *@param taskInformation - the input from user that specifies the task
-	 *@return new task obejct created based on the input from user.
+	 *@return new task object created based on the input from user.
 	 */
 	static TaskData createNewTask(String taskInformation) {
 		String description = DescriptionParser.getDescription(taskInformation);
 		assert (description.trim() != ""); // ensure that the task has some description for it
 		
-		DateParser dp = new DateParser();
-		ArrayList<String> date = dp.extractDate(taskInformation);
+		ArrayList<String> date = DateParser.extractDate(taskInformation);
 		
 		ArrayList<String> time = TimeParser.extractTime(taskInformation);
 		
