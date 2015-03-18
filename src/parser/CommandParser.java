@@ -1,6 +1,8 @@
 package parser;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommandParser {
 	private static final String ADD_STATEMENT = new String("add");
@@ -48,6 +50,10 @@ public class CommandParser {
 			}
 		} catch (NoSuchElementException e1) {
 			System.err.println("InvalidCommandException: " + e1.getMessage());
+			Logger logger = Logger.getLogger("CommandParser");
+			logger.log(Level.INFO, "going to start processing");
+			logger.log(Level.WARNING, "processing error", e1);
+			logger.log(Level.INFO, "end of processing");
 		}
 		return commandType;
 	}

@@ -1,10 +1,12 @@
 package parser;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IndexParser {
-	
+
 	public IndexParser() {
 
 	}
@@ -18,11 +20,14 @@ public class IndexParser {
 	 */
 	public int getIndex(String userInput) {
 		int index = 0;
+		Logger logger = Logger.getLogger("IndexParser");
 		try {
+			logger.log(Level.INFO, "going to start processing");
 			String number = getNumber(userInput);
 			index = Integer.parseInt(number);
-		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
 			System.err.println("NoDigitException: " + e.getMessage());
+			logger.log(Level.WARNING, "processing error", e);
 		}
 		return index;
 	}
@@ -34,14 +39,14 @@ public class IndexParser {
 	 * @throws NoSuchElementException ---> when no digit is detect, the user never key in the 
 	 * index and the command could not be execute without the index.
 	 */	
-	private String getNumber(String userInput) throws NoSuchElementException {
+	private String getNumber(String userInput) throws Exception {
 		String number = ""; 
 		Pattern indexDetector = Pattern.compile("\\d+");
 		Matcher indexMatch = indexDetector.matcher(userInput);
 		if (indexMatch.find()) {
 			number = indexMatch.group();
 		} else {
-			throw new NoSuchElementException("Index is not entered!!!"); 
+			throw new Exception ("Index is not entered!!!"); 
 		}
 		return number;
 	}
