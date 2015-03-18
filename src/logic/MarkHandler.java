@@ -2,26 +2,40 @@ package logic;
 
 import java.util.ArrayList;
 
+import application.Task;
 import parser.IndexParser;
-import database.Memory;
 
-public class MarkHandler {
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class MarkHandler extends CommandHandler {
 	
-	private Memory memory;
+	private static final Logger markLogger = 
+			Logger.getLogger(MarkHandler.class.getName());
 	
-	public MarkHandler(Memory memory) {
-		this.memory = memory;
+	@Override
+	String getAliases() {
+		return null;
 	}
 	
-	protected boolean markTaskDone(String taskInformation)  {
+	@Override
+	String execute(String command, String parameter, ArrayList<Task> taskList) {
+		markLogger.entering(getClass().getName(), "Entering marking");
 		IndexParser ip = new IndexParser();
-		int index = ip.getIndex(taskInformation);
+		int index = ip.getIndex(parameter);
 		try {
+			taskList.get(index).setStatus("done");
 			memory.markDone(index);			
 		} catch (IndexOutOfBoundsException iob) {
-			return false;
+			markLogger.log(Level.WARNING, "Invalid index", iob);
+			return "Index invalid! Please check yout input\n";
 		} 
 	
-		return true;
+		return "Marked " + index + "as done\n";
+	}
+	
+	@Override
+	public String getHelp() {
+		return "mark [index]\n\t mark a task as done\n";
 	}
 }

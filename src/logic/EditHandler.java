@@ -30,25 +30,20 @@ public class EditHandler extends CommandHandler {
 	@Override
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
-		int index = -1;		
 		
 		IndexParser ip = new IndexParser();		
-		String[] token = parameter.split(" ");
-		Task removedTask = new Task();
-		try {
-			index = ip.getIndex(parameter);
-			removedTask = taskList.remove(index);
-		} catch (NumberFormatException nfe) {
-			editLogger.log(Level.WARNING, "Not a number", nfe);
-			return "Invalid number entered! Please check your input\n";
-		} catch (IndexOutOfBoundsException iob) {
-			editLogger.log(Level.WARNING, "Index out of range", iob);
-			return "Number out of range! Please check your input\n";
+		int index = ip.getIndex(parameter);
+		if (index < 0 || index > taskList.size()) {
+			return "Invalid index! Please check your input\n";
 		}
 		
+		Task removedTask, newTask = new Task();
+
+		String[] token = parameter.split(" ");
 		switch (token[0].toLowerCase()) {
 			case "description":
-				
+				removedTask = taskList.remove(index);
+				newTask = removedTask;
 				break;
 			case "time":
 				break;
@@ -57,9 +52,11 @@ public class EditHandler extends CommandHandler {
 					index = Integer.parseInt(token[0]);									
 				} catch (NumberFormatException nfe) {
 					editLogger.log(Level.WARNING, "Invalid Input");
-					return getHelp();
+					return "Invalid index! Please check your input\n";
 				}			
-				
+				removedTask = taskList.remove(index);
+				newTask = CommandHandler.createNewTask(
+						parameter.replace(token[0], "").replace(Integer.toString(index),  "").trim());
 			}
 		return null;
 	}
@@ -71,7 +68,7 @@ public class EditHandler extends CommandHandler {
 	}
 
 }
-//**Depriciated
+// Depreciated
 //	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {
 //		DeleteHandler dh = new DeleteHandler(memory);
 //		AddHandler ah = new AddHandler(memory);

@@ -53,7 +53,7 @@ abstract class CommandHandler {
 		
 		ArrayList<String> time = TimeParser.extractTime(taskInformation);
 		
-		String taskType = TaskTypeParser.getTaskType();
+		String taskType = TaskTypeParser.getTaskType(taskInformation);
 		
 		String deadline = new String("-");
 		String startDateTime = new String("-");
