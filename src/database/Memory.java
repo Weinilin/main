@@ -11,7 +11,7 @@ public class Memory {
 	private final String DONE = "done";
 	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
-	private Memory memory;
+	private static Memory memory;
 	
 	private Memory() {
 		Database database = Database.getInstance();
@@ -19,6 +19,9 @@ public class Memory {
 	}
 	
 	public Memory getInstance() {
+		if (memory == null) {
+			memory = new Memory();
+		}
 		return memory;
 	}
 	
