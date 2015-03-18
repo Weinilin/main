@@ -8,7 +8,7 @@ public class TimeParserTest {
 
 	@Test
 	public void test() {
-		TimeParser.extractTime("mds sale 12 to 1:30 pm");
+		TimeParser.extractTime("mds sale 11 to 1:30 pm");
 		
 		TimeParser.extractTime("mds sale 11:30-12:30 pm");
 		
@@ -23,6 +23,8 @@ public class TimeParserTest {
 		TimeParser.extractTime("mds sale from 6:30 in morning to 7:45 in night");
 
 		TimeParser.extractTime("mds sale from midnight to 7:45pm,");
+		
+		TimeParser.extractTime("mds sale start at 11:30 pm for 1 hour");
 
 		//arrangement of the time need more thoughts
 		

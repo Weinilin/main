@@ -27,12 +27,18 @@ public class DateTimeParser {
 		storageOfTime = addInMissingTime(storageOfTime, storageOfDate);
 		storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
 		setNumberOfTime(storageOfTime);
-		
+
 		storageOfTime = addDashWhenEmpty(storageOfTime);
 		storageOfDate = addDashWhenEmpty(storageOfDate);
-
+        
+		
+		System.out.println ("SOT: " + storageOfTime);
 		dateTime = formDateTime(storageOfTime, storageOfDate);
-		System.out.println ("dateTime "+ dateTime);
+
+		assert storageOfTime.size() > 2 && storageOfDate.size() > 2 && 
+		storageOfTime.size() != storageOfDate.size();
+
+		System.out.println ("dateTime "+ dateTime + " SOT: " + storageOfTime);
 		return dateTime;
 	}
 
@@ -82,8 +88,8 @@ public class DateTimeParser {
 			if(storageOfDate.size() == 0 && storageOfTime.size() == 1) {
 				storageOfDate.add(getCurrentDate());
 			} else if (storageOfDate.size() == 0 && storageOfTime.size() == 2) {
-				storageOfTime.add(getCurrentDate());
-				storageOfTime.add(getCurrentDate());
+				storageOfDate.add(getCurrentDate());
+				storageOfDate.add(getCurrentDate());
 			} else if(storageOfDate.size() == 1 && storageOfTime.size() == 2) {
 				storageOfDate.add(storageOfDate.get(0));
 			}
@@ -189,7 +195,7 @@ public class DateTimeParser {
 		String timeOfTheTask = dateFormat.format(cal.getTime());
 		return timeOfTheTask;
 	}
-    
+
 	/**
 	 * set the number of time stored in arrayList
 	 * @param storageOfParameters
@@ -197,7 +203,7 @@ public class DateTimeParser {
 	public static void setNumberOfTime(ArrayList<String> storageOfParameters) {
 		numberOfTime = storageOfParameters.size();
 	}
-	
+
 	/**
 	 * return the number of time detected and stored in arrayList
 	 * @return the number of time detected
