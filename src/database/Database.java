@@ -1,3 +1,7 @@
+/*
+ * @author A0113966Y
+ */
+
 package database;
 
 import java.io.BufferedReader;
@@ -10,6 +14,13 @@ import java.util.ArrayList;
 
 import application.Task;
 
+/**
+ * Database handles the writing and adding of tasks to a text file stored in the disk
+ *  
+ * @author A0113966Y
+ *
+ */
+
 public class Database {
 	private static String databaseLocation = "TaskManagerDatabase.txt" ;
 	private static Database database;
@@ -19,6 +30,9 @@ public class Database {
 	}
 	
 	public static Database getInstance() {
+		if (database == null) {
+			database = new Database();
+		}
 		return database;
 	}
 

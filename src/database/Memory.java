@@ -1,3 +1,7 @@
+/*
+ * @author A0113966Y
+ */
+
 package database;
 
 import application.Task;
@@ -6,6 +10,14 @@ import application.TaskDataComparator;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Memory acts as a facade between LogicController and Database.
+ * LogicController makes changes to the taskList stored in Memory.
+ * Memory writes these changes to the Database.
+ * 
+ * @author A0113966
+ *
+ */
 public class Memory {
 
 	private final String DONE = "done";
