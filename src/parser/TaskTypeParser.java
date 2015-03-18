@@ -1,8 +1,4 @@
 package parser;
-import java.util.ArrayList;
-
-
-
 
 public class TaskTypeParser {
 
@@ -11,19 +7,20 @@ public class TaskTypeParser {
 	 * @param storageOfTime
 	 * @return the task type.
 	 */
-	public static String getTaskType() {
-		int numberOfTimeInput = DateTimeParser.getNumberOfTime();	
-		String taskType;
-
-		if(numberOfTimeInput == 2){
+	public static String getTaskType(String userInput) {
+		DateTimeParser.getDateTime(userInput);
+		int numberOfTimeInput = DateTimeParser.getNumberOfTime();
+		String taskType = null;
+ 
+		if (numberOfTimeInput == 2) {
 			taskType = "time task";
-		}
-		else if(numberOfTimeInput == 1){
+		} else if (numberOfTimeInput == 1) {
 			taskType = "deadline";
-		}
-		else{
+		} else if(numberOfTimeInput == 0) {
 			taskType = "floating task";
 		}
+		
+		assert taskType != null;
 		return taskType;
 	}
 }
