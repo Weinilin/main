@@ -4,55 +4,55 @@ import java.util.Comparator;
 
 import parser.DateParser;
 
-public class TaskDataComparator implements Comparator<TaskData> {
+public class TaskDataComparator implements Comparator<Task> {
 	private static final int PRECEDENCE_TIME_TASK = 3;
 	private static final int PRECEDENCE_DEADLINE = 2;
 	private static final int PRECEDENCE_FLOATING_TASK = 1;
 	
-	public int compare(TaskData taskData1, TaskData taskData2) {
-		if (!isEqualPrecedence(taskData1, taskData2)) {
-			return comparePrecedence(taskData1, taskData2);
-		} else if (isDeadline(taskData1)) {
-			return compareDeadline(taskData1, taskData2);
-		} else if (isTimeTask(taskData1)) {
-			return compareTimeTask(taskData1, taskData2);
+	public int compare(Task task1, Task task2) {
+		if (!isEqualPrecedence(task1, task2)) {
+			return comparePrecedence(task1, task2);
+		} else if (isDeadline(task1)) {
+			return compareDeadline(task1, task2);
+		} else if (isTimeTask(task1)) {
+			return compareTimeTask(task1, task2);
 		} else {
-			return compareFloatingTask(taskData1, taskData2);
+			return compareFloatingTask(task1, task2);
 		}
 	}
 	
-	private boolean isEqualPrecedence(TaskData taskData1, TaskData taskData2) {
-		int precedenceOfTaskData1 = getPrecedence(taskData1);
-		int precedenceOfTaskData2 = getPrecedence(taskData2);
+	private boolean isEqualPrecedence(Task task1, Task task2) {
+		int precedenceOfTask1 = getPrecedence(task1);
+		int precedenceOfTask2 = getPrecedence(task2);
 		
-		if (precedenceOfTaskData1 == precedenceOfTaskData2) {
+		if (precedenceOfTask1 == precedenceOfTask2) {
 			return true;
 		}
 
 		return false;
 	}
 	
-	private boolean isDeadline(TaskData taskData) {
-		if (taskData.getTaskType().equals("deadline")) {
+	private boolean isDeadline(Task task) {
+		if (task.getTaskType().equals("deadline")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	private boolean isTimeTask(TaskData taskData) {
-		if (taskData.getTaskType().equals("time task")) {
+	private boolean isTimeTask(Task task) {
+		if (task.getTaskType().equals("time task")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private int compareDeadline(TaskData taskData1, TaskData taskData2) {
-		DateParser dateParser1 = new DateParser(taskData1.getDeadline());
+	private int compareDeadline(Task task1, Task task2) {
+		DateParser dateParser1 = new DateParser(task1.getDeadline());
 		long deadline1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
 		
-		DateParser dateParser2 = new DateParser(taskData2.getDeadline());
+		DateParser dateParser2 = new DateParser(task2.getDeadline());
 		long deadline2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
 		
 		if (deadline1InMilliseconds <= deadline2InMilliseconds) {
@@ -62,11 +62,11 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		}
 	}
 	
-	private int compareTimeTask(TaskData taskData1, TaskData taskData2) {
-		DateParser dateParser1 = new DateParser(taskData1.getStartDateTime());
+	private int compareTimeTask(Task task1, Task task2) {
+		DateParser dateParser1 = new DateParser(task1.getStartDateTime());
 		long startDateTime1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
 		
-		DateParser dateParser2 = new DateParser(taskData2.getStartDateTime());
+		DateParser dateParser2 = new DateParser(task2.getStartDateTime());
 		long startDateTime2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
 		
 		if (startDateTime1InMilliseconds <= startDateTime2InMilliseconds) {
@@ -76,36 +76,36 @@ public class TaskDataComparator implements Comparator<TaskData> {
 		}
 	}
 	
-	private int compareFloatingTask(TaskData taskData1, TaskData taskData2) {
-		String description1 = taskData1.getDescription();
-		String description2 = taskData2.getDescription();
+	private int compareFloatingTask(Task task1, Task task2) {
+		String description1 = task1.getDescription();
+		String description2 = task2.getDescription();
 		
 		return description1.compareTo(description2);
 	}
 	
-	private int comparePrecedence(TaskData taskData1, TaskData taskData2) {
-		int precedenceOfTaskData1 = getPrecedence(taskData1);
-		int precedenceOfTaskData2 = getPrecedence(taskData2);
+	private int comparePrecedence(Task task1, Task task2) {
+		int precedenceOfTask1 = getPrecedence(task1);
+		int precedenceOfTask2 = getPrecedence(task2);
 		
-		if (precedenceOfTaskData1 <= precedenceOfTaskData2) {
+		if (precedenceOfTask1 <= precedenceOfTask2) {
 			return 1;
 		} else {
 			return -1;
 		}
 	}
 	
-	private int getPrecedence(TaskData taskData) {
+	private int getPrecedence(Task task) {
 		int precedence = 0;
 		
-		if (taskData.getTaskType().equals("time task")) {
+		if (task.getTaskType().equals("time task")) {
 			precedence = PRECEDENCE_TIME_TASK;
 		}
 		
-		if (taskData.getTaskType().equals("deadline")) {
+		if (task.getTaskType().equals("deadline")) {
 			precedence = PRECEDENCE_DEADLINE;
 		}
 		
-		if (taskData.getTaskType().equals("floating task")) {
+		if (task.getTaskType().equals("floating task")) {
 			precedence = PRECEDENCE_FLOATING_TASK;
 		}
 		

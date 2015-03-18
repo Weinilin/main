@@ -3,8 +3,9 @@
  */
 package logic;
 
+
 import database.Memory;
-import application.TaskData;
+import application.Task;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;;
@@ -38,7 +39,7 @@ public class AddHandler extends CommandHandler {
 		}
 		else {
 			addLogger.entering(getClass().getName(), "Add non empty task");
-			TaskData newTask = CommandHandler.createNewTask(parameter);
+			Task newTask = CommandHandler.createNewTask(parameter);
 			// a non empty task is created
 			assert (newTask != null);	
 			if (memory.addTask(newTask)) {

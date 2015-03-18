@@ -8,23 +8,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import application.TaskData;
+import application.Task;
 
 public class Database {
-	private static File database;
-	private static String databaseName = "TaskManagerDatabase.txt" ;
+	private static String databaseLocation = "TaskManagerDatabase.txt" ;
+	private static Database database;
 	
-	public Database() {
+	private Database() {
 		createDatabase();
 	}
-
-	public static void setDatabaseLocation() {
-		
+	
+	public static Database getInstance() {
+		return database;
 	}
+
+	public static boolean setDatabaseLocation(String newDatabaseLocation) {		
+		File database = new File(databaseLocation);
+		if (database.renameTo(new File(newDatabaseLocation))) {
+			databaseLocation = newDatabaseLocation;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	//this should only be called by logic at the start of the program
 	private static void createDatabase() {
-    	database = new File(databaseName);
+    	File database = new File(databaseLocation);
     	if (!database.exists()) {
             try {
                 database.createNewFile();
@@ -34,12 +45,12 @@ public class Database {
         }
 	}
 	
-	public ArrayList<TaskData> readDatabase() {
+	public ArrayList<Task> readDatabase() {
 		BufferedReader reader = null;
-		ArrayList<TaskData> taskList = new ArrayList<TaskData> ();
+		ArrayList<Task> taskList = new ArrayList<Task> ();
 		
 		try{
-			reader = new BufferedReader(new FileReader(database));
+			reader = new BufferedReader(new FileReader(databaseLocation));
 			String currentLine;
 			while (reader.ready()) {
 				ArrayList<String> unprocessedTask = new ArrayList<String> ();
@@ -51,7 +62,7 @@ public class Database {
 				}
 				currentLine = reader.readLine();
 
-				taskList.add(new TaskData(unprocessedTask));
+				taskList.add(new Task(unprocessedTask));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,19 +73,20 @@ public class Database {
 		return taskList;
 	}
 	
-	public void writeToDatabase(ArrayList<TaskData> taskList) {		
+	public void writeToDatabase(ArrayList<Task> taskList) {		
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(database));
+			writer = new BufferedWriter(new FileWriter(databaseLocation));
 
 			for (int i = 0; i < taskList.size(); i++) {
-				TaskData task = taskList.get(i);
+				Task task = taskList.get(i);
 				writer.write(task.toString());
 				writer.newLine();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
+			assert isWrittenToDatabase(taskList);
 			try {
 				writer.close();
 			} catch (IOException e) {
@@ -93,4 +105,11 @@ public class Database {
 		}
 	}
 	
+	private boolean isWrittenToDatabase(ArrayList<Task> taskList) {
+		ArrayList<Task> databaseTaskList = readDatabase();
+		if (databaseTaskList == taskList ) {
+			return true;
+		}
+		return false;
+	}
 }

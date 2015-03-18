@@ -2,7 +2,7 @@ package application;
 
 import java.util.ArrayList;
 
-public class TaskData {
+public class Task {
 	
 	private static final String[] dataField = {
 		"Task Type",
@@ -22,14 +22,14 @@ public class TaskData {
 	private String status;
 	
 	// dummy constructor delete in futre
-	public TaskData() {
+	public Task() {
 		
 	}
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type
 
-	public TaskData(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	public Task(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
 		this.startDateTime = startDateTime;
@@ -38,13 +38,13 @@ public class TaskData {
 		this.status = status;
 	}
 	
-	public TaskData(ArrayList<String> taskData) {
-		this.taskType = taskData.get(0);
-		this.description = taskData.get(1);
-		this.startDateTime = taskData.get(2);
-		this.endDateTime = taskData.get(3);
-		this.deadline = taskData.get(4);
-		this.status = taskData.get(5);
+	public Task(ArrayList<String> taskInformation) {
+		this.taskType = taskInformation.get(0);
+		this.description = taskInformation.get(1);
+		this.startDateTime = taskInformation.get(2);
+		this.endDateTime = taskInformation.get(3);
+		this.deadline = taskInformation.get(4);
+		this.status = taskInformation.get(5);
 	}
 	public void setStartDateTime(String newStartDateTime) {
 		startDateTime = newStartDateTime;

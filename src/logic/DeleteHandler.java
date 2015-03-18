@@ -3,12 +3,12 @@
  */
 package logic;
 
-import parser.IndexParser;
-import database.Memory;
-import application.TaskData;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import application.Task;
+import parser.IndexParser;
+import database.Memory;
 
 /**
  * CommandHandler for deleting a task
@@ -31,14 +31,15 @@ public class DeleteHandler extends CommandHandler {
 		return null;
 	}
 
+
 	@Override
 	protected String execute(String command, String parameter, Memory memory) {
 		deleteLogger.log(Level.FINE, "preparing for delete");
 		IndexParser ip = new IndexParser();
-		TaskData removedTask = null;
+		Task removedTask = new Task();
 		int index = ip.getIndex(parameter);
 		try {
-			removedTask = memory.deleteTask(index);
+			removedTask = memory.removeTask(index);
 		} catch (IndexOutOfBoundsException iob) {
 			deleteLogger.log(Level.WARNING, "Index out of range", iob);
 			return null;
