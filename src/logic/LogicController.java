@@ -17,11 +17,9 @@ import application.TaskData;
 public class LogicController {
 
 	private Memory memory;
-	private Database database;
 	
 	public LogicController() {
-		Database database = new Database();
-		memory = new Memory(database);
+		memory = Memory.getInstance();
 	}
 	
 	public String executeCommand(String userInput) {
