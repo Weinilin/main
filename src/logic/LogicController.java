@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import database.Memory;
 import database.Database;
 import parser.CommandParser;
-import application.TaskData;
+import application.Task;
 
 /**
  * Construct by passing a TaskList to the constructor 

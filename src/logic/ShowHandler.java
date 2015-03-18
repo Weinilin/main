@@ -29,6 +29,7 @@ public class ShowHandler extends CommandHandler{
 	@Override
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
+		
 		int i = 1;
 		String result = new String();
 		if (parameter.trim() == "") {

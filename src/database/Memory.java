@@ -18,7 +18,7 @@ public class Memory {
 		initMemory(database);
 	}
 	
-	public Memory getInstance() {
+	public static Memory getInstance() {
 		if (memory == null) {
 			memory = new Memory();
 		}
