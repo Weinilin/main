@@ -3,12 +3,11 @@
  */
 package logic;
 
-
-import database.Memory;
-import application.Task;
-
 import java.util.logging.Level;
-import java.util.logging.Logger;;
+import java.util.logging.Logger;
+import java.util.ArrayList;
+
+import application.Task;
 
 /**
  * CommandHandler for "add" function.
@@ -33,24 +32,26 @@ public class AddHandler extends CommandHandler {
 	}
 
 	@Override
-	protected String execute(String command, String parameter, Memory memory) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		if (parameter.trim() == "") {
 			return getHelp();
 		}
+
+		addLogger.entering(getClass().getName(), "Add non empty task");
+		Task newTask = CommandHandler.createNewTask(parameter);
+		// a non empty task is created
+		assert (newTask != null);	
+		if (taskList.add(newTask)) {
+			memory.addTask(newTask);
+			taskList = memory.getTaskList();
+			addLogger.log(Level.FINE, "Add sucess");
+			return newTask.toString();
+		} 
 		else {
-			addLogger.entering(getClass().getName(), "Add non empty task");
-			Task newTask = CommandHandler.createNewTask(parameter);
-			// a non empty task is created
-			assert (newTask != null);	
-			if (memory.addTask(newTask)) {
-				addLogger.log(Level.FINE, "Add sucess");
-				return newTask.toString();
-			} 
-			else {
-				addLogger.log(Level.SEVERE, "Error adding new task!");
-				throw new Error("Fatal error! Unable to add Task");
-			}	
-		}
+			addLogger.log(Level.SEVERE, "Error adding new task!");
+			throw new Error("Fatal error! Unable to add Task");
+		}	
+		
 	}
 
 	@Override

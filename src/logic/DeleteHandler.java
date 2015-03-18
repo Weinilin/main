@@ -5,10 +5,10 @@ package logic;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import application.Task;
 import parser.IndexParser;
-import database.Memory;
 
 /**
  * CommandHandler for deleting a task
@@ -33,18 +33,25 @@ public class DeleteHandler extends CommandHandler {
 
 
 	@Override
-	protected String execute(String command, String parameter, Memory memory) {
-		deleteLogger.log(Level.FINE, "preparing for delete");
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+		if (parameter.trim() == "") {
+			return getHelp();
+		}
+		
+		deleteLogger.entering(getClass().getName(), "preparing for delete");
 		IndexParser ip = new IndexParser();
 		Task removedTask = new Task();
 		int index = ip.getIndex(parameter);
 		try {
-			removedTask = memory.removeTask(index);
+			removedTask = taskList.remove(index);
 		} catch (IndexOutOfBoundsException iob) {
 			deleteLogger.log(Level.WARNING, "Index out of range", iob);
 			return null;
 		} 
 		
+		if (removedTask != null) {
+			memory.removeTask(removedTask);
+		}
 		deleteLogger.log(Level.FINE, "Successfully deleted");
 		return removedTask.toString();
 	}

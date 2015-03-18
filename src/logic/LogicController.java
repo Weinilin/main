@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import database.Memory;
 import database.Database;
 import parser.CommandParser;
-import application.TaskData;
+import application.Task;
 
 /**
  * Construct by passing a TaskList to the constructor 
@@ -17,11 +17,9 @@ import application.TaskData;
 public class LogicController {
 
 	private Memory memory;
-	private Database database;
 	
 	public LogicController() {
-		Database database = new Database();
-		memory = new Memory(database);
+		memory = Memory.getInstance();
 	}
 	
 	public String executeCommand(String userInput) {

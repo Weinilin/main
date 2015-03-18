@@ -3,23 +3,24 @@ package logic;
 
 import java.util.ArrayList;
 
+import database.Memory;
 import parser.DateParser;
 import parser.DescriptionParser;
 import parser.TaskTypeParser;
 import parser.TimeParser;
-import application.TaskData;
-import database.Memory;
+import application.Task;
 
 /**
- * All handlers in Logic (exept undo) shall extend this class so that all
+ * All handlers in Logic (except undo) shall extend this class so that all
  * handlers have functions of execute() and getHelp()
  */
 abstract class CommandHandler {
+
+	Memory memory = Memory.getInstance();
 	/**
-	 * memory object that all handlers will interact with
+	 * get all the aliases acceptable to the command
+	 * @return string that contains the command 
 	 */
-	private Memory memory;
-	
 	abstract String getAliases();
 	
 	/**
@@ -30,7 +31,7 @@ abstract class CommandHandler {
 	 *@param parameter - parameter for executing the command based on user input
 	 *@return feedback String to UI after each execution of the command
 	 */
-	abstract String execute(String command, String parameter, Memory memory);
+	abstract String execute(String command, String parameter, ArrayList<Task> taskList);
 	
 	/**
 	 * get help String for each of the commands when user types "[command] help"
@@ -44,7 +45,7 @@ abstract class CommandHandler {
 	 *@param taskInformation - the input from user that specifies the task
 	 *@return new task object created based on the input from user.
 	 */
-	static TaskData createNewTask(String taskInformation) {
+	static Task createNewTask(String taskInformation) {
 		String description = DescriptionParser.getDescription(taskInformation);
 		assert (description.trim() != ""); // ensure that the task has some description for it
 		
@@ -71,7 +72,7 @@ abstract class CommandHandler {
 				break;
 		}
 
-		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
+		Task newTask = new Task(taskType, description, startDateTime, endDateTime, deadline, "undone");
 		return newTask;
 	}
 }
