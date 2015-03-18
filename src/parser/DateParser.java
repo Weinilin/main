@@ -67,14 +67,14 @@ public class DateParser {
 	private int minute;
 
 	public DateParser(String dateTime) {
-		parseFormattedString(dateTime);
+		processFormattedString(dateTime);
 	}
 
 	public DateParser() {
 	}
 
 	//need another constructor for parsing unformatted string
-	private void parseFormattedString(String dateTime) {
+	private void processFormattedString(String dateTime) {
 		day = Integer.parseInt(dateTime.substring(0, 2));
 		month = Integer.parseInt(dateTime.substring(3, 5));
 		year = Integer.parseInt(dateTime.substring(6, 10));

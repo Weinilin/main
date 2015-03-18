@@ -13,12 +13,11 @@ public class MarkHandler {
 		this.memory = memory;
 	}
 	
-	protected boolean markTaskDone(String taskInformation) throws IndexOutOfBoundsException  {
+	protected boolean markTaskDone(String taskInformation)  {
 		IndexParser ip = new IndexParser();
 		int index = ip.getIndex(taskInformation);
 		try {
-			memory.markDone(index);
-			
+			memory.markDone(index);			
 		} catch (IndexOutOfBoundsException iob) {
 			return false;
 		} 

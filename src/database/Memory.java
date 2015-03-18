@@ -1,6 +1,6 @@
 package database;
 
-import application.TaskData;
+import application.Task;
 import application.TaskDataComparator;
 
 import java.util.ArrayList;
@@ -8,14 +8,18 @@ import java.util.Collections;
 
 public class Memory {
 
-	public final String DONE = "done";
+	private final String DONE = "done";
 	
-	private ArrayList<TaskData> taskList = new ArrayList<TaskData>();
-	private Database database = new Database();
+	private ArrayList<Task> taskList = new ArrayList<Task>();
+	private Memory memory;
 	
-	public Memory(Database database) {
-		this.database = database;
+	private Memory() {
+		Database database = Database.getInstance();
 		initMemory(database);
+	}
+	
+	public Memory getInstance() {
+		return memory;
 	}
 	
 	/**
@@ -25,11 +29,17 @@ public class Memory {
 	 * @param newTask - new task created
 	 * @return 
 	 */
-	public boolean addTask(TaskData newTask) {
-		taskList.add(newTask);	
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+	public boolean addTask(Task newTask) {
+		taskList.add(newTask);
+		assert isTaskAdded(newTask);
+		sortTaskList();
+		writeToDatabase();
 		return true;
+	}
+	
+	private void writeToDatabase() {
+		Database database = Database.getInstance();
+		database.writeToDatabase(taskList);
 	}
 	
 	/**
@@ -39,22 +49,36 @@ public class Memory {
 	 * @return removedTask - deleted Task
 	 * @throws IndexOutOfBoundsException - if index if out of range of the list
 	 */
-	public TaskData deleteTask(int index) throws IndexOutOfBoundsException {
-		TaskData removedTask;
-		try {
-			removedTask = taskList.remove(index - 1);
-		} catch (IndexOutOfBoundsException iob) {
-			return null;
+//	public Task deleteTask(int index) throws IndexOutOfBoundsException {
+//		Task removedTask;
+//		try {
+//			removedTask = taskList.remove(index - 1);
+//		} catch (IndexOutOfBoundsException iob) {
+//			return null;
+//		}
+//		sortTaskList();
+//		writeToDatabase();
+//		return removedTask;
+//	}
+	
+	public Task removeTask(Task removedTask) {
+		for (int i = 0; i < taskList.size(); i++) {
+			Task currentTask = taskList.get(i);
+			if (currentTask == removedTask) {
+				taskList.remove(i);
+			}
 		}
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		assert isTaskRemoved(removedTask);
+		sortTaskList();
+		writeToDatabase();
 		return removedTask;
 	}
 	
-	public ArrayList<TaskData> deleteAll() {
-		ArrayList<TaskData> deletedTaskList = new ArrayList<TaskData>();
-		taskList = new ArrayList<TaskData>();
-		database.writeToDatabase(taskList);
+	public ArrayList<Task> deleteAll() {
+		ArrayList<Task> deletedTaskList = taskList;
+		taskList = new ArrayList<Task>();
+		assert isEmptyTaskList();
+		writeToDatabase();
 		return deletedTaskList;
 	}
 	
@@ -64,73 +88,75 @@ public class Memory {
 	 * @param keyword
 	 * @return result arraylist containing the index that contains the keyword
 	 */
-	public ArrayList<TaskData> searchDescription(String keyword) {
-		ArrayList<TaskData> searchList = new ArrayList<TaskData>();
+	public ArrayList<Task> searchDescription(String keyword) {
+		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
-			TaskData task = taskList.get(i);
+			Task task = taskList.get(i);
 			if (task.getDescription().contains(keyword)) {
 				searchList.add(task);
 			}
 		}
+		assert isCorrectKeywordSearchList(searchList, keyword);
 		return searchList;
 	}
 	
-	public ArrayList<TaskData> searchStatus(String status) {
-		ArrayList<TaskData> searchList = new ArrayList<TaskData>();
+	public ArrayList<Task> searchStatus(String status) {
+		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
-			TaskData task = taskList.get(i);
+			Task task = taskList.get(i);
 			if (task.getStatus().contains(status)) {
 				searchList.add(task);
 			}
 		}
+		assert isCorrectStatusSearchList(searchList, status);
 		return searchList;
 	}
 	
 	public void editDeadline(int index, String newDeadline) {
-		TaskData task = taskList.get(index - 1);
+		Task task = taskList.get(index - 1);
 		task.setDeadline(newDeadline);
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		sortTaskList();
+		writeToDatabase();
 	}
 	
 	public void editTime(int index, String newStartDateTime, String newEndDateTime) {
-		TaskData task = taskList.get(index - 1);
+		Task task = taskList.get(index - 1);
 		task.setStartDateTime(newStartDateTime);
 		task.setEndDateTime(newEndDateTime);
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		sortTaskList();
+		writeToDatabase();
 	}
 	
 	public void editDescription(int index, String newDescription) {
-		TaskData task = taskList.get(index - 1);
+		Task task = taskList.get(index - 1);
 		task.setDescription(newDescription);
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		sortTaskList();
+		writeToDatabase();
 	}
 	
-	public void sortTaskList() {
+	private void sortTaskList() {
 		Collections.sort(taskList, new TaskDataComparator());
 	}
 	
 	public void markDone(int index) {
-		TaskData task = taskList.get(index - 1);
+		Task task = taskList.get(index - 1);
 		task.setStatus(DONE);
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		sortTaskList();
+		writeToDatabase();
 	}
 	
 	public void editTaskType(int index, String newTaskType) {
-		TaskData task = taskList.get(index - 1);
+		Task task = taskList.get(index - 1);
 		task.setTaskType(newTaskType);
-		Collections.sort(taskList, new TaskDataComparator());
-		database.writeToDatabase(taskList);
+		sortTaskList();
+		writeToDatabase();
 	}
 	
 	private void initMemory(Database database) {
 		taskList = database.readDatabase();
 	}
 	
-	public ArrayList<TaskData> getTaskList() {
+	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}
 	
@@ -140,6 +166,55 @@ public class Memory {
 			System.out.println();
 		}
 	}
+	
+	private boolean isCorrectKeywordSearchList(ArrayList<Task> searchList, String keyword) {
+		for (int i = 0; i < searchList.size(); i++) {
+			Task currentTask = searchList.get(i);
+			if (!currentTask.getDescription().contains(keyword)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isCorrectStatusSearchList(ArrayList<Task> searchList, String status) {
+		for (int i = 0; i < searchList.size(); i++) {
+			Task currentTask = searchList.get(i);
+			if (!currentTask.getStatus().equals(status)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isTaskRemoved(Task removedTask) {
+		for (int i = 0; i < taskList.size(); i++) {
+			Task currentTask = taskList.get(i);
+			if (currentTask == removedTask) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean isEmptyTaskList() {
+		if (taskList.size() == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isTaskAdded(Task newTask) {
+		for (int i = 0; i < taskList.size(); i++) {
+			Task currentTask = taskList.get(i);
+			if (currentTask == newTask) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	
 //	public static void main(String[] args) {
 //		Database db = new Database();

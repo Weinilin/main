@@ -3,7 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import database.Memory;
-import application.TaskData;
+import application.Task;
 
 /**
  * showing all tasks in the taskList by passing no
@@ -26,14 +26,16 @@ public class ShowHandler {
 	 * 		   the list is empty
 	 */
 	protected String showTask() {
+		int i = 1;
 		String result = new String();
 		if (memory.getTaskList().size() == 0) {
-			result = "There is no task.";
+			result = "There is no task.\n";
 		}
 		else {
-			ArrayList<TaskData> task = memory.getTaskList();
-			for (TaskData td: task) {
-				result += td.toString() + "\n";
+			ArrayList<Task> task = memory.getTaskList();
+			for (Task td: task) {
+				result += i + ".\n" + td.toString() + "\n";
+				i++;
 			}
 		}
 		
@@ -50,12 +52,12 @@ public class ShowHandler {
 	protected String showTask(String keyword) {
 		int i = 1;
 		String result = new String();
-		ArrayList<TaskData> searchList = memory.searchDescription(keyword);
+		ArrayList<Task> searchList = memory.searchDescription(keyword);
 		if (searchList.isEmpty()) {
 			return "No task containing " + keyword +"\n";
 		}
 		else {
-			for (TaskData td: searchList) {
+			for (Task td: searchList) {
 				result += i + ". \n" + td.toString() + "\n";
 				i++;
 			}

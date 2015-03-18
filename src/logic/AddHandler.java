@@ -3,97 +3,59 @@
  */
 package logic;
 
-import java.util.ArrayList;
 
-import parser.DateParser;
-import parser.DescriptionParser;
-import parser.TaskTypeParser;
-import parser.TimeParser;
-import application.TaskData;
 import database.Memory;
+import application.Task;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;;
 
 /**
- *  handle adding a task to the task list
- *  and write the changes to database if adding is
- *  success
+ * CommandHandler for "add" function.
+ * 
+ * Adding tasks is achieved by "add [task information]"
+ * New task included in parameter invokes the static method createNewTask
+ * in CommandHandler abstract class through various parsers.
+ * The new task is added to the memory 
+ * 
+ * @author A0114463M
+ *
  */
-public class AddHandler {
+public class AddHandler extends CommandHandler {
 
-	private Memory memory;
+	private static final Logger addLogger = 
+			Logger.getLogger(AddHandler.class.getName());
 	
-	protected AddHandler(Memory memory) {
-		this.memory = memory;
+	@Override
+	protected String getAliases() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	/**
-	 * add a new task to TaskList by input from user
-	 * 
-	 * @param taskInformation - the parameters user given
-	 * @param taskList - list of tasks
-	 * @return - Strin of new task
-	 */
-	protected String addTask(String taskInformation) {
-		TaskData newTask = createNewTask(taskInformation);
-		if (memory.addTask(newTask)) {
-			return newTask.toString();
-		} 
-		else {
-			// It shall never come here
-			return null;
-		}	
-	}
-	
-	/**
-	 * add a new task to tasklist by a given TaskData object
-	 * 
-	 * @param newTask
-	 * @param taskList
-	 * @return true if success
-	 */
-	protected boolean addTask(TaskData newTask) {
-		return memory.addTask(newTask);
-	}
-	
-	/**
-	 * parse and create a new task
-	 * 
-	 * @param taskInformation - information to be included in the task
-	 * @return new taskdata
-	 */
-	protected static TaskData createNewTask(String taskInformation) {
-		String description = DescriptionParser.getDescription(taskInformation);
-		
-		DateParser dp = new DateParser();
-		ArrayList<String> date = dp.extractDate(taskInformation);
-		
-		TimeParser tp = new TimeParser();
-		ArrayList<String> time = tp.extractTime(taskInformation);
-		
-		String taskType = TaskTypeParser.getTaskType();
-		
-		String deadline = new String("-");
-		String startDateTime = new String("-");
-		String endDateTime = new String("-");
-		switch (taskType) {
-			case "deadline":
-				deadline = date.get(0) + " " + time.get(0);
-				break;
-			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(1);
-				endDateTime = date.get(1) + " " + time.get(0);
-				break;
-			case "floating task":
-				break;
-			default:
-				break;
+
+	@Override
+	protected String execute(String command, String parameter, Memory memory) {
+		if (parameter.trim() == "") {
+			return getHelp();
 		}
+		else {
+			addLogger.entering(getClass().getName(), "Add non empty task");
+			Task newTask = CommandHandler.createNewTask(parameter);
+			// a non empty task is created
+			assert (newTask != null);	
+			if (memory.addTask(newTask)) {
+				addLogger.log(Level.FINE, "Add sucess");
+				return newTask.toString();
+			} 
+			else {
+				addLogger.log(Level.SEVERE, "Error adding new task!");
+				throw new Error("Fatal error! Unable to add Task");
+			}	
+		}
+	}
 
-		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
-		return newTask;
+	@Override
+	public String getHelp() {
+		return "add <task informatino>\n\t To add a new task to TaskManager";
 	}
-	
-	
-	
-	protected String getHelp() {
-		return "add <task informatino>\n to TaskManager";
-	}
+
 }

@@ -3,40 +3,55 @@
  */
 package logic;
 
-import database.Memory;
-import application.TaskData;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import application.Task;
 import parser.IndexParser;
+import database.Memory;
 
 /**
- * remove a task from TaskList 
+ * CommandHandler for deleting a task
+ * 
+ * Deleting task is achieved by "delete [index]"
+ * The task is removed from memory upon a success removal and the task
+ * is returned in String. null is returned for failed removal.
+ * 
+ * @author A0114463M
  *
  */
-public class DeleteHandler {
+public class DeleteHandler extends CommandHandler {
 
-	private Memory memory;
+	private static final Logger deleteLogger = 
+			Logger.getLogger(DeleteHandler.class.getName());
 	
-	protected DeleteHandler(Memory memory) {
-		this.memory = memory;
+	@Override
+	protected String getAliases() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	/**
-	 * remove a task from taskList
-	 * 
-	 * @param taskInformation - parameter user given
-	 * @param taskList
-	 * @return removed taskdata if success, null if no legal index entered
-	 * @throws IndexOutOfBoundsException if the index entered is larger then the size
-	 */
-	protected TaskData deleteTask(String taskInformation) throws IndexOutOfBoundsException  {
+
+
+	@Override
+	protected String execute(String command, String parameter, Memory memory) {
+		deleteLogger.log(Level.FINE, "preparing for delete");
 		IndexParser ip = new IndexParser();
-		TaskData removedTask = new TaskData();
-		int index = ip.getIndex(taskInformation);
+		Task removedTask = new Task();
+		int index = ip.getIndex(parameter);
 		try {
-			removedTask = memory.deleteTask(index);
+			removedTask = memory.removeTask(index);
 		} catch (IndexOutOfBoundsException iob) {
-			return removedTask;
+			deleteLogger.log(Level.WARNING, "Index out of range", iob);
+			return null;
 		} 
-	
-		return removedTask;
+		
+		deleteLogger.log(Level.FINE, "Successfully deleted");
+		return removedTask.toString();
 	}
+
+	@Override
+	public String getHelp() {
+		return "delete <index>\n\t To remove the respective task of the index from TaskManager";
+	}
+
 }
