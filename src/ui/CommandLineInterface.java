@@ -13,7 +13,7 @@ public class CommandLineInterface {
 	public CommandLineInterface(){
 	} 	
 
-	public void userInput(){
+	public void processUserInput(){
 		Scanner scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
 		commandHandler.processCommand("display");

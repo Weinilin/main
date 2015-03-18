@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import database.Memory;
 import database.Database;
 import parser.CommandParser;
-import application.TaskData;
+import application.Task;
 
 /**
  * Construct by passing a TaskList to the constructor 
@@ -17,7 +17,7 @@ import application.TaskData;
 public class LogicController {
 
 	private Memory memory;
-	private Database database;
+	private Database database;//no need to have database here, in fact shouldn't have access to it
 	
 	public LogicController() {
 		Database database = new Database();
@@ -50,29 +50,29 @@ public class LogicController {
 				break;
 			case "delete":
 				DeleteHandler dh = new DeleteHandler(memory);
-				TaskData removedTask= dh.deleteTask(userInput);
+				Task removedTask= dh.deleteTask(userInput);
 				if (removedTask != null) {
 					feedback = "Successfully deleted: \n" + removedTask.toString();
 				}
 				else {
-					feedback = "Please check your input";
+					feedback = "Please check your input\n";
 				}
 				break;
 			case "edit":
 				EditHandler eh = new EditHandler(memory);
 				if (eh.editTask(userInput)) {
-					feedback = "Updated to " + userInput;
+					feedback = "Successfully updated to " + userInput + "\n";
 				}
 				else {
-					feedback = "Please check your input";
+					feedback = "Please check your input\n";
 				}
 				break;
 			case "show":
 				ShowHandler sh = new ShowHandler(memory);
-				feedback = sh.showTask(userInput);
+				feedback = sh.showTask();
 				break;
 			case "exit":
-				feedback = "Goodbye!";
+				feedback = "Goodbye!\n";
 				System.out.println(feedback);
 				System.exit(0);
 				break;

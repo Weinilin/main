@@ -9,7 +9,7 @@ import parser.DateParser;
 import parser.DescriptionParser;
 import parser.TaskTypeParser;
 import parser.TimeParser;
-import application.TaskData;
+import application.Task;
 import database.Memory;
 
 /**
@@ -31,8 +31,8 @@ public class AddHandler {
 	 * @param taskList - list of tasks
 	 * @return - true if successfully added
 	 */
-	protected boolean addTask(String taskInformation) {
-		TaskData newTask = createNewTask(taskInformation);
+	protected boolean addTask(String taskInformation) {//shouldn't this be userinput
+		Task newTask = createNewTask(taskInformation);
 		if (memory.addTask(newTask)) {
 			return true;
 		} else {
@@ -47,7 +47,7 @@ public class AddHandler {
 	 * @param taskList
 	 * @return true if success
 	 */
-	protected boolean addTask(TaskData newTask) {
+	protected boolean addTask(Task newTask) {
 		return memory.addTask(newTask);
 	}
 	
@@ -57,7 +57,7 @@ public class AddHandler {
 	 * @param taskInformation - information to be included in the task
 	 * @return new taskdata
 	 */
-	protected static TaskData createNewTask(String taskInformation) {
+	protected static Task createNewTask(String taskInformation) {//shouldn't this be userinput?
 		String description = DescriptionParser.getDescription(taskInformation);
 		
 		DateParser dp = new DateParser();
@@ -76,8 +76,8 @@ public class AddHandler {
 				deadline = date.get(0) + " " + time.get(0);
 				break;
 			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(1);
-				endDateTime = date.get(1) + " " + time.get(0);
+				startDateTime = date.get(0)+ " " + time.get(0);
+				endDateTime = date.get(1) + " " + time.get(1);
 				break;
 			case "floating task":
 				break;
@@ -85,7 +85,7 @@ public class AddHandler {
 				break;
 		}
 
-		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
+		Task newTask = new Task(taskType, description, startDateTime, endDateTime, deadline, "undone");
 		return newTask;
 	}
 	

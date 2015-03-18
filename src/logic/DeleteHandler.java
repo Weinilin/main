@@ -4,7 +4,7 @@
 package logic;
 
 import database.Memory;
-import application.TaskData;
+import application.Task;
 import parser.IndexParser;
 
 /**
@@ -27,9 +27,9 @@ public class DeleteHandler {
 	 * @return removed taskdata if success, null if no legal index entered
 	 * @throws IndexOutOfBoundsException if the index entered is larger then the size
 	 */
-	protected TaskData deleteTask(String taskInformation) throws IndexOutOfBoundsException  {
+	protected Task deleteTask(String taskInformation) throws IndexOutOfBoundsException  {
 		IndexParser ip = new IndexParser();
-		TaskData removedTask = new TaskData();
+		Task removedTask = new Task();
 		int index = ip.extractIndex(taskInformation);
 		try {
 			removedTask = memory.deleteTask(index);

@@ -4,7 +4,7 @@
 package logic;
 
 import database.Memory;
-import application.TaskData;
+import application.Task;
 
 /**
  * Modify a task by invoking remove the task intended to remove and 
@@ -29,8 +29,8 @@ public class EditHandler {
 	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {
 		DeleteHandler dh = new DeleteHandler(memory);
 		AddHandler ah = new AddHandler(memory);
-		TaskData oldTask = new TaskData();
-		TaskData newTask = AddHandler.createNewTask(taskInformation.substring(taskInformation.indexOf(" ")));	
+		Task oldTask = new Task();
+		Task newTask = AddHandler.createNewTask(taskInformation.substring(taskInformation.indexOf(" ")));	
 		try  {
 			oldTask = dh.deleteTask(taskInformation);
 			ah.addTask(newTask);
