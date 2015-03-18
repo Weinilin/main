@@ -9,28 +9,37 @@ public class CommandLineInterface {
 
 	private static final String COMMAND_MESSAGE = new String("Command: ");
 	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
+	private Scanner scanner;
 
 	public CommandLineInterface(){
 	} 	
 
-	public void processUserInput(){
-		Scanner scanner = new Scanner(System.in);
+	/**
+	 * Scan the user input and execute the command.
+	 */
+	public void userInput(){
+		String userCommand, message, display;
+		scanner = new Scanner(System.in);
 		LogicController commandHandler = new LogicController();
-		commandHandler.processCommand("display");
-		String userCommand, message;
+		display = commandHandler.executeCommand("show");
+		printMessageToUser(display);
 	
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
 		while (true) {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
-			message = commandHandler.processCommand(userCommand);
-			commandHandler.processCommand("display");
+			message = commandHandler.executeCommand(userCommand);
+			display = commandHandler.executeCommand("show");
 			printMessageToUser(message);
+			printMessageToUser(display);
 		}
 	}
 
-	//print all of the different type of message using this method
+	/**
+	 * Print all of the message to the user
+	 * @param message
+	 */
 	public void printMessageToUser(String message){
 		System.out.printf(message);
 	}

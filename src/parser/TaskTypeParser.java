@@ -6,8 +6,13 @@ import java.util.ArrayList;
 
 public class TaskTypeParser {
 
-	public static String extractTaskType(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = getNumberOfTimeInput(storageOfTime);
+	/**
+	 * Determine the type of task.
+	 * @param storageOfTime
+	 * @return the task type.
+	 */
+	public static String getTaskType() {
+		int numberOfTimeInput = DateTimeParser.getNumberOfTime();	
 		String taskType;
 
 		if(numberOfTimeInput == 2){
@@ -21,11 +26,5 @@ public class TaskTypeParser {
 		}
 		return taskType;
 	}
-
-	private static int getNumberOfTimeInput(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = storageOfTime.size();
-		return numberOfTimeInput;
-	}
-
 }
 
