@@ -25,6 +25,15 @@ public class Task {
 	public Task() {
 		
 	}
+	
+	public Task(Task task) {
+		this.taskType = task.getTaskType();
+		this.description = task.getDescription();
+		this.startDateTime = task.getStartDateTime();
+		this.endDateTime = task.getEndDateTime();
+		this.deadline = task.getDeadline();
+		this.status = task.getStatus();
+	}
 	//(improvement to be made)
 	//1. need to check validity of data
 	//2. separate constructor for different task type
