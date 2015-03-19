@@ -31,6 +31,11 @@ public class EditHandler extends CommandHandler {
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
+		String[] token = parameter.split(" ");
+		if (isHelp(token)) {
+			return getHelp();
+		}
+		
 		IndexParser ip = new IndexParser();		
 		int index = ip.getIndex(parameter);
 		if (index < 0 || index > taskList.size()) {
@@ -39,11 +44,10 @@ public class EditHandler extends CommandHandler {
 		
 		Task removedTask, newTask = new Task();
 
-		String[] token = parameter.split(" ");
 		switch (token[0].toLowerCase()) {
 			case "description":
 				removedTask = taskList.remove(index);
-				newTask = removedTask;
+				newTask = new Task(removedTask);
 				break;
 			case "time":
 				break;
@@ -59,6 +63,10 @@ public class EditHandler extends CommandHandler {
 						parameter.replace(token[0], "").replace(Integer.toString(index),  "").trim());
 			}
 		return null;
+	}
+
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase() == "help";
 	}
 
 	@Override

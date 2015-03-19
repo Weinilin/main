@@ -21,8 +21,12 @@ public class MarkHandler extends CommandHandler {
 	@Override
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		markLogger.entering(getClass().getName(), "Entering marking");
+		String[] token = parameter.split(" ");
+		if (token[0].toLowerCase() == "help") {
+			return getHelp();
+		}
 		IndexParser ip = new IndexParser();
-		int index = ip.getIndex(parameter);
+		int index = ip.getIndex(token[0]);
 		try {
 			taskList.get(index).setStatus("done");
 			memory.markDone(index);			

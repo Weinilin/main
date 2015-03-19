@@ -33,11 +33,13 @@ public class AddHandler extends CommandHandler {
 
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-		if (parameter.trim() == "") {
+		addLogger.entering(getClass().getName(), "entering adding tasks");
+		
+		String[] token = parameter.split(" ");
+		if (isHelp(token)) {
 			return getHelp();
 		}
 
-		addLogger.entering(getClass().getName(), "Add non empty task");
 		Task newTask = CommandHandler.createNewTask(parameter);
 		// a non empty task is created
 		assert (newTask != null);	
@@ -52,6 +54,10 @@ public class AddHandler extends CommandHandler {
 			throw new Error("Fatal error! Unable to add Task");
 		}	
 		
+	}
+
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase() == "help";
 	}
 
 	@Override

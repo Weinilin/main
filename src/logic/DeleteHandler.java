@@ -34,26 +34,42 @@ public class DeleteHandler extends CommandHandler {
 
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-		if (parameter.trim() == "") {
+		deleteLogger.entering(getClass().getName(), "preparing for delete");
+
+		String[] token = parameter.split(" ");
+		if (isHelp(token)) {
 			return getHelp();
 		}
 		
-		deleteLogger.entering(getClass().getName(), "preparing for delete");
+		String goodFeedback = new String(), 
+			   badFeedback = new String();		
+		
 		IndexParser ip = new IndexParser();
 		Task removedTask = new Task();
-		int index = ip.getIndex(parameter);
-		try {
-			removedTask = taskList.remove(index);
-		} catch (IndexOutOfBoundsException iob) {
-			deleteLogger.log(Level.WARNING, "Index out of range", iob);
-			return null;
-		} 
 		
-		if (removedTask != null) {
-			memory.removeTask(removedTask);
+		for (String t: token) {
+			int index = ip.getIndex(token[0]);
+			try {
+				removedTask = taskList.remove(index);				
+				if (removedTask != null) {
+					memory.removeTask(removedTask);
+				}
+				goodFeedback += t + " ";
+				deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
+			} catch (IndexOutOfBoundsException iob) {
+				badFeedback += t + " ";
+				deleteLogger.log(Level.WARNING, t + " is invalid!\n", iob);			
+			} 
 		}
-		deleteLogger.log(Level.FINE, "Successfully deleted");
-		return removedTask.toString();
+		
+		String feedback = "Successfully remmoved " + goodFeedback.trim() + "\n" +
+						  "Invalid input " + badFeedback.trim() + "\n";	
+		return feedback;
+	}
+
+
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase() == "help";
 	}
 
 	@Override

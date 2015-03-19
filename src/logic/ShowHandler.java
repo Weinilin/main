@@ -30,6 +30,11 @@ public class ShowHandler extends CommandHandler{
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
 		
+		String[] token = parameter.split(" ");
+		if (isHelp(token)) {
+			return getHelp();
+		}
+		
 		int i = 1;
 		String result = new String();
 		if (parameter.trim() == "") {
@@ -63,6 +68,10 @@ public class ShowHandler extends CommandHandler{
 				return result;
 			}
 		}	
+	}
+
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase() == "help";
 	}
 	
 	@Override
