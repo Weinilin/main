@@ -17,10 +17,10 @@ public class CommandLineInterface {
 	/**
 	 * Scan the user input and execute the command.
 	 */
-	public void userInput(){
+	public void processUserInput(){
 		String userCommand, message, display;
 		scanner = new Scanner(System.in);
-		LogicController commandHandler = new LogicController();
+		LogicController commandHandler = LogicController.getInstance();
 		display = commandHandler.executeCommand("show");
 		printMessageToUser(display);
 	

@@ -2,6 +2,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.io.File;
 
 import database.Memory;
 import parser.DateParser;
@@ -16,6 +17,7 @@ import application.Task;
  */
 abstract class CommandHandler {
 
+	File configure;
 	Memory memory = Memory.getInstance();
 	/**
 	 * get all the aliases acceptable to the command such that

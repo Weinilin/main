@@ -6,6 +6,7 @@ package logic;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
@@ -22,13 +23,15 @@ import parser.IndexParser;
  */
 public class DeleteHandler extends CommandHandler {
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("delete", "d", "remove", "-"));
 	private static final Logger deleteLogger = 
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
 	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 

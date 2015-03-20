@@ -3,6 +3,7 @@ package logic;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
@@ -18,13 +19,15 @@ import parser.IndexParser;
  */
 public class EditHandler extends CommandHandler {
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("edit", "e", "update"));
 	private static final Logger editLogger =
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
 	protected ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 	@Override
@@ -44,24 +47,7 @@ public class EditHandler extends CommandHandler {
 		
 		Task removedTask, newTask = new Task();
 
-		switch (token[0].toLowerCase()) {
-			case "description":
-				removedTask = taskList.remove(index);
-				newTask = new Task(removedTask);
-				break;
-			case "time":
-				break;
-			default:
-				try {
-					index = Integer.parseInt(token[0]);									
-				} catch (NumberFormatException nfe) {
-					editLogger.log(Level.WARNING, "Invalid Input");
-					return "Invalid index! Please check your input\n";
-				}			
-				removedTask = taskList.remove(index);
-				newTask = CommandHandler.createNewTask(
-						parameter.replace(token[0], "").replace(Integer.toString(index),  "").trim());
-			}
+	
 		return null;
 	}
 

@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -18,12 +19,14 @@ import application.Task;
  */
 public class ShowHandler extends CommandHandler{
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("show", "s", "display"));
 	private static final Logger showLogger =
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
 	protected ArrayList<String> getAliases() {
-		return null;
+		return aliases;
 	}
 	
 	@Override

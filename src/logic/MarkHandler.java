@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
@@ -8,14 +9,22 @@ import parser.IndexParser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+ * CommandHandler for "mark" function
+ * 
+ * Mark a task as done by typing the keyword following 
+ * by the index of task that is intended to be marked
+ */
 public class MarkHandler extends CommandHandler {
-	
+
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("mark", "done", "d"));
 	private static final Logger markLogger = 
 			Logger.getLogger(MarkHandler.class.getName());
 	
 	@Override
 	protected ArrayList<String> getAliases() {
-		return null;
+		return aliases;
 	}
 	
 	@Override

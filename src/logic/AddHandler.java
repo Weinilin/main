@@ -6,6 +6,7 @@ package logic;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import application.Task;
 
@@ -22,13 +23,15 @@ import application.Task;
  */
 public class AddHandler extends CommandHandler {
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("add", "a", "new", "+"));
 	private static final Logger addLogger = 
 			Logger.getLogger(AddHandler.class.getName());
 	
 	@Override
 	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 	@Override
