@@ -14,7 +14,7 @@ public class MarkHandler extends CommandHandler {
 			Logger.getLogger(MarkHandler.class.getName());
 	
 	@Override
-	String getAliases() {
+	protected ArrayList<String> getAliases() {
 		return null;
 	}
 	

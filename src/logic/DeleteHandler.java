@@ -26,7 +26,7 @@ public class DeleteHandler extends CommandHandler {
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
-	protected String getAliases() {
+	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
 		return null;
 	}

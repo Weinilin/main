@@ -18,10 +18,11 @@ abstract class CommandHandler {
 
 	Memory memory = Memory.getInstance();
 	/**
-	 * get all the aliases acceptable to the command
+	 * get all the aliases acceptable to the command such that
+	 * they can invoke the handler
 	 * @return string that contains the command 
 	 */
-	abstract String getAliases();
+	abstract protected ArrayList<String> getAliases();
 	
 	/**
 	 * execute the command based on the input from user (such as "add",

@@ -26,7 +26,7 @@ public class AddHandler extends CommandHandler {
 			Logger.getLogger(AddHandler.class.getName());
 	
 	@Override
-	protected String getAliases() {
+	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
 		return null;
 	}

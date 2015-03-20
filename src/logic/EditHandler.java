@@ -22,7 +22,7 @@ public class EditHandler extends CommandHandler {
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
-	String getAliases() {
+	protected ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
 		return null;
 	}
