@@ -9,7 +9,8 @@ import application.TaskDataComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
+import java.util.logging.Logger;
+import java.util.logging.Level;
 /**
  * Memory acts as a facade between LogicController and Database.
  * LogicController makes changes to the taskList stored in Memory.
@@ -19,7 +20,7 @@ import java.util.Collections;
  *
  */
 public class Memory {
-
+	
 	private final String DONE = "done";
 	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
@@ -45,8 +46,8 @@ public class Memory {
 	 * @return 
 	 */
 	public boolean addTask(Task newTask) {
+		assert isValidTask(newTask);
 		taskList.add(newTask);
-		assert isTaskAdded(newTask);
 		sortTaskList();
 		writeToDatabase();
 		return true;
@@ -57,33 +58,15 @@ public class Memory {
 		database.writeToDatabase(taskList);
 	}
 	
-	/**
-	 * try to remove a task by index from the list
-	 * 
-	 * @param index - index of task want to be deleted
-	 * @return removedTask - deleted Task
-	 * @throws IndexOutOfBoundsException - if index if out of range of the list
-	 */
-//	public Task deleteTask(int index) throws IndexOutOfBoundsException {
-//		Task removedTask;
-//		try {
-//			removedTask = taskList.remove(index - 1);
-//		} catch (IndexOutOfBoundsException iob) {
-//			return null;
-//		}
-//		sortTaskList();
-//		writeToDatabase();
-//		return removedTask;
-//	}
 	
 	public Task removeTask(Task removedTask) {
+		assert isValidTask(removedTask);
 		for (int i = 0; i < taskList.size(); i++) {
 			Task currentTask = taskList.get(i);
 			if (currentTask == removedTask) {
 				taskList.remove(i);
 			}
 		}
-		assert isTaskRemoved(removedTask);
 		sortTaskList();
 		writeToDatabase();
 		return removedTask;
@@ -92,7 +75,6 @@ public class Memory {
 	public ArrayList<Task> deleteAll() {
 		ArrayList<Task> deletedTaskList = taskList;
 		taskList = new ArrayList<Task>();
-		assert isEmptyTaskList();
 		writeToDatabase();
 		return deletedTaskList;
 	}
@@ -104,6 +86,7 @@ public class Memory {
 	 * @return result arraylist containing the index that contains the keyword
 	 */
 	public ArrayList<Task> searchDescription(String keyword) {
+		assert isValidKeyword(keyword);
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
 			Task task = taskList.get(i);
@@ -111,11 +94,11 @@ public class Memory {
 				searchList.add(task);
 			}
 		}
-		assert isCorrectKeywordSearchList(searchList, keyword);
 		return searchList;
 	}
 	
 	public ArrayList<Task> searchStatus(String status) {
+		assert isValidStatus(status);
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
 			Task task = taskList.get(i);
@@ -123,11 +106,11 @@ public class Memory {
 				searchList.add(task);
 			}
 		}
-		assert isCorrectStatusSearchList(searchList, status);
 		return searchList;
 	}
 	
 	public void editDeadline(int index, String newDeadline) {
+		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setDeadline(newDeadline);
 		sortTaskList();
@@ -135,6 +118,7 @@ public class Memory {
 	}
 	
 	public void editTime(int index, String newStartDateTime, String newEndDateTime) {
+		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setStartDateTime(newStartDateTime);
 		task.setEndDateTime(newEndDateTime);
@@ -143,6 +127,7 @@ public class Memory {
 	}
 	
 	public void editDescription(int index, String newDescription) {
+		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setDescription(newDescription);
 		sortTaskList();
@@ -154,6 +139,7 @@ public class Memory {
 	}
 	
 	public void markDone(int index) {
+		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setStatus(DONE);
 		sortTaskList();
@@ -161,6 +147,7 @@ public class Memory {
 	}
 	
 	public void editTaskType(int index, String newTaskType) {
+		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setTaskType(newTaskType);
 		sortTaskList();
@@ -182,175 +169,144 @@ public class Memory {
 		}
 	}
 	
-	private boolean isCorrectKeywordSearchList(ArrayList<Task> searchList, String keyword) {
-		for (int i = 0; i < searchList.size(); i++) {
-			Task currentTask = searchList.get(i);
-			if (!currentTask.getDescription().contains(keyword)) {
-				return false;
-			}
-		}
-		return true;
+	public boolean isValidTask(Task newData) {
+		return newData != null;
 	}
 	
-	private boolean isCorrectStatusSearchList(ArrayList<Task> searchList, String status) {
-		for (int i = 0; i < searchList.size(); i++) {
-			Task currentTask = searchList.get(i);
-			if (!currentTask.getStatus().equals(status)) {
-				return false;
-			}
-		}
-		return true;
+	public boolean isValidKeyword(String keyword) {
+		return keyword != null;
 	}
 	
-	private boolean isTaskRemoved(Task removedTask) {
-		for (int i = 0; i < taskList.size(); i++) {
-			Task currentTask = taskList.get(i);
-			if (currentTask == removedTask) {
-				return false;
-			}
-		}
-		return true;
+	public boolean isValidStatus(String status) {
+		return status != null;
+	}
+	
+	public boolean isValidIndex(int index) {
+		return (index > 0 && index <= taskList.size());
 	}
 
-	private boolean isEmptyTaskList() {
-		if (taskList.size() == 0) {
-			return true;
-		}
-		return false;
+	
+	
+	public static void main(String[] args) {
+		
+		Memory memory = Memory.getInstance();
+
+		
+		ArrayList<String> taskData1 = new ArrayList<String>();
+		String taskType = "time task";
+		taskData1.add(taskType);
+		String description = "task 1";
+		taskData1.add(description);
+		String startDateTime = "04/04/2015 17:00";
+		taskData1.add(startDateTime);
+		String endDateTime = "04/04/2015 18:00";
+		taskData1.add(endDateTime);
+		String deadline = "-";
+		taskData1.add(deadline);
+		String status = "not done";
+		taskData1.add(status);
+		Task newTaskData1 = new Task(taskData1);
+		memory.addTask(newTaskData1);
+		
+		ArrayList<String> taskData2 = new ArrayList<String>();
+		taskType = "time task";
+		taskData2.add(taskType);
+		description = "task 2";
+		taskData2.add(description);
+		startDateTime = "04/04/2015 14:00";
+		taskData2.add(startDateTime);
+		endDateTime = "04/04/2015 15:00";
+		taskData2.add(endDateTime);
+		deadline = "-";
+		taskData2.add(deadline);
+		status = "not done";
+		taskData2.add(status);
+		Task newTaskData2 = new Task(taskData2);
+		memory.addTask(newTaskData2);
+		
+		ArrayList<String> taskData3 = new ArrayList<String>();
+		taskType = "time task";
+		taskData3.add(taskType);
+		description = "task 3";
+		taskData3.add(description);
+		startDateTime = "26/07/2015 19:00";
+		taskData3.add(startDateTime);
+		endDateTime = "26/07/2015 20:00";
+		taskData3.add(endDateTime);
+		deadline = "-";
+		taskData3.add(deadline);
+		status = "not done";
+		taskData3.add(status);
+		Task newTaskData3 = new Task(taskData3);
+		memory.addTask(newTaskData3);
+		
+		ArrayList<String> taskData4 = new ArrayList<String>();
+		taskType = "deadline";
+		taskData4.add(taskType);
+		description = "task 4";
+		taskData4.add(description);
+		startDateTime = "-";
+		taskData4.add(startDateTime);
+		endDateTime = "-";
+		taskData4.add(endDateTime);
+		deadline = "05/05/2015 04:00";
+		taskData4.add(deadline);
+		status = "not done";
+		taskData4.add(status);
+		Task newTaskData4 = new Task(taskData4);
+		memory.addTask(newTaskData4);
+		
+		ArrayList<String> taskData5 = new ArrayList<String>();
+		taskType = "deadline";
+		taskData5.add(taskType);
+		description = "task 5";
+		taskData5.add(description);
+		startDateTime = "-";
+		taskData5.add(startDateTime);
+		endDateTime = "-";
+		taskData5.add(endDateTime);
+		deadline = "01/01/2015 09:00";
+		taskData5.add(deadline);
+		status = "not done";
+		taskData5.add(status);
+		Task newTaskData5 = new Task(taskData5);
+		memory.addTask(newTaskData5);
+		
+		ArrayList<String> taskData6 = new ArrayList<String>();
+		taskType = "floating task";
+		taskData6.add(taskType);
+		description = "task 6";
+		taskData6.add(description);
+		startDateTime = "-";
+		taskData6.add(startDateTime);
+		endDateTime = "-";
+		taskData6.add(endDateTime);
+		deadline = "-";
+		taskData6.add(deadline);
+		status = "not done";
+		taskData6.add(status);
+		Task newTaskData6 = new Task(taskData6);
+		memory.addTask(newTaskData6);
+		
+		ArrayList<String> taskData7 = new ArrayList<String>();
+		taskType = "floating task";
+		taskData7.add(taskType);
+		description = "abukhari";
+		taskData7.add(description);
+		startDateTime = "-";
+		taskData7.add(startDateTime);
+		endDateTime = "-";
+		taskData7.add(endDateTime);
+		deadline = "-";
+		taskData7.add(deadline);
+		status = "not done";
+		taskData7.add(status);
+		Task newTaskData7 = new Task(taskData7);
+		memory.addTask(newTaskData7);
+		
+		memory.display();
+		
+
+		
 	}
-	
-	private boolean isTaskAdded(Task newTask) {
-		for (int i = 0; i < taskList.size(); i++) {
-			Task currentTask = taskList.get(i);
-			if (currentTask == newTask) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
-	
-//	public static void main(String[] args) {
-//		Database db = new Database();
-//		Memory memory = new Memory(db);
-//
-//		
-//		ArrayList<String> taskData1 = new ArrayList<String>();
-//		String taskType = "time task";
-//		taskData1.add(taskType);
-//		String description = "task 1";
-//		taskData1.add(description);
-//		String startDateTime = "04/04/2015 17:00";
-//		taskData1.add(startDateTime);
-//		String endDateTime = "04/04/2015 18:00";
-//		taskData1.add(endDateTime);
-//		String deadline = "-";
-//		taskData1.add(deadline);
-//		String status = "not done";
-//		taskData1.add(status);
-//		TaskData newTaskData1 = new TaskData(taskData1);
-//		memory.addTask(newTaskData1);
-//		
-//		ArrayList<String> taskData2 = new ArrayList<String>();
-//		taskType = "time task";
-//		taskData2.add(taskType);
-//		description = "task 2";
-//		taskData2.add(description);
-//		startDateTime = "04/04/2015 14:00";
-//		taskData2.add(startDateTime);
-//		endDateTime = "04/04/2015 15:00";
-//		taskData2.add(endDateTime);
-//		deadline = "-";
-//		taskData2.add(deadline);
-//		status = "not done";
-//		taskData2.add(status);
-//		TaskData newTaskData2 = new TaskData(taskData2);
-//		memory.addTask(newTaskData2);
-//		
-//		ArrayList<String> taskData3 = new ArrayList<String>();
-//		taskType = "time task";
-//		taskData3.add(taskType);
-//		description = "task 3";
-//		taskData3.add(description);
-//		startDateTime = "26/07/2015 19:00";
-//		taskData3.add(startDateTime);
-//		endDateTime = "26/07/2015 20:00";
-//		taskData3.add(endDateTime);
-//		deadline = "-";
-//		taskData3.add(deadline);
-//		status = "not done";
-//		taskData3.add(status);
-//		TaskData newTaskData3 = new TaskData(taskData3);
-//		memory.addTask(newTaskData3);
-//		
-//		ArrayList<String> taskData4 = new ArrayList<String>();
-//		taskType = "deadline";
-//		taskData4.add(taskType);
-//		description = "task 4";
-//		taskData4.add(description);
-//		startDateTime = "-";
-//		taskData4.add(startDateTime);
-//		endDateTime = "-";
-//		taskData4.add(endDateTime);
-//		deadline = "05/05/2015 04:00";
-//		taskData4.add(deadline);
-//		status = "not done";
-//		taskData4.add(status);
-//		TaskData newTaskData4 = new TaskData(taskData4);
-//		memory.addTask(newTaskData4);
-//		
-//		ArrayList<String> taskData5 = new ArrayList<String>();
-//		taskType = "deadline";
-//		taskData5.add(taskType);
-//		description = "task 5";
-//		taskData5.add(description);
-//		startDateTime = "-";
-//		taskData5.add(startDateTime);
-//		endDateTime = "-";
-//		taskData5.add(endDateTime);
-//		deadline = "01/01/2015 09:00";
-//		taskData5.add(deadline);
-//		status = "not done";
-//		taskData5.add(status);
-//		TaskData newTaskData5 = new TaskData(taskData5);
-//		memory.addTask(newTaskData5);
-//		
-//		ArrayList<String> taskData6 = new ArrayList<String>();
-//		taskType = "floating task";
-//		taskData6.add(taskType);
-//		description = "task 6";
-//		taskData6.add(description);
-//		startDateTime = "-";
-//		taskData6.add(startDateTime);
-//		endDateTime = "-";
-//		taskData6.add(endDateTime);
-//		deadline = "-";
-//		taskData6.add(deadline);
-//		status = "not done";
-//		taskData6.add(status);
-//		TaskData newTaskData6 = new TaskData(taskData6);
-//		memory.addTask(newTaskData6);
-//		
-//		ArrayList<String> taskData7 = new ArrayList<String>();
-//		taskType = "floating task";
-//		taskData7.add(taskType);
-//		description = "abukhari";
-//		taskData7.add(description);
-//		startDateTime = "-";
-//		taskData7.add(startDateTime);
-//		endDateTime = "-";
-//		taskData7.add(endDateTime);
-//		deadline = "-";
-//		taskData7.add(deadline);
-//		status = "not done";
-//		taskData7.add(status);
-//		TaskData newTaskData7 = new TaskData(taskData7);
-//		memory.addTask(newTaskData7);
-//		
-//		memory.display();
-//		
-//
-//		
-//	}
 }
