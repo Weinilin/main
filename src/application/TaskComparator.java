@@ -32,17 +32,11 @@ public class TaskComparator implements Comparator<Task> {
 			dateTime1 = task1.getDeadline();
 		}
 		
-		System.out.println("time1 " + dateTime1);
-
-		
 		if (isTimeTask(task2)) {
 			dateTime2 = task2.getStartDateTime();
 		} else {
 			dateTime2 = task2.getDeadline();
 		}
-		
-		System.out.println("time2 " + dateTime2);
-
 		
 		DateParser dateParser1 = new DateParser(dateTime1);
 		long dateTime1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
@@ -76,7 +70,7 @@ public class TaskComparator implements Comparator<Task> {
 
 	
 	private int comparePrecedence(Task task1, Task task2) {
-		if (task1.equals("floating task")) {
+		if (task1.getTaskType().equals("floating task")) {
 			return 1;
 		} else {
 			return -1;
@@ -102,9 +96,7 @@ public class TaskComparator implements Comparator<Task> {
 	}
 	
 	private boolean isEqualPrecedence(Task task1, Task task2) {
-		System.out.println(getPrecedence(task1));
-		System.out.println(getPrecedence(task2));
-
+	
 		
 		if (getPrecedence(task1) == getPrecedence(task2)) {
 			return true;

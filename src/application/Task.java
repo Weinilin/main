@@ -90,7 +90,7 @@ public class Task {
 	}
 	
 	public String getStartDate() {
-		return startDateTime.substring(0, 11);
+		return startDateTime.substring(0, 10);
 	}
 	
 	public String getStartTime() {
@@ -98,7 +98,7 @@ public class Task {
 	}
 	
 	public String getEndDate(){
-		return endDateTime.substring(0, 11);
+		return endDateTime.substring(0, 10);
 	}
 	
 	public String getEndTime(){
@@ -106,7 +106,7 @@ public class Task {
 	}
 	
 	public String getDeadlineDate() {
-		return deadline.substring(0, 11);
+		return deadline.substring(0, 10);
 	}
 	
 	public String getDeadlineTime() {
@@ -119,6 +119,16 @@ public class Task {
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getDateTime() {
+		if (taskType.equals("time task")) {
+			return getStartDateTime() + " - " + getEndDateTime();
+		} else if (taskType.equals("deadline")) {
+			return getDeadline();
+		} else {
+			return "-";
+		}
 	}
 	
 	public boolean isDone() {

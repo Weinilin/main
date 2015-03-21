@@ -44,6 +44,7 @@ public final class TaskPrinter {
         int[] widths = new int[getMaxColumns(table)];
         adjustColumnWidths(table, widths);
         printPreparedTable(table, widths, getHorizontalBorder(widths));
+        System.out.println();
     }
     
     /**
@@ -75,8 +76,8 @@ public final class TaskPrinter {
     private String getRow(ArrayList<String> row, int[] widths, int lineLength) {
         StringBuilder builder = new StringBuilder(lineLength).append(VERTICAL_BORDER);
         int maxWidths = widths.length;
-        for (int i = 0; i < maxWidths; i++) {
-            builder.append(padRight(getCellValue(row, i), widths[i])).append(VERTICAL_BORDER);
+        for (int i = 0; i < maxWidths - 1 ; i++) {
+            builder.append(padMiddle(getCellValue(row, i), widths[i])).append(VERTICAL_BORDER);
         }
         return builder.toString();
     }
@@ -90,8 +91,9 @@ public final class TaskPrinter {
     private String getHorizontalBorder(int[] widths) {
         StringBuilder builder = new StringBuilder(256);
         builder.append(BORDER_KNOT);
-        for (int w : widths) {
-            for (int i = 0; i < w; i++) {
+        for (int i = 0; i < widths.length - 1; i++) {
+        	int w = widths[i];
+            for (int j = 0; j < w; j++) {
                 builder.append(HORIZONTAL_BORDER);
             }
             builder.append(BORDER_KNOT);
@@ -121,7 +123,8 @@ public final class TaskPrinter {
      * @param widths
      */
     private void adjustColumnWidths(ArrayList<ArrayList<String>> rows, int[] widths) {
-        for (ArrayList<String> row : rows) {
+        for (int i = 0; i < rows.size(); i++) {
+        	ArrayList<String> row = rows.get(i);
             if ( row != null ) {
                 for ( int c = 0; c < widths.length; c++ ) {
                     final String cv = getCellValue(row, c);
@@ -135,9 +138,28 @@ public final class TaskPrinter {
     }
 
     private static String padRight(String s, int n) {
+    	
         return format("%1$-" + n + "s", s);
     }
 
+    private static String padMiddle(String s, int n) {
+    	int bufferFront = n/2 - s.length()/2;
+    	int bufferEnd = n - s.length() - bufferFront;
+    	
+    	String tempString = "";
+    	
+    	for (int i = 0; i < bufferFront; i++) {
+    		tempString += " ";
+    	}
+    	
+    	tempString += s;
+    	
+    	for (int i = 0; i < bufferEnd; i++) {
+    		tempString += " ";
+    	}
+    	
+    	return tempString;
+    }
 
     /**
      * get the index-th cell value in a row 
