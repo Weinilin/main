@@ -8,12 +8,10 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import database.Memory;
 import application.Task;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;;
-
+import java.util.logging.Logger;
 /**
  * CommandHandler for "add" function.
  * 
@@ -51,6 +49,8 @@ public class AddHandler extends CommandHandler {
 			// a non empty task is created
 			assert (newTask != null);	
 			if (memory.addTask(newTask)) {
+				taskList.clear();
+				taskList.addAll(0, memory.getTaskList());
 				addLogger.log(Level.FINE, "Add sucess");
 				return "Task \"" + newTask.getDescription() + "\" is added\n";
 			} 

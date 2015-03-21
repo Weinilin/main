@@ -40,8 +40,7 @@ public class ShowHandler extends CommandHandler{
 		
 		if (parameter.trim().equals("")) {
 			taskList.clear();
-			ArrayList<Task> allTasks = memory.getTaskList();
-			taskList.addAll(0, allTasks);
+			taskList.addAll(0, memory.getTaskList());
 			if (taskList.isEmpty()) {
 				showLogger.log(Level.FINE, "empty list");
 				return "There is no task\n";
