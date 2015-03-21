@@ -5,7 +5,7 @@
 package database;
 
 import application.Task;
-import application.TaskDataComparator;
+import application.TaskComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -179,7 +179,7 @@ public class Memory {
 	}
 	
 	private void sortTaskList() {
-		Collections.sort(taskList, new TaskDataComparator());
+		Collections.sort(taskList, new TaskComparator());
 	}
 	
 	public void markDone(int index) {
@@ -222,6 +222,10 @@ public class Memory {
 			System.out.print(taskList.get(i));
 			System.out.println();
 		}
+	}
+	
+	public boolean contains(Task task) {
+		return taskList.contains(task);
 	}
 	
 	public boolean isValidTask(Task newData) {

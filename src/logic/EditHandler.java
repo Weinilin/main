@@ -8,8 +8,8 @@ import java.util.Collections;
 
 import application.Task;
 import parser.IndexParser;
-import parser.DateTimeParser;
-import application.TaskDataComparator;
+import application.TaskComparator;
+
 
 /**
  * CommandHandler for "edit" function
@@ -78,7 +78,7 @@ public class EditHandler extends CommandHandler {
 		if (!newTask.equals(removedTask)) {
 			taskList.remove(index);
 			taskList.add(newTask);
-			Collections.sort(taskList, new TaskDataComparator());
+			Collections.sort(taskList, new TaskComparator());
 			memory.removeTask(removedTask);
 			memory.addTask(newTask);
 		}

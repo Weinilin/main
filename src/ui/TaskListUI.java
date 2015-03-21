@@ -14,17 +14,17 @@ public class TaskListUI {
 	
 	public void showTask() {
 		TaskPrinter tp = new TaskPrinter();
-		ArrayList<ArrayList<String>> taskListMatrix = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> taskListMatrix1 = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> taskListMatrix2 = new ArrayList<ArrayList<String>>();
+
 		
 		ArrayList<String> dataFields = new ArrayList<String>();
 		dataFields.add("No.");
 		dataFields.add("Description");
-		dataFields.add("StartDateTime");
-		dataFields.add("EndDateTime");
-		dataFields.add("Deadline");
+		dataFields.add("Time");
 		dataFields.add("Status");
-
-		taskListMatrix.add(dataFields);
+		taskListMatrix1.add(dataFields);
+		taskListMatrix2.add(dataFields);
 
 		int taskNumber = 1;
 		
@@ -32,13 +32,21 @@ public class TaskListUI {
 			ArrayList<String> taskInformation = new ArrayList<String>();
 			taskInformation.add((Integer.toString(taskNumber++)));
 			taskInformation.add(task.getDescription());
-			taskInformation.add(task.getStartDateTime());
-			taskInformation.add(task.getEndDateTime());
-			taskInformation.add(task.getDeadline());
+			taskInformation.add(task.getDateTime());
 			taskInformation.add(task.getStatus());
-			taskListMatrix.add(taskInformation);
+			
+			if (task.getTaskType().equals("floating task")) {
+				taskListMatrix2.add(taskInformation);
+			} else {
+				taskListMatrix1.add(taskInformation);
+			}
 		}
 		
-		tp.print(taskListMatrix);
+		tp.print(taskListMatrix1);
+		if (taskListMatrix2.size() > 1) {
+			System.out.println("Floating task");
+		}
+		tp.print(taskListMatrix2);
+
 	}
 }
