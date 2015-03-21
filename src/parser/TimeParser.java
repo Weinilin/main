@@ -22,6 +22,7 @@ public class TimeParser {
 	private static int index;
 
 	private static String detectUserInput;
+	
 	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
 		TimeParser.detectUserInput = userInput;

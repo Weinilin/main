@@ -28,7 +28,7 @@ public class LogicController {
 	
 	private LogicController() {
 		logger.entering(getClass().getName(), "Initiating LogicController");
-		taskList = Memory.getInstance().getTaskList();
+		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
 		handlers.add(new AddHandler());
 		handlers.add(new ClearHandler());
 		handlers.add(new DeleteHandler());

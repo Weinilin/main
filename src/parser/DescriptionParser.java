@@ -20,18 +20,10 @@ public class DescriptionParser {
 			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
 	private static final String UNWANTED = "(end at|start at|and|due|by|to|at)";
-	
-	public DescriptionParser() {
-		
-	}
-	
-	/**
-	 * Get the description.
-	 * @param userInput
-	 * @return the description 
-	 */
-	public static String getDescription(String userInput) {
-		String description;
+	private String description;
+
+	public DescriptionParser(String userInput) {
+		String detectedDescription;
 		userInput = userInput.replaceAll(DATE_KEYWORD1, "");
 		userInput = userInput.replaceAll(DATE_KEYWORD2, "");
 		userInput = userInput.replaceAll(DATE_KEYWORD3, "");
@@ -44,9 +36,27 @@ public class DescriptionParser {
 		userInput = userInput.replaceAll(TIME_KEYWORD_4, "");
 		userInput = userInput.replaceAll(TIME_KEYWORD_5 , "");
 		userInput = userInput.replaceAll(UNWANTED, "");
-		description = userInput.replaceAll("\\s+|,", " ");
-		description = description.trim();
-		
+		detectedDescription = userInput.replaceAll("\\s+|,", " ");
+		detectedDescription = detectedDescription.trim();
+		setDescription(detectedDescription);
+
+	}
+
+	/**
+	 * set description
+	 * @param detectedDescription
+	 */
+	private void setDescription(String detectedDescription) {
+		description = detectedDescription;
+
+	}
+
+	/**
+	 * Get the description.
+	 * @return the description 
+	 */
+	public String getDescription(String userInput) {
+
 		return description;
 	}
 
