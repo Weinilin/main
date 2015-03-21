@@ -68,7 +68,7 @@ public class Memory {
 		if (database.writeToDatabase(taskList)) {
 			memoryLogger.log(Level.FINE, "write success");
 		} else {
-			memoryLogger.log(Level.SEVERE, "Error writing task to database");
+			memoryLogger.log(Level.SEVERE, "error writing task to database");
 		}
 		memoryLogger.exiting(getClass().getName(), "writing new task to database");
 	}
@@ -120,12 +120,14 @@ public class Memory {
 				searchList.add(task);
 			}
 		}
+		memoryLogger.log(Level.FINE, "search success");
 		memoryLogger.exiting(getClass().getName(), "searching task containing keyword");
 
 		return searchList;
 	}
 	
 	public ArrayList<Task> searchStatus(String status) {
+		memoryLogger.entering(getClass().getName(), "searching task of the specified status");
 		assert isValidStatus(status);
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
@@ -134,32 +136,46 @@ public class Memory {
 				searchList.add(task);
 			}
 		}
+		memoryLogger.log(Level.FINE, "search success");
+		memoryLogger.entering(getClass().getName(), "searching task of the specified status");
 		return searchList;
 	}
 	
 	public void editDeadline(int index, String newDeadline) {
+		memoryLogger.entering(getClass().getName(), "editing deadline");
 		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setDeadline(newDeadline);
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "edit success");
+		memoryLogger.exiting(getClass().getName(), "editing deadline");
+
 	}
 	
 	public void editTime(int index, String newStartDateTime, String newEndDateTime) {
+		memoryLogger.entering(getClass().getName(), "editing time");
 		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setStartDateTime(newStartDateTime);
 		task.setEndDateTime(newEndDateTime);
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "edit success");
+		memoryLogger.exiting(getClass().getName(), "editing time");
+
 	}
 	
 	public void editDescription(int index, String newDescription) {
+		memoryLogger.entering(getClass().getName(), "editing description");
 		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setDescription(newDescription);
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "edit success");
+		memoryLogger.exiting(getClass().getName(), "editing description");
+
 	}
 	
 	private void sortTaskList() {
@@ -167,23 +183,34 @@ public class Memory {
 	}
 	
 	public void markDone(int index) {
+		memoryLogger.entering(getClass().getName(), "marking task");
 		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setStatus(DONE);
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "mark success");
+		memoryLogger.exiting(getClass().getName(), "marking task");
 	}
 	
 	public void editTaskType(int index, String newTaskType) {
+		memoryLogger.entering(getClass().getName(), "editing taskType");
 		assert isValidIndex(index);
 		Task task = taskList.get(index - 1);
 		task.setTaskType(newTaskType);
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "edit success");
+		memoryLogger.exiting(getClass().getName(), "marking task");
+
 	}
 	
 	private void initMemory(Database database) {
+		memoryLogger.entering(getClass().getName(), "initializing memory");
 		taskList = database.readDatabase();
+		memoryLogger.log(Level.FINE, "successfully initializing memory");
+		memoryLogger.exiting(getClass().getName(), "initializing memory");
+
 	}
 	
 	public ArrayList<Task> getTaskList() {
@@ -213,128 +240,4 @@ public class Memory {
 		return (index > 0 && index <= taskList.size());
 	}
 
-	
-	
-	public static void main(String[] args) {
-		
-		Memory memory = Memory.getInstance();
-
-		
-		ArrayList<String> taskData1 = new ArrayList<String>();
-		String taskType = "time task";
-		taskData1.add(taskType);
-		String description = "task 1";
-		taskData1.add(description);
-		String startDateTime = "04/04/2015 17:00";
-		taskData1.add(startDateTime);
-		String endDateTime = "04/04/2015 18:00";
-		taskData1.add(endDateTime);
-		String deadline = "-";
-		taskData1.add(deadline);
-		String status = "not done";
-		taskData1.add(status);
-		Task newTaskData1 = new Task(taskData1);
-		memory.addTask(newTaskData1);
-		
-		ArrayList<String> taskData2 = new ArrayList<String>();
-		taskType = "time task";
-		taskData2.add(taskType);
-		description = "task 2";
-		taskData2.add(description);
-		startDateTime = "04/04/2015 14:00";
-		taskData2.add(startDateTime);
-		endDateTime = "04/04/2015 15:00";
-		taskData2.add(endDateTime);
-		deadline = "-";
-		taskData2.add(deadline);
-		status = "not done";
-		taskData2.add(status);
-		Task newTaskData2 = new Task(taskData2);
-		memory.addTask(newTaskData2);
-		
-		ArrayList<String> taskData3 = new ArrayList<String>();
-		taskType = "time task";
-		taskData3.add(taskType);
-		description = "task 3";
-		taskData3.add(description);
-		startDateTime = "26/07/2015 19:00";
-		taskData3.add(startDateTime);
-		endDateTime = "26/07/2015 20:00";
-		taskData3.add(endDateTime);
-		deadline = "-";
-		taskData3.add(deadline);
-		status = "not done";
-		taskData3.add(status);
-		Task newTaskData3 = new Task(taskData3);
-		memory.addTask(newTaskData3);
-		
-		ArrayList<String> taskData4 = new ArrayList<String>();
-		taskType = "deadline";
-		taskData4.add(taskType);
-		description = "task 4";
-		taskData4.add(description);
-		startDateTime = "-";
-		taskData4.add(startDateTime);
-		endDateTime = "-";
-		taskData4.add(endDateTime);
-		deadline = "05/05/2015 04:00";
-		taskData4.add(deadline);
-		status = "not done";
-		taskData4.add(status);
-		Task newTaskData4 = new Task(taskData4);
-		memory.addTask(newTaskData4);
-		
-		ArrayList<String> taskData5 = new ArrayList<String>();
-		taskType = "deadline";
-		taskData5.add(taskType);
-		description = "task 5";
-		taskData5.add(description);
-		startDateTime = "-";
-		taskData5.add(startDateTime);
-		endDateTime = "-";
-		taskData5.add(endDateTime);
-		deadline = "01/01/2015 09:00";
-		taskData5.add(deadline);
-		status = "not done";
-		taskData5.add(status);
-		Task newTaskData5 = new Task(taskData5);
-		memory.addTask(newTaskData5);
-		
-		ArrayList<String> taskData6 = new ArrayList<String>();
-		taskType = "floating task";
-		taskData6.add(taskType);
-		description = "task 6";
-		taskData6.add(description);
-		startDateTime = "-";
-		taskData6.add(startDateTime);
-		endDateTime = "-";
-		taskData6.add(endDateTime);
-		deadline = "-";
-		taskData6.add(deadline);
-		status = "not done";
-		taskData6.add(status);
-		Task newTaskData6 = new Task(taskData6);
-		memory.addTask(newTaskData6);
-		
-		ArrayList<String> taskData7 = new ArrayList<String>();
-		taskType = "floating task";
-		taskData7.add(taskType);
-		description = "abukhari";
-		taskData7.add(description);
-		startDateTime = "-";
-		taskData7.add(startDateTime);
-		endDateTime = "-";
-		taskData7.add(endDateTime);
-		deadline = "-";
-		taskData7.add(deadline);
-		status = "not done";
-		taskData7.add(status);
-		Task newTaskData7 = new Task(taskData7);
-		memory.addTask(newTaskData7);
-		
-		memory.display();
-		
-
-		
-	}
 }

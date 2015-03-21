@@ -2,6 +2,8 @@ package application;
 
 import java.util.ArrayList;
 
+import ui.TaskListUI;
+
 public class Task {
 	
 	private static final String[] dataField = {
@@ -132,7 +134,10 @@ public class Task {
 		String[] dataFields = {"Task type", "Description", "StartDateTime", "EndDateTime","Deadline","Status"};
 		Task task1 = new Task(null , "abukhari sujknknknkjn jknknkjn kjnknk kjnknk jnkjperman meeting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
 		Task task2 = new Task("time task", " harajukuting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
-		TaskPrinter tp = new TaskPrinter();
-		tp.print(new String[][]{dataFields, task1.toStringArray(),task2.toStringArray()});
+		ArrayList<Task> tl = new ArrayList<Task>();
+		tl.add(task1);
+		tl.add(task2);
+		TaskListUI tp = new TaskListUI(tl);
+		tp.showTask();
 	}
 }
