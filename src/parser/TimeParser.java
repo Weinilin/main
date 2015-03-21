@@ -8,9 +8,10 @@ public class TimeParser {
 	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_4 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
-	private static final String TIME_KEYWORD_3 = "(before midnight|before noon)";
-	private static final String TIME_KEYWORD_5 = "((\\d+[.:](\\d+|)|\\d+)( in morning| in afternoon| in night))";
-	private static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from)";
+	private static final String TIME_KEYWORD_3 = "((from |to |)(before midnight|before noon))";
+	private static final String TIME_KEYWORD_5 = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in morning| in afternoon| in night))";
+	private static final String TO_BE_REMOVED_KEYWORD = "(am|pm|\\s|-|to|at|from|noon|midnight|before midnight|before noon"
+			+ "in afternoon|in night|in morning)";
 	private static final String INVALID_TIME = "Time entered is invalid";
 	private static final int TIME_FORMAT_1 = 1;
 	private static final int TIME_FORMAT_2 = 2;
@@ -18,6 +19,7 @@ public class TimeParser {
 	private static final int TIME_FORMAT_4 = 4;
 	private static final int TIME_FORMAT_5 = 5;
 	private static final int TIME_FORMAT_6 = 6;
+	private static int index = -1;
 
 	private static String detectUserInput;
 	public static ArrayList<String> extractTime(String userInput) {
@@ -26,6 +28,7 @@ public class TimeParser {
 		for (int i = 1; i <= 6; i++) {
 			storageOfTime = goThroughTimeFormat(i, storageOfTime);
 		}
+
 		if (!userInput.contains("due") && !userInput.contains("by")) {
 			String hourTimeInString;
 			if (storageOfTime.size() == 1) {
@@ -40,7 +43,7 @@ public class TimeParser {
 				String endTime = hourTimeInString +":" + minTime;
 				storageOfTime.add(endTime);
 			} 
-		}		
+		}	
 		System.out.println("time: "+ storageOfTime);
 		return storageOfTime;
 	}
@@ -62,9 +65,9 @@ public class TimeParser {
 		}
 		return storageOfTime;
 	}
-	
+
 	/**
-	 * detect the start at 2pm for __ hour
+	 * detect the start at __ am/pm for __ hour
 	 * @param storageOfTime
 	 * @return arraylist of time.
 	 */
@@ -74,6 +77,7 @@ public class TimeParser {
 		String hourTimeInString;
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_2);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+		//	Matcher matchedForIndex = timeDetector.matcher(userInput);
 
 		while (matchedWithTime.find()) {
 			String time = matchedWithTime.group();
@@ -81,10 +85,9 @@ public class TimeParser {
 			detectUserInput = detectUserInput.replaceAll(time, "");
 			tempStorage = detectDigit(time);
 			String startTime = changeToHourFormat(tempStorage.get(0));
-            
-			//System.out.println("hourTime: "+ tempStorage.get(1));
+
 			int numberOfHours = Integer.parseInt(tempStorage.get(1));
-			
+
 			int hourTime =  get1stNumber(startTime); 
 			hourTime = hourTime + numberOfHours;
 			if (hourTime < 10) {
@@ -99,12 +102,14 @@ public class TimeParser {
 
 			storageOfTime.add(startTime);
 			storageOfTime.add(time);
+
+			//	index.add(matchedForIndex.start());
 		}
 		return storageOfTime;
 	}
 
 	/**
-	 * detect all of the digit in the time
+	 * detect all of the ___pm/am and the digit represent the number of hours in the time
 	 * @param time
 	 * @return arrayList of digit.
 	 */
@@ -112,8 +117,8 @@ public class TimeParser {
 		String digit = "(\\d+)";
 		String digit1 = "(\\d+[.:](\\d+|)|\\d+)((\\s|)(am|pm))";
 		ArrayList<String> tempStorageOfTime = new ArrayList<String>();
-		
-		
+
+
 		Pattern timeDetector = Pattern.compile(digit1);
 		Matcher matchedWithTime = timeDetector.matcher(time);
 
@@ -121,14 +126,14 @@ public class TimeParser {
 			time = time.replaceAll(digit1, "");
 			tempStorageOfTime.add(matchedWithTime.group());
 		}
-	
+
 		Pattern timeDetector1 = Pattern.compile(digit);
 		Matcher matchedWithTime1 = timeDetector1.matcher(time);
 
 		while (matchedWithTime1.find()) {
 			tempStorageOfTime.add(matchedWithTime1.group());
 		}
-		
+
 		return tempStorageOfTime;
 	}
 
@@ -141,6 +146,7 @@ public class TimeParser {
 			ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_5);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+
 		String[] timeList;
 
 		while (matchedWithTime.find()) {
@@ -148,14 +154,12 @@ public class TimeParser {
 			detectUserInput = detectUserInput.replaceAll(time, "");
 			timeList = time.split(" ");
 			if (time.contains("in morning")) {
-				time = changeToHourFormat(timeList[0]+"am");
+				setThePositionForTime(storageOfTime, time + "am");
 			} else if (time.contains("in afternoon") || time.contains("in night")) {
-				time = changeToHourFormat(timeList[0]+"pm");
+				setThePositionForTime(storageOfTime, time + "pm");
 			}
 
 			assert checkValid24HourTime(time) == true;
-
-			storageOfTime.add(time);
 		}
 		return storageOfTime;
 	}
@@ -170,6 +174,7 @@ public class TimeParser {
 	private static ArrayList<String> detectUsingFormat1(ArrayList<String> storageOfTime) {
 		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_1);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+
 		String[] timeList;
 		String toBeAdded = "";
 
@@ -318,16 +323,29 @@ public class TimeParser {
 			if (checkValid12HourTime(time)) {
 				detectUserInput = detectUserInput.replaceAll(time, "");
 				//System.out.println("1. beforeTime: "+time);
-				time = changeToHourFormat(time);
 				//System.out.println("1. afterTime: "+time);
-				storageOfTime.add(time);
-			} else {
-				storageOfTime.add(INVALID_TIME);
+
+				setThePositionForTime(storageOfTime, time);
 			}
 		}
 
 		return storageOfTime;
 
+	}
+
+	private static void setThePositionForTime(ArrayList<String> storageOfTime,
+			String time) {
+		if (storageOfTime.size() == 1 &&  time.contains("from")) {
+			String temp = storageOfTime.get(0);
+			time = removeUnwantedParts(time);
+			time = changeToHourFormat(time);
+			storageOfTime.set(0, time);
+			storageOfTime.add(temp);
+		} else {
+			time = removeUnwantedParts(time);
+			time = changeToHourFormat(time);
+			storageOfTime.add(time);
+		}
 	}
 	/**
 	 * detect noon, midnight
@@ -340,13 +358,13 @@ public class TimeParser {
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 
 		while (matchedWithTime.find()) {
-			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_4, "");
 			String time = matchedWithTime.group();
 			if (time.contains("noon")) {
-				storageOfTime.add("12:00");
+				setThePositionForTime(storageOfTime, time + "12:00 pm");
 			} else if (time.contains("midnight")) {
-				storageOfTime.add("00:00");
+				setThePositionForTime(storageOfTime, time + "00:00 am");
 			}
+			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_4, "");
 		}  
 		//System.out.println("2.timeDe: "+storageOfTime.get(0));
 		return storageOfTime;
@@ -366,9 +384,10 @@ public class TimeParser {
 			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_3, "");
 			String time = matchedWithTime.group();
 			if (time.contains("noon")) {
-				storageOfTime.add("11:59");
+				setThePositionForTime(storageOfTime, time + "11:59 am");
 			} else if (time.contains("midnight")) {
-				storageOfTime.add("23:59");
+				setThePositionForTime(storageOfTime, time + "23:59 pm");
+				//storageOfTime.add("23:59");
 			}
 		}  
 		//System.out.println("2.timeDe: "+storageOfTime.get(0));

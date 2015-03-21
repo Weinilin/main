@@ -6,6 +6,7 @@ package logic;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
@@ -22,43 +23,62 @@ import parser.IndexParser;
  */
 public class DeleteHandler extends CommandHandler {
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("delete", "d", "remove", "-"));
 	private static final Logger deleteLogger = 
 			Logger.getLogger(DeleteHandler.class.getName());
 	
 	@Override
-	protected String getAliases() {
+	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-		if (parameter.trim() == "") {
+		deleteLogger.entering(getClass().getName(), "preparing for delete");
+
+		String[] token = parameter.split(" ");
+		if (token[0].toLowerCase().trim().equals("help") ||
+				parameter.trim().equals("")) {
 			return getHelp();
 		}
 		
-		deleteLogger.entering(getClass().getName(), "preparing for delete");
-		IndexParser ip = new IndexParser();
-		Task removedTask = new Task();
-		int index = ip.getIndex(parameter);
-		try {
-			removedTask = taskList.remove(index);
-		} catch (IndexOutOfBoundsException iob) {
-			deleteLogger.log(Level.WARNING, "Index out of range", iob);
-			return null;
-		} 
-		
-		if (removedTask != null) {
-			memory.removeTask(removedTask);
+		if (token[0].toLowerCase().trim().equals("all")) {
+			ClearHandler clrHandler = new ClearHandler();
+			return clrHandler.execute(token[0], "", taskList);
 		}
-		deleteLogger.log(Level.FINE, "Successfully deleted");
-		return removedTask.toString();
+		
+		String goodFeedback = new String(), 
+			   badFeedback = new String();		
+		
+		IndexParser ip = new IndexParser();
+		Task removedTask;
+		
+		for (String t: token) {
+			int index = ip.getIndex(token[0]);
+			try {
+				removedTask = taskList.remove(index);				
+				if (removedTask != null) {
+					memory.removeTask(removedTask);
+				}
+				goodFeedback += t + " ";
+				deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
+			} catch (IndexOutOfBoundsException iob) {
+				badFeedback += t + " ";
+				deleteLogger.log(Level.WARNING, t + " is invalid!\n", iob);			
+			} 
+		}
+		
+		String feedback = "Successfully remmoved " + goodFeedback.trim() + "\n" +
+						  "Invalid input " + badFeedback.trim() + "\n";	
+		return feedback;
 	}
 
 	@Override
 	public String getHelp() {
-		return "delete <index>\n\t To remove the respective task of the index from TaskManager";
+		return "delete <index>\n\t To remove the respective task of the index from TaskManager\n";
 	}
 
 }

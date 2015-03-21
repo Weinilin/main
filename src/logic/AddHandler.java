@@ -3,6 +3,11 @@
  */
 package logic;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import database.Memory;
 import application.Task;
 
@@ -22,18 +27,22 @@ import java.util.logging.Logger;;
  */
 public class AddHandler extends CommandHandler {
 
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("add", "a", "new", "+"));
 	private static final Logger addLogger = 
 			Logger.getLogger(AddHandler.class.getName());
 	
 	@Override
-	protected String getAliases() {
+	public ArrayList<String> getAliases() {
 		// TODO Auto-generated method stub
-		return null;
+		return aliases;
 	}
 
 	@Override
-	protected String execute(String command, String parameter, Memory memory) {
-		if (parameter.trim() == "") {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+		String[] token = parameter.split(" ");
+		if (token[0].toLowerCase().trim().equals("help") ||
+			parameter.trim().equals("")) {
 			return getHelp();
 		}
 		else {
@@ -54,7 +63,7 @@ public class AddHandler extends CommandHandler {
 
 	@Override
 	public String getHelp() {
-		return "add <task informatino>\n\t To add a new task to TaskManager";
+		return "add <task information>\n\t add a new task to TaskManager\n";
 	}
 
 }

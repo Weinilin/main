@@ -21,11 +21,11 @@ public class CommandParser {
 
 	/**
 	 * use to detect different command Type(add, undo, mark, edit, show, delete, search,help, exit)
-	 * @param userCommand
+	 * @param userInput
 	 * @return command type
 	 */
-	public static String getCommandType(String userCommand) {
-		String commandType = getFirstWord(userCommand);
+	public static String getCommandType(String userInput) {
+		String commandType = getFirstWord(userInput);
 		try {
 			if(commandType.equals(ADD_STATEMENT)){
 				commandType = ADD_STATEMENT;
