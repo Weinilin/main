@@ -55,7 +55,7 @@ public class DescriptionParser {
 	 * Get the description.
 	 * @return the description 
 	 */
-	public String getDescription(String userInput) {
+	public String getDescription() {
 
 		return description;
 	}

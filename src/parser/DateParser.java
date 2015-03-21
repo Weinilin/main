@@ -70,7 +70,7 @@ public class DateParser {
 	public DateParser(String dateTime) {
 		processFormattedString(dateTime);
 	}
-
+    
 	public DateParser() {
 	}
 
@@ -119,8 +119,6 @@ public class DateParser {
 		detectUserInput = userInput;
 		for (int i = 0; i <= 6; i++) {
 			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask);
-			System.out.println("dsize: "+dateOfTheTask
-					+ " i: "+ i);
 		}
 
 		return dateOfTheTask;
@@ -132,7 +130,7 @@ public class DateParser {
 	 * @return the user input all in lower case. 
 	 */
 	private static String switchAllToLowerCase(String userInput) {
-		userInput = userInput.toLowerCase();
+		userInput = userInput.toLowerCase() + ".";
 		return userInput;
 	}
 
@@ -503,7 +501,7 @@ public class DateParser {
 			int indexMatch = toGetIndex.start();
 			dateOfTheTask = containDate.group();
 			detectUserInput = detectUserInput.replaceAll(keyword, "");
-			System.out.println("dateOFTASKfeb: "+dateOfTheTask);
+			//System.out.println("dateOFTASKfeb: "+dateOfTheTask);
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar calendar = Calendar.getInstance();
 			int day = getDay(dateOfTheTask);
@@ -653,7 +651,7 @@ public class DateParser {
 
 			dateOfTheTask = dateOfTheTask.replaceAll("on |from |at |to ", "");
 			partsOfString = splitTheStringIntoPart(dateOfTheTask);
-			System.out.println("partOfString " +partsOfString[0]);
+			//System.out.println("partOfString " +partsOfString[0]);
 			int day = extractDayAndYear(partsOfString, calendar);
 			//System.out.println("1. day : "+ day);
 			calendar.set(Calendar.DATE, day);

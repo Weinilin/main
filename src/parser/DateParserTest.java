@@ -1,30 +1,31 @@
 package parser;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class DateParserTest {
 
 	@Test
 	public void test() {
-		DateParser.extractDate("mds sale due 1/3");
+		assertEquals("01/03/2015", DateParser.extractDate("mds sale due 1/3"));
 		
-		DateParser.extractDate("mds sale from 12 Jan to 13 March");
+		assertEquals("12/01/2015, 13/03/2015", DateParser.extractDate("mds sale from 12 Jan to 13 March"));
 		
-		DateParser.extractDate("mds sale from the following day to next year");
+		assertEquals("22/03/2015, 21/03/2015", DateParser.extractDate("mds sale from the following day to next year"));
 		
-		DateParser.extractDate("mds sale start 1 weeks later");
+		assertEquals("28/03/2015", DateParser.extractDate("mds sale start 1 weeks later"));
 		
-		DateParser.extractDate("mds sale start 1 month later");
+		assertEquals("24/03/2015", DateParser.extractDate("mds sale start 1 month later"));
 		
-		DateParser.extractDate("mds sale start in after 3 days");
+		assertEquals("24/02/2015", DateParser.extractDate("mds sale start in after 3 days"));
 		
-		DateParser.extractDate("mds sale after today");
+		assertEquals("21/03/2015", DateParser.extractDate("mds sale after today")); //set the date to today
 		
-		DateParser.extractDate("mds sale due 1/3/2013");
+		assertEquals("01/03/2013", DateParser.extractDate("mds sale due 1/3/2013"));
 		
-		DateParser.extractDate("mds sale");
+		assertEquals("", DateParser.extractDate("mds sale"));
 		
-		DateParser.extractDate("mds sale at 2 feb");
+		assertEquals("02/02/2015", DateParser.extractDate("mds sale at 2 feb"));
 		
 	}
 

@@ -28,6 +28,9 @@ public class DateTimeParserTest {
 		assertEquals(d2.getEndTime(), "15:00");
 		assertEquals(d2.getEndDate(), "28/03/2015");
 		assertEquals(d2.getStartDate(), "22/03/2015");
+		
+		DateTimeParser d3 = new DateTimeParser("superman at 7pm");
+		assertEquals(d3.getDeadlineTime(), "19:00");
 			
 		DateTimeParser("Mds sale start at 6 in the night to midnight");
 	}
