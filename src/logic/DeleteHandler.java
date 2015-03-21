@@ -54,16 +54,13 @@ public class DeleteHandler extends CommandHandler {
 			   badFeedback = new String();		
 		
 		IndexParser ip;
-		Task removedTask;
+		ArrayList<Task> removedTask = new ArrayList<Task>();
 		
 		for (String t: token) {
 			ip = new IndexParser(t);
 			int index = ip.getIndex() - 1;
 			try {
-				removedTask = taskList.remove(index);				
-				if (removedTask != null) {
-					memory.removeTask(removedTask);
-				}
+				removedTask.add(taskList.get(index));				
 				goodFeedback += t + " ";
 				deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
 			} catch (IndexOutOfBoundsException iob) {
@@ -72,8 +69,13 @@ public class DeleteHandler extends CommandHandler {
 			} 
 		}
 		
-		String feedback = "Successfully remmoved " + goodFeedback.trim() + "\n" +
-						  "Invalid input " + badFeedback.trim() + "\n";	
+		for (Task task: removedTask) {
+			taskList.remove(task);
+			memory.removeTask(task);
+		}
+		
+		String feedback = "Removed tasks " + goodFeedback + "\n" +
+						  "Invalid input " + badFeedback + "\n";	
 		return feedback;
 	}
 
