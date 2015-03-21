@@ -26,6 +26,8 @@ public class Memory {
 	private ArrayList<Task> taskList = new ArrayList<Task>();
 	private static Memory memory;
 	
+	private static final Logger memoryLogger = Logger.getLogger(Memory.class.getName());
+	
 	private Memory() {
 		Database database = Database.getInstance();
 		initMemory(database);
@@ -46,36 +48,59 @@ public class Memory {
 	 * @return 
 	 */
 	public boolean addTask(Task newTask) {
+		memoryLogger.entering(getClass().getName(), "adding a new task to taskList");
 		assert isValidTask(newTask);
-		taskList.add(newTask);
+		if (taskList.add(newTask)) {
+			memoryLogger.log(Level.FINE, "add success");
+		} else {
+			memoryLogger.log(Level.SEVERE, "Error adding new task!");
+			throw new Error("Fatal error! Unable to add Task");
+		}
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.exiting(getClass().getName(), "adding a new task to taskList");
 		return true;
 	}
 	
 	private void writeToDatabase() {
+		memoryLogger.entering(getClass().getName(), "writing new task to database");
 		Database database = Database.getInstance();
-		database.writeToDatabase(taskList);
+		if (database.writeToDatabase(taskList)) {
+			memoryLogger.log(Level.FINE, "write success");
+		} else {
+			memoryLogger.log(Level.SEVERE, "Error writing task to database");
+		}
+		memoryLogger.exiting(getClass().getName(), "writing new task to database");
 	}
 	
 	
 	public Task removeTask(Task removedTask) {
+		memoryLogger.entering(getClass().getName(), "removing a task from database");
 		assert isValidTask(removedTask);
 		for (int i = 0; i < taskList.size(); i++) {
 			Task currentTask = taskList.get(i);
 			if (currentTask == removedTask) {
-				taskList.remove(i);
+				if (taskList.remove(i) != null) {
+					memoryLogger.log(Level.FINE, "remove success");
+				} else {
+					memoryLogger.log(Level.SEVERE, "task cannot be found in taskList");
+				}
 			}
 		}
 		sortTaskList();
 		writeToDatabase();
+		memoryLogger.exiting(getClass().getName(), "removing a task from database");
 		return removedTask;
 	}
 	
-	public ArrayList<Task> deleteAll() {
+	public ArrayList<Task> removeAll() {
+		memoryLogger.entering(getClass().getName(), "removing all tasks from taskList");
 		ArrayList<Task> deletedTaskList = taskList;
 		taskList = new ArrayList<Task>();
 		writeToDatabase();
+		memoryLogger.log(Level.FINE, "remove success");
+		memoryLogger.exiting(getClass().getName(), "removing all tasks from taskList");
+
 		return deletedTaskList;
 	}
 	
@@ -86,6 +111,7 @@ public class Memory {
 	 * @return result arraylist containing the index that contains the keyword
 	 */
 	public ArrayList<Task> searchDescription(String keyword) {
+		memoryLogger.entering(getClass().getName(), "searching task containing keyword");
 		assert isValidKeyword(keyword);
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
@@ -94,6 +120,8 @@ public class Memory {
 				searchList.add(task);
 			}
 		}
+		memoryLogger.exiting(getClass().getName(), "searching task containing keyword");
+
 		return searchList;
 	}
 	

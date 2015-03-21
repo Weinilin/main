@@ -116,13 +116,9 @@ public class Task {
 			getStatus()
 		};
 		
-	
-		str += String.format("%-10s", data[0]);
-		str += String.format("%-40s", data[1]);
-		str += String.format("%-20s", data[2]);
-		str += String.format("%-20s", data[3]);
-		str += String.format("%-20s", data[4]);
-		str += String.format("%-10s", data[5]);
+		for (int i = 0; i < dataField.length; i++) {
+			str += String.format("%-20s", dataField[i]) + ": " + String.format("%s", data[i]) + "\n";
+		}
 
 		return str;
 	}
