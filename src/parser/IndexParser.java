@@ -6,29 +6,38 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IndexParser {
+	private int index;
 
-	public IndexParser() {
+	public IndexParser(String userInput) {
+		int detectedIndex = 0;
+		Logger logger = Logger.getLogger("IndexParser");
+		try {
+			logger.log(Level.INFO, "going to start processing");
+			String number = getNumber(userInput);
+			detectedIndex = Integer.parseInt(number);
+		} catch (Exception e) {
+			System.err.println("NoDigitException: " + e.getMessage());
+			logger.log(Level.WARNING, "processing error", e);
+		}
+		setIndex(detectedIndex);
+	}
+
+	/**
+	 * set the index
+	 * @param detectedIndex
+	 */
+	private void setIndex(int detectedIndex) {
+		index = detectedIndex;
 
 	}
 
 	/**
 	 * Extract the index.
-	 * @param userInput - input from user
 	 * @return positive index if number is detected, throw exception error if no digit is 
 	 * entered by the user. Since the program could not execute the command without the
 	 * index (a digit) being detect.
 	 */
 	public int getIndex(String userInput) {
-		int index = 0;
-		Logger logger = Logger.getLogger("IndexParser");
-		try {
-			logger.log(Level.INFO, "going to start processing");
-			String number = getNumber(userInput);
-			index = Integer.parseInt(number);
-		} catch (Exception e) {
-			System.err.println("NoDigitException: " + e.getMessage());
-			logger.log(Level.WARNING, "processing error", e);
-		}
 		return index;
 	}
 

@@ -1,17 +1,13 @@
 package parser;
 
 public class TaskTypeParser {
+	private String taskType;
 
-	/**
-	 * Determine the type of task.
-	 * @param storageOfTime
-	 * @return the task type.
-	 */
-	public static String getTaskType(String userInput) {
-		DateTimeParser.getDateTime(userInput);
-		int numberOfTimeInput = DateTimeParser.getNumberOfTime();
+	public TaskTypeParser(String userInput) {
+		DateTimeParser dateTime = new DateTimeParser(userInput);
+		int numberOfTimeInput = dateTime.getNumberOfTime();
 		String taskType = null;
- 
+
 		if (numberOfTimeInput == 2) {
 			taskType = "time task";
 		} else if (numberOfTimeInput == 1) {
@@ -19,8 +15,22 @@ public class TaskTypeParser {
 		} else if(numberOfTimeInput == 0) {
 			taskType = "floating task";
 		}
-		
-		assert taskType != null;
+		setTaskType(taskType);
+	}
+
+	/**
+	 * set the task type into this class
+	 * @param detectedTaskType
+	 */
+	public void setTaskType(String detectedTaskType) {
+		taskType = detectedTaskType;
+	}
+	
+	/**
+	 * Determine the type of task.
+	 * @return the task type.
+	 */
+	public String getTaskType() {
 		return taskType;
 	}
 }
