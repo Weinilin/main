@@ -37,17 +37,23 @@ public class MarkHandler extends CommandHandler {
 			return getHelp();
 		}
 		
-		IndexParser ip = new IndexParser(parameter);
-		int index = ip.getIndex();
-		try {
-			taskList.get(index).setStatus("done");
-			memory.markDone(index);			
-		} catch (IndexOutOfBoundsException iob) {
-			markLogger.log(Level.WARNING, "Invalid index", iob);
-			return "Index invalid! Please check yout input\n";
-		} 
-	
-		return "Marked " + index + " as done\n";
+		String goodFeedback = new String();
+		IndexParser ip;
+		int index;
+		for (String t: token) {
+			ip = new IndexParser(t);
+			index = ip.getIndex() - 1;
+			try {
+				taskList.get(index).setStatus("done");
+				memory.markDone(index);		
+				goodFeedback += t + " ";
+			} catch (IndexOutOfBoundsException iob) {
+				markLogger.log(Level.WARNING, "Invalid index", iob);
+				return "Index invalid! Please check yout input\n";
+			} 
+		}
+		
+		return "Marked " + goodFeedback + "as done\n";
 	}
 	
 	@Override
