@@ -2,6 +2,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.io.File;
 
 import database.Memory;
 import parser.DateParser;
@@ -16,12 +17,14 @@ import application.Task;
  */
 abstract class CommandHandler {
 
+	File configure;
 	Memory memory = Memory.getInstance();
 	/**
-	 * get all the aliases acceptable to the command
+	 * get all the aliases acceptable to the command such that
+	 * they can invoke the handler
 	 * @return string that contains the command 
 	 */
-	abstract String getAliases();
+	abstract protected ArrayList<String> getAliases();
 	
 	/**
 	 * execute the command based on the input from user (such as "add",
@@ -53,7 +56,7 @@ abstract class CommandHandler {
 		
 		ArrayList<String> time = TimeParser.extractTime(taskInformation);
 		
-		String taskType = TaskTypeParser.getTaskType();
+		String taskType = TaskTypeParser.getTaskType(taskInformation);
 		
 		String deadline = new String("-");
 		String startDateTime = new String("-");

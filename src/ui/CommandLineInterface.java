@@ -20,7 +20,7 @@ public class CommandLineInterface {
 	public void processUserInput(){
 		String userCommand, message, display;
 		scanner = new Scanner(System.in);
-		LogicController commandHandler = new LogicController();
+		LogicController commandHandler = LogicController.getInstance();
 		display = commandHandler.executeCommand("show");
 		printMessageToUser(display);
 	
@@ -30,9 +30,7 @@ public class CommandLineInterface {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
-			display = commandHandler.executeCommand("show");
 			printMessageToUser(message);
-			printMessageToUser(display);
 		}
 	}
 

@@ -20,8 +20,16 @@ public class Task {
 	private String endDateTime;
 	private String deadline;
 	private String status;
+		
+	public Task(Task task) {
+		this.taskType = task.getTaskType();
+		this.description = task.getDescription();
+		this.startDateTime = task.getStartDateTime();
+		this.endDateTime = task.getEndDateTime();
+		this.deadline = task.getDeadline();
+		this.status = task.getStatus();
+	}
 	
-
 	public Task(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
