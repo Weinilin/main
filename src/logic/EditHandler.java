@@ -41,7 +41,7 @@ public class EditHandler extends CommandHandler {
 			return getHelp();
 		}
 		
-		IndexParser ip = new IndexParser();		
+		IndexParser ip = new IndexParser(parameter);		
 		int index = ip.getIndex(token[0]);
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
