@@ -15,12 +15,12 @@ public class DateParser {
 	//		+ "|september|october|november|december)(\\s|\\S)(\\d+|)";
 	private static final String  DATE_KEYWORD3 = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
 			+ "|sep|oct|nov|dec)(\\s|\\S)(\\d+|)";
-	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))|(\\w+ day(s|) after)|(next(\\s\\w+\\s)day(s|))"
-			+ "|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
+	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
+			+ "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
 	private static final String DATE_KEYWORD5 ="\\b((tomorrow|tmr)|(the\\s|)following day|(the\\s|)next day"
 			+ "|(after today)|today|(after (tomorrow|tmr))|fortnight|(the\\s|)next year)\\b";
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
-			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
+			+ "\\b(\\w+ (week|month|year)(?!~)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
 	private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -114,12 +114,34 @@ public class DateParser {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
+		userInput = removeThoseHashTag(userInput);
 		detectUserInput = userInput;
 		for (int i = 0; i <= 6; i++) {
 			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask);
 		}
 
 		return dateOfTheTask;
+	}
+
+	/**
+	 * indication of ~ means that user want it to be in description
+	 * @param userInput
+	 * @return user input without ~
+	 */
+	private static String removeThoseHashTag(String userInput) {
+		ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
+		Pattern hashTagDetector = Pattern.compile("~");
+		Matcher containHashTag = hashTagDetector.matcher(userInput);
+
+		while (containHashTag.find()) {
+			hashTagIndex.add(containHashTag.start());
+
+		}
+		if (!hashTagIndex.isEmpty()) {
+			userInput = userInput.substring(0, hashTagIndex.get(0)) + userInput.substring(hashTagIndex.get(1));
+			System.out.println("userInput: "+userInput);
+		}
+		return userInput;
 	}
 
 	/**
@@ -286,6 +308,7 @@ public class DateParser {
 	 */
 	private static ArrayList<String> spotDateFormat4(String userInput, ArrayList<String> storageOfDate) {
 		String uniqueKeyword = "", dateOfTask = "";
+
 		Pattern dateDetector = Pattern.compile(DATE_KEYWORD4);
 		Matcher containDate = dateDetector.matcher(detectUserInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
@@ -381,6 +404,7 @@ public class DateParser {
 		dateOfTheTask = date.format(cal.getTime());
 		return dateOfTheTask;
 	}
+
 	/**
 	 * add the number of month to current year based on what is detect
 	 * @param numberOfMonth
@@ -444,6 +468,7 @@ public class DateParser {
 	 */
 	private static ArrayList<String> spotDateFormat2(String userInput, ArrayList<String> storageOfDate) {
 		String dateOfTheTask = "";
+
 		Pattern dateDetector = Pattern.compile(DATE_KEYWORD3);
 		Matcher containDate = dateDetector.matcher(userInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
@@ -472,6 +497,7 @@ public class DateParser {
 			}
 			setThePosition(storageOfDate, indexMatch);
 		}
+
 
 		return storageOfDate;
 	}

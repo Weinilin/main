@@ -1,5 +1,9 @@
 package parser;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class DescriptionParser {
 	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
@@ -24,6 +28,7 @@ public class DescriptionParser {
 
 	public DescriptionParser(String userInput) {
 		String detectedDescription;
+		userInput = removeThoseHashTag(userInput);
 		userInput = userInput.replaceAll(DATE_KEYWORD1, "");
 		userInput = userInput.replaceAll(DATE_KEYWORD2, "");
 		userInput = userInput.replaceAll(DATE_KEYWORD3, "");
@@ -40,6 +45,27 @@ public class DescriptionParser {
 		detectedDescription = detectedDescription.trim();
 		setDescription(detectedDescription);
 
+	}
+	
+	/**
+	 * indication of ~ means that user want it to be in description
+	 * @param userInput
+	 * @return user input without ~
+	 */
+	private static String removeThoseHashTag(String userInput) {
+		ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
+		Pattern hashTagDetector = Pattern.compile("~");
+		Matcher containHashTag = hashTagDetector.matcher(userInput);
+
+		while (containHashTag.find()) {
+			hashTagIndex.add(containHashTag.start());
+
+		}
+		if (!hashTagIndex.isEmpty()) {
+			userInput = userInput.substring(0, hashTagIndex.get(0)) + userInput.substring(hashTagIndex.get(1));
+			System.out.println("userInput: "+userInput);
+		}
+		return userInput;
 	}
 
 	/**

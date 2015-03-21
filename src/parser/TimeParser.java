@@ -19,18 +19,39 @@ public class TimeParser {
 	private static final int TIME_FORMAT_5 = 5;
 	private static final int TIME_FORMAT_6 = 6;
 	private static int index;
-
 	private static String detectUserInput;
 
 	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
-		TimeParser.detectUserInput = userInput;
+		userInput = removeThoseHashTag(userInput);
+		detectUserInput = userInput;
 		for (int i = 1; i <= 6; i++) {
 			storageOfTime = goThroughTimeFormat(i, storageOfTime, userInput);
 		}
 		return storageOfTime;
 	}
 
+	/**
+	 * indication of ~ means that user want it to be in description
+	 * @param userInput
+	 * @return user input without ~
+	 */
+	private static String removeThoseHashTag(String userInput) {
+		ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
+		Pattern hashTagDetector = Pattern.compile("~");
+		Matcher containHashTag = hashTagDetector.matcher(userInput);
+
+		while (containHashTag.find()) {
+			hashTagIndex.add(containHashTag.start());
+
+		}
+		if (!hashTagIndex.isEmpty()) {
+			userInput = userInput.substring(0, hashTagIndex.get(0)) + userInput.substring(hashTagIndex.get(1));
+			System.out.println("userInput: "+userInput);
+		}
+		return userInput;
+	}
+	
 	private static ArrayList<String> goThroughTimeFormat(int timeFormat, 
 			ArrayList<String> storageOfTime, String userInput) {
 		if (timeFormat == TIME_FORMAT_1) {
