@@ -20,7 +20,6 @@ public class DateTimeParserTest {
 
 		//timed test
 		DateTimeParser("CS2103T exam on 24/5 from 2 to 4:30pm.");
-
 		DateTimeParser("CS2103T exam on 24/5 start at 1:30pm and end at 3:30pm.");
 
 		DateTimeParser d2 = new DateTimeParser("Mds sale start from tomorrow to 1 week later at 2pm");
