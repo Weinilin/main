@@ -42,7 +42,7 @@ public class EditHandler extends CommandHandler {
 		}
 		
 		IndexParser ip = new IndexParser(parameter);		
-		int index = ip.getIndex(token[0]);
+		int index = ip.getIndex();
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
 			return "Invalid index! Please check your input\n";
@@ -53,15 +53,25 @@ public class EditHandler extends CommandHandler {
 		
 		switch (token[0].toLowerCase()) {
 			case "description":
-				newTask.setDescription(parameter.replace(token[0], "").trim());
+				newTask.setDescription(parameter.replace(token[0], "").
+									   replace(Integer.toString(index), "").trim());
 				break;
 			case "time":
-				newTask = CommandHandler.createNewTask(newTask.getDescription() + parameter);
+				newTask = CommandHandler.createNewTask(newTask.getDescription() + 
+						parameter.replace(token[0], "").replace(Integer.toString(index), "").trim());
 			default:
+				try {
+					index = Integer.parseInt(token[0]);
+					removedTask = taskList.remove(index);
+					newTask = CommandHandler.createNewTask(
+							  parameter.replaceFirst(token[0], "").trim());
+				} catch (NumberFormatException nfe) {
+					editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
+				}
 				break;
 		}
 		
-		if (newTask.equals(removedTask)) {
+		if (!newTask.equals(removedTask)) {
 			taskList.remove(index);
 			taskList.add(newTask);
 			Collections.sort(taskList, new TaskDataComparator());
