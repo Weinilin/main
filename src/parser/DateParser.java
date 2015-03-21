@@ -10,16 +10,15 @@ import java.util.regex.Pattern;
 import java.text.ParseException;
 
 public class DateParser {
-	//private static final String  DATE_KEYWORD_FOR_TIMED = "from (\\d+[/]\\d+[/]\\d+) to (\\d+[/]\\d+[/]\\d+)";
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
-//	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d{0,}(\\s|\\S)(january|february|march|april|may|june|july|august"
+	//	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d{0,}(\\s|\\S)(january|february|march|april|may|june|july|august"
 	//		+ "|september|october|november|december)(\\s|\\S)(\\d+|)";
-	private static final String  DATE_KEYWORD3 = "(on |at |from |to |)\\b\\d{0,}(\\s|\\S)(jan|feb|mar|apr|jun|jul|aug"
+	private static final String  DATE_KEYWORD3 = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
 			+ "|sep|oct|nov|dec)(\\s|\\S)(\\d+|)";
 	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))|(\\w+ day(s|) after)|(next(\\s\\w+\\s)day(s|))"
 			+ "|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
-	private static final String DATE_KEYWORD5 ="\\b(tomorrow|(the\\s|)following day|(the\\s|)next day"
-			+ "|(after today)|today|(after tomorrow)|fortnight|(the\\s|)next year)\\b";
+	private static final String DATE_KEYWORD5 ="\\b((tomorrow|tmr)|(the\\s|)following day|(the\\s|)next day"
+			+ "|(after today)|today|(after (tomorrow|tmr))|fortnight|(the\\s|)next year)\\b";
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
 			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
@@ -49,7 +48,6 @@ public class DateParser {
 	private static final String YEAR_TEXT = "year";
 	private static final String FORTNIGHT_TEXT = "fortnight";
 	private static final String INVALID_TEXT = "date entered do not exist!";
-	//	private static final int DATE_FORMAT_0 = 0;
 	private static final int DATE_FORMAT_1 = 1;
 	private static final int DATE_FORMAT_2 = 2;
 	private static final int DATE_FORMAT_3 = 3;
@@ -70,7 +68,7 @@ public class DateParser {
 	public DateParser(String dateTime) {
 		parseFormattedString(dateTime);
 	}
-    
+
 	public DateParser() {
 	}
 
@@ -146,9 +144,9 @@ public class DateParser {
 		if (dateFormat == DATE_FORMAT_1) {
 			dates = spotDateFormat1(detectUserInput, dates);
 		} else if (dateFormat == DATE_FORMAT_2) {
-		//	dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
+			//	dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
 		} else if (dateFormat == DATE_FORMAT_3) {	
-			dates = spotDateFormat2(detectUserInput,DATE_KEYWORD3, dates);
+			dates = spotDateFormat2(detectUserInput,dates);
 		} else if (dateFormat == DATE_FORMAT_4) {
 			dates = spotDateFormat4(detectUserInput, dates);
 		} else if (dateFormat == DATE_FORMAT_5) {	
@@ -160,54 +158,6 @@ public class DateParser {
 		return dates;
 	}
 
-	/**
-	 * is to detect times in format of from dd/mm/yyyy to dd/mm/yyyy and 
-	 * divide the two times separately into arraylist.
-	 * @param userInput
-	 * @return ArrayList<String> of times im hour format
-	 */
-	/*
-	private ArrayList<String> spotDateFormat0(String userInput) {
-		ArrayList<String> dateOfTheTask = new ArrayList<String>();
-		String uniqueKeyword = "";
-		//Pattern dateDetector = Pattern.compile(DATE_KEYWORD_FOR_TIMED);
-		Matcher containDate = dateDetector.matcher(userInput);
-
-		while(containDate.find()){
-			uniqueKeyword = containDate.group();
-			uniqueKeyword = removeToAndFrom(uniqueKeyword);
-			dateOfTheTask = divideDate(uniqueKeyword);
-		}
-
-		return dateOfTheTask;
-	}
-	 */
-
-	/**
-	 * divide the dates of String separately.
-	 * so that each date is store different index in arraylist
-	 * @param uniqueKeyword
-	 * @return ArrayList<String> of times
-	 */
-	private ArrayList<String> divideDate(String uniqueKeyword) {
-		ArrayList<String> dateOfTheTask = new ArrayList<String>();
-		uniqueKeyword  = uniqueKeyword.trim();
-		//System.out.println("0. date:"+uniqueKeyword);
-		String[] dates = uniqueKeyword.split(" ");
-		//System.out.println("1. date: "+dates[0]);
-		dateOfTheTask.add(dates[0]);
-		//	System.out.println("1. date: "+dateOfTheTask.get(0));
-		dateOfTheTask.add(dates[1]);
-		//System.out.println("2. date: "+dateOfTheTask.get(1));
-
-		return dateOfTheTask;
-	}
-
-	private String removeToAndFrom(String uniqueKeyword) {
-		uniqueKeyword = uniqueKeyword.replaceAll("from", "");
-		uniqueKeyword = uniqueKeyword.replaceAll("to ", "");
-		return uniqueKeyword;
-	}
 	/**
 	 * detect after no weeks, after no months, after no years 
 	 * s is not senstive
@@ -378,7 +328,7 @@ public class DateParser {
 		if(uniqueKeyword.equals(TODAY_TEXT)) {
 			numberOfDays = 0;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
-		} else if(uniqueKeyword.equals(TOMORROW_TEXT)) {
+		} else if(uniqueKeyword.equals(TOMORROW_TEXT) || uniqueKeyword.equals("tmr")) {
 			numberOfDays = 1;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
 		} else if(uniqueKeyword.contains(NEXT_DAY_TEXT)) {
@@ -393,7 +343,7 @@ public class DateParser {
 		} else if(uniqueKeyword.equals(AFTER_TODAY_TEXT)) {
 			numberOfDays = 1;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
-		} else if(uniqueKeyword.equals(AFTER_TOMORROW_TEXT)) {
+		} else if(uniqueKeyword.equals(AFTER_TOMORROW_TEXT) || uniqueKeyword.equals("after tmr")) {
 			numberOfDays = 2;
 			dateOfTask = addToTheCurrentDateByDays(numberOfDays);
 		} else if(uniqueKeyword.contains(WEEK_TEXT)) {
@@ -488,19 +438,20 @@ public class DateParser {
 
 	/**
 	 * detect DD Month in word/DD Month in word YYYY with space in between or no space in between
+	 * DD could be in 2 or 2nd or 2nd of , 2 or 3th or 3th of, 4 or 4th or 4th of etc 
 	 * @param userInput
 	 * @return date in DD/MM/YYYY
 	 */
-	private static ArrayList<String> spotDateFormat2(String userInput, String keyword, ArrayList<String> storageOfDate) {
+	private static ArrayList<String> spotDateFormat2(String userInput, ArrayList<String> storageOfDate) {
 		String dateOfTheTask = "";
-		Pattern dateDetector = Pattern.compile(keyword);
+		Pattern dateDetector = Pattern.compile(DATE_KEYWORD3);
 		Matcher containDate = dateDetector.matcher(userInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
 
 		while (containDate.find() && toGetIndex.find()) {
 			int indexMatch = toGetIndex.start();
 			dateOfTheTask = containDate.group();
-			detectUserInput = detectUserInput.replaceAll(keyword, "");
+			detectUserInput = detectUserInput.replaceAll(DATE_KEYWORD3, "");
 			//System.out.println("dateOFTASKfeb: "+dateOfTheTask);
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar calendar = Calendar.getInstance();
@@ -524,8 +475,8 @@ public class DateParser {
 
 		return storageOfDate;
 	}
-	
-	
+
+
 
 	/**
 	 * get the number of month and year in the calendar and check if the day 

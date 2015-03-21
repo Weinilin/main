@@ -14,7 +14,7 @@ public class TimeParserTest {
 
 		times.add("11:00");
 		times.add("13:30");
-		assertEquals(times, TimeParser.extractTime("mds sale 11 to 1:30 pm"));
+		assertEquals(times, TimeParser.extractTime("mds sale 11 to 1:30 pm."));
 
 		times.clear();
 		times.add("11:30");
@@ -42,7 +42,7 @@ public class TimeParserTest {
 		times.clear();
 		times.add("6:30");
 		times.add("19:45");
-		assertEquals(times, TimeParser.extractTime("mds sale from 6:30 in morning to 7:45 in night"));
+		assertEquals(times, TimeParser.extractTime("mds sale from 6:30 in morn to 7:45 in night"));
 
 		times.clear();
 		times.add("19:45");
