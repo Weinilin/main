@@ -58,7 +58,7 @@ public class DeleteHandler extends CommandHandler {
 		
 		for (String t: token) {
 			ip = new IndexParser(t);
-			int index = ip.getIndex();
+			int index = ip.getIndex() - 1;
 			try {
 				removedTask = taskList.remove(index);				
 				if (removedTask != null) {
