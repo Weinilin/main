@@ -20,12 +20,7 @@ public class Task {
 	private String endDateTime;
 	private String deadline;
 	private String status;
-	
-	// dummy constructor delete in futre
-	public Task() {
 		
-	}
-	
 	public Task(Task task) {
 		this.taskType = task.getTaskType();
 		this.description = task.getDescription();
@@ -34,10 +29,7 @@ public class Task {
 		this.deadline = task.getDeadline();
 		this.status = task.getStatus();
 	}
-	//(improvement to be made)
-	//1. need to check validity of data
-	//2. separate constructor for different task type
-
+	
 	public Task(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
@@ -115,15 +107,6 @@ public class Task {
 	public String toString() {
 		String str = "";
 		
-		String[] dataField = {
-			"Task Type",
-			"Description",
-			"Start Time",
-			"End Time",
-			"Deadline",
-			"Status"
-		};
-		
 		String[] data = {
 			getTaskType(),
 			getDescription(),
@@ -133,10 +116,27 @@ public class Task {
 			getStatus()
 		};
 		
-		for (int i = 0; i < dataField.length; i++) {
-			str += String.format("%-20s", dataField[i]) + ": " + String.format("%s", data[i]) + "\n";
-		}
-		
+	
+		str += String.format("%-10s", data[0]);
+		str += String.format("%-40s", data[1]);
+		str += String.format("%-20s", data[2]);
+		str += String.format("%-20s", data[3]);
+		str += String.format("%-20s", data[4]);
+		str += String.format("%-10s", data[5]);
+
 		return str;
+	}
+	
+	public String[] toStringArray() {
+		String[] stringArray = {getTaskType(), getDescription(), getStartDateTime(), getEndDateTime(), getDeadline(), getStatus()};
+		return stringArray;
+	}
+	
+	public static void main(String[] args) {
+		String[] dataFields = {"Task type", "Description", "StartDateTime", "EndDateTime","Deadline","Status"};
+		Task task1 = new Task(null , "abukhari sujknknknkjn jknknkjn kjnknk kjnknk jnkjperman meeting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
+		Task task2 = new Task("time task", " harajukuting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
+		TaskPrinter tp = new TaskPrinter();
+		tp.print(new String[][]{dataFields, task1.toStringArray(),task2.toStringArray()});
 	}
 }
