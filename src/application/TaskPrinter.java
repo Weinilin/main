@@ -6,6 +6,8 @@ package application;
 
 import static java.lang.String.format;
 
+import java.util.ArrayList;
+
 /**
  * Task Printer is used to print taskList in a table format
  * @author yxchng
@@ -32,11 +34,11 @@ public final class TaskPrinter {
      * @param table - a 2-dimensional matrix storing the list of tasks
      */
 
-    public void print(String[][] table) {
+    public void print(ArrayList<ArrayList<String>> table) {
         if ( table == null ) {
             throw new IllegalArgumentException("No tabular data provided");
         }
-        if ( table.length == 0 ) {
+        if ( table.size() == 0 ) {
             return;
         }
         int[] widths = new int[getMaxColumns(table)];
@@ -51,10 +53,10 @@ public final class TaskPrinter {
      * @param horizontalBorder 
      */
 
-    private void printPreparedTable(String[][] table, int widths[], String horizontalBorder) {
+    private void printPreparedTable(ArrayList<ArrayList<String>> table, int widths[], String horizontalBorder) {
         int lineLength = horizontalBorder.length();
         System.out.println(horizontalBorder);
-        for (String[] row : table) {
+        for (ArrayList<String> row : table) {
             if ( row != null ) {
                 System.out.println(getRow(row, widths, lineLength));
                 System.out.println(horizontalBorder);
@@ -70,7 +72,7 @@ public final class TaskPrinter {
      * @return a nicely formatted string containing the data of each row in the table
      */
 
-    private String getRow(String[] row, int[] widths, int lineLength) {
+    private String getRow(ArrayList<String> row, int[] widths, int lineLength) {
         StringBuilder builder = new StringBuilder(lineLength).append(VERTICAL_BORDER);
         int maxWidths = widths.length;
         for (int i = 0; i < maxWidths; i++) {
@@ -103,11 +105,11 @@ public final class TaskPrinter {
      * @return the number of columns in the table
      */
 
-    private int getMaxColumns(String[][] rows) {
+    private int getMaxColumns(ArrayList<ArrayList<String>> rows) {
         int max = 0;
-        for ( final String[] row : rows ) {
-            if ( row != null && row.length > max ) {
-                max = row.length;
+        for (ArrayList<String> row : rows ) {
+            if ( row != null && row.size() > max ) {
+                max = row.size();
             }
         }
         return max;
@@ -118,8 +120,8 @@ public final class TaskPrinter {
      * @param rows
      * @param widths
      */
-    private void adjustColumnWidths(String[][] rows, int[] widths) {
-        for ( final String[] row : rows ) {
+    private void adjustColumnWidths(ArrayList<ArrayList<String>> rows, int[] widths) {
+        for (ArrayList<String> row : rows) {
             if ( row != null ) {
                 for ( int c = 0; c < widths.length; c++ ) {
                     final String cv = getCellValue(row, c);
@@ -144,8 +146,8 @@ public final class TaskPrinter {
      * @return
      */
     
-    private String getCellValue(String[] array, int index) {
-        return array[index] == null ? asNull : array[index];
+    private String getCellValue(ArrayList<String> array, int index) {
+        return array.get(index) == null ? asNull : array.get(index);
     }
 
 }
