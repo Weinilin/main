@@ -38,7 +38,7 @@ public class MarkHandler extends CommandHandler {
 		}
 		
 		IndexParser ip = new IndexParser(parameter);
-		int index = ip.getIndex(token[0]);
+		int index = ip.getIndex();
 		try {
 			taskList.get(index).setStatus("done");
 			memory.markDone(index);			
@@ -47,7 +47,7 @@ public class MarkHandler extends CommandHandler {
 			return "Index invalid! Please check yout input\n";
 		} 
 	
-		return "Marked " + index + "as done\n";
+		return "Marked " + index + " as done\n";
 	}
 	
 	@Override
