@@ -87,6 +87,14 @@ public class DateParserTest {
 		dates.clear();
 		dates.add("23/03/2015");
 		assertEquals(dates, DateParser.extractDate("mds sale next monday"));
+		
+		dates.clear();
+		dates.add("28/03/2015");
+		assertEquals(dates, DateParser.extractDate("mds sale next sat"));
+		
+		dates.clear();
+		dates.add("29/03/2015");
+		assertEquals(dates, DateParser.extractDate("mds sale next sun"));
 
 		
 

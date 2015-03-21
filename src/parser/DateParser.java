@@ -20,7 +20,7 @@ public class DateParser {
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
 			+ "\\b(\\w+ (week|month|year)(?!~)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
-	private static final String DATE_KEYWORD7 = " next (mon|tues|wed|thrus|fri)";
+	private static final String DATE_KEYWORD7 = " next (mon|tues|wed|thurs|fri|sat|sun)";
 	private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String UNWANTED_ALPHA = "(day(s|)|from now|after|next|later)|\\s";
@@ -194,10 +194,24 @@ public class DateParser {
 			int indexMatch = matchWithIndex.start();
 			detectUserInput = detectUserInput.replaceAll(uniqueKeyword, "");
 			Calendar cal = Calendar.getInstance();	
+			uniqueKeyword = uniqueKeyword.trim();
 			String[] parts = uniqueKeyword.split(" ");
-	        int numberOfDayDetect = detectNumOfWeek(parts[1]);
-	        System.out.println("week: "+numberOfDayDetect);
-			cal.set(Calendar.DAY_OF_WEEK, numberOfDayDetect);
+			int todayDay = Calendar.DAY_OF_WEEK;
+			int numberOfDayDetect = detectNumOfWeek(parts[1], todayDay);
+			System.out.println("week: "+numberOfDayDetect+" today: "+todayDay);
+			if (todayDay == numberOfDayDetect) {
+				cal.add(Calendar.DATE, 7);
+			}
+			while (todayDay != numberOfDayDetect) {
+				cal.add(Calendar.DATE, 1);
+				if (todayDay == 7) {
+					todayDay = 1;
+				} else {
+					todayDay ++;
+				}
+			}
+			
+
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			dateOfTheTask = date.format(cal.getTime());		
 			storageOfDate.add(dateOfTheTask);
@@ -206,8 +220,9 @@ public class DateParser {
 		return storageOfDate;
 	}
 
-	private static int detectNumOfWeek(String input) {
+	private static int detectNumOfWeek(String input, int todayDay) {
 		int numOfDay = 0;
+		System.out.println("input: "+input);
 		if (input.contains("mon")) { 
 			numOfDay = 1;
 		} else if (input.contains("tues")) {
@@ -218,6 +233,10 @@ public class DateParser {
 			numOfDay = 4;
 		} else if (input.contains("fri")) {
 			numOfDay = 5;
+		} else if (input.contains("sat")) {
+			numOfDay = 6;
+		} else if (input.contains("sun")) {
+			numOfDay = 7;
 		}
 		return numOfDay;
 	}

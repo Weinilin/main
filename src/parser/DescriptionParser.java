@@ -8,7 +8,7 @@ public class DescriptionParser {
 	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
 
 	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |due |by |@ |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
-	
+
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |due |by |@ |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_4 = "\\b(on |at |from |to |due |by |@ |)noon | (on |at |from |to |)midnight";
 	private static final String TIME_KEYWORD_3 = "((from |to |)(before midnight|before noon))";
@@ -32,6 +32,8 @@ public class DescriptionParser {
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) times)\\b|(in \\w+ (week|month|year)(s|) time)|"
 			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year))|(after \\w+ (weeks|months|years))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
+	private static final String DATE_KEYWORD7_1 = " next (monday|tuesday|wednesday|thursday|friday|saturday|sunday)";
+	private static final String DATE_KEYWORD7_2 = " next (mon|tues|wed|thrus|fri|sat|sun)";
 	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
 	private static final String UNWANTED = "(end at|start at|and)";
 	private String description;
@@ -48,6 +50,8 @@ public class DescriptionParser {
 		userInput = replaceBoth(userInput, DATE_KEYWORD4_1);
 		userInput = replaceBoth(userInput, DATE_KEYWORD5);
 		userInput = replaceBoth(userInput, DATE_KEYWORD6);
+		userInput = replaceBoth(userInput, DATE_KEYWORD7_1);
+		userInput = replaceBoth(userInput, DATE_KEYWORD7_2);
 		userInput = replaceBoth(userInput, TIME_KEYWORD_1);
 		userInput = replaceBoth(userInput, TIME_KEYWORD_2);
 		userInput = replaceBoth(userInput, TIME_KEYWORD_3);
@@ -61,7 +65,7 @@ public class DescriptionParser {
 		setDescription(detectedDescription);
 
 	}
-	
+
 	/**
 	 * to prevent case sensitive, switch all to lower case
 	 * @param userInput
