@@ -35,6 +35,7 @@ Memory memory = Memory.getInstance();
 		task1.add(status);
 		Task newTask1 = new Task(task1);
 		memory.addTask(newTask1);
+		assertEquals(memory.getTaskList().get(0), newTask1);
 		
 		ArrayList<String> task2 = new ArrayList<String>();
 		taskType = "deadline";
@@ -51,7 +52,8 @@ Memory memory = Memory.getInstance();
 		task2.add(status);
 		Task newTask2 = new Task(task2);
 		memory.addTask(newTask2);
-		
+		assertEquals(memory.getTaskList().get(1), newTask2);
+
 		ArrayList<String> task3 = new ArrayList<String>();
 		taskType = "floating task";
 		task3.add(taskType);
@@ -67,6 +69,7 @@ Memory memory = Memory.getInstance();
 		task3.add(status);
 		Task newTask3 = new Task(task3);
 		memory.addTask(newTask3);
+		assertEquals(memory.getTaskList().get(1), newTask3);
 		
 		ArrayList<String> dummy = new ArrayList<String>();
 		taskType = "-";
@@ -83,8 +86,28 @@ Memory memory = Memory.getInstance();
 		task3.add(status);
 		Task newTask4 = new Task(dummy);
 		memory.addTask(newTask4);
+		assertEquals(memory.getTaskList().get(1), dummy);
+
+		Task removedTask = memory.removeTask(newTask2);
+		assertEquals(removedTask, newTask2);
 		
-		memory.display();
+		ArrayList<Task> searchList = memory.searchDescription("task");
+		ArrayList<Task> correctSearchList = new ArrayList<Task>();
+		correctSearchList.add(newTask1);
+		correctSearchList.add(newTask3);
+		assertEquals(correctSearchList, searchList);
+
+		memory.markDone(1);
+		assertEquals(memory.getTaskList().get(0).getStatus(), "done");
+		
+		searchList = memory.searchStatus("not done");
+		correctSearchList = new ArrayList<Task>();
+		correctSearchList.add(newTask3);
+		correctSearchList.add(newTask4);
+		assertEquals(correctSearchList, searchList);
+		
+
 	}
+
 
 }
