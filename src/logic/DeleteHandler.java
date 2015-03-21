@@ -78,7 +78,7 @@ public class DeleteHandler extends CommandHandler {
 
 	@Override
 	public String getHelp() {
-		return "delete <index>\n\t To remove the respective task of the index from TaskManager\n";
+		return "delete <index>\n\t remove the respective task of the index from TaskManager\n";
 	}
 
 }

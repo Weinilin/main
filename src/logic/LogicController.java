@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Hashtable;
 
 import database.Memory;
-import parser.CommandParser;
 import application.Task;
 
 /**
  * The main component that takes charge of deciding which 
  * handlers to call and execute
+ * 
+ * @author A0114463M
  */
 public class LogicController {
 	private static LogicController logicController;

@@ -52,7 +52,7 @@ public class AddHandler extends CommandHandler {
 			assert (newTask != null);	
 			if (memory.addTask(newTask)) {
 				addLogger.log(Level.FINE, "Add sucess");
-				return newTask.toString();
+				return newTask.getDescription();
 			} 
 			else {
 				addLogger.log(Level.SEVERE, "Error adding new task!");

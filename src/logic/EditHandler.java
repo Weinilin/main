@@ -42,7 +42,7 @@ public class EditHandler extends CommandHandler {
 		}
 		
 		IndexParser ip = new IndexParser();		
-		int index = ip.getIndex(parameter);
+		int index = ip.getIndex(token[0]);
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
 			return "Invalid index! Please check your input\n";
@@ -69,7 +69,7 @@ public class EditHandler extends CommandHandler {
 			memory.addTask(newTask);
 		}
 	
-		return null;
+		return "Success!\n";
 	}
 
 	@Override
