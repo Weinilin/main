@@ -9,6 +9,10 @@ public class DateTimeParser {
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String TIME_FORMAT = "HH:mm";
 	private static int numberOfTime;
+	private static String deadlineTime = "-";
+	private static String deadlineDate = "-";
+	private static String startTime = "-", endTime = "-", startDate = "-", endDate = "-";  
+
 
 	public DateTimeParser() {
 
@@ -28,10 +32,19 @@ public class DateTimeParser {
 		storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
 		setNumberOfTime(storageOfTime);
 
+		if (storageOfTime.size() == 1) {
+			setDeadlineTime (storageOfTime.get(0));
+			setDeadlineDate(storageOfDate.get(0));
+		} else if (storageOfTime.size() == 2) {
+			setStartTime(storageOfTime.get(0));
+			setEndTime(storageOfTime.get(1));
+			setStartDate(storageOfDate.get(0));
+			setEndDate(storageOfDate.get(1));
+		}
 		storageOfTime = addDashWhenEmpty(storageOfTime);
 		storageOfDate = addDashWhenEmpty(storageOfDate);
-        
-		
+
+
 		System.out.println ("SOT: " + storageOfTime);
 		dateTime = formDateTime(storageOfTime, storageOfDate);
 
@@ -42,6 +55,106 @@ public class DateTimeParser {
 		return dateTime;
 	}
 
+	/**
+	 * set start date
+	 * @param date
+	 */
+	private static void setStartDate(String date) {
+		startDate = date;		
+	}
+
+	/**
+	 * get start date 
+	 * @return start date for timed task
+	 */
+	static String getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * set the end date
+	 * @param date
+	 */
+	private static void setEndDate(String date) {
+		endDate = date;	
+	}
+
+	/**
+	 * get end end
+	 * @return end date for timed
+	 */
+	static String getEndDate() {
+		return endDate;
+	}
+
+
+	/**
+	 * set end time
+	 * @param time
+	 */
+	private static void setEndTime(String time) {
+		endTime = time;	
+	}
+
+	/**
+	 * get end time
+	 * @return end time 
+	 */
+	static String getEndTime() {
+		return endTime;
+	}
+
+	/**
+	 * set the start time for timed task
+	 * @param time
+	 */
+	private static void setStartTime(String time) {
+		startTime = time;	
+	}
+
+
+	/**
+	 * return start time for timed task
+	 * @return start time
+	 */
+	static String getStartTime() {
+		return startTime;
+	}
+
+	/**
+	 * set the deadline date
+	 * @param string
+	 */
+	private static void setDeadlineDate(String date) {
+		deadlineDate = date;
+
+	}
+	
+	/**
+	 * get date for deadline 
+	 * @return deadline date
+	 */
+	static String getDeadlineDate() {
+		return deadlineDate;
+	}
+
+
+	/**
+	 * set the deadline time if the taskType is deadline. 
+	 * @param string
+	 */
+	private static void setDeadlineTime(String time) {
+		deadlineTime = time;	
+	}
+
+	/**
+	 * get deadline time
+	 * @return time
+	 */
+	static String getDeadlineTime() {
+		return deadlineTime;
+	}
+	
 	/**
 	 * add in - when the arrayList is empty
 	 * @param storageOfParameter
@@ -104,8 +217,15 @@ public class DateTimeParser {
 	private static String addOneHourToTime(String time) {
 		String hourTimeInString;
 
+		System.out.println("time: "+time);
 		int hourTime =  get1stNumber(time); //take note if 2am -->String
-		hourTime = hourTime + 1;
+
+		if(hourTime < 23) {
+			hourTime = hourTime + 1;
+		} else {
+			hourTime = 0;
+		}
+
 
 		if (hourTime < 10) {
 			hourTimeInString = "0" + hourTime;
@@ -125,8 +245,9 @@ public class DateTimeParser {
 	 * @return HH
 	 */
 	private static int get1stNumber(String pmTime1) {
+		int partOfString1;
 		int index = getIndex(pmTime1);
-		int partOfString1 = Integer.parseInt(pmTime1.substring(0, index));
+		partOfString1 = Integer.parseInt(pmTime1.substring(0, index));
 		return partOfString1;
 	}
 

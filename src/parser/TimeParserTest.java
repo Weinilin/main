@@ -12,17 +12,17 @@ public class TimeParserTest {
 		
 		TimeParser.extractTime("mds sale 11:30-12:30 pm");
 		
-		TimeParser.extractTime("mds sale 12:30 am");
+		TimeParser.extractTime("mds sale 12:30 am"); //add of one more time
 		
-		TimeParser.extractTime("mds sale 6:30pm");
+		TimeParser.extractTime("mds sale 6pm"); // add of one more time
 		
 		TimeParser.extractTime("mds sale from noon to at midnight");
 		
-		TimeParser.extractTime("mds sale from midnight to before midnight"); 
+		TimeParser.extractTime("mds sale from midnight to before midnight"); //organization 
 		
 		TimeParser.extractTime("mds sale from 6:30 in morning to 7:45 in night");
 
-		TimeParser.extractTime("mds sale from midnight to 7:45pm"); 
+		TimeParser.extractTime("mds sale from 7:45pm to midnight"); 
 		
 		TimeParser.extractTime("mds sale start at 11:30 pm for 1 hour"); 
 
