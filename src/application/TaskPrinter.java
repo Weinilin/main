@@ -38,7 +38,7 @@ public final class TaskPrinter {
         if ( table == null ) {
             throw new IllegalArgumentException("No tabular data provided");
         }
-        if ( table.size() == 0 ) {
+        if ( table.size() == 0 || table.size() == 1 ) {
             return;
         }
         int[] widths = new int[getMaxColumns(table)];

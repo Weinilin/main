@@ -68,8 +68,8 @@ public class EditHandler extends CommandHandler {
 			memory.removeTask(removedTask);
 			memory.addTask(newTask);
 		}
-	
-		return null;
+		taskList = memory.getTaskList();
+		return "";
 	}
 
 	@Override

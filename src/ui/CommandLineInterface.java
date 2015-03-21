@@ -21,8 +21,9 @@ public class CommandLineInterface {
 		String userCommand, message, display;
 		scanner = new Scanner(System.in);
 		LogicController commandHandler = LogicController.getInstance();
-		display = commandHandler.executeCommand("show");
-		printMessageToUser(display);
+		
+		TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
+		taskListUI.showTask();
 	
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
@@ -31,6 +32,7 @@ public class CommandLineInterface {
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
 			printMessageToUser(message);
+			taskListUI.showTask();
 		}
 	}
 

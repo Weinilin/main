@@ -52,7 +52,7 @@ public class ShowHandler extends CommandHandler{
 					i++;
 				}
 				showLogger.log(Level.FINE, "show all tasks");
-				return result;
+				return "";
 			}
 		}
 		else {
@@ -62,13 +62,9 @@ public class ShowHandler extends CommandHandler{
 				return "No task containing " + parameter +"\n";
 			}
 			else {
-				taskList = new ArrayList<Task>(searchList);
-				for (Task td: searchList) {
-					result += i + ". \n" + td.toString() + "\n";
-					i++;
-				}
+				taskList = searchList;
 				showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
-				return result;
+				return "";
 			}
 		}	
 	}

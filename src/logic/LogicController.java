@@ -74,4 +74,8 @@ public class LogicController {
 			}
 		}
 	}
+	
+	public ArrayList<Task> getTaskList() {
+		return taskList;
+	}
 }
