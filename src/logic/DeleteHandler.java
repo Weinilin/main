@@ -40,7 +40,8 @@ public class DeleteHandler extends CommandHandler {
 		deleteLogger.entering(getClass().getName(), "preparing for delete");
 
 		String[] token = parameter.split(" ");
-		if (isHelp(token)) {
+		if (token[0].toLowerCase().trim().equals("help") ||
+				parameter.trim().equals("")) {
 			return getHelp();
 		}
 		
@@ -70,14 +71,9 @@ public class DeleteHandler extends CommandHandler {
 		return feedback;
 	}
 
-
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase() == "help";
-	}
-
 	@Override
 	public String getHelp() {
-		return "delete <index>\n\t To remove the respective task of the index from TaskManager";
+		return "delete <index>\n\t To remove the respective task of the index from TaskManager\n";
 	}
 
 }

@@ -33,7 +33,7 @@ public class LogicController {
 		handlers.add(new EditHandler());
 		handlers.add(new MarkHandler());
 		handlers.add(new ShowHandler());
-		installHandlers();
+		initializeHandlers();
 	}
 	
 	public static LogicController getInstance() {
@@ -50,19 +50,17 @@ public class LogicController {
 	 * @return
 	 */
 	public String executeCommand(String userCommand) {
-		String feedback = new String();
-		String command = CommandParser.getCommandType(userCommand);
+		String command = userCommand.split(" ")[0];
 		if (!handlerTable.containsKey(command)) {
 			return "Unknown command!\n";
 		}
 		
 		CommandHandler handler = handlerTable.get(command);
-		String parameter = userCommand.replace(command, "").trim();
-		feedback = handler.execute(command, parameter, taskList);
-		return feedback;
+		String parameter = userCommand.replaceFirst(command, "").trim();
+		return handler.execute(command, parameter, taskList);
 	}
 	
-	private void installHandlers() {
+	private void initializeHandlers() {
 		for (CommandHandler handler: handlers) {
 			ArrayList<String> aliases = handler.getAliases();
 			for (String cmd: aliases) {

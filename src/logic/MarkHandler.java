@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class MarkHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
-			Arrays.asList("mark", "done", "d"));
+			Arrays.asList("mark", "done"));
 	private static final Logger markLogger = 
 			Logger.getLogger(MarkHandler.class.getName());
 	
@@ -30,10 +30,13 @@ public class MarkHandler extends CommandHandler {
 	@Override
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		markLogger.entering(getClass().getName(), "Entering marking");
+		
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase() == "help") {
+		if (token[0].toLowerCase().trim().equals("help") || 
+			parameter.trim().equals("")) {
 			return getHelp();
 		}
+		
 		IndexParser ip = new IndexParser();
 		int index = ip.getIndex(token[0]);
 		try {

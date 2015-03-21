@@ -32,19 +32,19 @@ public class ShowHandler extends CommandHandler{
 	@Override
 	String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
-		
+	
 		String[] token = parameter.split(" ");
-		if (isHelp(token)) {
+		if (token[0].toLowerCase().trim().equals("help")) {
 			return getHelp();
 		}
 		
 		int i = 1;
 		String result = new String();
-		if (parameter.trim() == "") {
+		if (parameter.trim().equals("")) {
 			taskList = memory.getTaskList();
 			if (taskList.isEmpty()) {
 				showLogger.log(Level.FINE, "empty list");
-				return "Empty List!\n";
+				return "There is no task\n";
 			}
 			else {
 				for (Task td: taskList) {
@@ -72,13 +72,9 @@ public class ShowHandler extends CommandHandler{
 			}
 		}	
 	}
-
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase() == "help";
-	}
 	
 	@Override
 	public String getHelp() {
-		return "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword";
+		return "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
 	}
 }

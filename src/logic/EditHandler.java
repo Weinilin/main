@@ -28,7 +28,6 @@ public class EditHandler extends CommandHandler {
 	
 	@Override
 	protected ArrayList<String> getAliases() {
-		// TODO Auto-generated method stub
 		return aliases;
 	}
 
@@ -37,7 +36,8 @@ public class EditHandler extends CommandHandler {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
 		String[] token = parameter.split(" ");
-		if (isHelp(token)) {
+		if (token[0].toLowerCase().trim().equals("help") || 
+			parameter.trim().equals("")) {
 			return getHelp();
 		}
 		
@@ -72,14 +72,11 @@ public class EditHandler extends CommandHandler {
 		return null;
 	}
 
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase() == "help";
-	}
-
 	@Override
 	public String getHelp() {
-		// TODO Auto-generated method stub
-		return null;
+		return "edit <index> <new task>\n\t edit the task by specifying the index\n"
+				+ "edit description <index> <new description>\n\t update the task description only\n"
+				+ "edit time <index> <time>\n\t update the time of task \n";
 	}
 
 }

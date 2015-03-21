@@ -40,7 +40,9 @@ public class AddHandler extends CommandHandler {
 
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-		if (parameter.trim() == "") {
+		String[] token = parameter.split(" ");
+		if (token[0].toLowerCase().trim().equals("help") ||
+			parameter.trim().equals("")) {
 			return getHelp();
 		}
 		else {
@@ -59,13 +61,9 @@ public class AddHandler extends CommandHandler {
 		}
 	}
 
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase() == "help";
-	}
-
 	@Override
 	public String getHelp() {
-		return "add <task informatino>\n\t To add a new task to TaskManager";
+		return "add <task information>\n\t add a new task to TaskManager\n";
 	}
 
 }
