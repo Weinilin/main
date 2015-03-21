@@ -22,24 +22,30 @@ public class DateTimeParser {
 		storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
 		setNumberOfTime(storageOfTime);
          
+		setAllParametersToDash();
+		
 		if (storageOfTime.size() == 1) {
 			setDeadlineTime (storageOfTime.get(0));
 			setDeadlineDate(storageOfDate.get(0));
-			setStartTime("-");
-			setEndTime("-");
-			setStartDate("-");
-			setEndDate("-");
 		} else if (storageOfTime.size() == 2) {
 			setStartTime(storageOfTime.get(0));
 			setEndTime(storageOfTime.get(1));
 			setStartDate(storageOfDate.get(0));
 			setEndDate(storageOfDate.get(1));
-			setDeadlineTime ("-");
-			setDeadlineDate("-");
 		}
 
 		assert storageOfTime.size() > 2 && storageOfDate.size() > 2 && 
 		storageOfTime.size() != storageOfDate.size();
+	}
+
+
+	private void setAllParametersToDash() {
+		setStartTime("-");
+		setEndTime("-");
+		setStartDate("-");
+		setEndDate("-");
+		setDeadlineTime ("-");
+		setDeadlineDate("-");
 	}
 
 
