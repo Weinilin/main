@@ -23,7 +23,7 @@ public class DateParserTest {
 		dates.clear();
 		dates.add("22/03/2015");
 		dates.add("21/03/2016");
-		assertEquals(dates, DateParser.extractDate("mds sale from the following day to next year"));
+		assertEquals(dates, DateParser.extractDate("mds sale from tmr to next year"));
 		
 		dates.clear();
 		dates.add("28/03/2015");
@@ -49,8 +49,8 @@ public class DateParserTest {
 		assertEquals(dates, DateParser.extractDate("mds sale"));
 		
 		dates.clear();
-		dates.add("02/02/2015");
-		assertEquals(dates, DateParser.extractDate("mds sale at 2 feb"));
+		dates.add("03/10/2015");
+		assertEquals(dates, DateParser.extractDate("mds sale at 3rd of oct"));
 		
 	}
 
