@@ -49,14 +49,16 @@ abstract class CommandHandler {
 	 *@return new task object created based on the input from user.
 	 */
 	static Task createNewTask(String taskInformation) {
-		String description = DescriptionParser.getDescription(taskInformation);
+		DescriptionParser descriptionParser = new DescriptionParser(taskInformation);
+		String description = descriptionParser.getDescription();
 		assert (description.trim() != ""); // ensure that the task has some description for it
 		
 		ArrayList<String> date = DateParser.extractDate(taskInformation);
 		
 		ArrayList<String> time = TimeParser.extractTime(taskInformation);
 		
-		String taskType = TaskTypeParser.getTaskType(taskInformation);
+		TaskTypeParser ttp = new TaskTypeParser(taskInformation);
+		String taskType = ttp.getTaskType();
 		
 		String deadline = new String("-");
 		String startDateTime = new String("-");
