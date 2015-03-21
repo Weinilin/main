@@ -1,3 +1,7 @@
+/*
+ * @author A0113966Y
+ */
+
 package database;
 
 import java.io.BufferedReader;
@@ -10,19 +14,50 @@ import java.util.ArrayList;
 
 import application.Task;
 
+/**
+ * Database handles the writing and adding of tasks to a text file stored in the disk
+ *  
+ * @author A0113966Y
+ *
+ */
+
 public class Database {
 	private static String databaseLocation = "TaskManagerDatabase.txt" ;
+	
 	private static Database database;
 	
+	/**
+	 * Creates a Database 
+	 */
 	private Database() {
+		getDatabaseLocation();
 		createDatabase();
 	}
 	
+	private void getDatabaseLocation() {
+		
+	}
+	
+	/**
+	 * returns the instance of database in this Database
+	 * @return database
+	 */
+	
 	public static Database getInstance() {
+		if (database == null) {
+			database = new Database();
+		}
 		return database;
 	}
+	
+	/**
+	 * Change the location of "TaskManagerDatabase.txt" to a newDatabaseLocation
+	 * @param newDatabaseLocation
+	 * @return true if location of "TaskManagerDatabase.txt" has been successfully changed or false if 
+	 * location of "TaskManager.txt" cannot be changed
+	 */
 
-	public static boolean setDatabaseLocation(String newDatabaseLocation) {		
+	public boolean setDatabaseLocation(String newDatabaseLocation) {		
 		File database = new File(databaseLocation);
 		if (database.renameTo(new File(newDatabaseLocation))) {
 			databaseLocation = newDatabaseLocation;
@@ -32,9 +67,11 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Creates a new Database if database does not exist
+	 */
 	
-	//this should only be called by logic at the start of the program
-	private static void createDatabase() {
+	private void createDatabase() {
     	File database = new File(databaseLocation);
     	if (!database.exists()) {
             try {
@@ -44,6 +81,11 @@ public class Database {
             }
         }
 	}
+	
+	/**
+	 * Reads from "TaskManagerDatabase.txt" and converts all the tasks stored in it into an ArrayList
+	 * @return taskList containing list of tasks stored in the program from previous use
+	 */
 	
 	public ArrayList<Task> readDatabase() {
 		BufferedReader reader = null;
@@ -73,7 +115,12 @@ public class Database {
 		return taskList;
 	}
 	
+	/** 
+	 * updates "TaskMangerDatabase.txt" with new data from taskList
+	 * @param taskList
+	 */
 	public void writeToDatabase(ArrayList<Task> taskList) {		
+		assert isValidTaskList(taskList);
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(databaseLocation));
@@ -86,7 +133,6 @@ public class Database {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			assert isWrittenToDatabase(taskList);
 			try {
 				writer.close();
 			} catch (IOException e) {
@@ -105,11 +151,7 @@ public class Database {
 		}
 	}
 	
-	private boolean isWrittenToDatabase(ArrayList<Task> taskList) {
-		ArrayList<Task> databaseTaskList = readDatabase();
-		if (databaseTaskList == taskList ) {
-			return true;
-		}
-		return false;
+	private boolean isValidTaskList(ArrayList<Task> taskList) {
+		return (taskList != null);
 	}
 }
