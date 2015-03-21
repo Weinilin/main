@@ -37,7 +37,7 @@ public class MarkHandler extends CommandHandler {
 			return getHelp();
 		}
 		
-		IndexParser ip = new IndexParser();
+		IndexParser ip = new IndexParser(parameter);
 		int index = ip.getIndex(token[0]);
 		try {
 			taskList.get(index).setStatus("done");

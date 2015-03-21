@@ -53,7 +53,7 @@ public class DeleteHandler extends CommandHandler {
 		String goodFeedback = new String(), 
 			   badFeedback = new String();		
 		
-		IndexParser ip = new IndexParser();
+		IndexParser ip = new IndexParser(parameter);
 		Task removedTask;
 		
 		for (String t: token) {
