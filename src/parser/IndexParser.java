@@ -37,7 +37,7 @@ public class IndexParser {
 	 * entered by the user. Since the program could not execute the command without the
 	 * index (a digit) being detect.
 	 */
-	public int getIndex(String userInput) {
+	public int getIndex() {
 		return index;
 	}
 

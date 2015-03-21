@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import logic.LogicController;
 
-
 public class CommandLineInterface {
 
 	private static final String COMMAND_MESSAGE = new String("Command: ");
