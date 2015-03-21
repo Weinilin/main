@@ -224,6 +224,10 @@ public class Memory {
 		}
 	}
 	
+	public boolean contains(Task task) {
+		return taskList.contains(task);
+	}
+	
 	public boolean isValidTask(Task newData) {
 		return newData != null;
 	}

@@ -12,7 +12,10 @@ public class MemoryTest {
 
 	@Test
 	public void test() {
-Memory memory = Memory.getInstance();
+		Memory memory = Memory.getInstance();
+		memory.removeAll();
+		assertEquals(memory.getTaskList().size(), 0);
+		
 		String taskType;
 		String description;
 		String startDateTime;
@@ -23,7 +26,7 @@ Memory memory = Memory.getInstance();
 		ArrayList<String> task1 = new ArrayList<String>();
 		taskType = "time task";
 		task1.add(taskType);
-		description = "task description";
+		description = "task 1";
 		task1.add(description);
 		startDateTime = "01/02/2015 17:00";
 		task1.add(startDateTime);
@@ -35,12 +38,12 @@ Memory memory = Memory.getInstance();
 		task1.add(status);
 		Task newTask1 = new Task(task1);
 		memory.addTask(newTask1);
-		assertEquals(memory.getTaskList().get(0), newTask1);
+		assertEquals(memory.contains(newTask1), true);
 		
 		ArrayList<String> task2 = new ArrayList<String>();
 		taskType = "deadline";
 		task2.add(taskType);
-		description = "task description";
+		description = "task 2";
 		task2.add(description);
 		startDateTime = "-";
 		task2.add(startDateTime);
@@ -52,12 +55,12 @@ Memory memory = Memory.getInstance();
 		task2.add(status);
 		Task newTask2 = new Task(task2);
 		memory.addTask(newTask2);
-		assertEquals(memory.getTaskList().get(1), newTask2);
+		assertEquals(memory.contains(newTask2), true);
 
 		ArrayList<String> task3 = new ArrayList<String>();
 		taskType = "floating task";
 		task3.add(taskType);
-		description = "-";
+		description = "task 3";
 		task3.add(description);
 		startDateTime = "-";
 		task3.add(startDateTime);
@@ -69,24 +72,24 @@ Memory memory = Memory.getInstance();
 		task3.add(status);
 		Task newTask3 = new Task(task3);
 		memory.addTask(newTask3);
-		assertEquals(memory.getTaskList().get(1), newTask3);
+		assertEquals(memory.contains(newTask3), true);
 		
 		ArrayList<String> dummy = new ArrayList<String>();
 		taskType = "-";
-		task3.add(taskType);
-		description = "-";
-		task3.add(description);
+		dummy.add(taskType);
+		description = "dummy";
+		dummy.add(description);
 		startDateTime = "-";
-		task3.add(startDateTime);
+		dummy.add(startDateTime);
 		endDateTime = "-";
-		task3.add(endDateTime);
+		dummy.add(endDateTime);
 		deadline = "-";
-		task3.add(deadline);
-		status = "-";
-		task3.add(status);
+		dummy.add(deadline);
+		status = "not done";
+		dummy.add(status);
 		Task newTask4 = new Task(dummy);
 		memory.addTask(newTask4);
-		assertEquals(memory.getTaskList().get(1), dummy);
+		assertEquals(memory.contains(newTask4), true);
 
 		Task removedTask = memory.removeTask(newTask2);
 		assertEquals(removedTask, newTask2);
