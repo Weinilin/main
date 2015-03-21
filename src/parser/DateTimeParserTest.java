@@ -19,7 +19,7 @@ public class DateTimeParserTest {
 		DateTimeParser("Shopping!!!!"); 
 
 		//timed test
-		DateTimeParser("CS2103T exam on 24/5 from 2 to 4:30pm."); 
+		DateTimeParser("CS2103T exam on 24/5 from 2 to 4:30pm.");
 
 		DateTimeParser("CS2103T exam on 24/5 start at 1:30pm and end at 3:30pm.");
 

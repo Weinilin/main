@@ -10,6 +10,7 @@ import application.Task;
 import parser.IndexParser;
 import application.TaskComparator;
 
+
 /**
  * CommandHandler for "edit" function
  * 
@@ -42,7 +43,7 @@ public class EditHandler extends CommandHandler {
 		}
 		
 		IndexParser ip = new IndexParser(parameter);		
-		int index = ip.getIndex();
+		int index = ip.getIndex() - 1;
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
 			return "Invalid index! Please check your input\n";
@@ -54,14 +55,17 @@ public class EditHandler extends CommandHandler {
 		switch (token[0].toLowerCase()) {
 			case "description":
 				newTask.setDescription(parameter.replace(token[0], "").
-									   replace(Integer.toString(index), "").trim());
+									   replace(Integer.toString(index + 1), "").trim());
 				break;
 			case "time":
-				newTask = CommandHandler.createNewTask(newTask.getDescription() + 
-						parameter.replace(token[0], "").replace(Integer.toString(index), "").trim());
+				String description = newTask.getDescription();
+				newTask = CommandHandler.createNewTask(parameter.replace(token[0], "").
+						   replace(Integer.toString(index + 1), "").trim());
+				newTask.setDescription(description);				
+				break;
 			default:
 				try {
-					index = Integer.parseInt(token[0]);
+					index = Integer.parseInt(token[0]) - 1;
 					removedTask = taskList.remove(index);
 					newTask = CommandHandler.createNewTask(
 							  parameter.replaceFirst(token[0], "").trim());
