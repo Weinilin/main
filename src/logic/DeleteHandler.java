@@ -45,6 +45,11 @@ public class DeleteHandler extends CommandHandler {
 			return getHelp();
 		}
 		
+		if (token[0].toLowerCase().trim().equals("all")) {
+			ClearHandler clrHandler = new ClearHandler();
+			return clrHandler.execute(token[0], "", taskList);
+		}
+		
 		String goodFeedback = new String(), 
 			   badFeedback = new String();		
 		

@@ -29,6 +29,7 @@ public class LogicController {
 		logger.entering(getClass().getName(), "Initiating LogicController");
 		taskList = Memory.getInstance().getTaskList();
 		handlers.add(new AddHandler());
+		handlers.add(new ClearHandler());
 		handlers.add(new DeleteHandler());
 		handlers.add(new EditHandler());
 		handlers.add(new MarkHandler());
@@ -47,7 +48,7 @@ public class LogicController {
 	 * Take the input from user from UI and call respective
 	 * handlers. Return the feedback to UI after each execution
 	 * @param userCommand
-	 * @return
+	 * @return - feedback to user
 	 */
 	public String executeCommand(String userCommand) {
 		String command = userCommand.split(" ")[0];

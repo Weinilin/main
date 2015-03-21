@@ -30,9 +30,7 @@ public class CommandLineInterface {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
-			display = commandHandler.executeCommand("show");
 			printMessageToUser(message);
-			printMessageToUser(display);
 		}
 	}
 
