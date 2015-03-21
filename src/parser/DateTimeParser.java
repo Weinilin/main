@@ -14,17 +14,7 @@ public class DateTimeParser {
 	private static String startTime = "-", endTime = "-", startDate = "-", endDate = "-";  
 
 
-	public DateTimeParser() {
-
-	}
-
-	/**
-	 * get time and date and form them into a string
-	 * @param userInput
-	 * @return date and time in a string
-	 */
-	public static String getDateTime(String userInput) {
-		String dateTime = "";
+	public DateTimeParser (String userInput) {
 		ArrayList<String> storageOfTime = TimeParser.extractTime(userInput);
 		ArrayList<String> storageOfDate = DateParser.extractDate(userInput);
 
@@ -41,25 +31,18 @@ public class DateTimeParser {
 			setStartDate(storageOfDate.get(0));
 			setEndDate(storageOfDate.get(1));
 		}
-		storageOfTime = addDashWhenEmpty(storageOfTime);
-		storageOfDate = addDashWhenEmpty(storageOfDate);
-
 
 		System.out.println ("SOT: " + storageOfTime);
-		dateTime = formDateTime(storageOfTime, storageOfDate);
-
 		assert storageOfTime.size() > 2 && storageOfDate.size() > 2 && 
 		storageOfTime.size() != storageOfDate.size();
-
-		System.out.println ("dateTime "+ dateTime + " SOT: " + storageOfTime);
-		return dateTime;
 	}
+
 
 	/**
 	 * set start date
 	 * @param date
 	 */
-	private static void setStartDate(String date) {
+	private void setStartDate(String date) {
 		startDate = date;		
 	}
 
@@ -67,7 +50,7 @@ public class DateTimeParser {
 	 * get start date 
 	 * @return start date for timed task
 	 */
-	static String getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
@@ -75,7 +58,7 @@ public class DateTimeParser {
 	 * set the end date
 	 * @param date
 	 */
-	private static void setEndDate(String date) {
+	private void setEndDate(String date) {
 		endDate = date;	
 	}
 
@@ -83,16 +66,15 @@ public class DateTimeParser {
 	 * get end end
 	 * @return end date for timed
 	 */
-	static String getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
-
 
 	/**
 	 * set end time
 	 * @param time
 	 */
-	private static void setEndTime(String time) {
+	private void setEndTime(String time) {
 		endTime = time;	
 	}
 
@@ -100,7 +82,7 @@ public class DateTimeParser {
 	 * get end time
 	 * @return end time 
 	 */
-	static String getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
@@ -108,7 +90,7 @@ public class DateTimeParser {
 	 * set the start time for timed task
 	 * @param time
 	 */
-	private static void setStartTime(String time) {
+	private void setStartTime(String time) {
 		startTime = time;	
 	}
 
@@ -117,7 +99,7 @@ public class DateTimeParser {
 	 * return start time for timed task
 	 * @return start time
 	 */
-	static String getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
@@ -125,16 +107,16 @@ public class DateTimeParser {
 	 * set the deadline date
 	 * @param string
 	 */
-	private static void setDeadlineDate(String date) {
+	private void setDeadlineDate(String date) {
 		deadlineDate = date;
 
 	}
-	
+
 	/**
 	 * get date for deadline 
 	 * @return deadline date
 	 */
-	static String getDeadlineDate() {
+	public String getDeadlineDate() {
 		return deadlineDate;
 	}
 
@@ -151,21 +133,8 @@ public class DateTimeParser {
 	 * get deadline time
 	 * @return time
 	 */
-	static String getDeadlineTime() {
+	public String getDeadlineTime() {
 		return deadlineTime;
-	}
-	
-	/**
-	 * add in - when the arrayList is empty
-	 * @param storageOfParameter
-	 * @return arrayList of dash.
-	 */
-	private static ArrayList<String> addDashWhenEmpty(
-			ArrayList<String> storageOfParameter) {
-		if (storageOfParameter.isEmpty()) {
-			storageOfParameter.add("-");
-		}
-		return storageOfParameter;
 	}
 
 	/**
