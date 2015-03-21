@@ -38,8 +38,6 @@ public class ShowHandler extends CommandHandler{
 			return getHelp();
 		}
 		
-		int i = 1;
-		String result = new String();
 		if (parameter.trim().equals("")) {
 			taskList = memory.getTaskList();
 			if (taskList.isEmpty()) {
@@ -47,10 +45,6 @@ public class ShowHandler extends CommandHandler{
 				return "There is no task\n";
 			}
 			else {
-				for (Task td: taskList) {
-					result += i + ". \n" + td.toString() + "\n";
-					i++;
-				}
 				showLogger.log(Level.FINE, "show all tasks");
 				return "";
 			}
@@ -62,7 +56,7 @@ public class ShowHandler extends CommandHandler{
 				return "No task containing " + parameter +"\n";
 			}
 			else {
-				taskList = searchList;
+				taskList = new ArrayList<Task>(searchList);
 				showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
 				return "";
 			}
