@@ -11,11 +11,8 @@ import parser.CommandParser;
 import application.Task;
 
 /**
- * Construct by passing a TaskList to the constructor 
- * 
- * process each line of input given by user and calls different
- * handlers by different command given by user
- * and returns a feedback to ui
+ * The main component that takes charge of deciding which 
+ * handlers to call and execute
  */
 public class LogicController {
 	private static LogicController logicController;
@@ -46,6 +43,12 @@ public class LogicController {
 		return logicController;
 	}
 	
+	/**
+	 * Take the input from user from UI and call respective
+	 * handlers. Return the feedback to UI after each execution
+	 * @param userCommand
+	 * @return
+	 */
 	public String executeCommand(String userCommand) {
 		String feedback = new String();
 		String command = CommandParser.getCommandType(userCommand);

@@ -4,9 +4,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import application.Task;
 import parser.IndexParser;
+import application.TaskDataComparator;
 
 /**
  * CommandHandler for "edit" function
@@ -42,11 +44,30 @@ public class EditHandler extends CommandHandler {
 		IndexParser ip = new IndexParser();		
 		int index = ip.getIndex(parameter);
 		if (index < 0 || index > taskList.size()) {
+			editLogger.log(Level.WARNING, "Invalid number " + index);
 			return "Invalid index! Please check your input\n";
 		}
 		
-		Task removedTask, newTask = new Task();
-
+		Task removedTask = taskList.get(index),
+			 newTask = new Task(removedTask);
+		
+		switch (token[0].toLowerCase()) {
+			case "description":
+				newTask.setDescription(parameter.replace(token[0], "").trim());
+				break;
+			case "time":
+				newTask = CommandHandler.createNewTask(newTask.getDescription() + parameter);
+			default:
+				break;
+		}
+		
+		if (newTask.equals(removedTask)) {
+			taskList.remove(index);
+			taskList.add(newTask);
+			Collections.sort(taskList, new TaskDataComparator());
+			memory.removeTask(removedTask);
+			memory.addTask(newTask);
+		}
 	
 		return null;
 	}
