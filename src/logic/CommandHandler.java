@@ -9,6 +9,7 @@ import parser.DateParser;
 import parser.DescriptionParser;
 import parser.TaskTypeParser;
 import parser.TimeParser;
+import parser.DateTimeParser;
 import application.Task;
 
 /**
@@ -52,30 +53,14 @@ abstract class CommandHandler {
 		DescriptionParser descriptionParser = new DescriptionParser(taskInformation);
 		String description = descriptionParser.getDescription();
 		assert (description.trim() != ""); // ensure that the task has some description for it
-		
-		ArrayList<String> date = DateParser.extractDate(taskInformation);
-		
-		ArrayList<String> time = TimeParser.extractTime(taskInformation);
-		
+				
 		TaskTypeParser ttp = new TaskTypeParser(taskInformation);
 		String taskType = ttp.getTaskType();
-		
-		String deadline = new String("-");
-		String startDateTime = new String("-");
-		String endDateTime = new String("-");
-		switch (taskType) {
-			case "deadline":
-				deadline = date.get(0) + " " + time.get(0);
-				break;
-			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(1);
-				endDateTime = date.get(1) + " " + time.get(0);
-				break;
-			case "floating task":
-				break;
-			default:
-				break;
-		}
+
+		DateTimeParser dtp = new DateTimeParser(taskInformation);
+		String deadline = dtp.getDeadlineDate() + " " + dtp.getDeadlineTime();
+		String startDateTime = dtp.getStartDate() + " " + dtp.getStartTime();
+		String endDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
 
 		Task newTask = new Task(taskType, description, startDateTime, endDateTime, deadline, "undone");
 		return newTask;
