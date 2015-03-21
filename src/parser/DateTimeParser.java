@@ -32,7 +32,6 @@ public class DateTimeParser {
 			setEndDate(storageOfDate.get(1));
 		}
 
-		System.out.println ("SOT: " + storageOfTime);
 		assert storageOfTime.size() > 2 && storageOfDate.size() > 2 && 
 		storageOfTime.size() != storageOfDate.size();
 	}
@@ -185,8 +184,6 @@ public class DateTimeParser {
 	 */
 	private static String addOneHourToTime(String time) {
 		String hourTimeInString;
-
-		System.out.println("time: "+time);
 		int hourTime =  get1stNumber(time); //take note if 2am -->String
 
 		if(hourTime < 23) {
@@ -290,7 +287,7 @@ public class DateTimeParser {
 	 * set the number of time stored in arrayList
 	 * @param storageOfParameters
 	 */
-	public static void setNumberOfTime(ArrayList<String> storageOfParameters) {
+	public void setNumberOfTime(ArrayList<String> storageOfParameters) {
 		numberOfTime = storageOfParameters.size();
 	}
 
@@ -298,7 +295,7 @@ public class DateTimeParser {
 	 * return the number of time detected and stored in arrayList
 	 * @return the number of time detected
 	 */
-	public static int getNumberOfTime() {
+	public int getNumberOfTime() {
 		return numberOfTime;
 	}
 }
