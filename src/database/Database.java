@@ -119,7 +119,7 @@ public class Database {
 	 * updates "TaskMangerDatabase.txt" with new data from taskList
 	 * @param taskList
 	 */
-	public void writeToDatabase(ArrayList<Task> taskList) {		
+	public boolean writeToDatabase(ArrayList<Task> taskList) {		
 		assert isValidTaskList(taskList);
 		BufferedWriter writer = null;
 		try {
@@ -132,13 +132,16 @@ public class Database {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		} finally {
 			try {
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			}
 		}
+		return true;
 	}
 
 	private static void closeReader(BufferedReader reader) {
