@@ -81,12 +81,36 @@ public class Task {
 		return startDateTime;
 	}
 	
-	public String getEndDateTime(){
+	public String getEndDateTime() {
 		return endDateTime;
 	}
 	
-	public String getDeadline(){
+	public String getDeadline() {
 		return deadline;
+	}
+	
+	public String getStartDate() {
+		return startDateTime.substring(0, 11);
+	}
+	
+	public String getStartTime() {
+		return startDateTime.substring(11, 16);
+	}
+	
+	public String getEndDate(){
+		return endDateTime.substring(0, 11);
+	}
+	
+	public String getEndTime(){
+		return endDateTime.substring(11, 16);
+	}
+	
+	public String getDeadlineDate() {
+		return deadline.substring(0, 11);
+	}
+	
+	public String getDeadlineTime() {
+		return deadline.substring(11, 16);
 	}
 	
 	public String getStatus(){
@@ -129,15 +153,5 @@ public class Task {
 		String[] stringArray = {getTaskType(), getDescription(), getStartDateTime(), getEndDateTime(), getDeadline(), getStatus()};
 		return stringArray;
 	}
-	
-	public static void main(String[] args) {
-		String[] dataFields = {"Task type", "Description", "StartDateTime", "EndDateTime","Deadline","Status"};
-		Task task1 = new Task(null , "abukhari sujknknknkjn jknknkjn kjnknk kjnknk jnkjperman meeting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
-		Task task2 = new Task("time task", " harajukuting", "14:25 26/07/1993", "14:25 26/08/1993", "14:23 26/07/1993", "not done");
-		ArrayList<Task> tl = new ArrayList<Task>();
-		tl.add(task1);
-		tl.add(task2);
-		TaskListUI tp = new TaskListUI(tl);
-		tp.showTask();
-	}
+
 }

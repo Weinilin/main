@@ -18,6 +18,7 @@ public class TaskListUI {
 		
 		ArrayList<String> dataFields = new ArrayList<String>();
 		dataFields.add("No.");
+		dataFields.add("Task Type");
 		dataFields.add("Description");
 		dataFields.add("StartDateTime");
 		dataFields.add("EndDateTime");
@@ -31,6 +32,7 @@ public class TaskListUI {
 		for (Task task : taskList) {
 			ArrayList<String> taskInformation = new ArrayList<String>();
 			taskInformation.add((Integer.toString(taskNumber++)));
+			taskInformation.add(task.getTaskType());
 			taskInformation.add(task.getDescription());
 			taskInformation.add(task.getStartDateTime());
 			taskInformation.add(task.getEndDateTime());
