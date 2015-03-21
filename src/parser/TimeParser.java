@@ -9,10 +9,9 @@ public class TimeParser {
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_4 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
 	private static final String TIME_KEYWORD_3 = "((from |to |)(before midnight|before noon))";
-	private static final String TIME_KEYWORD_5 = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in morning| in afternoon| in night))";
+	private static final String TIME_KEYWORD_5 = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in (morning|morn)| in afternoon| in night| at night| at afternoon| at morning))";
 	private static final String TO_BE_REMOVED_KEYWORD = "(\\s|-|to|at|from|noon|midnight|before midnight|before noon"
-			+ "in afternoon|in night|in morning)";
-	private static final String INVALID_TIME = "Time entered is invalid";
+			+ "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn))";
 	private static final int TIME_FORMAT_1 = 1;
 	private static final int TIME_FORMAT_2 = 2;
 	private static final int TIME_FORMAT_3 = 3;
@@ -29,23 +28,6 @@ public class TimeParser {
 		for (int i = 1; i <= 6; i++) {
 			storageOfTime = goThroughTimeFormat(i, storageOfTime, userInput);
 		}
-		/*
-		if (!userInput.contains("due") && !userInput.contains("by")) {
-			String hourTimeInString;
-			if (storageOfTime.size() == 1) {
-				int hourTime =  get1stNumber(storageOfTime.get(0)); 
-				hourTime = hourTime + 1;
-				if (hourTime < 10) {
-					hourTimeInString = "0" + hourTime;
-				} else {
-					hourTimeInString = "" + hourTime;
-				}
-				String minTime = get2ndNumber(storageOfTime.get(0));
-				String endTime = hourTimeInString +":" + minTime;
-				storageOfTime.add(endTime);
-			} 
-		}	
-		 */
 		return storageOfTime;
 	}
 
@@ -159,11 +141,11 @@ public class TimeParser {
 			if (matchedForIndex.find()) {
 				int indexNext = matchedForIndex.start();
 
-				if (time.contains("in morning")) {
+				if (time.contains("morning") || time.contains("morn")) {
 					time = removeUnwantedParts(time);
 					time = changeToHourFormat(time + "am");
 					storageOfTime.add(time);
-				} else if (time.contains("in afternoon") || time.contains("in night")) {
+				} else if (time.contains("afternoon") || time.contains("night")) {
 					time = removeUnwantedParts(time);
 					time = changeToHourFormat(time + "pm");
 					storageOfTime.add(time);
