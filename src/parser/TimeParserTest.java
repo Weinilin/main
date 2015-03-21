@@ -60,6 +60,10 @@ public class TimeParserTest {
 		times.add("23:30");
 		times.add("00:30");
 		assertEquals(times, TimeParser.extractTime("mds sale start at 11:30 pm for 1 hour")); 
+	
+		times.clear();
+		times.add("11:30");
+		assertEquals(times, TimeParser.extractTime("mds sale start at 11:30 o'clock")); 
 
 		//arrangement of the time need more thoughts
 

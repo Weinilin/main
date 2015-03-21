@@ -7,25 +7,28 @@ public class TimeParser {
 	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
 	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
 	private static final String TIME_KEYWORD_4 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
 	private static final String TIME_KEYWORD_3 = "((from |to |)(before midnight|before noon))";
 	private static final String TIME_KEYWORD_5 = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in (morning|morn)| in afternoon| in night| at night| at afternoon| at morning))";
 	private static final String TO_BE_REMOVED_KEYWORD = "(\\s|-|to|at|from|noon|midnight|before midnight|before noon"
-			+ "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn))";
+			+ "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|o'clock)";
 	private static final int TIME_FORMAT_1 = 1;
 	private static final int TIME_FORMAT_2 = 2;
 	private static final int TIME_FORMAT_3 = 3;
 	private static final int TIME_FORMAT_4 = 4;
 	private static final int TIME_FORMAT_5 = 5;
 	private static final int TIME_FORMAT_6 = 6;
+	private static final int TIME_FORMAT_7 = 7;
 	private static int index;
 	private static String detectUserInput;
 
 	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
 		userInput = removeThoseHashTag(userInput);
+		userInput = switchAllToLowerCase(userInput);
 		detectUserInput = userInput;
-		for (int i = 1; i <= 6; i++) {
+		for (int i = 1; i <= 7; i++) {
 			storageOfTime = goThroughTimeFormat(i, storageOfTime, userInput);
 		}
 		return storageOfTime;
@@ -47,7 +50,7 @@ public class TimeParser {
 		}
 		if (!hashTagIndex.isEmpty()) {
 			userInput = userInput.substring(0, hashTagIndex.get(0)) + userInput.substring(hashTagIndex.get(1));
-			System.out.println("userInput: "+userInput);
+		//	System.out.println("userInput: "+userInput);
 		}
 		return userInput;
 	}
@@ -66,10 +69,53 @@ public class TimeParser {
 			storageOfTime = detectUsingFormat5(storageOfTime, userInput);
 		} else if (timeFormat == TIME_FORMAT_6) {
 			storageOfTime = detectUsingFormat6(storageOfTime, userInput);
+		} else if (timeFormat == TIME_FORMAT_7) {
+			storageOfTime = detectUsingFormat7(storageOfTime, userInput);
 		}
 		return storageOfTime;
 	}
 
+	/**
+	 * detect time + o'clock default morning
+	 * @param storageOfTime
+	 * @param userInput
+	 * @return time in hour format 
+	 */
+	private static ArrayList<String> detectUsingFormat7(
+			ArrayList<String> storageOfTime, String userInput) {
+		Pattern timeDetector = 
+				Pattern.compile(TIME_KEYWORD_7);
+		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+		Matcher matchedForIndex = timeDetector.matcher(userInput);
+
+		while (matchedWithTime.find()) {
+			String time = matchedWithTime.group();
+			//check detection:
+			//System.out.println("time: "+time);
+			detectUserInput = detectUserInput.replaceAll(time, "");
+			if (matchedForIndex.find()) {
+				int indexNext = matchedForIndex.start();
+				time = removeUnwantedParts(time);
+				time = changeToHourFormat(time);
+				storageOfTime.add(time);
+				//	System.out.println("6. Index: " + indexNext);
+				//System.out.println("Index: ");
+				setThePositionForTime(storageOfTime, indexNext);
+			}
+		}
+		return storageOfTime;
+	}
+
+	/**
+	 * to prevent case sensitive, switch all to lower case
+	 * @param userInput
+	 * @return the user input all in lower case. 
+	 */
+	private static String switchAllToLowerCase(String userInput) {
+		userInput = userInput.toLowerCase() + ".";
+		return userInput;
+	}
+	
 	/**
 	 * detect the start at __ am/pm for __ hour
 	 * @param storageOfTime
