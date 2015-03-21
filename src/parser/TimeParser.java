@@ -22,7 +22,7 @@ public class TimeParser {
 	private static int index;
 
 	private static String detectUserInput;
-	
+
 	public static ArrayList<String> extractTime(String userInput) {
 		ArrayList<String> storageOfTime = new ArrayList<String>();
 		TimeParser.detectUserInput = userInput;
@@ -46,7 +46,6 @@ public class TimeParser {
 			} 
 		}	
 		 */
-		System.out.println("time: "+ storageOfTime);
 		return storageOfTime;
 	}
 
@@ -91,6 +90,13 @@ public class TimeParser {
 
 			int hourTime =  get1stNumber(startTime); 
 			hourTime = hourTime + numberOfHours;
+
+			if(hourTime < 23) {
+				hourTime = hourTime + 1;
+			} else {
+				hourTime = 0;
+			}
+
 			if (hourTime < 10) {
 				hourTimeInString = "0" + hourTime;
 			} else {
@@ -103,8 +109,6 @@ public class TimeParser {
 
 			storageOfTime.add(startTime);
 			storageOfTime.add(time);
-
-			//	index.add(matchedForIndex.start());
 		}
 		return storageOfTime;
 	}
@@ -156,11 +160,15 @@ public class TimeParser {
 				int indexNext = matchedForIndex.start();
 
 				if (time.contains("in morning")) {
-					setThePositionForTime(storageOfTime, time + "am", indexNext);
+					time = removeUnwantedParts(time);
+					time = changeToHourFormat(time + "am");
+					storageOfTime.add(time);
 				} else if (time.contains("in afternoon") || time.contains("in night")) {
-					setThePositionForTime(storageOfTime, time + "pm", indexNext);
+					time = removeUnwantedParts(time);
+					time = changeToHourFormat(time + "pm");
+					storageOfTime.add(time);
 				}
-
+				setThePositionForTime(storageOfTime, indexNext);
 				assert checkValid24HourTime(time) == true;
 			}
 		}
@@ -191,7 +199,7 @@ public class TimeParser {
 
 			String amTime1 = changeToHourFormat(timeList[0]+"am");
 			String pmTime1 = changeToHourFormat(timeList[0]+"pm");
-			System.out.println("timeList[0] "+ pmTime1);
+			//	System.out.println("timeList[0] "+ pmTime1);
 			int amTime1stNum = get1stNumber(amTime1);
 			int pmTime1stNum = get1stNumber(pmTime1);
 			int time1stNum = get1stNumber(timeList[1]);
@@ -309,12 +317,15 @@ public class TimeParser {
 			String time = matchedWithTime.group();
 			//check detection:
 			//System.out.println("time: "+time);
-				detectUserInput = detectUserInput.replaceAll(time, "");
-				if (matchedForIndex.find()) {
-					int indexNext = matchedForIndex.start();
-					setThePositionForTime(storageOfTime, time, indexNext);
+			detectUserInput = detectUserInput.replaceAll(time, "");
+			if (matchedForIndex.find()) {
+				int indexNext = matchedForIndex.start();
+				time = removeUnwantedParts(time);
+				time = changeToHourFormat(time);
+				storageOfTime.add(time);
 				//	System.out.println("6. Index: " + indexNext);
 				//System.out.println("Index: ");
+				setThePositionForTime(storageOfTime, indexNext);
 			}
 		}
 
@@ -322,21 +333,12 @@ public class TimeParser {
 
 	}
 
-	private static void setThePositionForTime(ArrayList<String> storageOfTime,
-			String time, int indexNext) {
-		if (storageOfTime.size() == 1 &&   indexNext < index) {
+	private static void setThePositionForTime(ArrayList<String> storageOfTime, int indexNext) {
+		if (storageOfTime.size() == 2 &&   indexNext < index) {
 			String temp = storageOfTime.get(0);
-			time = removeUnwantedParts(time);
-			time = changeToHourFormat(time);
-			time = removePMOrAm(time);
-			storageOfTime.set(0, time);
-			storageOfTime.add(temp);
-		} else {
-			time = removeUnwantedParts(time);
-			time = changeToHourFormat(time);
-			time = removePMOrAm(time);
-			storageOfTime.add(time);
-		}
+			storageOfTime.set(0, storageOfTime.get(1));
+			storageOfTime.set(1, temp);
+		} 
 		index = indexNext;
 	}
 	/**
@@ -357,10 +359,11 @@ public class TimeParser {
 				int indexNext = matchedForIndex.start();
 				//System.out.println("index: "+indexNext);
 				if (time.contains("noon")) {
-					setThePositionForTime(storageOfTime, time + "12:00 pm", indexNext);
+					storageOfTime.add("12:00");
 				} else if (time.contains("midnight")) {
-					setThePositionForTime(storageOfTime, time + "00:00 am", indexNext);
+					storageOfTime.add("00:00");
 				}
+				setThePositionForTime(storageOfTime, indexNext);
 			}
 
 			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_4, "");
@@ -386,12 +389,12 @@ public class TimeParser {
 			if (matchedForIndex.find()) {
 				int indexNext = matchedForIndex.start();
 				if (time.contains("noon")) {
-					setThePositionForTime(storageOfTime, time + "11:59 am", indexNext);
+					storageOfTime.add("11:59");
 				} else if (time.contains("midnight")) {
-					setThePositionForTime(storageOfTime, time + "23:59 pm", indexNext);
-					//storageOfTime.add("23:59");
+					storageOfTime.add("23:59");
 				}
 				index = indexNext;
+				setThePositionForTime(storageOfTime, indexNext);
 			} 
 		}
 		//System.out.println("2.timeDe: "+storageOfTime.get(0));
