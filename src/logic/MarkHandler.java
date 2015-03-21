@@ -42,9 +42,9 @@ public class MarkHandler extends CommandHandler {
 		int index;
 		for (String t: token) {
 			ip = new IndexParser(t);
-			index = ip.getIndex() - 1;
+			index = ip.getIndex();
 			try {
-				taskList.get(index).setStatus("done");
+				taskList.get(index - 1).setStatus("done");
 				memory.markDone(index);		
 				goodFeedback += t + " ";
 			} catch (IndexOutOfBoundsException iob) {

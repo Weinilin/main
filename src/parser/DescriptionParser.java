@@ -56,7 +56,6 @@ public class DescriptionParser {
 	 * @return the description 
 	 */
 	public String getDescription() {
-
 		return description;
 	}
 
