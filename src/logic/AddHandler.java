@@ -1,6 +1,3 @@
-/* 
- * @author A0114463M
- */
 package logic;
 
 import java.util.logging.Level;
@@ -37,8 +34,7 @@ class AddHandler extends CommandHandler {
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help") ||
-			parameter.trim().equals("")) {
+		if (isHelp(token) || isEmptyParameter(parameter)) {
 			return getHelp();
 		}
 		else {
@@ -47,8 +43,7 @@ class AddHandler extends CommandHandler {
 			// a non empty task is created
 			assert (newTask != null);	
 			if (memory.addTask(newTask)) {
-				taskList.clear();
-				taskList.addAll(0, memory.getTaskList());
+				updateTaskList(taskList);
 				addLogger.log(Level.FINE, "Add sucess");
 				return "Task \"" + newTask.getDescription() + "\" is added\n";
 			} 
@@ -59,11 +54,36 @@ class AddHandler extends CommandHandler {
 		}
 	}
 
+	/**
+	 * check if the argument user typed is empty
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmptyParameter(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * chech if user is looking for help
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
+	}
+
+	/**
+	 * update the taskList for LogicController
+	 * @param taskList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList) {
+		taskList.clear();
+		taskList.addAll(0, memory.getTaskList());
+	}
+
 	@Override
 	public String getHelp() {
 		return "add <task information>\n\t add a new task to TaskManager\n";
 	}
-
-	
 	
 }

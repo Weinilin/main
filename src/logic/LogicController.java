@@ -30,6 +30,14 @@ public class LogicController {
 	private LogicController() {
 		logger.entering(getClass().getName(), "Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
+		addHandlers();
+		initializeHandlers();
+	}
+
+	/**
+	 * add all handlers to arraylist for iteration
+	 */
+	private void addHandlers() {
 		handlers.add(new AddHandler());
 		handlers.add(new ClearHandler());
 		handlers.add(new DeleteHandler());
@@ -37,7 +45,6 @@ public class LogicController {
 		handlers.add(new ExitHandler());
 		handlers.add(new MarkHandler());
 		handlers.add(new ShowHandler());
-		initializeHandlers();
 	}
 	
 	public static LogicController getInstance() {
@@ -65,8 +72,9 @@ public class LogicController {
 	}
 	
 	/**
-	 * associate handlers with their aliases to hashtable
-	 * log error if conflicts occur
+	 * associate the aliases of each handlers to its owner
+	 * such that correct handlers can be invoked for execution
+	 * conflicting aliases will log error
 	 */
 	private void initializeHandlers() {
 		for (CommandHandler handler: handlers) {
@@ -82,6 +90,10 @@ public class LogicController {
 		}
 	}
 	
+	/**
+	 * return the taskList in LogicController
+	 * @return
+	 */
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}

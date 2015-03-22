@@ -34,11 +34,11 @@ class ShowHandler extends CommandHandler{
 		showLogger.entering(getClass().getName(), "entering show handler");
 	
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help")) {
+		if (isHelp(token)) {
 			return getHelp();
 		}
 		
-		if (parameter.trim().equals("")) {
+		if (isEmpty(parameter)) {
 			taskList.clear();
 			taskList.addAll(0, memory.getTaskList());
 			if (taskList.isEmpty()) {
@@ -57,12 +57,39 @@ class ShowHandler extends CommandHandler{
 				return "No task containing " + parameter +"\n";
 			}
 			else {
-				taskList.clear();
-				taskList.addAll(0, searchList);
+				updateTaskList(taskList, searchList);
 				showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
 				return "";
 			}
 		}	
+	}
+
+	/**
+	 * update the taskList in LogicController and write changes to Memory
+	 * @param taskList
+	 * @param searchList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList,
+			ArrayList<Task> searchList) {
+		taskList.clear();
+		taskList.addAll(0, searchList);
+	}
+
+	/**
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmpty(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * check if user if looking for help 
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import application.Task;
 
 /**
+ * Clear all tasks for CommandHandler
  * @author Mr.Emosdnah
  *
  */

@@ -32,8 +32,7 @@ class MarkHandler extends CommandHandler {
 		markLogger.entering(getClass().getName(), "Entering marking");
 		
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help") || 
-			parameter.trim().equals("")) {
+		if (isHelp(token) || isEmpty(parameter)) {
 			return getHelp();
 		}
 		
@@ -44,9 +43,7 @@ class MarkHandler extends CommandHandler {
 			ip = new IndexParser(t);
 			index = ip.getIndex();
 			try {
-				taskList.get(index - 1).setStatus("done");
-				memory.markDone(index);		
-				goodFeedback += t + " ";
+				goodFeedback = getTasks(taskList, goodFeedback, index, t);
 			} catch (IndexOutOfBoundsException iob) {
 				markLogger.log(Level.WARNING, "Invalid index", iob);
 				return "Index invalid! Please check yout input\n";
@@ -54,6 +51,40 @@ class MarkHandler extends CommandHandler {
 		}
 		
 		return "Marked " + goodFeedback + "as done\n";
+	}
+
+	/**
+	 * get the tasks than can be marked to done
+	 * @param taskList
+	 * @param goodFeedback
+	 * @param index
+	 * @param t
+	 * @return
+	 */
+	private String getTasks(ArrayList<Task> taskList, String goodFeedback,
+			int index, String t) {
+		taskList.get(index - 1).setStatus("done");
+		memory.markDone(index);		
+		goodFeedback += t + " ";
+		return goodFeedback;
+	}
+
+	/**
+	 * check if the argument user typed is empty
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmpty(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * check if user is looking for help
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
 	}
 	
 	@Override
