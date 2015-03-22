@@ -20,7 +20,7 @@ import application.TaskComparator;
  * @author A0114463M
  *
  */
-public class EditHandler extends CommandHandler {
+class EditHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("edit", "e", "update"));
@@ -33,7 +33,7 @@ public class EditHandler extends CommandHandler {
 	}
 
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
 		String[] token = parameter.split(" ");

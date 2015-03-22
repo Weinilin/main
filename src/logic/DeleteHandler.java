@@ -21,7 +21,7 @@ import parser.IndexParser;
  * @author A0114463M
  *
  */
-public class DeleteHandler extends CommandHandler {
+class DeleteHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("delete", "d", "remove", "-"));

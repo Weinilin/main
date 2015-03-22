@@ -17,7 +17,7 @@ import application.Task;
  * 
  * @author A0114463M
  */
-public class ShowHandler extends CommandHandler{
+class ShowHandler extends CommandHandler{
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("show", "s", "display"));
@@ -30,7 +30,7 @@ public class ShowHandler extends CommandHandler{
 	}
 	
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
 	
 		String[] token = parameter.split(" ");

@@ -13,7 +13,7 @@ import application.Task;
  *
  */
 
-public class ClearHandler extends CommandHandler {
+class ClearHandler extends CommandHandler {
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("clear", "dall", "deleteall"));
 	
@@ -23,7 +23,7 @@ public class ClearHandler extends CommandHandler {
 	}
 
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		taskList.clear();
 		memory.removeAll();
 		return "All tasks cleared\n";

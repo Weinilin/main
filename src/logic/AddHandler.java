@@ -21,7 +21,7 @@ import application.Task;
  * @author A0114463M
  *
  */
-public class AddHandler extends CommandHandler {
+class AddHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("add", "a", "new", "+"));
