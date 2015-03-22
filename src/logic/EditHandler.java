@@ -20,7 +20,7 @@ import application.TaskComparator;
  * @author A0114463M
  *
  */
-public class EditHandler extends CommandHandler {
+class EditHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("edit", "e", "update"));

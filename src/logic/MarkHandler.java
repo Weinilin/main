@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Mark a task as done by typing the keyword following 
  * by the index of task that is intended to be marked
  */
-public class MarkHandler extends CommandHandler {
+class MarkHandler extends CommandHandler {
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("mark", "done"));

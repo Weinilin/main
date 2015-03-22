@@ -8,6 +8,7 @@ public class CommandLineInterface {
 
 	private static final String COMMAND_MESSAGE = new String("Command: ");
 	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
+	private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
 	private Scanner scanner;
 
 	public CommandLineInterface(){
@@ -17,7 +18,7 @@ public class CommandLineInterface {
 	 * Scan the user input and execute the command.
 	 */
 	public void processUserInput(){
-		String userCommand, message, display;
+		String userCommand, message;
 		scanner = new Scanner(System.in);
 		LogicController commandHandler = LogicController.getInstance();
 		
@@ -30,6 +31,10 @@ public class CommandLineInterface {
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
+			if (message == null) {
+				printMessageToUser(GOODBYE_MESSAGE);
+				System.exit(0);
+			}			
 			printMessageToUser(message);
 			taskListUI.showTask();
 		}

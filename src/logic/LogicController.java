@@ -2,6 +2,7 @@ package logic;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
@@ -33,6 +34,7 @@ public class LogicController {
 		handlers.add(new ClearHandler());
 		handlers.add(new DeleteHandler());
 		handlers.add(new EditHandler());
+		handlers.add(new ExitHandler());
 		handlers.add(new MarkHandler());
 		handlers.add(new ShowHandler());
 		initializeHandlers();
@@ -58,7 +60,7 @@ public class LogicController {
 		}
 		
 		CommandHandler handler = handlerTable.get(command);
-		String parameter = userCommand.replaceFirst(command, "").trim();
+		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
 		return handler.execute(command, parameter, taskList);
 	}
 	

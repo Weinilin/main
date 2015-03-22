@@ -17,7 +17,7 @@ import application.Task;
  * 
  * @author A0114463M
  */
-public class ShowHandler extends CommandHandler{
+class ShowHandler extends CommandHandler{
 
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("show", "s", "display"));
