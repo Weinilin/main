@@ -33,7 +33,7 @@ class EditHandler extends CommandHandler {
 	}
 
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
 		String[] token = parameter.split(" ");

@@ -30,7 +30,7 @@ class ShowHandler extends CommandHandler{
 	}
 	
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
 	
 		String[] token = parameter.split(" ");

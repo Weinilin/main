@@ -28,7 +28,7 @@ class MarkHandler extends CommandHandler {
 	}
 	
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		markLogger.entering(getClass().getName(), "Entering marking");
 		
 		String[] token = parameter.split(" ");

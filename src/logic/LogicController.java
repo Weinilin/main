@@ -64,6 +64,10 @@ public class LogicController {
 		return handler.execute(command, parameter, taskList);
 	}
 	
+	/**
+	 * associate handlers with their aliases to hashtable
+	 * log error if conflicts occur
+	 */
 	private void initializeHandlers() {
 		for (CommandHandler handler: handlers) {
 			ArrayList<String> aliases = handler.getAliases();
