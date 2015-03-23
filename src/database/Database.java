@@ -83,8 +83,9 @@ public class Database {
 	 * location of "TaskManager.txt" cannot be changed
 	 */
 
-	public boolean setDatabaseLocation(String newDatabaseLocation) {
-		File database = new File(databaseLocation);
+	public boolean setDatabaseLocation(String newDatabaseFolder) {
+		String newDatabaseLocation = appendDatabaseName(newDatabaseFolder);
+		File database = new File(newDatabaseLocation);
 		if (database.renameTo(new File(newDatabaseLocation))) {
 			databaseLocation = newDatabaseLocation;
 			updateConfigFile(newDatabaseLocation);
@@ -92,6 +93,10 @@ public class Database {
 		} else {
 			return false;
 		}
+	}
+	
+	private String appendDatabaseName(String newDatabaseFolder) {
+		return newDatabaseFolder + "/TextManagerDatabase.txt";
 	}
 	
 	private boolean updateConfigFile(String newDatabaseLocation) {
