@@ -2,7 +2,7 @@
  * @author A0113966Y
  */
 
-package database;
+package storage;
 
 import application.Task;
 import application.TaskComparator;
@@ -212,6 +212,7 @@ public class Memory {
 		memoryLogger.exiting(getClass().getName(), "initializing memory");
 
 	}
+
 	
 	public ArrayList<Task> getTaskList() {
 		return taskList;

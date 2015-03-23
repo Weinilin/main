@@ -2,7 +2,7 @@
  * @author A0113966Y
  */
 
-package database;
+package storage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
