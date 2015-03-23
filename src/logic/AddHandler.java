@@ -19,7 +19,9 @@ import application.Task;
  *
  */
 class AddHandler extends CommandHandler {
-
+	private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
+	private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
+	private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("add", "a", "new", "+"));
 	private static final Logger addLogger = 
@@ -45,11 +47,11 @@ class AddHandler extends CommandHandler {
 			if (memory.addTask(newTask)) {
 				updateTaskList(taskList);
 				addLogger.log(Level.FINE, "Add sucess");
-				return "Task \"" + newTask.getDescription() + "\" is added\n";
+				return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
 			} 
 			else {
 				addLogger.log(Level.SEVERE, "Error adding new task!");
-				throw new Error("Fatal error! Unable to add Task");
+				throw new Error(FATAL_ERROR_MESSAGE);
 			}	
 		}
 	}
@@ -83,7 +85,7 @@ class AddHandler extends CommandHandler {
 
 	@Override
 	public String getHelp() {
-		return "add <task information>\n\t add a new task to TaskManager\n";
+		return HELP_MESSAGE;
 	}
 	
 }

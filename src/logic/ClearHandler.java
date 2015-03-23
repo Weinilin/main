@@ -9,12 +9,14 @@ import java.util.Arrays;
 import application.Task;
 
 /**
- * Clear all tasks for CommandHandler
- * @author Mr.Emosdnah
- *
+ * CommandHandler for "clear" function
+ * 
+ * @author A0114463M 
  */
 
 class ClearHandler extends CommandHandler {
+	private static final String HELP_MESSAGE = "clear\n\t delete all tasks\n";
+	private static final String ALL_CLEAR_MESSAGE = "All tasks cleared\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("clear", "dall", "deleteall"));
 	
@@ -27,12 +29,12 @@ class ClearHandler extends CommandHandler {
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		taskList.clear();
 		memory.removeAll();
-		return "All tasks cleared\n";
+		return ALL_CLEAR_MESSAGE;
 	}
 
 	@Override
 	public String getHelp() {
-		return "clear\n\t delete all tasks\n";
+		return HELP_MESSAGE;
 	}
 
 }

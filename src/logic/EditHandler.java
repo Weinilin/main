@@ -22,6 +22,10 @@ import application.TaskComparator;
  */
 class EditHandler extends CommandHandler {
 
+	private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
+	private static final String HELP_MESSAGE = "edit <index> <new task>\n\t edit the task by specifying the index\n"
+			+ "edit description <index> <new description>\n\t update the task description only\n"
+			+ "edit time <index> <time>\n\t update the time of task \n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("edit", "e", "update"));
 	private static final Logger editLogger =
@@ -45,7 +49,7 @@ class EditHandler extends CommandHandler {
 		int index = ip.getIndex() - 1;
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
-			return "Invalid index! Please check your input\n";
+			return INVALID_INDEX_MESSAGE;
 		}
 		
 		Task removedTask = taskList.get(index),
@@ -164,9 +168,7 @@ class EditHandler extends CommandHandler {
 
 	@Override
 	public String getHelp() {
-		return "edit <index> <new task>\n\t edit the task by specifying the index\n"
-				+ "edit description <index> <new description>\n\t update the task description only\n"
-				+ "edit time <index> <time>\n\t update the time of task \n";
+		return HELP_MESSAGE;
 	}
 
 }

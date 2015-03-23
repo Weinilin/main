@@ -12,7 +12,7 @@ import application.Task;
 import parser.IndexParser;
 
 /**
- * CommandHandler for deleting a task
+ * CommandHandler for "delete" function
  * 
  * Deleting task is achieved by "delete [index]"
  * The task is removed from memory upon a success removal and the task
@@ -23,6 +23,9 @@ import parser.IndexParser;
  */
 class DeleteHandler extends CommandHandler {
 
+	private static final String HELP_MESSAGE = "delete <index>\n\t remove the respective task of the index from TaskManager\n";
+	private static final String GOODFEEDBACK_MESSAGE = "Removed tasks %1$s\n";
+	private static final String BADFEEDBACK_MESSAGE = "Invalid input %2$s\n";	
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("delete", "d", "remove", "-"));
 	private static final Logger deleteLogger = 
@@ -50,7 +53,8 @@ class DeleteHandler extends CommandHandler {
 		}
 		
 		String goodFeedback = new String(), 
-			   badFeedback = new String();		
+			   badFeedback = new String(),
+			   feedback = new String();		
 		
 		IndexParser ip;
 		ArrayList<Task> removedTask = new ArrayList<Task>();
@@ -70,9 +74,19 @@ class DeleteHandler extends CommandHandler {
 		
 		deleteTasks(taskList, removedTask);
 		
-		String feedback = "Removed tasks " + goodFeedback + "\n" +
-						  "Invalid input " + badFeedback + "\n";	
+		generateFeedbackString(goodFeedback, badFeedback, feedback);
 		return feedback;
+	}
+
+
+	private void generateFeedbackString(String goodFeedback,
+			String badFeedback, String feedback) {
+		if (!goodFeedback.equals("")) {
+			feedback.concat(String.format(GOODFEEDBACK_MESSAGE, goodFeedback));
+		}
+		if (!badFeedback.equals("")) {
+			feedback.concat(String.format(BADFEEDBACK_MESSAGE, badFeedback));
+		}
 	}
 
 
@@ -133,7 +147,7 @@ class DeleteHandler extends CommandHandler {
 
 	@Override
 	public String getHelp() {
-		return "delete <index>\n\t remove the respective task of the index from TaskManager\n";
+		return HELP_MESSAGE;
 	}
 
 }
