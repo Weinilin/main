@@ -30,11 +30,11 @@ public final class TaskPrinter {
     }
     
     /**
-     * print taskList in a table format
+     * print time tasks and deadlines in a table format
      * @param table - a 2-dimensional matrix storing the list of tasks
      */
 
-    public void print(ArrayList<ArrayList<String>> table) {
+    public void printTasksWithTime(ArrayList<ArrayList<String>> table) {
         if ( table == null ) {
             throw new IllegalArgumentException("No tabular data provided");
         }
@@ -44,8 +44,26 @@ public final class TaskPrinter {
         int[] widths = new int[getMaxColumns(table)];
         adjustColumnWidths(table, widths);
         printPreparedTable(table, widths, getHorizontalBorder(widths));
-        System.out.println();
     }
+    
+    /**
+     * print list of floating tasks in a table format
+     * @param table - a 2-dimensional matrix storing the list of tasks
+     */
+    
+    public void printFloatingTask(ArrayList<ArrayList<String>> table) {
+        if ( table == null ) {
+            throw new IllegalArgumentException("No tabular data provided");
+        }
+        if ( table.size() == 0 || table.size() == 1 ) {
+            return;
+        }
+        int[] widths = new int[getMaxColumns(table)];
+        adjustColumnWidths(table, widths);
+        printPreparedTable(table, widths, getHorizontalBorder(widths));
+    }
+    
+    
     
     /**
      * helper method to print taskList in a table format
@@ -76,7 +94,7 @@ public final class TaskPrinter {
     private String getRow(ArrayList<String> row, int[] widths, int lineLength) {
         StringBuilder builder = new StringBuilder(lineLength).append(VERTICAL_BORDER);
         int maxWidths = widths.length;
-        for (int i = 0; i < maxWidths - 1 ; i++) {
+        for (int i = 0; i < maxWidths; i++) {
             builder.append(padMiddle(getCellValue(row, i), widths[i])).append(VERTICAL_BORDER);
         }
         return builder.toString();
@@ -91,7 +109,7 @@ public final class TaskPrinter {
     private String getHorizontalBorder(int[] widths) {
         StringBuilder builder = new StringBuilder(256);
         builder.append(BORDER_KNOT);
-        for (int i = 0; i < widths.length - 1; i++) {
+        for (int i = 0; i < widths.length; i++) {
         	int w = widths[i];
             for (int j = 0; j < w; j++) {
                 builder.append(HORIZONTAL_BORDER);
@@ -135,11 +153,6 @@ public final class TaskPrinter {
                 }
             }
         }
-    }
-
-    private static String padRight(String s, int n) {
-    	
-        return format("%1$-" + n + "s", s);
     }
 
     private static String padMiddle(String s, int n) {
