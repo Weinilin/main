@@ -55,7 +55,9 @@ public class TaskListUI {
 		}
 
 		if (taskListMatrix1.size() > 1) {
-			System.out.println("Time Tasks and Deadlines");
+			System.out.println("****************************");
+			System.out.println("* Time Tasks and Deadlines *");
+			System.out.println("****************************");
 			tp.printTasksWithTime(taskListMatrix1);
 			System.out.println();
 
@@ -63,7 +65,9 @@ public class TaskListUI {
 		}
 		
 		if (taskListMatrix2.size() > 1) {
-			System.out.println("Floating Task");
+			System.out.println("*****************");
+			System.out.println("* Floating Task *");
+			System.out.println("*****************");
 			tp.printFloatingTask(taskListMatrix2);
 	        System.out.println();
 
