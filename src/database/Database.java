@@ -22,7 +22,8 @@ import application.Task;
  */
 
 public class Database {
-	private static String databaseLocation = "TaskManagerDatabase.txt" ;
+	private static String databaseLocation;
+	private static String configFile = "Configuration.txt";
 	
 	private static Database database;
 	
@@ -30,13 +31,38 @@ public class Database {
 	 * Creates a Database 
 	 */
 	private Database() {
-		getDatabaseLocation();
+		createConfigFile();
+		readConfigFile();
 		createDatabase();
 	}
 	
-	private void getDatabaseLocation() {
+	private void createConfigFile() {
+		File database = new File(configFile);
+    	if (!database.exists()) {
+            try {
+                database.createNewFile();
+                updateConfigFile("TaskManagerDatabase.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+	}
+	
+	private void readConfigFile() {
+		BufferedReader reader = null;
+		
+		try{
+			reader = new BufferedReader(new FileReader(configFile));
+			databaseLocation = reader.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			closeReader(reader);
+		}
 		
 	}
+	
+	
 	
 	/**
 	 * returns the instance of database in this Database
@@ -57,14 +83,36 @@ public class Database {
 	 * location of "TaskManager.txt" cannot be changed
 	 */
 
-	public boolean setDatabaseLocation(String newDatabaseLocation) {		
+	public boolean setDatabaseLocation(String newDatabaseLocation) {
 		File database = new File(databaseLocation);
 		if (database.renameTo(new File(newDatabaseLocation))) {
 			databaseLocation = newDatabaseLocation;
+			updateConfigFile(newDatabaseLocation);
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	private boolean updateConfigFile(String newDatabaseLocation) {
+		assert newDatabaseLocation != null;
+
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(configFile));
+			writer.write(newDatabaseLocation);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
