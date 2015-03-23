@@ -19,6 +19,9 @@ import application.Task;
  */
 class ShowHandler extends CommandHandler{
 
+	private static final String HELP_MESSAGE = "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
+	private static final String EMPTY_LIST_MESSAGE = "There is no task\n";
+	private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("show", "s", "display"));
 	private static final Logger showLogger =
@@ -43,7 +46,7 @@ class ShowHandler extends CommandHandler{
 			taskList.addAll(0, memory.getTaskList());
 			if (taskList.isEmpty()) {
 				showLogger.log(Level.FINE, "empty list");
-				return "There is no task\n";
+				return EMPTY_LIST_MESSAGE;
 			}
 			else {
 				showLogger.log(Level.FINE, "show all tasks");
@@ -54,7 +57,7 @@ class ShowHandler extends CommandHandler{
 			ArrayList<Task> searchList = memory.searchDescription(parameter);
 			if (searchList.isEmpty()) {
 				showLogger.log(Level.FINE, "no results found containing " + parameter);
-				return "No task containing " + parameter +"\n";
+				return String.format(NOT_FOUND_MESSAGE, parameter);
 			}
 			else {
 				updateTaskList(taskList, searchList);
@@ -94,6 +97,6 @@ class ShowHandler extends CommandHandler{
 	
 	@Override
 	public String getHelp() {
-		return "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
+		return HELP_MESSAGE;
 	}
 }

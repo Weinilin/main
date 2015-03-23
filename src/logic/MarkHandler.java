@@ -17,6 +17,9 @@ import java.util.logging.Logger;
  */
 class MarkHandler extends CommandHandler {
 
+	private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
+	private static final String INVALID_INDEX_MESSAGE = "Index invalid! Please check yout input\n";
+	private static final String MARKED_MESSAGE = "Marked %1$s as done\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("mark", "done"));
 	private static final Logger markLogger = 
@@ -46,11 +49,11 @@ class MarkHandler extends CommandHandler {
 				goodFeedback = getTasks(taskList, goodFeedback, index, t);
 			} catch (IndexOutOfBoundsException iob) {
 				markLogger.log(Level.WARNING, "Invalid index", iob);
-				return "Index invalid! Please check yout input\n";
+				return INVALID_INDEX_MESSAGE;
 			} 
 		}
 		
-		return "Marked " + goodFeedback + "as done\n";
+		return String.format(MARKED_MESSAGE, goodFeedback);
 	}
 
 	/**
@@ -89,6 +92,6 @@ class MarkHandler extends CommandHandler {
 	
 	@Override
 	public String getHelp() {
-		return "mark [index]\n\t mark a task as done\n";
+		return HELP_MESSAGE;
 	}
 }
