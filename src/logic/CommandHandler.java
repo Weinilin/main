@@ -4,10 +4,10 @@ package logic;
 import java.util.ArrayList;
 import java.io.File;
 
-import database.Memory;
 import parser.DescriptionParser;
 import parser.TaskTypeParser;
 import parser.DateTimeParser;
+import storage.Memory;
 import application.Task;
 
 /**
