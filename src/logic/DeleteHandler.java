@@ -25,7 +25,7 @@ class DeleteHandler extends CommandHandler {
 
 	private static final String HELP_MESSAGE = "delete <index>\n\t remove the respective task of the index from TaskManager\n";
 	private static final String GOODFEEDBACK_MESSAGE = "Removed tasks %1$s\n";
-	private static final String BADFEEDBACK_MESSAGE = "Invalid input %2$s\n";	
+	private static final String BADFEEDBACK_MESSAGE = "Invalid input %1$s\n";	
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("delete", "d", "remove", "-"));
 	private static final Logger deleteLogger = 

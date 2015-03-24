@@ -44,6 +44,7 @@ public class LogicController {
 		handlers.add(new EditHandler());
 		handlers.add(new ExitHandler());
 		handlers.add(new MarkHandler());
+		handlers.add(new SetLocationHandler());
 		handlers.add(new ShowHandler());
 	}
 	
