@@ -1,11 +1,11 @@
 package logic;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
+
+import org.apache.log4j.*;
 
 import storage.Memory;
 import application.Task;
@@ -19,8 +19,7 @@ import application.Task;
 public class LogicController {
 	private static LogicController logicController;
 	
-	private static final Logger logger = 
-			Logger.getLogger(LogicController.class.getName());
+	private Logger logger;
 	
 	static ArrayList<Task> taskList = new ArrayList<Task>();
 	private List<CommandHandler> handlers = new ArrayList<CommandHandler>();
@@ -28,7 +27,8 @@ public class LogicController {
 			new Hashtable<String, CommandHandler>();
 	
 	private LogicController() {
-		logger.entering(getClass().getName(), "Initiating LogicController");
+		logger = Logger.getLogger(this.getClass());
+		logger.debug("Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
 		addHandlers();
 		initializeHandlers();
