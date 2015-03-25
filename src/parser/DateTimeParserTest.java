@@ -5,44 +5,74 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class DateTimeParserTest {
-
+ 
 	@Test
-	public void test() {
-		//deadlines test
-		//	DateTimeParser d = new DateTimeParser("CS2103T assignments due 2pm"); 
-
-		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 23/2"); 
+	public void testWhenTimeNotKeyed() {
+		// deadline task without time added
+		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 23/2");
 		assertEquals(d1.getDeadlineDate(), "23/02/2015");
 		assertEquals(d1.getDeadlineTime(), "23:59");
 
-		//floating test
-		DateTimeParser("Shopping!!!!"); 
+		// timed task without one time added
+		DateTimeParser d2 = new DateTimeParser(
+				"CS2103T assignments 23/2/2016 24/3/2016 4pm");
+		assertEquals(d2.getStartDate(), "23/02/2016");
+		assertEquals(d2.getEndDate(), "24/03/2016");
+		assertEquals(d2.getStartTime(), "16:00");
+		assertEquals(d2.getEndTime(), "17:00");
 
-		//timed test
-		DateTimeParser("CS2103T exam on 24/5 from 2 to 4:30pm.");
-		DateTimeParser("CS2103T exam on 24/5 start at 1:30pm and end at 3:30pm.");
+		// timed task with no time added
+		DateTimeParser d3 = new DateTimeParser(
+				"CS2103T assignments 23/2/2016 24/3/2016 4pm 6:30pm");
+		assertEquals(d3.getStartDate(), "23/02/2016");
+		assertEquals(d3.getEndDate(), "24/03/2016");
+		assertEquals(d3.getStartTime(), "16:00");
+		assertEquals(d3.getEndTime(), "18:30");
+	}
 
-		DateTimeParser d2 = new DateTimeParser("Mds sale start from tomorrow to 1 week later at 2pm");
+	@Test
+	public void testWhenDateNotKeyed() {
+		// deadline task without date added
+		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 3pm");
+		assertEquals(d1.getDeadlineDate(), "25/03/2015");
+		assertEquals(d1.getDeadlineTime(), "15:00");
+
+		// timed task without one date added
+		DateTimeParser d2 = new DateTimeParser(
+				"CS2103T assignments 4pm to 5pm 23/02/2016");
+		assertEquals(d2.getStartDate(), "23/02/2016");
+		assertEquals(d2.getEndDate(), "23/02/2016");
+		assertEquals(d2.getStartTime(), "16:00");
+		assertEquals(d2.getEndTime(), "17:00");
+
+		// timed task with no date added
+		DateTimeParser d3 = new DateTimeParser(
+				"CS2103T assignments 4pm 6:30pm");
+		assertEquals(d3.getStartDate(), "25/03/2015");
+		assertEquals(d3.getEndDate(), "25/03/2015");
+		assertEquals(d3.getStartTime(), "16:00");
+		assertEquals(d3.getEndTime(), "18:30");
+	}
+
+	@Test
+	public void test() {
+		// deadlines test
+		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 23/2/2015 2pm");
+		assertEquals(d1.getDeadlineDate(), "23/02/2015");
+		assertEquals(d1.getDeadlineTime(), "14:00");
+
+		// timed test
+		DateTimeParser d2 = new DateTimeParser(
+				"CS2103T exam on 24/5 27/09/2015 from 2pm to 4:30pm.");
 		assertEquals(d2.getStartTime(), "14:00");
-		assertEquals(d2.getEndTime(), "15:00");
-		assertEquals(d2.getEndDate(), "28/03/2015");
-		assertEquals(d2.getStartDate(), "22/03/2015");
+		assertEquals(d2.getEndTime(), "16:30");
+		assertEquals(d2.getEndDate(), "27/09/2015");
+		assertEquals(d2.getStartDate(), "24/05/2015");
 
-		DateTimeParser d3 = new DateTimeParser("superman at 7pm");
-		assertEquals(d3.getDeadlineTime(), "19:00");
-
-		DateTimeParser("Mds sale start at 6 in the night to midnight");
-		
-		times.clear();
-		times.add("14:00");
-		times.add("16:00");
-		assertEquals(times,
-				TimeParser.extractTime("mds sale from 2pm 24/3 to 4pm 25/3"));
+		DateTimeParser d3 = new DateTimeParser("mds sale from 2pm 24/3 to 4pm 25/3");
+		assertEquals(d3.getStartTime(), "14:00");
+		assertEquals(d3.getEndTime(), "16:00");
+		assertEquals(d3.getEndDate(), "25/03/2015");
+		assertEquals(d3.getStartDate(), "24/03/2015");
 	}
-
-	private void DateTimeParser(String string) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

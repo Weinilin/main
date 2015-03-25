@@ -11,6 +11,8 @@ import java.text.ParseException;
 
 public class DateParser {
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
+	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january|febuary|march|april|may|june|july|august"
+			+ "|september|octobor|november|december)(\\s|\\S)(\\d+|)";
 	private static final String  DATE_KEYWORD3 = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
 			+ "|sep|oct|nov|dec)(\\s|\\S)(\\d+|)";
 	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
@@ -116,7 +118,7 @@ public class DateParser {
 		userInput = switchAllToLowerCase(userInput);
 		userInput = removeThoseHashTag(userInput);
 		detectUserInput = userInput;
-		for (int i = 0; i <= 7; i++) {
+		for (int i = 1; i <= 7; i++) {
 			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask, userInput);
 		}
 
@@ -166,9 +168,9 @@ public class DateParser {
 		if (dateFormat == DATE_FORMAT_1) {
 			dates = spotDateFormat1(userInput, dates);
 		} else if (dateFormat == DATE_FORMAT_2) {
-			//	dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
+			dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
 		} else if (dateFormat == DATE_FORMAT_3) {	
-			dates = spotDateFormat2(userInput,dates);
+			dates = spotDateFormat2(detectUserInput,DATE_KEYWORD3, dates);
 		} else if (dateFormat == DATE_FORMAT_4) {
 			dates = spotDateFormat4(userInput, dates);
 		} else if (dateFormat == DATE_FORMAT_5) {	
@@ -228,7 +230,7 @@ public class DateParser {
 	 */
 	private static int detectDayOfWeek(String input, int todayDay) {
 		int dayOfWeek = 0;
-		System.out.println("input: "+input);
+	//	System.out.println("input: "+input);
 		if (input.contains("mon")) { 
 			dayOfWeek = 1;
 		} else if (input.contains("tues")) {
@@ -533,18 +535,18 @@ public class DateParser {
 	 * @param userInput
 	 * @return date in DD/MM/YYYY
 	 */
-	private static ArrayList<String> spotDateFormat2(String userInput, ArrayList<String> storageOfDate) {
+	private static ArrayList<String> spotDateFormat2(String userInput, String keyword, ArrayList<String> storageOfDate) {
 		String dateOfTheTask = "";
 
-		Pattern dateDetector = Pattern.compile(DATE_KEYWORD3);
+		Pattern dateDetector = Pattern.compile(keyword);
 		Matcher containDate = dateDetector.matcher(userInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
 
 		while (containDate.find() && toGetIndex.find()) {
 			int indexMatch = toGetIndex.start();
 			dateOfTheTask = containDate.group();
-			detectUserInput = detectUserInput.replaceAll(DATE_KEYWORD3, "");
-			//System.out.println("dateOFTASKfeb: "+dateOfTheTask);
+			detectUserInput = detectUserInput.replaceAll(keyword, "");
+		//	System.out.println("dateOFTASKfeb: "+dateOfTheTask+ " detectUserInput: "+detectUserInput);
 			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
 			Calendar calendar = Calendar.getInstance();
 			int day = getDay(dateOfTheTask);
@@ -607,7 +609,7 @@ public class DateParser {
 				dateOfTheTask);
 		String numberText;
 
-		while (containDateFormat2.find()) {
+		if (containDateFormat2.find()) {
 			numberText = containDateFormat2.group();
 			if (numberText.length() <= 2) {
 				day = Integer.parseInt(numberText);
@@ -627,9 +629,11 @@ public class DateParser {
 		Matcher containDateFormat2 = numberPattern.matcher(
 				dateOfTheTask);
 		String numberText;
-
+		
+		//System.out.println("date: "+dateOfTheTask);
 		while (containDateFormat2.find()) {
 			numberText = containDateFormat2.group();
+			//System.out.println("numberText: "+numberText);
 			if (numberText.length() == 4) {
 				year = Integer.parseInt(numberText);
 			}

@@ -15,6 +15,8 @@ public class TaskTypeParser {
 		} else if(numberOfTimeInput == 0) {
 			taskType = "floating task";
 		}
+		
+		assert taskType != null :"enter too many time!";
 		setTaskType(taskType);
 	}
 
