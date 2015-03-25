@@ -18,7 +18,7 @@ class ClearHandler extends CommandHandler {
 	private static final String HELP_MESSAGE = "clear\n\t delete all tasks\n";
 	private static final String ALL_CLEAR_MESSAGE = "All tasks cleared\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
-			Arrays.asList("clear", "dall", "deleteall"));
+			Arrays.asList("clear", "clr", "dall", "deleteall"));
 	
 	@Override
 	protected ArrayList<String> getAliases() {

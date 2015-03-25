@@ -36,7 +36,7 @@ class AddHandler extends CommandHandler {
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		String[] token = parameter.split(" ");
-		if (isHelp(token) || isEmptyParameter(parameter)) {
+		if (isHelpOnly(token) || isEmptyParameter(parameter)) {
 			return getHelp();
 		}
 		else {
@@ -70,8 +70,8 @@ class AddHandler extends CommandHandler {
 	 * @param token
 	 * @return
 	 */
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase().trim().equals("help");
+	private boolean isHelpOnly(String[] token) {
+		return ((token.length == 1) && (token[0].toLowerCase().trim().equals("help")));
 	}
 
 	/**
