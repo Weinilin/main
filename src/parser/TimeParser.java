@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class TimeParser {
-	//private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
+	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
 	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
