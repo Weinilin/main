@@ -28,7 +28,7 @@ public class DateParserTest {
 		// sensitivity
 		dates.clear();
 		dates.add("12/01/2015");
-		assertEquals(dates, DateParser.extractDate("mds sale 12Jan"));
+		assertEquals(dates, DateParser.extractDate("mds sale 12 jan"));
 
 		// test date keyword 3 with year, the case sensitivity and space
 		// sensitivity
