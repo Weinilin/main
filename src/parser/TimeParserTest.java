@@ -9,6 +9,9 @@ import org.junit.Test;
 public class TimeParserTest {
 
 	@Test
+	/**
+	 * Equivalence test 
+	 */
 	public void test() {
 		ArrayList<String> times = new ArrayList<String> ();
 
@@ -26,11 +29,11 @@ public class TimeParserTest {
 
 		times.clear();
 		times.add("00:30");
-		assertEquals(times, TimeParser.extractTime("mds sale 12:30 am")); //add of one more time
-
+		assertEquals(times, TimeParser.extractTime("mds sale 12:30 am")); 
+		
 		times.clear();
 		times.add("18:00");
-		assertEquals(times, TimeParser.extractTime("mds sale 6pm")); // add of one more time
+		assertEquals(times, TimeParser.extractTime("mds sale 6pm")); 
 
 		times.clear();
 		times.add("12:00");

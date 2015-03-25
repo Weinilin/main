@@ -35,7 +35,7 @@ public class DescriptionParser {
 	private static final String DATE_KEYWORD7_1 = " next (monday|tuesday|wednesday|thursday|friday|saturday|sunday)";
 	private static final String DATE_KEYWORD7_2 = " next (mon|tues|wed|thrus|fri|sat|sun)";
 	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
-	private static final String UNWANTED = "(end at|start at|and)";
+	private static final String UNWANTED = "(end at|start at|and|\\.)";
 	private String description;
 
 	public DescriptionParser(String userInput) {
@@ -60,6 +60,7 @@ public class DescriptionParser {
 		userInput = replaceBoth(userInput, TIME_KEYWORD_6);
 		userInput = replaceBoth(userInput, TIME_KEYWORD_7);
 		userInput = userInput.replaceAll(UNWANTED, "");
+		//System.out.println("d: "+ userInput);
 		detectedDescription = userInput.replaceAll("\\s+|,", " ");
 		detectedDescription = detectedDescription.trim();
 		setDescription(detectedDescription);
@@ -77,25 +78,26 @@ public class DescriptionParser {
 	}
 
 	/**
-	 * replace it with empty
+	 * if time or date with ~....~ keep it else remove them
 	 * @param userInput
-	 * @param ignoreKeyword
 	 * @param keyword
-	 * @return user input without the one.
+	 * @return user input without the time or date. 
 	 */
 	private String replaceBoth(String userInput, String keyword) {
 		Pattern detector = Pattern.compile(keyword);
 		Matcher contain = detector.matcher(userInput);
+		String temp = userInput;
 
 		while (contain.find()) {
 			int startIndex = contain.start();
 			int endIndex =contain.end();
-
-			if (startIndex == 0 || endIndex == userInput.length() || (userInput.charAt(startIndex - 1) != '~' && userInput.charAt(endIndex) != '~')) {
-				userInput = userInput.replaceAll(contain.group(), "");
+			//System.out.println("startIndex: "+startIndex+ " endIndex: "+endIndex);
+			if ((startIndex == 0 || endIndex == userInput.length() || (userInput.charAt(startIndex - 1) != '~' && 
+					userInput.charAt(endIndex) != '~'))) {
+				temp = temp.replaceAll(contain.group(), "");
 			}
 		}
-		return userInput;
+		return temp;
 	}
 
 	/**
