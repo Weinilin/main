@@ -11,7 +11,7 @@ public class DateParserTest {
 	@Test
 	public void test() {
 		ArrayList<String> dates = new ArrayList<String> ();
-		/*
+		
 		dates.add("01/03/2015");
 		assertEquals(dates, DateParser.extractDate("mds sale due 1/3"));
 
@@ -83,7 +83,7 @@ public class DateParserTest {
 
 		dates.clear();
 		assertEquals(dates, DateParser.extractDate("mds sale at ~3rd of oct~"));
-		 */
+		 
 		dates.clear();
 		dates.add("23/03/2015");
 		assertEquals(dates, DateParser.extractDate("mds sale next monday"));
