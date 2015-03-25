@@ -1,93 +1,101 @@
 package logic;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Hashtable;
 
-import database.Memory;
-import database.Database;
-import parser.CommandParser;
-import application.TaskData;
+import storage.Memory;
+import application.Task;
 
 /**
- * Construct by passing a TaskList to the constructor 
+ * The main component that takes charge of deciding which 
+ * handlers to call and execute
  * 
- * process each line of input given by user and calls different
- * handlers by different command given by user
- * and returns a feedback to ui
+ * @author A0114463M
  */
 public class LogicController {
-
-	private Memory memory;
-	private Database database;
+	private static LogicController logicController;
 	
-	public LogicController() {
-		Database database = new Database();
-		memory = new Memory(database);
+	private static final Logger logger = 
+			Logger.getLogger(LogicController.class.getName());
+	
+	private ArrayList<Task> taskList = new ArrayList<Task>();
+	private List<CommandHandler> handlers = new ArrayList<CommandHandler>();
+	private Hashtable<String, CommandHandler> handlerTable = 
+			new Hashtable<String, CommandHandler>();
+	
+	private LogicController() {
+		logger.entering(getClass().getName(), "Initiating LogicController");
+		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
+		addHandlers();
+		initializeHandlers();
+	}
+
+	/**
+	 * add all handlers to arraylist for iteration
+	 */
+	private void addHandlers() {
+		handlers.add(new AddHandler());
+		handlers.add(new ClearHandler());
+		handlers.add(new DeleteHandler());
+		handlers.add(new EditHandler());
+		handlers.add(new ExitHandler());
+		handlers.add(new MarkHandler());
+		handlers.add(new SetLocationHandler());
+		handlers.add(new ShowHandler());
 	}
 	
-	public String executeCommand(String userInput) {
-		String userCommand = CommandParser.determineCommandType(userInput);
-		return execute(userCommand, userInput);
+	public static LogicController getInstance() {
+		if (logicController == null) {
+			logicController = new LogicController();
+		}
+		return logicController;
 	}
 	
 	/**
-	 * execute command by creating different handler object
-	 * associating to the memory object so that it deals
-	 * with the list of tasks
-	 * 
-	 * @param command - command extracted from user
-	 * @param userInput - parameters of command
-	 * @return - feedback string to be displayed on console
+	 * Take the input from user from UI and call respective
+	 * handlers. Return the feedback to UI after each execution
+	 * @param userCommand
+	 * @return - feedback to user
 	 */
-	public String execute(String command, String userInput) {
-		String feedback = new String();
-		userInput = userInput.replaceFirst(command, "").trim();
-		switch (command) {
-			case "add":
-				AddHandler ah = new AddHandler(memory);
-				if (ah.addTask(userInput) != null) {
-					feedback = "Successfully added " + userInput + "\n";
-				}
-				break;
-			case "delete":
-				DeleteHandler dh = new DeleteHandler(memory);
-				TaskData removedTask= dh.deleteTask(userInput);
-				if (removedTask != null) {
-					feedback = "Successfully deleted: \n" + removedTask.toString();
-				}
-				else {
-					feedback = "Please check your input";
-				}
-				break;
-			case "edit":
-				EditHandler eh = new EditHandler(memory);
-				if (eh.editTask(userInput)) {
-					feedback = "Updated to " + userInput;
-				}
-				else {
-					feedback = "Please check your input";
-				}
-				break;
-			case "show":
-				ShowHandler sh = new ShowHandler(memory);
-				feedback = sh.showTask(userInput);
-				break;
-			case "exit":
-				feedback = "Goodbye!";
-				System.out.println(feedback);
-				System.exit(0);
-				break;
-			case "mark":
-				MarkHandler mh = new MarkHandler(memory);
-				if (mh.markTaskDone(userInput)) {
-					feedback = "Successfully marked. ";
-				}
-				else {
-					feedback = "Please check your input";
-				}
-				break;
-			default:
-				break;
+	public String executeCommand(String userCommand) {
+		String command = userCommand.split(" ")[0];
+		if (!handlerTable.containsKey(command)) {
+			return "Unknown command!\n";
 		}
-		return feedback;
+		
+		CommandHandler handler = handlerTable.get(command);
+		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
+		return handler.execute(command, parameter, taskList);
+	}
+	
+	/**
+	 * associate the aliases of each handlers to its owner
+	 * such that correct handlers can be invoked for execution
+	 * conflicting aliases will log error
+	 */
+	private void initializeHandlers() {
+		for (CommandHandler handler: handlers) {
+			ArrayList<String> aliases = handler.getAliases();
+			for (String cmd: aliases) {
+				if (handlerTable.containsKey(cmd)) {
+					logger.log(Level.INFO, "conflicting command "+ cmd);
+				}
+				else {
+					handlerTable.put(cmd, handler);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * return the taskList in LogicController
+	 * @return
+	 */
+	public ArrayList<Task> getTaskList() {
+		return taskList;
 	}
 }

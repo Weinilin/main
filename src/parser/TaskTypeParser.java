@@ -1,40 +1,39 @@
 package parser;
-import java.util.ArrayList;
-
-
-
 
 public class TaskTypeParser {
+	private String taskType;
 
-	/**
-	 * Determine the type of task.
-	 * @param storageOfTime
-	 * @return the task type.
-	 */
-	public String extractTaskType(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = getNumberOfTimeInput(storageOfTime);
-		String taskType;
+	public TaskTypeParser(String userInput) {
+		DateTimeParser dateTime = new DateTimeParser(userInput);
+		int numberOfTimeInput = dateTime.getNumberOfTime();
+		String taskType = null;
 
-		if(numberOfTimeInput == 2){
+		if (numberOfTimeInput == 2) {
 			taskType = "time task";
-		}
-		else if(numberOfTimeInput == 1){
+		} else if (numberOfTimeInput == 1) {
 			taskType = "deadline";
-		}
-		else{
+		} else if(numberOfTimeInput == 0) {
 			taskType = "floating task";
 		}
-		return taskType;
+		
+		assert taskType != null :"enter too many time!";
+		setTaskType(taskType);
 	}
 
 	/**
-	 * Get the number of time stored in the arrayList(storageOfTime)
-	 * @param storageOfTime
-	 * @return the number of time stored.
+	 * set the task type into this class
+	 * @param detectedTaskType
 	 */
-	private int getNumberOfTimeInput(ArrayList<String> storageOfTime) {
-		int numberOfTimeInput = storageOfTime.size();
-		return numberOfTimeInput;
+	public void setTaskType(String detectedTaskType) {
+		taskType = detectedTaskType;
+	}
+	
+	/**
+	 * Determine the type of task.
+	 * @return the task type.
+	 */
+	public String getTaskType() {
+		return taskType;
 	}
 }
 

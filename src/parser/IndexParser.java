@@ -1,29 +1,44 @@
 package parser;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+//import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IndexParser {
-	
-	public IndexParser() {
+	private int index;
+
+	public IndexParser(String userInput) {
+		int detectedIndex = 0;
+		Logger logger = Logger.getLogger("IndexParser");
+		try {
+			logger.log(Level.INFO, "going to start processing");
+			String number = getNumber(userInput);
+			detectedIndex = Integer.parseInt(number);
+		} catch (Exception e) {
+			System.err.println("NoDigitException: " + e.getMessage());
+			logger.log(Level.WARNING, "processing error", e);
+		}
+		setIndex(detectedIndex);
+	}
+
+	/**
+	 * set the index
+	 * @param detectedIndex
+	 */
+	private void setIndex(int detectedIndex) {
+		index = detectedIndex;
 
 	}
 
 	/**
 	 * Extract the index.
-	 * @param userInput - input from user
 	 * @return positive index if number is detected, throw exception error if no digit is 
 	 * entered by the user. Since the program could not execute the command without the
 	 * index (a digit) being detect.
 	 */
-	public int extractIndex(String userInput) {
-		int index = 0;
-		try {
-			String number = getIndex(userInput);
-			index = Integer.parseInt(number);
-		} catch (NoSuchElementException e) {
-			System.err.println("NoDigitException: " + e.getMessage());
-		}
+	public int getIndex() {
 		return index;
 	}
 
@@ -34,14 +49,14 @@ public class IndexParser {
 	 * @throws NoSuchElementException ---> when no digit is detect, the user never key in the 
 	 * index and the command could not be execute without the index.
 	 */	
-	private String getIndex(String userInput) throws NoSuchElementException {
+	private String getNumber(String userInput) throws Exception {
 		String number = ""; 
 		Pattern indexDetector = Pattern.compile("\\d+");
 		Matcher indexMatch = indexDetector.matcher(userInput);
 		if (indexMatch.find()) {
 			number = indexMatch.group();
 		} else {
-			throw new NoSuchElementException("Index is not entered!!!"); 
+			throw new Exception ("Index is not entered!!!"); 
 		}
 		return number;
 	}

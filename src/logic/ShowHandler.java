@@ -1,65 +1,102 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
-import database.Memory;
-import application.TaskData;
+import application.Task;
 
 /**
+ * Command handler for showing/searching tasks
+ * 
+ * 
  * showing all tasks in the taskList by passing no
  * parameters OR search for tasks containing the 
  * keyword
+ * 
+ * @author A0114463M
  */
-public class ShowHandler {
+class ShowHandler extends CommandHandler{
 
-	private Memory memory;
+	private static final String HELP_MESSAGE = "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
+	private static final String EMPTY_LIST_MESSAGE = "There is no task\n";
+	private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("show", "s", "display"));
+	private static final Logger showLogger =
+			Logger.getLogger(DeleteHandler.class.getName());
 	
-	protected ShowHandler(Memory memory) {
-		this.memory = memory;
+	@Override
+	protected ArrayList<String> getAliases() {
+		return aliases;
 	}
 	
-	/**
-	 * show all contents in taskList
-	 * 
-	 * @param taskList - list to be shown
-	 * @return String of all tasks, no task message will be shown if 
-	 * 		   the list is empty
-	 */
-	protected String showTask() {
-		String result = new String();
-		if (memory.getTaskList().size() == 0) {
-			result = "There is no task.";
-		}
-		else {
-			ArrayList<TaskData> task = memory.getTaskList();
-			for (TaskData td: task) {
-				result += td.toString() + "\n";
-			}
+	@Override
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+		showLogger.entering(getClass().getName(), "entering show handler");
+	
+		String[] token = parameter.split(" ");
+		if (isHelp(token)) {
+			return getHelp();
 		}
 		
-		return result;
-	}
-	
-	/**
-	 * show tasks containing the keyword
-	 * 
-	 * @param index - arraylist storing tasks to be shown
-	 * @param taskList - taskList to be shown
-	 * @return formatted string of tasks, message if no task if found
-	 */
-	protected String showTask(String keyword) {
-		int i = 1;
-		String result = new String();
-		ArrayList<TaskData> searchList = memory.searchDescription(keyword);
-		if (searchList.isEmpty()) {
-			return "No task containing " + keyword +"\n";
+		if (isEmpty(parameter)) {
+			taskList.clear();
+			taskList.addAll(0, memory.getTaskList());
+			if (taskList.isEmpty()) {
+				showLogger.log(Level.FINE, "empty list");
+				return EMPTY_LIST_MESSAGE;
+			}
+			else {
+				showLogger.log(Level.FINE, "show all tasks");
+				return "";
+			}
 		}
 		else {
-			for (TaskData td: searchList) {
-				result += i + ". \n" + td.toString() + "\n";
-				i++;
+			ArrayList<Task> searchList = memory.searchDescription(parameter);
+			if (searchList.isEmpty()) {
+				showLogger.log(Level.FINE, "no results found containing " + parameter);
+				return String.format(NOT_FOUND_MESSAGE, parameter);
 			}
-			return result;
-		}
+			else {
+				updateTaskList(taskList, searchList);
+				showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
+				return "";
+			}
+		}	
+	}
+
+	/**
+	 * update the taskList in LogicController and write changes to Memory
+	 * @param taskList
+	 * @param searchList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList,
+			ArrayList<Task> searchList) {
+		taskList.clear();
+		taskList.addAll(0, searchList);
+	}
+
+	/**
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmpty(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * check if user if looking for help 
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
+	}
+	
+	@Override
+	public String getHelp() {
+		return HELP_MESSAGE;
 	}
 }

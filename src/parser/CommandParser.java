@@ -1,6 +1,8 @@
 package parser;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommandParser {
 	private static final String ADD_STATEMENT = new String("add");
@@ -18,12 +20,12 @@ public class CommandParser {
 	}
 
 	/**
-	 * use to detect different command Type(add, undo, mark, edit, show, delete)
-	 * @param userCommand
+	 * use to detect different command Type(add, undo, mark, edit, show, delete, search,help, exit)
+	 * @param userInput
 	 * @return command type
 	 */
-	public String determineCommandType(String userCommand) {
-		String commandType = getFirstWord(userCommand);
+	public static String getCommandType(String userInput) {
+		String commandType = getFirstWord(userInput);
 		try {
 			if(commandType.equals(ADD_STATEMENT)){
 				commandType = ADD_STATEMENT;
@@ -46,8 +48,12 @@ public class CommandParser {
 			} else {
 				throw new NoSuchElementException("Invalid Command!");
 			}
-		} catch (NullPointerException e) {
-			System.err.println("InvalidCommandException: " + e.getMessage());
+		} catch (NoSuchElementException e1) {
+			System.err.println("InvalidCommandException: " + e1.getMessage());
+			Logger logger = Logger.getLogger("CommandParser");
+			logger.log(Level.INFO, "going to start processing");
+			logger.log(Level.WARNING, "processing error", e1);
+			logger.log(Level.INFO, "end of processing");
 		}
 		return commandType;
 	}
@@ -57,7 +63,7 @@ public class CommandParser {
 	 * @param userCommand
 	 * @return the first word which is the command type to the caller
 	 */
-	private String getFirstWord(String userCommand) {
+	private static String getFirstWord(String userCommand) {
 		String splitOfCommand[] = userCommand.split(" ", 2);
 		String firstWord = splitOfCommand[0];
 		return firstWord;
