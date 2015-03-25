@@ -1,5 +1,9 @@
 package storage;
 
+import java.util.ArrayList;
+
+import application.Task;
+
 public class DatabaseLocationChanger {
 	private static Database database;
 	

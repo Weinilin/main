@@ -2,6 +2,7 @@ package logic;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
@@ -29,13 +30,22 @@ public class LogicController {
 	private LogicController() {
 		logger.entering(getClass().getName(), "Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
+		addHandlers();
+		initializeHandlers();
+	}
+
+	/**
+	 * add all handlers to arraylist for iteration
+	 */
+	private void addHandlers() {
 		handlers.add(new AddHandler());
 		handlers.add(new ClearHandler());
 		handlers.add(new DeleteHandler());
 		handlers.add(new EditHandler());
+		handlers.add(new ExitHandler());
 		handlers.add(new MarkHandler());
+		handlers.add(new SetLocationHandler());
 		handlers.add(new ShowHandler());
-		initializeHandlers();
 	}
 	
 	public static LogicController getInstance() {
@@ -58,10 +68,15 @@ public class LogicController {
 		}
 		
 		CommandHandler handler = handlerTable.get(command);
-		String parameter = userCommand.replaceFirst(command, "").trim();
+		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
 		return handler.execute(command, parameter, taskList);
 	}
 	
+	/**
+	 * associate the aliases of each handlers to its owner
+	 * such that correct handlers can be invoked for execution
+	 * conflicting aliases will log error
+	 */
 	private void initializeHandlers() {
 		for (CommandHandler handler: handlers) {
 			ArrayList<String> aliases = handler.getAliases();
@@ -76,6 +91,10 @@ public class LogicController {
 		}
 	}
 	
+	/**
+	 * return the taskList in LogicController
+	 * @return
+	 */
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}

@@ -20,8 +20,12 @@ import application.TaskComparator;
  * @author A0114463M
  *
  */
-public class EditHandler extends CommandHandler {
+class EditHandler extends CommandHandler {
 
+	private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
+	private static final String HELP_MESSAGE = "edit <index> <new task>\n\t edit the task by specifying the index\n"
+			+ "edit description <index> <new description>\n\t update the task description only\n"
+			+ "edit time <index> <time>\n\t update the time of task \n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("edit", "e", "update"));
 	private static final Logger editLogger =
@@ -33,12 +37,11 @@ public class EditHandler extends CommandHandler {
 	}
 
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help") || 
-			parameter.trim().equals("")) {
+		if (isHelp(token) || isEmpty(parameter)) {
 			return getHelp();
 		}
 		
@@ -46,7 +49,7 @@ public class EditHandler extends CommandHandler {
 		int index = ip.getIndex() - 1;
 		if (index < 0 || index > taskList.size()) {
 			editLogger.log(Level.WARNING, "Invalid number " + index);
-			return "Invalid index! Please check your input\n";
+			return INVALID_INDEX_MESSAGE;
 		}
 		
 		Task removedTask = taskList.get(index),
@@ -54,14 +57,10 @@ public class EditHandler extends CommandHandler {
 		
 		switch (token[0].toLowerCase()) {
 			case "description":
-				newTask.setDescription(parameter.replace(token[0], "").
-									   replace(Integer.toString(index + 1), "").trim());
+				updateTaskByDescription(parameter, token, index, newTask);
 				break;
 			case "time":
-				String description = newTask.getDescription();
-				newTask = CommandHandler.createNewTask(parameter.replace(token[0], "").
-						   replace(Integer.toString(index + 1), "").trim());
-				newTask.setDescription(description);				
+				newTask = updateTaskByTime(parameter, token, index, newTask);				
 				break;
 			default:
 				try {
@@ -75,6 +74,71 @@ public class EditHandler extends CommandHandler {
 				break;
 		}
 		
+		updateTaskList(taskList, index, removedTask, newTask);
+		taskList = memory.getTaskList();
+		return "";
+	}
+
+	/**
+	 * set the new description of the task
+	 * @param parameter
+	 * @param token
+	 * @param index
+	 * @param newTask
+	 */
+	private void updateTaskByDescription(String parameter, String[] token,
+			int index, Task newTask) {
+		newTask.setDescription(getNewDescription(parameter, token, index));
+	}
+
+	/**
+	 * set the new time of the task
+	 * @param parameter
+	 * @param token
+	 * @param index
+	 * @param newTask
+	 * @return
+	 */
+	private Task updateTaskByTime(String parameter, String[] token, int index,
+			Task newTask) {
+		String description = newTask.getDescription();
+		newTask = createTimeOnlyTask(parameter, token, index);
+		newTask.setDescription(description);
+		return newTask;
+	}
+
+	/**
+	 * create a task with time only, description will be updated elsewhere
+	 * @param parameter
+	 * @param token
+	 * @param index
+	 * @return
+	 */
+	private Task createTimeOnlyTask(String parameter, String[] token, int index) {
+		return CommandHandler.createNewTask(getNewDescription(parameter, token, index));
+	}
+
+	/**
+	 * extract the new description of the task
+	 * @param parameter
+	 * @param token
+	 * @param index
+	 * @return
+	 */
+	private String getNewDescription(String parameter, String[] token, int index) {
+		return parameter.replace(token[0], "").
+							   replace(Integer.toString(index + 1), "").trim();
+	}
+
+	/**
+	 * update the taskList in LogicController and Memory
+	 * @param taskList
+	 * @param index
+	 * @param removedTask
+	 * @param newTask
+	 */
+	private void updateTaskList(ArrayList<Task> taskList, int index,
+			Task removedTask, Task newTask) {
 		if (!newTask.equals(removedTask)) {
 			taskList.remove(index);
 			taskList.add(newTask);
@@ -82,15 +146,29 @@ public class EditHandler extends CommandHandler {
 			memory.removeTask(removedTask);
 			memory.addTask(newTask);
 		}
-		taskList = memory.getTaskList();
-		return "";
+	}
+
+	/**
+	 * check if the argument user typed is empty
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmpty(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * check if user the user is looking for help
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
 	}
 
 	@Override
 	public String getHelp() {
-		return "edit <index> <new task>\n\t edit the task by specifying the index\n"
-				+ "edit description <index> <new description>\n\t update the task description only\n"
-				+ "edit time <index> <time>\n\t update the time of task \n";
+		return HELP_MESSAGE;
 	}
 
 }

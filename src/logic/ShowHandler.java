@@ -17,8 +17,11 @@ import application.Task;
  * 
  * @author A0114463M
  */
-public class ShowHandler extends CommandHandler{
+class ShowHandler extends CommandHandler{
 
+	private static final String HELP_MESSAGE = "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
+	private static final String EMPTY_LIST_MESSAGE = "There is no task\n";
+	private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("show", "s", "display"));
 	private static final Logger showLogger =
@@ -30,20 +33,20 @@ public class ShowHandler extends CommandHandler{
 	}
 	
 	@Override
-	String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		showLogger.entering(getClass().getName(), "entering show handler");
 	
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help")) {
+		if (isHelp(token)) {
 			return getHelp();
 		}
 		
-		if (parameter.trim().equals("")) {
+		if (isEmpty(parameter)) {
 			taskList.clear();
 			taskList.addAll(0, memory.getTaskList());
 			if (taskList.isEmpty()) {
 				showLogger.log(Level.FINE, "empty list");
-				return "There is no task\n";
+				return EMPTY_LIST_MESSAGE;
 			}
 			else {
 				showLogger.log(Level.FINE, "show all tasks");
@@ -54,19 +57,46 @@ public class ShowHandler extends CommandHandler{
 			ArrayList<Task> searchList = memory.searchDescription(parameter);
 			if (searchList.isEmpty()) {
 				showLogger.log(Level.FINE, "no results found containing " + parameter);
-				return "No task containing " + parameter +"\n";
+				return String.format(NOT_FOUND_MESSAGE, parameter);
 			}
 			else {
-				taskList.clear();
-				taskList.addAll(0, searchList);
+				updateTaskList(taskList, searchList);
 				showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
 				return "";
 			}
 		}	
 	}
+
+	/**
+	 * update the taskList in LogicController and write changes to Memory
+	 * @param taskList
+	 * @param searchList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList,
+			ArrayList<Task> searchList) {
+		taskList.clear();
+		taskList.addAll(0, searchList);
+	}
+
+	/**
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmpty(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * check if user if looking for help 
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
+	}
 	
 	@Override
 	public String getHelp() {
-		return "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
+		return HELP_MESSAGE;
 	}
 }

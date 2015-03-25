@@ -33,7 +33,7 @@ abstract class CommandHandler {
 	 *@param parameter - parameter for executing the command based on user input
 	 *@return feedback String to UI after each execution of the command
 	 */
-	abstract String execute(String command, String parameter, ArrayList<Task> taskList);
+	abstract protected String execute(String command, String parameter, ArrayList<Task> taskList);
 	
 	/**
 	 * get help String for each of the commands when user types "[command] help"
@@ -47,7 +47,7 @@ abstract class CommandHandler {
 	 *@param taskInformation - the input from user that specifies the task
 	 *@return new task object created based on the input from user.
 	 */
-	static Task createNewTask(String taskInformation) {
+	protected static Task createNewTask(String taskInformation) {
 		DescriptionParser descriptionParser = new DescriptionParser(taskInformation);
 		String description = descriptionParser.getDescription();
 		assert (description.trim() != ""); // ensure that the task has some description for it

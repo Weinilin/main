@@ -1,6 +1,3 @@
-/* 
- * @author A0114463M
- */
 package logic;
 
 import java.util.logging.Level;
@@ -21,8 +18,10 @@ import application.Task;
  * @author A0114463M
  *
  */
-public class AddHandler extends CommandHandler {
-
+class AddHandler extends CommandHandler {
+	private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
+	private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
+	private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 			Arrays.asList("add", "a", "new", "+"));
 	private static final Logger addLogger = 
@@ -37,8 +36,7 @@ public class AddHandler extends CommandHandler {
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
 		String[] token = parameter.split(" ");
-		if (token[0].toLowerCase().trim().equals("help") ||
-			parameter.trim().equals("")) {
+		if (isHelp(token) || isEmptyParameter(parameter)) {
 			return getHelp();
 		}
 		else {
@@ -47,23 +45,47 @@ public class AddHandler extends CommandHandler {
 			// a non empty task is created
 			assert (newTask != null);	
 			if (memory.addTask(newTask)) {
-				taskList.clear();
-				taskList.addAll(0, memory.getTaskList());
+				updateTaskList(taskList);
 				addLogger.log(Level.FINE, "Add sucess");
-				return "Task \"" + newTask.getDescription() + "\" is added\n";
+				return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
 			} 
 			else {
 				addLogger.log(Level.SEVERE, "Error adding new task!");
-				throw new Error("Fatal error! Unable to add Task");
+				throw new Error(FATAL_ERROR_MESSAGE);
 			}	
 		}
 	}
 
-	@Override
-	public String getHelp() {
-		return "add <task information>\n\t add a new task to TaskManager\n";
+	/**
+	 * check if the argument user typed is empty
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmptyParameter(String parameter) {
+		return parameter.trim().equals("");
 	}
 
-	
+	/**
+	 * chech if user is looking for help
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
+	}
+
+	/**
+	 * update the taskList for LogicController
+	 * @param taskList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList) {
+		taskList.clear();
+		taskList.addAll(0, memory.getTaskList());
+	}
+
+	@Override
+	public String getHelp() {
+		return HELP_MESSAGE;
+	}
 	
 }

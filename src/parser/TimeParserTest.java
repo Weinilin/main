@@ -15,6 +15,9 @@ public class TimeParserTest {
 		times.add("11:00");
 		times.add("13:30");
 		assertEquals(times, TimeParser.extractTime("mds sale 11 to 1:30 pm."));
+		
+		times.clear();
+		assertEquals(times, TimeParser.extractTime("mds sale ~11 to 1:30 pm~."));
 
 		times.clear();
 		times.add("11:30");
@@ -36,6 +39,10 @@ public class TimeParserTest {
 
 		times.clear();
 		times.add("00:00");
+		assertEquals(times, TimeParser.extractTime("mds sale from ~noon~ to at midnight"));
+
+		times.clear();
+		times.add("00:00");
 		times.add("23:59");
 		assertEquals(times, TimeParser.extractTime("mds sale from midnight to before midnight")); //organization 
 
@@ -53,6 +60,10 @@ public class TimeParserTest {
 		times.add("23:30");
 		times.add("00:30");
 		assertEquals(times, TimeParser.extractTime("mds sale start at 11:30 pm for 1 hour")); 
+	
+		times.clear();
+		times.add("11:30");
+		assertEquals(times, TimeParser.extractTime("mds sale start at 11:30 o'clock")); 
 
 		//arrangement of the time need more thoughts
 

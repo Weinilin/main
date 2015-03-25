@@ -11,17 +11,16 @@ import java.text.ParseException;
 
 public class DateParser {
 	private static final String  DATE_KEYWORD1 = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
-	//	private static final String  DATE_KEYWORD2 = "(on |at |from |to |)\\b\\d{0,}(\\s|\\S)(january|february|march|april|may|june|july|august"
-	//		+ "|september|october|november|december)(\\s|\\S)(\\d+|)";
 	private static final String  DATE_KEYWORD3 = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
 			+ "|sep|oct|nov|dec)(\\s|\\S)(\\d+|)";
-	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))|(\\w+ day(s|) after)|(next(\\s\\w+\\s)day(s|))"
-			+ "|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
+	private static final String DATE_KEYWORD4 = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
+			+ "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
 	private static final String DATE_KEYWORD5 ="\\b((tomorrow|tmr)|(the\\s|)following day|(the\\s|)next day"
 			+ "|(after today)|today|(after (tomorrow|tmr))|fortnight|(the\\s|)next year)\\b";
 	private static final String DATE_KEYWORD6 = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
-			+ "\\b(\\w+ (week|month|year)(s|) later)|(after \\w+ (week|month|year)(s|))|"
+			+ "\\b(\\w+ (week|month|year)(?!~)(s|) later)|(after \\w+ (week|month|year)(s|))|"
 			+ "(\\w+ (week|month|year)(s|) after)\\b";
+	private static final String DATE_KEYWORD7 = " next (mon|tues|wed|thurs|fri|sat|sun)";
 	private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String UNWANTED_ALPHA = "(day(s|)|from now|after|next|later)|\\s";
@@ -54,6 +53,7 @@ public class DateParser {
 	private static final int DATE_FORMAT_4 = 4;
 	private static final int DATE_FORMAT_5 = 5;
 	private static final int DATE_FORMAT_6 = 6;
+	private static final int DATE_FORMAT_7 = 7;
 	private static final int WEEK_UNIT = 7;
 	private static final int FORTNIGHT_UNIT = 14;
 	private static String detectUserInput;
@@ -114,12 +114,34 @@ public class DateParser {
 		ArrayList<String> dateOfTheTask = new ArrayList<String>();
 
 		userInput = switchAllToLowerCase(userInput);
+		userInput = removeThoseHashTag(userInput);
 		detectUserInput = userInput;
-		for (int i = 0; i <= 6; i++) {
-			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask);
+		for (int i = 0; i <= 7; i++) {
+			dateOfTheTask = selectDetectionMethod(i, dateOfTheTask, userInput);
 		}
 
 		return dateOfTheTask;
+	}
+
+	/**
+	 * indication of ~ means that user want it to be in description
+	 * @param userInput
+	 * @return user input without ~
+	 */
+	private static String removeThoseHashTag(String userInput) {
+		ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
+		Pattern hashTagDetector = Pattern.compile("~");
+		Matcher containHashTag = hashTagDetector.matcher(userInput);
+
+		while (containHashTag.find()) {
+			hashTagIndex.add(containHashTag.start());
+
+		}
+		if (!hashTagIndex.isEmpty()) {
+			userInput = userInput.substring(0, hashTagIndex.get(0)) + userInput.substring(hashTagIndex.get(1));
+			//System.out.println("userInput: "+userInput);
+		}
+		return userInput;
 	}
 
 	/**
@@ -139,23 +161,84 @@ public class DateParser {
 	 * @return all of the dates detected. 
 	 */
 	private static ArrayList<String> selectDetectionMethod(int dateFormat,
-			ArrayList<String> dates) {
+			ArrayList<String> dates, String userInput) {
 
 		if (dateFormat == DATE_FORMAT_1) {
-			dates = spotDateFormat1(detectUserInput, dates);
+			dates = spotDateFormat1(userInput, dates);
 		} else if (dateFormat == DATE_FORMAT_2) {
 			//	dates = spotDateFormat2(detectUserInput, DATE_KEYWORD2, dates);
 		} else if (dateFormat == DATE_FORMAT_3) {	
-			dates = spotDateFormat2(detectUserInput,dates);
+			dates = spotDateFormat2(userInput,dates);
 		} else if (dateFormat == DATE_FORMAT_4) {
-			dates = spotDateFormat4(detectUserInput, dates);
+			dates = spotDateFormat4(userInput, dates);
 		} else if (dateFormat == DATE_FORMAT_5) {	
-			dates = spotDateFormat5(detectUserInput, dates);
+			dates = spotDateFormat5(userInput, dates);
 		} else if (dateFormat == DATE_FORMAT_6) {
-			dates = spotDateFormat6(detectUserInput, dates);
+			dates = spotDateFormat6(userInput, dates); 
+		} else if (dateFormat == DATE_FORMAT_7) {
+			dates = spotDateFormat7(userInput, dates);
 		}
 
 		return dates;
+	}
+
+	private static ArrayList<String> spotDateFormat7(String userInput,
+			ArrayList<String> storageOfDate) {
+		String dateOfTheTask = "", uniqueKeyword = "";
+		Pattern dateDetector = Pattern.compile(DATE_KEYWORD7);
+		Matcher containDate = dateDetector.matcher(detectUserInput);
+		Matcher matchWithIndex = dateDetector.matcher(userInput);
+
+		while (containDate.find() && matchWithIndex.find()) {
+			uniqueKeyword = containDate.group();
+			int indexMatch = matchWithIndex.start();
+			detectUserInput = detectUserInput.replaceAll(uniqueKeyword, "");
+			Calendar cal = Calendar.getInstance();	
+			uniqueKeyword = uniqueKeyword.trim();
+			String[] parts = uniqueKeyword.split(" ");
+			int todayDay = Calendar.DAY_OF_WEEK;
+			int numberOfDayDetect = detectNumOfWeek(parts[1], todayDay);
+			System.out.println("week: "+numberOfDayDetect+" today: "+todayDay);
+			if (todayDay == numberOfDayDetect) {
+				cal.add(Calendar.DATE, 7);
+			}
+			while (todayDay != numberOfDayDetect) {
+				cal.add(Calendar.DATE, 1);
+				if (todayDay == 7) {
+					todayDay = 1;
+				} else {
+					todayDay ++;
+				}
+			}
+			
+
+			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
+			dateOfTheTask = date.format(cal.getTime());		
+			storageOfDate.add(dateOfTheTask);
+			setThePosition(storageOfDate, indexMatch);
+		}
+		return storageOfDate;
+	}
+
+	private static int detectNumOfWeek(String input, int todayDay) {
+		int numOfDay = 0;
+		System.out.println("input: "+input);
+		if (input.contains("mon")) { 
+			numOfDay = 1;
+		} else if (input.contains("tues")) {
+			numOfDay = 2;
+		} else if (input.contains("wed")) {
+			numOfDay = 3;
+		} else if (input.contains("thrus")) {
+			numOfDay = 4;
+		} else if (input.contains("fri")) {
+			numOfDay = 5;
+		} else if (input.contains("sat")) {
+			numOfDay = 6;
+		} else if (input.contains("sun")) {
+			numOfDay = 7;
+		}
+		return numOfDay;
 	}
 
 	/**
@@ -286,6 +369,7 @@ public class DateParser {
 	 */
 	private static ArrayList<String> spotDateFormat4(String userInput, ArrayList<String> storageOfDate) {
 		String uniqueKeyword = "", dateOfTask = "";
+
 		Pattern dateDetector = Pattern.compile(DATE_KEYWORD4);
 		Matcher containDate = dateDetector.matcher(detectUserInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
@@ -381,6 +465,7 @@ public class DateParser {
 		dateOfTheTask = date.format(cal.getTime());
 		return dateOfTheTask;
 	}
+
 	/**
 	 * add the number of month to current year based on what is detect
 	 * @param numberOfMonth
@@ -444,6 +529,7 @@ public class DateParser {
 	 */
 	private static ArrayList<String> spotDateFormat2(String userInput, ArrayList<String> storageOfDate) {
 		String dateOfTheTask = "";
+
 		Pattern dateDetector = Pattern.compile(DATE_KEYWORD3);
 		Matcher containDate = dateDetector.matcher(userInput);
 		Matcher toGetIndex = dateDetector.matcher(userInput);
@@ -472,6 +558,7 @@ public class DateParser {
 			}
 			setThePosition(storageOfDate, indexMatch);
 		}
+
 
 		return storageOfDate;
 	}
