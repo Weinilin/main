@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
 
-import org.apache.log4j.*;
+import java.util.logging.*;
 
 import storage.Memory;
 import application.Task;
@@ -27,8 +27,8 @@ public class LogicController {
 			new Hashtable<String, CommandHandler>();
 	
 	private LogicController() {
-		logger = Logger.getLogger(this.getClass());
-		logger.debug("Initiating LogicController");
+		//logger = Logger.getLogger(this.getClass());
+		//logger.log("Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
 		addHandlers();
 		initializeHandlers();
