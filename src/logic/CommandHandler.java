@@ -2,7 +2,6 @@
 package logic;
 
 import java.util.ArrayList;
-import java.io.File;
 
 import parser.DescriptionParser;
 import parser.TaskTypeParser;
@@ -16,7 +15,7 @@ import application.Task;
  */
 abstract class CommandHandler {
 
-	File configure;
+	ArrayList<Task> taskList = LogicController.taskList;
 	Memory memory = Memory.getInstance();
 	/**
 	 * get all the aliases acceptable to the command such that
@@ -30,10 +29,10 @@ abstract class CommandHandler {
 	 * "delete", etc) and the parameter for executing the command. Return
 	 * the feedback as a String object for now.
 	 *@param command - command extracted from user input
-	 *@param parameter - parameter for executing the command based on user input
+	 * @param parameter - parameter for executing the command based on user input
 	 *@return feedback String to UI after each execution of the command
 	 */
-	abstract protected String execute(String command, String parameter, ArrayList<Task> taskList);
+	abstract protected String execute(String command, String parameter);
 	
 	/**
 	 * get help String for each of the commands when user types "[command] help"

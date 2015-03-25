@@ -1,11 +1,11 @@
 package logic;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
+
+import java.util.logging.*;
 
 import storage.Memory;
 import application.Task;
@@ -19,16 +19,16 @@ import application.Task;
 public class LogicController {
 	private static LogicController logicController;
 	
-	private static final Logger logger = 
-			Logger.getLogger(LogicController.class.getName());
+	private Logger logger;
 	
-	private ArrayList<Task> taskList = new ArrayList<Task>();
+	static ArrayList<Task> taskList = new ArrayList<Task>();
 	private List<CommandHandler> handlers = new ArrayList<CommandHandler>();
 	private Hashtable<String, CommandHandler> handlerTable = 
 			new Hashtable<String, CommandHandler>();
 	
 	private LogicController() {
-		logger.entering(getClass().getName(), "Initiating LogicController");
+		//logger = Logger.getLogger(this.getClass());
+		//logger.log("Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
 		addHandlers();
 		initializeHandlers();
@@ -69,7 +69,7 @@ public class LogicController {
 		
 		CommandHandler handler = handlerTable.get(command);
 		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
-		return handler.execute(command, parameter, taskList);
+		return handler.execute(command, parameter);
 	}
 	
 	/**
@@ -93,9 +93,10 @@ public class LogicController {
 	
 	/**
 	 * return the taskList in LogicController
-	 * @return
+	 * @return 
 	 */
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}
+	
 }
