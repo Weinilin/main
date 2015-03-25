@@ -1,99 +1,91 @@
-/* 
- * @author A0114463M
- */
 package logic;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import parser.DateParser;
-import parser.DescriptionParser;
-import parser.TaskTypeParser;
-import parser.TimeParser;
-import application.TaskData;
-import database.Memory;
+import application.Task;
 
 /**
- *  handle adding a task to the task list
- *  and write the changes to database if adding is
- *  success
+ * CommandHandler for "add" function.
+ * 
+ * Adding tasks is achieved by "add [task information]"
+ * New task included in parameter invokes the static method createNewTask
+ * in CommandHandler abstract class through various parsers.
+ * The new task is added to the memory 
+ * 
+ * @author A0114463M
+ *
  */
-public class AddHandler {
+class AddHandler extends CommandHandler {
+	private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
+	private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
+	private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
+	private ArrayList<String> aliases = new ArrayList<String>(
+			Arrays.asList("add", "a", "new", "+"));
+	private static final Logger addLogger = 
+			Logger.getLogger(AddHandler.class.getName());
+	
+	@Override
+	public ArrayList<String> getAliases() {
+		// TODO Auto-generated method stub
+		return aliases;
+	}
 
-	private Memory memory;
-	
-	protected AddHandler(Memory memory) {
-		this.memory = memory;
-	}
-	/**
-	 * add a new task to TaskList by input from user
-	 * 
-	 * @param taskInformation - the parameters user given
-	 * @param taskList - list of tasks
-	 * @return - Strin of new task
-	 */
-	protected String addTask(String taskInformation) {
-		TaskData newTask = createNewTask(taskInformation);
-		if (memory.addTask(newTask)) {
-			return newTask.toString();
-		} 
-		else {
-			// It shall never come here
-			return null;
-		}	
-	}
-	
-	/**
-	 * add a new task to tasklist by a given TaskData object
-	 * 
-	 * @param newTask
-	 * @param taskList
-	 * @return true if success
-	 */
-	protected boolean addTask(TaskData newTask) {
-		return memory.addTask(newTask);
-	}
-	
-	/**
-	 * parse and create a new task
-	 * 
-	 * @param taskInformation - information to be included in the task
-	 * @return new taskdata
-	 */
-	protected static TaskData createNewTask(String taskInformation) {
-		String description = DescriptionParser.getDescription(taskInformation);
-		
-		DateParser dp = new DateParser();
-		ArrayList<String> date = dp.extractDate(taskInformation);
-		
-		TimeParser tp = new TimeParser();
-		ArrayList<String> time = tp.extractTime(taskInformation);
-		
-		String taskType = TaskTypeParser.getTaskType();
-		
-		String deadline = new String("-");
-		String startDateTime = new String("-");
-		String endDateTime = new String("-");
-		switch (taskType) {
-			case "deadline":
-				deadline = date.get(0) + " " + time.get(0);
-				break;
-			case "time task":
-				startDateTime = date.get(0)+ " " + time.get(1);
-				endDateTime = date.get(1) + " " + time.get(0);
-				break;
-			case "floating task":
-				break;
-			default:
-				break;
+	@Override
+	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+		String[] token = parameter.split(" ");
+		if (isHelp(token) || isEmptyParameter(parameter)) {
+			return getHelp();
 		}
+		else {
+			addLogger.entering(getClass().getName(), "Add non empty task");
+			Task newTask = CommandHandler.createNewTask(parameter);
+			// a non empty task is created
+			assert (newTask != null);	
+			if (memory.addTask(newTask)) {
+				updateTaskList(taskList);
+				addLogger.log(Level.FINE, "Add sucess");
+				return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+			} 
+			else {
+				addLogger.log(Level.SEVERE, "Error adding new task!");
+				throw new Error(FATAL_ERROR_MESSAGE);
+			}	
+		}
+	}
 
-		TaskData newTask = new TaskData(taskType, description, startDateTime, endDateTime, deadline, "undone");
-		return newTask;
+	/**
+	 * check if the argument user typed is empty
+	 * @param parameter
+	 * @return
+	 */
+	private boolean isEmptyParameter(String parameter) {
+		return parameter.trim().equals("");
+	}
+
+	/**
+	 * chech if user is looking for help
+	 * @param token
+	 * @return
+	 */
+	private boolean isHelp(String[] token) {
+		return token[0].toLowerCase().trim().equals("help");
+	}
+
+	/**
+	 * update the taskList for LogicController
+	 * @param taskList
+	 */
+	private void updateTaskList(ArrayList<Task> taskList) {
+		taskList.clear();
+		taskList.addAll(0, memory.getTaskList());
+	}
+
+	@Override
+	public String getHelp() {
+		return HELP_MESSAGE;
 	}
 	
-	
-	
-	protected String getHelp() {
-		return "add <task informatino>\n to TaskManager";
-	}
 }

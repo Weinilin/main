@@ -2,9 +2,9 @@ package application;
 
 public class UndoData {
 	private String operation;
-	private TaskData taskData;
+	private Task taskData;
 	
-	public UndoData(String operation, TaskData taskData) {
+	public UndoData(String operation, Task taskData) {
 		this.operation = operation;
 		this.taskData = taskData;
 	}
@@ -13,7 +13,7 @@ public class UndoData {
 		return operation;
 	}
 	
-	public TaskData getTaskData() {
+	public Task getTaskData() {
 		return taskData;
 	}
 }

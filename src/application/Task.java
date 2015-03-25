@@ -2,7 +2,9 @@ package application;
 
 import java.util.ArrayList;
 
-public class TaskData {
+import ui.TaskListUI;
+
+public class Task {
 	
 	private static final String[] dataField = {
 		"Task Type",
@@ -20,16 +22,17 @@ public class TaskData {
 	private String endDateTime;
 	private String deadline;
 	private String status;
-	
-	// dummy constructor delete in futre
-	public TaskData() {
 		
+	public Task(Task task) {
+		this.taskType = task.getTaskType();
+		this.description = task.getDescription();
+		this.startDateTime = task.getStartDateTime();
+		this.endDateTime = task.getEndDateTime();
+		this.deadline = task.getDeadline();
+		this.status = task.getStatus();
 	}
-	//(improvement to be made)
-	//1. need to check validity of data
-	//2. separate constructor for different task type
-
-	public TaskData(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	
+	public Task(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
 		this.taskType = taskType;
 		this.description = description;
 		this.startDateTime = startDateTime;
@@ -38,13 +41,13 @@ public class TaskData {
 		this.status = status;
 	}
 	
-	public TaskData(ArrayList<String> taskData) {
-		this.taskType = taskData.get(0);
-		this.description = taskData.get(1);
-		this.startDateTime = taskData.get(2);
-		this.endDateTime = taskData.get(3);
-		this.deadline = taskData.get(4);
-		this.status = taskData.get(5);
+	public Task(ArrayList<String> taskInformation) {
+		this.taskType = taskInformation.get(0);
+		this.description = taskInformation.get(1);
+		this.startDateTime = taskInformation.get(2);
+		this.endDateTime = taskInformation.get(3);
+		this.deadline = taskInformation.get(4);
+		this.status = taskInformation.get(5);
 	}
 	public void setStartDateTime(String newStartDateTime) {
 		startDateTime = newStartDateTime;
@@ -78,12 +81,36 @@ public class TaskData {
 		return startDateTime;
 	}
 	
-	public String getEndDateTime(){
+	public String getEndDateTime() {
 		return endDateTime;
 	}
 	
-	public String getDeadline(){
+	public String getDeadline() {
 		return deadline;
+	}
+	
+	public String getStartDate() {
+		return startDateTime.substring(0, 10);
+	}
+	
+	public String getStartTime() {
+		return startDateTime.substring(11, 16);
+	}
+	
+	public String getEndDate(){
+		return endDateTime.substring(0, 10);
+	}
+	
+	public String getEndTime(){
+		return endDateTime.substring(11, 16);
+	}
+	
+	public String getDeadlineDate() {
+		return deadline.substring(0, 10);
+	}
+	
+	public String getDeadlineTime() {
+		return deadline.substring(11, 16);
 	}
 	
 	public String getStatus(){
@@ -92,6 +119,16 @@ public class TaskData {
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getDateTime() {
+		if (taskType.equals("time task")) {
+			return getStartDateTime() + " - " + getEndDateTime();
+		} else if (taskType.equals("deadline")) {
+			return getDeadline();
+		} else {
+			return "-";
+		}
 	}
 	
 	public boolean isDone() {
@@ -106,15 +143,6 @@ public class TaskData {
 	public String toString() {
 		String str = "";
 		
-		String[] dataField = {
-			"Task Type",
-			"Description",
-			"Start Time",
-			"End Time",
-			"Deadline",
-			"Status"
-		};
-		
 		String[] data = {
 			getTaskType(),
 			getDescription(),
@@ -127,7 +155,13 @@ public class TaskData {
 		for (int i = 0; i < dataField.length; i++) {
 			str += String.format("%-20s", dataField[i]) + ": " + String.format("%s", data[i]) + "\n";
 		}
-		
+
 		return str;
 	}
+	
+	public String[] toStringArray() {
+		String[] stringArray = {getTaskType(), getDescription(), getStartDateTime(), getEndDateTime(), getDeadline(), getStatus()};
+		return stringArray;
+	}
+
 }
