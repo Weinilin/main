@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import application.Task;
+import storage.Database;
 import storage.DatabaseLocationChanger;
 
 public class SetLocationHandler extends CommandHandler {
@@ -30,7 +31,7 @@ public class SetLocationHandler extends CommandHandler {
 		
 		return String.format(NEW_LOCATION_MESSAGE, parameter);
 	}
-
+	
 	@Override
 	public String getHelp() {
 		// TODO Auto-generated method stub

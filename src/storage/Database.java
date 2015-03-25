@@ -85,7 +85,7 @@ public class Database {
 
 	public boolean setDatabaseLocation(String newDatabaseFolder) {
 		String newDatabaseLocation = appendDatabaseName(newDatabaseFolder);
-		File database = new File(newDatabaseLocation);
+		File database = new File(databaseLocation);
 		if (database.renameTo(new File(newDatabaseLocation))) {
 			databaseLocation = newDatabaseLocation;
 			updateConfigFile(newDatabaseLocation);
@@ -210,4 +210,6 @@ public class Database {
 	private boolean isValidTaskList(ArrayList<Task> taskList) {
 		return (taskList != null);
 	}
+	
+	
 }
