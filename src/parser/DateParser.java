@@ -182,6 +182,12 @@ public class DateParser {
 		return dates;
 	}
 
+	/**
+	 * spot date of next mon-sun could be in short form(mon-sun) or monday-sunday
+	 * @param userInput
+	 * @param storageOfDate
+	 * @return date in DD/MM/YYYY format
+	 */
 	private static ArrayList<String> spotDateFormat7(String userInput,
 			ArrayList<String> storageOfDate) {
 		String dateOfTheTask = "", uniqueKeyword = "";
@@ -197,48 +203,48 @@ public class DateParser {
 			uniqueKeyword = uniqueKeyword.trim();
 			String[] parts = uniqueKeyword.split(" ");
 			int todayDay = Calendar.DAY_OF_WEEK;
-			int numberOfDayDetect = detectNumOfWeek(parts[1], todayDay);
-			System.out.println("week: "+numberOfDayDetect+" today: "+todayDay);
+			int numberOfDayDetect = detectDayOfWeek(parts[1], todayDay);
+			//System.out.println("week: "+numberOfDayDetect+" today: "+todayDay);
 			if (todayDay == numberOfDayDetect) {
-				cal.add(Calendar.DATE, 7);
-			}
-			while (todayDay != numberOfDayDetect) {
-				cal.add(Calendar.DATE, 1);
+				dateOfTheTask = addToTheCurrentDateByDays(7);
+			} else if (todayDay > numberOfDayDetect) {
 				if (todayDay == 7) {
-					todayDay = 1;
+					dateOfTheTask = addToTheCurrentDateByDays(7 - todayDay + numberOfDayDetect);
 				} else {
-					todayDay ++;
+					dateOfTheTask = addToTheCurrentDateByDays(numberOfDayDetect - todayDay);
 				}
-			}
-			
-
-			DateFormat date = new SimpleDateFormat(DATE_FORMAT);
-			dateOfTheTask = date.format(cal.getTime());		
+			}	
 			storageOfDate.add(dateOfTheTask);
 			setThePosition(storageOfDate, indexMatch);
 		}
 		return storageOfDate;
 	}
 
-	private static int detectNumOfWeek(String input, int todayDay) {
-		int numOfDay = 0;
+	/**
+	 * detect day of week from mon-sun
+	 * @param input
+	 * @param todayDay
+	 * @return day of week 
+	 */
+	private static int detectDayOfWeek(String input, int todayDay) {
+		int dayOfWeek = 0;
 		System.out.println("input: "+input);
 		if (input.contains("mon")) { 
-			numOfDay = 1;
+			dayOfWeek = 1;
 		} else if (input.contains("tues")) {
-			numOfDay = 2;
+			dayOfWeek = 2;
 		} else if (input.contains("wed")) {
-			numOfDay = 3;
+			dayOfWeek = 3;
 		} else if (input.contains("thrus")) {
-			numOfDay = 4;
+			dayOfWeek = 4;
 		} else if (input.contains("fri")) {
-			numOfDay = 5;
+			dayOfWeek = 5;
 		} else if (input.contains("sat")) {
-			numOfDay = 6;
+			dayOfWeek = 6;
 		} else if (input.contains("sun")) {
-			numOfDay = 7;
+			dayOfWeek = 7;
 		}
-		return numOfDay;
+		return dayOfWeek;
 	}
 
 	/**

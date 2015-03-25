@@ -40,7 +40,7 @@ public class CommandLineInterface {
 	 * @param message
 	 */
 	public void printMessageToUser(String message){
-		System.out.printf(message);
+		System.out.println(message);
 	}
 
 	
