@@ -22,7 +22,7 @@ public class LogicController {
 	private static final Logger logger = 
 			Logger.getLogger(LogicController.class.getName());
 	
-	private ArrayList<Task> taskList = new ArrayList<Task>();
+	static ArrayList<Task> taskList = new ArrayList<Task>();
 	private List<CommandHandler> handlers = new ArrayList<CommandHandler>();
 	private Hashtable<String, CommandHandler> handlerTable = 
 			new Hashtable<String, CommandHandler>();
@@ -69,7 +69,7 @@ public class LogicController {
 		
 		CommandHandler handler = handlerTable.get(command);
 		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
-		return handler.execute(command, parameter, taskList);
+		return handler.execute(command, parameter);
 	}
 	
 	/**
@@ -93,9 +93,10 @@ public class LogicController {
 	
 	/**
 	 * return the taskList in LogicController
-	 * @return
+	 * @return 
 	 */
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}
+	
 }

@@ -21,7 +21,7 @@ import parser.IndexParser;
  * @author A0114463M
  *
  */
-class DeleteHandler extends CommandHandler {
+class DeleteHandler extends UndoableCommandHandler {
 
 	private static final String HELP_MESSAGE = "delete <index>\n\t remove the respective task of the index from TaskManager\n";
 	private static final String GOODFEEDBACK_MESSAGE = "Removed tasks %1$s\n";
@@ -39,7 +39,7 @@ class DeleteHandler extends CommandHandler {
 
 
 	@Override
-	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter) {
 		deleteLogger.entering(getClass().getName(), "preparing for delete");
 
 		String[] token = parameter.split(" ");
@@ -49,7 +49,7 @@ class DeleteHandler extends CommandHandler {
 		
 		if (isAll(token)) {
 			ClearHandler clrHandler = new ClearHandler();
-			return clrHandler.execute(token[0], "", taskList);
+			return clrHandler.execute(token[0], "");
 		}
 		
 		String goodFeedback = new String(), 
@@ -150,4 +150,9 @@ class DeleteHandler extends CommandHandler {
 		return HELP_MESSAGE;
 	}
 
+
+	@Override
+	void undo() {
+		
+	}
 }

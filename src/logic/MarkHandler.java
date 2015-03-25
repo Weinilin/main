@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Mark a task as done by typing the keyword following 
  * by the index of task that is intended to be marked
  */
-class MarkHandler extends CommandHandler {
+class MarkHandler extends UndoableCommandHandler {
 
 	private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
 	private static final String INVALID_INDEX_MESSAGE = "Index invalid! Please check yout input\n";
@@ -31,7 +31,7 @@ class MarkHandler extends CommandHandler {
 	}
 	
 	@Override
-	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter) {
 		markLogger.entering(getClass().getName(), "Entering marking");
 		
 		String[] token = parameter.split(" ");
@@ -93,5 +93,11 @@ class MarkHandler extends CommandHandler {
 	@Override
 	public String getHelp() {
 		return HELP_MESSAGE;
+	}
+	
+
+	@Override
+	void undo() {
+		
 	}
 }
