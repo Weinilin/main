@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class TimeParser {
-	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
+	//private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
 	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
 	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
 	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
@@ -29,7 +29,7 @@ public class TimeParser {
 		userInput = removeThoseHashTag(userInput);
 		userInput = switchAllToLowerCase(userInput);
 		detectUserInput = userInput;
-		for (int i = 1; i <= 7; i++) {
+		for (int i = 2; i <= 7; i++) {
 			storageOfTime = goThroughTimeFormat(i, storageOfTime, userInput);
 		}
 		return storageOfTime;
@@ -59,9 +59,10 @@ public class TimeParser {
 
 	private static ArrayList<String> goThroughTimeFormat(int timeFormat,
 			ArrayList<String> storageOfTime, String userInput) {
-		if (timeFormat == TIME_FORMAT_1) {
-			storageOfTime = detectUsingFormat1(storageOfTime);
-		} else if (timeFormat == TIME_FORMAT_2) {
+	//	if (timeFormat == TIME_FORMAT_1) {
+	//		storageOfTime = detectUsingFormat1(storageOfTime);
+	//	} else 
+		if (timeFormat == TIME_FORMAT_2) {
 			storageOfTime = detectUsingFormat2(storageOfTime);
 		} else if (timeFormat == TIME_FORMAT_3) {
 			storageOfTime = detectUsingFormat3(storageOfTime, userInput);
@@ -237,10 +238,11 @@ public class TimeParser {
 	 * @param storageOfTime
 	 * @return arrayList containing all of the time.
 	 */
+/*
 	private static ArrayList<String> detectUsingFormat1(
 			ArrayList<String> storageOfTime) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_1);
-		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+	//	Pattern timeDetector = Pattern.compile(TIME_KEYWORD_1);
+	//	Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 
 		String[] timeList;
 		String toBeAdded = "";
@@ -271,7 +273,7 @@ public class TimeParser {
 		}
 		return storageOfTime;
 	}
-
+*/
 	/**
 	 * detect the start time when pm/am is not added right next to start time.
 	 * 
@@ -319,7 +321,7 @@ public class TimeParser {
 		}
 		return toBeAdded;
 	}
-
+	
 	/**
 	 * get the HH of the time in hour format(HH:MM)
 	 * 

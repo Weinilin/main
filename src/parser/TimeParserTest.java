@@ -10,11 +10,11 @@ public class TimeParserTest {
 
 	@Test
 	/**
-	 * Equivalence test 
+	 * Equivalence test: test for all possible aspects. 
 	 */
 	public void test() {
 		ArrayList<String> times = new ArrayList<String> ();
-
+/*
 		times.add("11:00");
 		times.add("13:30");
 		assertEquals(times, TimeParser.extractTime("mds sale 11 to 1:30 pm."));
@@ -67,6 +67,11 @@ public class TimeParserTest {
 		times.clear();
 		times.add("11:30");
 		assertEquals(times, TimeParser.extractTime("mds sale start at 11:30 o'clock")); 
+		*/
+		times.clear();
+		times.add("14:00");
+		times.add("16:00");
+		assertEquals(times, TimeParser.extractTime("mds sale from 2pm 24/3 to 4pm 25/3")); 
 
 		//arrangement of the time need more thoughts
 
