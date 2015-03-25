@@ -47,7 +47,10 @@ public class DescriptionParserTest {
 		
 		//test for deadlines
 		DescriptionParser d8 = new DescriptionParser("CS2103T assignment on 2nd march at 2pm");
-		assertEquals(d8.getDescription(), "cs2103t assignment"); 
+		assertEquals(d8.getDescription(), "cs2103t assignment");
+		
+		DescriptionParser d7 = new DescriptionParser("CS2103T assignment on 2nd march");
+		assertEquals(d7.getDescription(), "cs2103t assignment");
 		
 		//test for floating
 		DescriptionParser d9 = new DescriptionParser("CS2103T assignment!");
