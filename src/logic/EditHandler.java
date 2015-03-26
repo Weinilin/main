@@ -57,8 +57,8 @@ class EditHandler extends UndoableCommandHandler {
 
         switch (token[0].toLowerCase()) {
             case "description":
-                updateTaskByDescription(parameter, token, index, newTask);
-                break;
+                EditDescriptionHandler edh = new EditDescriptionHandler();
+                return edh.execute(token[0], parameter.replaceFirst(token[0], "").trim());
             case "time":
                 newTask = updateTaskByTime(parameter, token, index, newTask);				
                 break;
@@ -79,17 +79,6 @@ class EditHandler extends UndoableCommandHandler {
         return "";
     }
 
-    /**
-     * set the new description of the task
-     * @param parameter
-     * @param token
-     * @param index
-     * @param newTask
-     */
-    private void updateTaskByDescription(String parameter, String[] token,
-            int index, Task newTask) {
-        newTask.setDescription(getNewDescription(parameter, token, index));
-    }
 
     /**
      * set the new time of the task
