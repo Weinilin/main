@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 public class TimeParser {
 	private static final String TIME_KEYWORD_1 = "(((\\d+[.:](\\d+|)|\\d+)(-| to | - )(\\d+[.:](\\d+|)|\\d+)(\\s|)(am|pm)))";
-	private static final String TIME_KEYWORD_2 = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
-	private static final String TIME_KEYWORD_6 = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
-	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
-	private static final String TIME_KEYWORD_4 = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
-	private static final String TIME_KEYWORD_3 = "((from |to |)(before midnight|before noon))";
-	private static final String TIME_KEYWORD_5 = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in (morning|morn)| in afternoon| in night| at night| at afternoon| at morning))";
+	private static final String HOURS_APART_KEYWORD = "(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))";
+	private static final String HHMM_OR_HH_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+	private static final String HH_OCLOCK_KEYWORD = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
+	private static final String NOON_MIDNIGHT_KEYWORD = "\\b(on |at |from |to |)noon | (on |at |from |to |)midnight";
+	private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "((from |to |)(before midnight|before noon))";
+	private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "((from |to |)(\\d+[.:](\\d+|)|\\d+)( in (morning|morn)| in afternoon| in night| at night| at afternoon| at morning))";
 	private static final String TO_BE_REMOVED_KEYWORD = "(\\s|-|to|at|from|noon|midnight|before midnight|before noon"
 			+ "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|o'clock)";
 	private static final int TIME_FORMAT_1 = 1;
@@ -87,7 +87,7 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat7(
 			ArrayList<String> storageOfTime, String userInput) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_7);
+		Pattern timeDetector = Pattern.compile(HH_OCLOCK_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		Matcher matchedForIndex = timeDetector.matcher(userInput);
 
@@ -130,7 +130,7 @@ public class TimeParser {
 			ArrayList<String> storageOfTime) {
 		ArrayList<String> tempStorage = new ArrayList<String>();
 		String hourTimeInString;
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_2);
+		Pattern timeDetector = Pattern.compile(HOURS_APART_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 
 		while (matchedWithTime.find()) {
@@ -205,7 +205,7 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat5(
 			ArrayList<String> storageOfTime, String userInput) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_5);
+		Pattern timeDetector = Pattern.compile(MORNING_AFTERNOON_NIGHT_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		Matcher matchedForIndex = timeDetector.matcher(userInput);
 
@@ -374,7 +374,7 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat6(
 			ArrayList<String> storageOfTime, String userInput) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_6);
+		Pattern timeDetector = Pattern.compile(HHMM_OR_HH_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		Matcher matchedForIndex = timeDetector.matcher(userInput);
 
@@ -416,7 +416,7 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat4(
 			ArrayList<String> storageOfTime, String userInput) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_4);
+		Pattern timeDetector = Pattern.compile(NOON_MIDNIGHT_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		Matcher matchedForIndex = timeDetector.matcher(userInput);
 
@@ -434,7 +434,7 @@ public class TimeParser {
 				setThePositionForTime(storageOfTime, indexNext);
 			}
 
-			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_4, "");
+			detectUserInput = detectUserInput.replaceAll(NOON_MIDNIGHT_KEYWORD, "");
 		}
 		// System.out.println("2.timeDe: "+storageOfTime.get(0));
 		return storageOfTime;
@@ -448,12 +448,12 @@ public class TimeParser {
 	 */
 	private static ArrayList<String> detectUsingFormat3(
 			ArrayList<String> storageOfTime, String userInput) {
-		Pattern timeDetector = Pattern.compile(TIME_KEYWORD_3);
+		Pattern timeDetector = Pattern.compile(BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD);
 		Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
 		Matcher matchedForIndex = timeDetector.matcher(userInput);
 
 		while (matchedWithTime.find()) {
-			detectUserInput = detectUserInput.replaceAll(TIME_KEYWORD_3, "");
+			detectUserInput = detectUserInput.replaceAll(BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD, "");
 			String time = matchedWithTime.group();
 			if (matchedForIndex.find()) {
 				int indexNext = matchedForIndex.start();

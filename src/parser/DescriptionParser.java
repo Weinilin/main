@@ -35,7 +35,7 @@ public class DescriptionParser {
 	private static final String DATE_KEYWORD7_1 = " next (monday|tuesday|wednesday|thursday|friday|saturday|sunday)";
 	private static final String DATE_KEYWORD7_2 = " next (mon|tues|wed|thrus|fri|sat|sun)";
 	private static final String TIME_KEYWORD_7 = "(\\d+|\\d+[:.]\\d+)(\\s|)o'clock";
-	private static final String UNWANTED = "(end at|start at|and|\\.)";
+	private static final String UNWANTED = "(end at|start at|and|\\.|~)";
 	private String description;
 
 	public DescriptionParser(String userInput) {
