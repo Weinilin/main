@@ -1,31 +1,31 @@
 package logic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-/**
- * exit command for CommandHandler
- * 
- * @author A0114463M
- *
- */
-public class ExitHandler extends CommandHandler {
 
-    private ArrayList<String> aliases = new ArrayList<String>(
-            Arrays.asList("exit", "q", "quit"));
+class EditTimeHandler extends UndoableCommandHandler {
+
     @Override
     protected ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
-        return aliases;
+        return null;
     }
 
     @Override
     protected String execute(String command, String parameter) {
+        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String getHelp() {
-        return "";
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    void undo() {
+        // TODO Auto-generated method stub
+
     }
 
 }

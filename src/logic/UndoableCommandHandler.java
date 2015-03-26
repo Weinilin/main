@@ -6,24 +6,24 @@ import application.Task;
 
 abstract class UndoableCommandHandler extends CommandHandler {
 
-	ArrayList<Task> taskList;
-	
-	UndoableCommandHandler() {
-		taskList = new ArrayList<Task>();
-	}
-	
-	UndoableCommandHandler(ArrayList<Task> taskList) {
-		this.taskList = taskList;
-	}
-	
-	@Override
-	abstract protected ArrayList<String> getAliases();
+    ArrayList<Task> taskList;
 
-	@Override
-	abstract protected String execute(String command, String parameter);
+    UndoableCommandHandler() {
+        taskList = new ArrayList<Task>();
+    }
 
-	@Override
-	abstract public String getHelp();
+    UndoableCommandHandler(ArrayList<Task> taskList) {
+        this.taskList = taskList;
+    }
 
-	abstract void undo();
+    @Override
+    abstract protected ArrayList<String> getAliases();
+
+    @Override
+    abstract protected String execute(String command, String parameter);
+
+    @Override
+    abstract public String getHelp();
+
+    abstract void undo();
 }
