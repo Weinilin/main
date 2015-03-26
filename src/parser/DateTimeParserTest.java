@@ -32,6 +32,12 @@ public class DateTimeParserTest {
 		assertEquals(d3.getDeadlineTime(), "19:00");
 
 		DateTimeParser("Mds sale start at 6 in the night to midnight");
+		
+		times.clear();
+		times.add("14:00");
+		times.add("16:00");
+		assertEquals(times,
+				TimeParser.extractTime("mds sale from 2pm 24/3 to 4pm 25/3"));
 	}
 
 	private void DateTimeParser(String string) {
