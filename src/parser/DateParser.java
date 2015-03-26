@@ -74,11 +74,16 @@ public class DateParser {
 
 	//need another constructor for parsing unformatted string
 	private void processFormattedString(String dateTime) {
-		day = Integer.parseInt(dateTime.substring(0, 2));
-		month = Integer.parseInt(dateTime.substring(3, 5));
-		year = Integer.parseInt(dateTime.substring(6, 10));
-		hour = Integer.parseInt(dateTime.substring(11, 13));
-		minute = Integer.parseInt(dateTime.substring(14, 16));
+		dateTime = dateTime.replace("/", " ");
+		dateTime = dateTime.replace(":", " ");
+		
+		String[] dateTimeTokens = dateTime.split("\\s+");
+		
+		day = Integer.parseInt(dateTimeTokens[0]);
+		month = Integer.parseInt(dateTimeTokens[1]);
+		year = Integer.parseInt(dateTimeTokens[2]);
+		hour = Integer.parseInt(dateTimeTokens[3]);
+		minute = Integer.parseInt(dateTimeTokens[4]);
 	}
 
 
