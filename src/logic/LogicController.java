@@ -2,11 +2,10 @@ package logic;
 
 import java.util.regex.Pattern;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Hashtable;
 
 import java.util.logging.Logger;
-
+import java.util.logging.Level;
 import storage.Memory;
 import application.Task;
 
@@ -22,34 +21,28 @@ public class LogicController {
 	private static final Logger logger = 
 			Logger.getLogger(LogicController.class.getName());
 	static ArrayList<Task> taskList = new ArrayList<Task>();
-	private ArrayList<CommandHandler> handlers = new ArrayList<CommandHandler>();
+	private CommandHandler[] handlers = {new EditTimeHandler(),
+	                                     new EditDescriptionHandler(),
+	                                     //new UndoHandler(),
+	                                     new AddHandler(),
+	                                     new ClearHandler(),
+                                         new DeleteHandler(),
+                                         new EditHandler(),
+                                         new ExitHandler(),
+                                         new MarkHandler(),
+                                         new SetLocationHandler(),
+                                         new ShowHandler()};
+	
 	private Hashtable<String, CommandHandler> handlerTable = 
 			new Hashtable<String, CommandHandler>();
 	
 	private LogicController() {
 		logger.entering(getClass().getName(), "Initiating LogicController");
 		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
-		addHandlers();
 		initializeHandlers();
 	}
 
-	/**
-	 * add all handlers to arraylist for iteration
-	 */
-	private void addHandlers() {
-	    handlers.add(new EditTimeHandler());
-	    handlers.add(new EditDescriptionHandler());
-	    //handlers.add(new UndoHandler());
-		handlers.add(new AddHandler());
-		handlers.add(new ClearHandler());
-		handlers.add(new DeleteHandler());
-		handlers.add(new EditHandler());
-		handlers.add(new ExitHandler());
-		handlers.add(new MarkHandler());
-		handlers.add(new SetLocationHandler());
-		handlers.add(new ShowHandler());
-	}
-	
+
 	public static LogicController getInstance() {
 		if (logicController == null) {
 			logicController = new LogicController();

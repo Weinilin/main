@@ -29,6 +29,11 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    
 	@Override
 	protected String execute(String command, String parameter) {
+		String[] token = parameter.split(" ");
+		if (token[0].toLowerCase().equals("help") || token[0].equals("")) {
+			return getHelp();
+		}
+		
 	    DescriptionParser dp = new DescriptionParser(parameter);
 	    IndexParser ip = new IndexParser(parameter);
 	    int index = ip.getIndex();
