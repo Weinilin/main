@@ -19,6 +19,7 @@ public class IndexParser {
 		} catch (Exception e) {
 			System.err.println("NoDigitException: " + e.getMessage());
 			logger.log(Level.WARNING, "processing error", e);
+			System.exit(0);
 		}
 		setIndex(detectedIndex);
 	}

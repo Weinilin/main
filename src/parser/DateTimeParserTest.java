@@ -31,10 +31,12 @@ public class DateTimeParserTest {
 	}
 
 	@Test
+	//take note that if date is not added and there is time, I set the default to current date
+	//When test, do change the date to current date. 
 	public void testWhenDateNotKeyed() {
 		// deadline task without date added
 		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 3pm");
-		assertEquals(d1.getDeadlineDate(), "25/03/2015");
+		assertEquals(d1.getDeadlineDate(), "27/03/2015");
 		assertEquals(d1.getDeadlineTime(), "15:00");
 
 		// timed task without one date added
@@ -48,10 +50,30 @@ public class DateTimeParserTest {
 		// timed task with no date added
 		DateTimeParser d3 = new DateTimeParser(
 				"CS2103T assignments 4pm 6:30pm");
-		assertEquals(d3.getStartDate(), "25/03/2015");
-		assertEquals(d3.getEndDate(), "25/03/2015");
+		assertEquals(d3.getStartDate(), "27/03/2015");
+		assertEquals(d3.getEndDate(), "27/03/2015");
 		assertEquals(d3.getStartTime(), "16:00");
 		assertEquals(d3.getEndTime(), "18:30");
+	}
+
+	@Test 
+	public void testWhenSameTime(){
+	    //test when same time is detected with no date detected
+	    DateTimeParser d3 = new DateTimeParser(
+                "CS2103T assignments 6:30pm 6:30pm");
+        assertEquals(d3.getStartDate(), "27/03/2015");
+        assertEquals(d3.getEndDate(), "28/03/2015");
+        assertEquals(d3.getStartTime(), "18:30");
+        assertEquals(d3.getEndTime(), "18:30");
+        
+        //test when same time is detected with 1 date detected
+        DateTimeParser d4 = new DateTimeParser(
+                "25/4 6:30pm 6:30pm assignments");
+        assertEquals(d4.getStartDate(), "25/04/2015");
+        assertEquals(d4.getEndDate(), "26/04/2015");
+        assertEquals(d4.getStartTime(), "18:30");
+        assertEquals(d4.getEndTime(), "18:30");
+	    
 	}
 
 	@Test
@@ -75,4 +97,6 @@ public class DateTimeParserTest {
 		assertEquals(d3.getEndDate(), "25/03/2015");
 		assertEquals(d3.getStartDate(), "24/03/2015");
 	}
+	
+	
 }

@@ -11,18 +11,19 @@ import java.text.ParseException;
 
 public class DateParser {
     private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
-    private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january|febuary|march|april|may|june|july|august"
-            + "|september|octobor|november|december)(\\s|\\S)(\\d+|)";
-    private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
-            + "|sep|oct|nov|dec)(\\s|\\S)(\\d+|)";
+    private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
+            + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|\\S)(\\d+\\b|)";
+    private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
+            + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|)";
     private static final String AFTER_DAYS_APART_KEYWORD = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
             + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
-    private static final String DAYS_APART_VOCAB_KEYWORD = "\\b((tomorrow|tmr)|(the\\s|)following day|(the\\s|)next day"
-            + "|(after today)|today|(after (tomorrow|tmr))|fortnight|(the\\s|)next year)\\b";
+    private static final String DAYS_APART_VOCAB_KEYWORD = "\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day\\b|\\b(the\\s|)next day\\b"
+            + "|\\b(after today)\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year)\\b";
     private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
-            + "\\b(\\w+ (week|month|year)(?!~)(s|) later)|(after \\w+ (week|month|year)(s|))|"
-            + "(\\w+ (week|month|year)(s|) after)\\b";
-    private static final String WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
+            + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
+            + "\\b(\\w+ (week|month|year)(s|) after)\\b";
+    private static final String NEXT_WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
+    private static final String THIS_WEEKDAY_APART_KEYWORD = " this (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String UNWANTED_ALPHA = "(day(s|)|from now|after|next|later)|\\s";
@@ -39,13 +40,6 @@ public class DateParser {
     private static final String MONTH_TEXT = "month";
     private static final String YEAR_TEXT = "year";
     private static final String FORTNIGHT_TEXT = "fortnight";
-    private static final int DATE_FORMAT_1 = 1;
-    private static final int DATE_FORMAT_2 = 2;
-    private static final int DATE_FORMAT_3 = 3;
-    private static final int DATE_FORMAT_4 = 4;
-    private static final int DATE_FORMAT_5 = 5;
-    private static final int DATE_FORMAT_6 = 6;
-    private static final int DATE_FORMAT_7 = 7;
     private static final int WEEK_UNIT = 7;
     private static final int FORTNIGHT_UNIT = 14;
     private static String inputToBeDetected;
@@ -107,16 +101,14 @@ public class DateParser {
         userInput = switchAllToLowerCase(userInput);
         userInput = removeThoseHashTag(userInput);
         inputToBeDetected = userInput;
-        for (int i = 1; i <= 7; i++) {
-            dateOfTheTask = selectDetectionMethod(i, dateOfTheTask, userInput);
-        }
+        dateOfTheTask = goThroughDetectionMethod(dateOfTheTask, userInput);
 
         return dateOfTheTask;
     }
 
     /**
      * indication of ~ ~means that user want it to be in description ~~ is an
-     * escaped character
+     * escaped character!
      * 
      * @param userInput
      * @return user input without ~
@@ -144,37 +136,30 @@ public class DateParser {
      * @return the user input all in lower case.
      */
     private static String switchAllToLowerCase(String userInput) {
-        userInput = userInput.toLowerCase() + ".";
+        userInput = " " + userInput.toLowerCase() + " ";
         return userInput;
     }
 
     /**
-     * select detection method of different format
+     * go through the whole detection of different formats
      * 
      * @param dateFormat
      * @param dates
-     * @return all of the dates detected.
+     * @return all of the dates detected in DD/MM/YYYY
      */
-    private static ArrayList<String> selectDetectionMethod(int dateFormat,
+    private static ArrayList<String> goThroughDetectionMethod(
             ArrayList<String> dates, String userInput) {
 
-        if (dateFormat == DATE_FORMAT_1) {
-            dates = spotDDMMYYYYKeyword(userInput, dates);
-        } else if (dateFormat == DATE_FORMAT_2) {
-            dates = spotDDMonthInWordYYYY(inputToBeDetected,
-                    DD_MONNTHINWORD_YYYY_KEYWORD, dates);
-        } else if (dateFormat == DATE_FORMAT_3) {
-            dates = spotDDMonthInWordYYYY(inputToBeDetected,
-                    DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD, dates);
-        } else if (dateFormat == DATE_FORMAT_4) {
-            dates = spotAfterDaysApartKeyword(userInput, dates);
-        } else if (dateFormat == DATE_FORMAT_5) {
-            dates = spotDaysApartVocab(userInput, dates);
-        } else if (dateFormat == DATE_FORMAT_6) {
-            dates = spotWeekMonthYearApartKeyword(userInput, dates);
-        } else if (dateFormat == DATE_FORMAT_7) {
-            dates = spotWeekdayApartKeyWord(userInput, dates);
-        }
+        dates = spotDDMMYYYYKeyword(userInput, dates);
+        dates = spotDDMonthInWordYYYY(inputToBeDetected,
+                DD_MONNTHINWORD_YYYY_KEYWORD, dates);
+        dates = spotDDMonthInWordYYYY(inputToBeDetected,
+                DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD, dates);
+        dates = spotAfterDaysApartKeyword(userInput, dates);
+        dates = spotDaysApartVocab(userInput, dates);
+        dates = spotWeekMonthYearApartKeyword(userInput, dates);
+        dates = spotNextWeekdayApartKeyWord(userInput, dates);
+        dates = spotThisWeekdayApartKeyWord(userInput, dates);
 
         return dates;
     }
@@ -187,10 +172,10 @@ public class DateParser {
      * @param storageOfDate
      * @return date in DD/MM/YYYY format
      */
-    private static ArrayList<String> spotWeekdayApartKeyWord(String userInput,
-            ArrayList<String> storageOfDate) {
+    private static ArrayList<String> spotNextWeekdayApartKeyWord(
+            String userInput, ArrayList<String> storageOfDate) {
         String dateOfTheTask = "", nextWeekdayInput = "";
-        Pattern dateDetector = Pattern.compile(WEEKDAY_APART_KEYWORD);
+        Pattern dateDetector = Pattern.compile(NEXT_WEEKDAY_APART_KEYWORD);
         Matcher containDate = dateDetector.matcher(inputToBeDetected);
         Matcher toGetIndex = dateDetector.matcher(userInput);
 
@@ -204,8 +189,7 @@ public class DateParser {
 
             String[] containsWeekday = nextWeekdayInput.split(" ");
             int dayOfTheWeek = detectDayOfWeek(containsWeekday[1]);
-            dateOfTheTask = getFinalDateWithDayOfWeekAdded(dateOfTheTask,
-                    dayOfTheWeek, todayDayOfWeek);
+            dateOfTheTask = getNextWeekayDate(dayOfTheWeek, todayDayOfWeek);
             storageOfDate.add(dateOfTheTask);
 
             int indexMatched = toGetIndex.start();
@@ -222,18 +206,15 @@ public class DateParser {
      * @param todayDayOfWeek
      * @return date in DD/MM/YYYY
      */
-    private static String getFinalDateWithDayOfWeekAdded(String dateOfTheTask,
-            int dayOfTheWeek, int todayDayOfWeek) {
-
+    private static String getNextWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
+        String dateOfTheTask = "";
         if (todayDayOfWeek == dayOfTheWeek) {
             dateOfTheTask = addToTheCurrentDateByDays(7);
-        } else if (todayDayOfWeek > dayOfTheWeek) {
+        } else {
             dateOfTheTask = addToTheCurrentDateByDays(7 - todayDayOfWeek
                     + dayOfTheWeek);
-        } else {
-            dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek
-                    - todayDayOfWeek);
         }
+
         return dateOfTheTask;
     }
 
@@ -260,6 +241,7 @@ public class DateParser {
             int numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
             int numberOfMonths = getNumberOfMonthDetected(uniqueKeyword);
             int numberOfYears = getNumberOfYearsDetected(uniqueKeyword);
+
             if (numberOfDays != 0) {
                 dateOfTheTask = addToTheCurrentDateByDays(numberOfDays);
             } else if (numberOfMonths != 0) {
@@ -275,6 +257,65 @@ public class DateParser {
         }
 
         return storageOfDate;
+    }
+
+    /**
+     * spot date of this mon-sun could be in short form(mon-sun) or
+     * monday-sunday
+     * 
+     * @param userInput
+     * @param storageOfDate
+     * @return date in DD/MM/YYYY format
+     */
+    private static ArrayList<String> spotThisWeekdayApartKeyWord(
+            String userInput, ArrayList<String> storageOfDate) {
+        String dateOfTheTask = "", nextWeekdayInput = "";
+        Pattern dateDetector = Pattern.compile(THIS_WEEKDAY_APART_KEYWORD);
+        Matcher containDate = dateDetector.matcher(inputToBeDetected);
+        Matcher toGetIndex = dateDetector.matcher(userInput);
+
+        while (containDate.find() && toGetIndex.find()) {
+            nextWeekdayInput = containDate.group();
+            inputToBeDetected = inputToBeDetected.replaceAll(nextWeekdayInput,
+                    "");
+            nextWeekdayInput = nextWeekdayInput.trim();
+            Calendar calendar = Calendar.getInstance();
+            int todayDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+
+            String[] containsWeekday = nextWeekdayInput.split(" ");
+            int dayOfTheWeek = detectDayOfWeek(containsWeekday[1]);
+            dateOfTheTask = getThisWeekayDate(dayOfTheWeek, todayDayOfWeek);
+            storageOfDate.add(dateOfTheTask);
+
+            int indexMatched = toGetIndex.start();
+            setThePosition(storageOfDate, indexMatched);
+        }
+        return storageOfDate;
+    }
+
+    /**
+     * get this week date
+     * 
+     * @param dateOfTheTask
+     * @param dayOfTheWeek
+     * @param todayDayOfWeek
+     * @return DD/MM/YYYY
+     */
+    private static String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
+        String dateOfTheTask = "";
+        try {
+            if (todayDayOfWeek < dayOfTheWeek) {
+                dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek
+                        - todayDayOfWeek);
+            } else {
+                throw new Exception("This week, " + dayOfTheWeek + " has pass!");
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+
+        return dateOfTheTask;
     }
 
     /**
@@ -356,7 +397,8 @@ public class DateParser {
             numberOfDays++;
         }
 
-        // 11 means nothing from array(wordOfNumDays) is equal, no number of day detect
+        // 11 means nothing from array(wordOfNumDays) is equal, no number of day
+        // detect
         if (numberOfDays == 11) {
             numberOfDays = 0;
         }
@@ -406,7 +448,7 @@ public class DateParser {
      */
     private static int detectDayOfWeek(String userInput) {
         int dayOfWeek = 0;
-        // System.out.println("input: "+input);
+
         if (userInput.contains("mon")) {
             dayOfWeek = 1;
         } else if (userInput.contains("tues")) {
@@ -605,15 +647,16 @@ public class DateParser {
         while (containDate.find() && toGetIndex.find()) {
             dateOfTheTask = containDate.group();
             inputToBeDetected = inputToBeDetected.replaceAll(keyword, "");
+
             DateFormat date = new SimpleDateFormat(DATE_FORMAT);
             Calendar calendar = Calendar.getInstance();
 
             int day = getDay(dateOfTheTask);
             int year = getYear(dateOfTheTask);
             int month = convertMonthToNumber(dateOfTheTask);
-            System.out.println("month: "+month+" dateOfTheTask: "+dateOfTheTask);
+
             testValidMonth(month);
-       //     testValidDay(day, year, month);
+            // testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 
@@ -740,7 +783,7 @@ public class DateParser {
                 || dateOfTheTask.contains("december")) {
             month = 12;
         }
-        // System.out.println("month: "+ month);
+
         return month;
     }
 
@@ -767,7 +810,7 @@ public class DateParser {
             dateOfTheTask = dateOfTheTask.replaceAll("on |from |at |to ", "");
             String[] ddMMYYYY = splitTheStringIntoPart(dateOfTheTask);
 
-            // so we could detect both USA(YYYY/MM/DD) and Singapore(DD/MM/YYYY)
+            // so we could detect both (YYYY/MM/DD) and (DD/MM/YYYY)
             // date format
             String containYearAndDay = getYearAndDayInAString(ddMMYYYY);
 
@@ -776,7 +819,7 @@ public class DateParser {
             int month = getMonth(ddMMYYYY);
 
             testValidMonth(month);
-          //  testValidDay(day, year, month);
+            // testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 
@@ -792,8 +835,8 @@ public class DateParser {
     }
 
     /**
-     * get year and day in a string so we could detect both USA(YYYY/MM/DD) and
-     * Singapore(DD/MM/YYYY) date format
+     * get year and day in a string so we could detect both (YYYY/MM/DD) and
+     * (DD/MM/YYYY) date format
      * 
      * @param ddMMYYYY
      * @return a string of year and day
@@ -842,7 +885,8 @@ public class DateParser {
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
             if (exceedMaxDaysOnThatMonth(day, maxDays)) {
-                throw new Exception("Invalid Day Keyed! Exceed the maximum day in that month");
+                throw new Exception(
+                        "Invalid Day Keyed! Exceed the maximum day in that month");
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());

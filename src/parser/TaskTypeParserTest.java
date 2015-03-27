@@ -8,7 +8,7 @@ public class TaskTypeParserTest {
 
 	@Test
 	/**
-	 * equivalence testing: test all aspects
+	 * test time task, floating task, deadlines task
 	 */
 	public void test() {
 		// time task
@@ -22,12 +22,5 @@ public class TaskTypeParserTest {
 		// deadlines task
 		TaskTypeParser t3 = new TaskTypeParser("krej at 2pm 25/06/2015");
 		assertEquals("deadline", t3.getTaskType());
-
-		// error
-		TaskTypeParser t4 = new TaskTypeParser(
-				"krej at 2pm 2/03/2015 3/06 4/05");
-		assertEquals(null, t4.getTaskType());
-		TaskTypeParser t5 = new TaskTypeParser("jay 2pm 3pm 4pm 24/3");
-		assertEquals(null, t5.getTaskType());
 	}
 }

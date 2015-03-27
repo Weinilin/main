@@ -29,7 +29,11 @@ public class DateParserTest {
         // test date with year
         dates.clear();
         dates.add("01/03/2016");
-        assertEquals(dates, DateParser.extractDate("mds sale due 1/3/2016"));
+        assertEquals(dates, DateParser.extractDate("1/3/2016."));
+
+        // test date format (YYYY/MM/DD)
+        dates.clear();
+        dates.add("03/04/2016");
     }
 
     @Test
@@ -42,20 +46,37 @@ public class DateParserTest {
         // test date without year
         dates.clear();
         dates.add("12/09/2015");
-        assertEquals(dates,
-                DateParser.extractDate("krej lpp at 12 september 3pm"));
+        assertEquals(dates, DateParser.extractDate("krej lpp at 12 september."));
 
         // test date with year
         dates.clear();
-        dates.add("20/12/2015");
+        dates.add("20/12/2016");
         assertEquals(dates,
-                DateParser.extractDate("krej lpp at 20 december 3pm"));
+                DateParser.extractDate("krej lpp at 20 december 2016"));
 
         // test the case sensitivity
         dates.clear();
         dates.add("12/10/2015");
         assertEquals(dates,
                 DateParser.extractDate("krej lpp at 12 OcToBor 3pm"));
+
+        // test with th
+        dates.clear();
+        dates.add("12/10/2015");
+        assertEquals(dates,
+                DateParser.extractDate("krej lpp at 12th OcToBor 3pm"));
+
+        // test with rd
+        dates.clear();
+        dates.add("03/09/2015");
+        assertEquals(dates,
+                DateParser.extractDate("krej lpp at 3rd september 3pm"));
+
+        // test with nd
+        dates.clear();
+        dates.add("02/04/2015");
+        assertEquals(dates, DateParser.extractDate("krej lpp at 2nd april 3pm"));
+
     }
 
     @Test
@@ -66,10 +87,11 @@ public class DateParserTest {
      */
     public void testDDShortFormMonthInWordYYYY() {
         ArrayList<String> dates = new ArrayList<String>();
+
         // test without year
         dates.clear();
         dates.add("12/01/2015");
-        assertEquals(dates, DateParser.extractDate("mds sale 12 jan"));
+        assertEquals(dates, DateParser.extractDate("mds sale 12 jan."));
 
         // test date with year
         dates.clear();
@@ -85,6 +107,21 @@ public class DateParserTest {
         dates.clear();
         dates.add("18/12/2017");
         assertEquals(dates, DateParser.extractDate("mds sale 18dec 2017"));
+
+        // test date with th
+        dates.clear();
+        dates.add("13/04/2014");
+        assertEquals(dates, DateParser.extractDate("mds sale 13th apr 2014"));
+
+        // test date with rd
+        dates.clear();
+        dates.add("03/06/2014");
+        assertEquals(dates, DateParser.extractDate("mds sale 3rd jun 2014"));
+
+        // test date with nd
+        dates.clear();
+        dates.add("02/02/2014");
+        assertEquals(dates, DateParser.extractDate("mds sale 2nd feb 2014"));
     }
 
     @Test
@@ -163,7 +200,11 @@ public class DateParserTest {
     }
 
     @Test
-    // test weeks, months and years apart keyword
+    /*
+     * do take note that I use current date extract from laptop Thus, the date
+     * result from date parser is the current date + number of week/month/year Interpret by
+     * the vocab
+     */
     public void testWeekMonthYearApartKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 6 : weeks later
@@ -198,7 +239,11 @@ public class DateParserTest {
     }
 
     @Test
-    // test the weekdays keyword
+    /*
+    * do take note that I use current date extract from laptop Thus, the date
+    * result from date parser is the current date to next mon/tues.../fri
+    * 
+    */
     public void testWeekDayApartKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test date keyword 7
@@ -207,8 +252,22 @@ public class DateParserTest {
         assertEquals(dates, DateParser.extractDate("mds sale next monday"));
 
         dates.clear();
-        dates.add("29/03/2015");
-        assertEquals(dates, DateParser.extractDate("mds sale next sun"));
+        dates.add("05/04/2015");
+        assertEquals(dates, DateParser.extractDate("next sun"));
+    }
+
+    @Test
+    /*
+     * do take note that I use current date extract from laptop Thus, the date
+     * result from date parser is the current date to this mon/tues.../fri
+     * 
+     */
+    public void testThisWeekdayKeyword() {
+        ArrayList<String> dates = new ArrayList<String>();
+
+        dates.add("28/03/2015");
+        assertEquals(dates, DateParser.extractDate("mds sale this saturday"));
+
     }
 
     @Test
@@ -219,18 +278,33 @@ public class DateParserTest {
         dates.clear();
         assertEquals(dates, DateParser.extractDate("mds sale due ~1/3~ at 2pm"));
     }
-    
+
     @Test
     /*
-     * for day keyed exceeded the max day in that month,
-     * program auto set it by plus the number of day exceeded to the current date
-     * eg: 30/02/2015 --> 02/03/2015 max: 28 days in feb 2015
+     * for day keyed exceeded the max day in that month, program auto set it by
+     * plus the number of day exceeded to the current date eg: 30/02/2015 -->
+     * 02/03/2015 max: 28 days in feb 2015
      */
-    public void testDateError(){
+    public void testDateError() {
         ArrayList<String> dates = new ArrayList<String>();
 
         dates.add("02/03/2015");
-        assertEquals(dates, DateParser.extractDate("mds sale 30 feb 2015")); 
+        assertEquals(dates, DateParser.extractDate("mds sale 30 feb 2015"));
+
+    }
+
+    @Test
+    /*
+     * 1st 20/3 will be detect and then 20 Dec 2014 will be detected check if
+     * the position of the date stored is right position 20 Dec 2014 --> 20/3
+     */
+    public void testPosition() {
+        ArrayList<String> dates = new ArrayList<String>();
+
+        dates.add("20/12/2014");
+        dates.add("20/03/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale 20 Dec 2014 to 20/3"));
     }
 
 }

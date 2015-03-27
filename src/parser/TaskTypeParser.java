@@ -16,7 +16,7 @@ public class TaskTypeParser {
 			taskType = "floating task";
 		}
 		
-		assert taskType != null :"enter too many time!";
+		assert taskType != null :"error in detection detect too many time! or user key more than 2 times";
 		setTaskType(taskType);
 	}
 
