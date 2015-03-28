@@ -5,27 +5,27 @@ import java.util.regex.Pattern;
 import java.util.ArrayList;
 
 public class TimeParser {
-    public static final String TIME_TO_TIME_KEYWORD = "[^/:,.]\\b(((\\d+[.:,](\\d+)|\\d+)(-| to | - )(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|)))\\b";
-    private static final String HOURS_APART_KEYWORD = "\\b(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ (hour|hours))\\b";
+    private static final String TIME_TO_TIME_KEYWORD = "[^/:,.]\\b(((\\d+[.:,](\\d+)|\\d+)(-| to | - )(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|)))\\b";
+    private static final String HOURS_APART_KEYWORD = "\\b(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm|))\\b for \\d+ (hour|hours))\\b";
     private static final String TIME_AM_OR_PM_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
     private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(\\d+|\\d+[:.,]\\d+)(\\s|)o'clock\\b";
     private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(on |at |from |to |)noon\\b)|(\\b(on |at |from |to |)midnight\\b)";
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(from |to |)(before midnight|before noon)\\b)";
-    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+|)|\\d+)( in (morning|morn)\\b| in afternoon\\b| in night\\b| at night\\b| at afternoon\\b"
-            + "| at morning\\b| at morn\\b))";
+    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
+            + "| at (the |)morning\\b| at (the |)morn\\b))";
     private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d+[:.,]\\d+\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(from |to |)(past midnight|past noon|after noon|after midnight)\\b)";
     private static final String TO_BE_REMOVED_KEYWORD = "(before midnight|before noon|"
-            + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|o'clock|past noon|past"
+            + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|in the afternoon|in the night|in the (morning|morn)|at the afternoon|at the night|at the (morning|morn)|o'clock|past noon|past"
             + "midnight|noon|midnight|\\s|-|to|at|from)";
     private static int index;
-    private static String detectUserInput;
+    private static String userInputLeft;
 
     public static ArrayList<String> extractTime(String userInput) {
         ArrayList<String> storageOfTime = new ArrayList<String>();
         userInput = removeThoseHashTag(userInput);
         userInput = switchAllToLowerCase(userInput);
-        detectUserInput = userInput;
+        userInputLeft = userInput;
 
         storageOfTime = goThroughTimeFormat(storageOfTime, userInput);
 
@@ -91,11 +91,11 @@ public class TimeParser {
     private static ArrayList<String> spotPastMidnightOrNoonKeyword(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(PAST_NOON_PAST_MIDNIGHT_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
-            detectUserInput = detectUserInput.replaceAll(
+            userInputLeft = userInputLeft.replaceAll(
                     PAST_NOON_PAST_MIDNIGHT_KEYWORD, "");
             String time = matchedWithTime.group();
 
@@ -123,13 +123,13 @@ public class TimeParser {
     private static ArrayList<String> spotTwentyFourHHKeyword(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(TWENTY_FOUR_HH_KEYWORD);
-        Matcher containTime = timeDetector.matcher(detectUserInput);
+        Matcher containTime = timeDetector.matcher(userInputLeft);
         Matcher toGetIndex = timeDetector.matcher(userInput);
 
         while (containTime.find()) {
             String time = containTime.group();
             testValidTime(time);
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
 
             if (toGetIndex.find()) {
                 int indexNext = toGetIndex.start();
@@ -155,13 +155,13 @@ public class TimeParser {
     private static ArrayList<String> spotHHOclockKeyword(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(TIME_WITH_OCLOCK_KEYWORD);
-        Matcher containTime = timeDetector.matcher(detectUserInput);
+        Matcher containTime = timeDetector.matcher(userInputLeft);
         Matcher toGetIndex = timeDetector.matcher(userInput);
 
         while (containTime.find()) {
             String time = containTime.group();
             testValidTime(time);
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
 
             if (toGetIndex.find()) {
                 int indexNext = toGetIndex.start();
@@ -198,17 +198,17 @@ public class TimeParser {
             ArrayList<String> storageOfTime) {
 
         Pattern containTime = Pattern.compile(HOURS_APART_KEYWORD);
-        Matcher toGetIndex = containTime.matcher(detectUserInput);
+        Matcher toGetIndex = containTime.matcher(userInputLeft);
 
         while (toGetIndex.find()) {
             String time = toGetIndex.group();
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
 
             String startTime = detectStartTime(time);
             testValidTime(startTime);
             startTime = changeToHourFormat(startTime);
             int hhInTime = getHH(startTime);
-
+            
             String numberOfHour = detectNumberOfHour(time);
             int numberOfHours = Integer.parseInt(numberOfHour);
 
@@ -266,17 +266,15 @@ public class TimeParser {
      * @return time with am/pm
      */
     private static String detectStartTime(String time) {
-        String timeWithAMOrPM = "";
-        String digit1 = "(\\d+[.:,](\\d+|)|\\d+)((\\s|)(am|pm))";
+        String digit1 = "(\\d+[.:,](\\d+)|\\d+)((\\s|)(am|pm|))";
 
         Pattern containTime = Pattern.compile(digit1);
         Matcher matchedWithTime = containTime.matcher(time);
 
-        while (matchedWithTime.find()) {
-            time = time.replaceAll(digit1, "");
-            timeWithAMOrPM = matchedWithTime.group();
+        if (matchedWithTime.find()) {
+            time = matchedWithTime.group();
         }
-        return timeWithAMOrPM;
+        return time;
     }
 
     /**
@@ -307,12 +305,12 @@ public class TimeParser {
     private static ArrayList<String> spotMorningAfternoonNightKeyword(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(MORNING_AFTERNOON_NIGHT_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
             if (matchedForIndex.find()) {
                 int indexNext = matchedForIndex.start();
 
@@ -347,14 +345,14 @@ public class TimeParser {
             ArrayList<String> storageOfTime, String userInput) {
 
         Pattern timeDetector = Pattern.compile(TIME_TO_TIME_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
 
         String[] timeList;
         String toBeAdded = "";
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
             timeList = time.split("-|to");
 
             testValidTime(timeList[1]);
@@ -411,12 +409,12 @@ public class TimeParser {
 
     /**
      * when both start time hour format is less than the end time.
-     * 
-     * @param amTime1
-     * @param pmTime1
+     * Find out which start time is nearer to the end time
+     * @param timeWitham
+     * @param timeWithpm
      * @param amTime1stNum
-     * @param pmTime1stNum
-     * @return the right start time when the am/pm is not input.
+     * @param hhInTimeWithpm
+     * @return the nearer start time when the am/pm is not input.
      */
     private static String whenBothLessThan(String timeWitham,
             String timeWithpm, int hhInTimeWitham, int hhInTimeWithpm) {
@@ -464,7 +462,8 @@ public class TimeParser {
         try {
             time = removePMOrAm(time);
             time = removeUnwantedParts(time);
-            if (time.length() > 2) {
+        
+            if (time.contains(":") || time.contains(".") || time.contains(",")) {
                 timeInHour = getHH(time);
                 timeInMin = Integer.parseInt(getMinutes(time));
             } else {
@@ -529,14 +528,14 @@ public class TimeParser {
     private static ArrayList<String> spotTimeWithPmOrAm(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(TIME_AM_OR_PM_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
             testValidTime(time);
 
-            detectUserInput = detectUserInput.replaceAll(time, "");
+            userInputLeft = userInputLeft.replaceAll(time, "");
 
             if (matchedForIndex.find()) {
                 int indexNext = matchedForIndex.start();
@@ -574,12 +573,12 @@ public class TimeParser {
     private static ArrayList<String> spotNoonOrMidnight(
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern.compile(NOON_MIDNIGHT_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
 
-            detectUserInput = detectUserInput.replaceAll(NOON_MIDNIGHT_KEYWORD,
+            userInputLeft = userInputLeft.replaceAll(NOON_MIDNIGHT_KEYWORD,
                     "");
             String time = matchedWithTime.group();
 
@@ -608,11 +607,11 @@ public class TimeParser {
             ArrayList<String> storageOfTime, String userInput) {
         Pattern timeDetector = Pattern
                 .compile(BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD);
-        Matcher matchedWithTime = timeDetector.matcher(detectUserInput);
+        Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
-            detectUserInput = detectUserInput.replaceAll(
+            userInputLeft = userInputLeft.replaceAll(
                     BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD, "");
             String time = matchedWithTime.group();
 
@@ -649,10 +648,22 @@ public class TimeParser {
             time = time + ":00";
         }
 
+        time = putOneZeroAtFront(time);
+
+        return time;
+    }
+
+    /**
+     * when the length is equal to 4 --> H:MM (eg: 2:30)
+     * Thus, have to put one zero in front to HH:MM (eg: 02:30)
+     * @param time
+     * @return HH:MM
+     */
+    private static String putOneZeroAtFront(String time) {
+        time = time.trim();
         if (time.length() == 4) {
             time = "0" + time;
         }
-
         return time;
     }
 

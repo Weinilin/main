@@ -10,18 +10,19 @@ public class TimeParserTEMPTEST {
 
     @Test
     public void test() {
-        ArrayList<String> times = new ArrayList<String>();
+        ArrayList<String> times1 = new ArrayList<String>();
      
-       // ArrayList<String> times = new ArrayList<String>();
-        times.clear();
-        times.add("06:00");
-        times.add("18:00");
-        assertEquals(times,
-                TimeParser.extractTime("CS2103T assignments 25/3/2016 24/3/2016 4pm"));
+        // test with am or pm
+        times1.clear();
+        times1.add("15:30");
+        times1.add("17:30");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 12pm-12:20pm"));
+    }
         
         
     
     
     }
 
-}
+

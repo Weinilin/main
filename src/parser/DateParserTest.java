@@ -133,25 +133,37 @@ public class DateParserTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 4: after _ days
         dates.clear();
-        dates.add("30/03/2015");
+        dates.add("31/03/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start in after 3 days"));
 
         // test keyword 4: next _ days
         dates.clear();
-        dates.add("31/03/2015");
+        dates.add("01/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start in next 4 days"));
 
         // test keyword 4: _ days from now
         dates.clear();
-        dates.add("01/04/2015");
+        dates.add("02/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 5 days from now"));
 
         // test day without s
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 5 day from now"));
+        
+     // test keyword 4: __day later
+        dates.clear();
+        dates.add("02/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start 5 days later"));
+        
+     // test keyword 4: in __day times
+        dates.clear();
+        dates.add("02/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start in 5 days time"));
     }
 
     @Test
@@ -164,38 +176,43 @@ public class DateParserTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tomorrow
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale from tomorrow"));
 
         // test keyword 5: tmr
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale from tmr"));
 
         // test keyword 5: the following day
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale the following day"));
 
         // test keyword 5: the next day
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale the next day"));
 
         // test keyword 5: after today
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale the next day"));
 
         // test keyword 5: after tomorrow
         dates.clear();
-        dates.add("29/03/2015");
+        dates.add("30/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale after tomorrow"));
+        
+        // test keyword 5: after tmr
+        dates.clear();
+        dates.add("30/03/2015");
+        assertEquals(dates, DateParser.extractDate("mds sale after tmr"));
 
         // test keyword 5: after today
         dates.clear();
-        dates.add("28/03/2015");
+        dates.add("29/03/2015");
         assertEquals(dates, DateParser.extractDate("mds sale after today"));
     }
 
@@ -209,19 +226,55 @@ public class DateParserTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 6 : weeks later
         dates.clear();
-        dates.add("03/04/2015");
+        dates.add("04/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 1 week later"));
-
+        
+     // test keyword 6: next __month 
+        dates.clear();
+        dates.add("28/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start next 1 months "));
+       
+     // test keyword 6 : after __ weeks 
+        dates.clear();
+        dates.add("04/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale after 1 weeks"));
+      
+     // test keyword 6 : in __ weeks times
+        dates.clear();
+        dates.add("04/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale in 1 week time"));
+        
         // test s sensitivity(with s behind week or no s)
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 1 weeks later"));
 
         // test keyword 6: month later
         dates.clear();
-        dates.add("27/04/2015");
+        dates.add("28/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 1 month later"));
+        
+        // test keyword 6: after __month 
+        dates.clear();
+        dates.add("28/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start after 1 month "));
+        
+        // test keyword 6: in __month times
+        dates.clear();
+        dates.add("28/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start in 1 month time"));
+        
+        // test keyword 6: next __month 
+        dates.clear();
+        dates.add("28/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start next 1 month"));
 
         // test s sensitivity(with s behind month or no s)
         assertEquals(dates,
@@ -229,13 +282,35 @@ public class DateParserTest {
 
         // test keyword 6: year later
         dates.clear();
-        dates.add("27/03/2018");
+        dates.add("28/03/2018");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 3 year later"));
+
+        // test the rest of aliases after __ year 
+        dates.clear();
+        dates.add("28/03/2018");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start after 3 year"));
+        
+        //  test the rest of aliases in __ year times
+        dates.clear();
+        dates.add("28/03/2018");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start in 3 year times"));
+        
+        //  test the rest of aliases next __ year 
+        dates.clear();
+        dates.add("28/03/2018");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start next 3 year"));
 
         // test s sensitivity(with s behind year or no s)
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 3 years later"));
+        
+     // test the word format of number
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start three years later"));
     }
 
     @Test
@@ -265,8 +340,8 @@ public class DateParserTest {
     public void testThisWeekdayKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
 
-        dates.add("28/03/2015");
-        assertEquals(dates, DateParser.extractDate("mds sale this saturday"));
+        dates.add("29/03/2015");
+        assertEquals(dates, DateParser.extractDate("mds sale this sun"));
 
     }
 

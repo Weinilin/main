@@ -16,17 +16,16 @@ public class DateParser {
     private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
             + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|)";
     private static final String AFTER_DAYS_APART_KEYWORD = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
-            + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b";
+            + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b|\\b(in \\w+ day(s|) time(s|))\\b";
     private static final String DAYS_APART_VOCAB_KEYWORD = "\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day\\b|\\b(the\\s|)next day\\b"
             + "|\\b(after today)\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year)\\b";
     private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
-            + "\\b(\\w+ (week|month|year)(s|) after)\\b";
+            + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))";
     private static final String NEXT_WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String THIS_WEEKDAY_APART_KEYWORD = " this (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
-    private static final String UNWANTED_ALPHA = "(day(s|)|from now|after|next|later)|\\s";
     private static String[] wordOfNumDays = { "one", "two", "three", "four",
             "five", "six", "seven", "eight", "nine", "ten" };
     private static final String TODAY_TEXT = "today";
@@ -230,7 +229,7 @@ public class DateParser {
     private static ArrayList<String> spotWeekMonthYearApartKeyword(
             String userInput, ArrayList<String> storageOfDate) {
         String dateOfTheTask = "", uniqueKeyword = "";
-
+        int numberOfDays = 0, numberOfMonths = 0, numberOfYears = 0;
         Pattern dateDetector = Pattern
                 .compile(WEEKS_MONTHS_YEARS_APART_KEYWORD);
         Matcher containDate = dateDetector.matcher(inputToBeDetected);
@@ -240,15 +239,19 @@ public class DateParser {
             uniqueKeyword = containDate.group();
             inputToBeDetected = inputToBeDetected.replaceAll(uniqueKeyword, "");
 
-            int numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
-            int numberOfMonths = getNumberOfMonthDetected(uniqueKeyword);
-            int numberOfYears = getNumberOfYearsDetected(uniqueKeyword);
-
-            if (numberOfDays != 0) {
+            if (uniqueKeyword.contains("week")) {
+                
+                numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByDays(numberOfDays);
-            } else if (numberOfMonths != 0) {
+                
+            } else if (uniqueKeyword.contains("month")) {
+                
+                numberOfMonths = getNumberOfMonthDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByMonth(numberOfMonths);
-            } else if (numberOfYears != 0) {
+                
+            } else if (uniqueKeyword.contains("year")) {
+                
+                numberOfYears = getNumberOfYearsDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByYear(numberOfYears);
             }
 
@@ -431,8 +434,7 @@ public class DateParser {
             inputToBeDetected = inputToBeDetected.replaceAll(
                     AFTER_DAYS_APART_KEYWORD, "");
 
-            String numberOfDaysFromNow = removeAllOtherThanNumberOfDay(uniqueKeyword);
-            int numberOfDays = getNumberOfDaysDetected(numberOfDaysFromNow);
+            int numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
             dateOfTask = addToTheCurrentDateByDays(numberOfDays);
             storageOfDate.add(dateOfTask);
 
@@ -477,7 +479,7 @@ public class DateParser {
      */
     private static int getNumberOfDaysDetected(String uniqueKeyword) {
         int numberOfDays = 0;
-
+      
         if (uniqueKeyword.equals(TODAY_TEXT)) {
             numberOfDays = 0;
         } else if (uniqueKeyword.equals(TOMORROW_TEXT)
@@ -498,10 +500,8 @@ public class DateParser {
         } else if (uniqueKeyword.contains(FORTNIGHT_TEXT)) {
             int numberOfFornight = isolateTheNumberInString(uniqueKeyword);
             numberOfDays = FORTNIGHT_UNIT * numberOfFornight;
-        } else if (isNumeric(uniqueKeyword)) {
-            numberOfDays = Integer.parseInt(uniqueKeyword);
         } else {
-            numberOfDays = determineIntDaysFromWords(uniqueKeyword);
+            numberOfDays = isolateTheNumberInString(uniqueKeyword);
         }
 
         return numberOfDays;
@@ -582,8 +582,7 @@ public class DateParser {
      * @return days/weeks/months/years
      */
     private static int isolateTheNumberInString(String uniqueKeyword) {
-
-        uniqueKeyword = removeInFromInput(uniqueKeyword);
+        uniqueKeyword = remove1stWordFromInput(uniqueKeyword);
         String[] partsOfUniqueKeyword = uniqueKeyword.split(" ");
         String containOnlyNumber = partsOfUniqueKeyword[0];
         int number = determineTheNumber(containOnlyNumber);
@@ -591,14 +590,16 @@ public class DateParser {
     }
 
     /**
-     * remove the word "in" in input so that every 1st String in the input is
-     * digit
+     * remove the 1st word and space in input so that every 1st String in the
+     * input is digit
      * 
      * @param uniqueKeyword
      * @return String without "in"
      */
-    private static String removeInFromInput(String uniqueKeyword) {
-        uniqueKeyword = uniqueKeyword.replaceAll(" in ", "");
+    private static String remove1stWordFromInput(String uniqueKeyword) {
+        uniqueKeyword = uniqueKeyword.replaceAll(
+                "\\bin\\b|\\bafter\\b|\\bnext\\b", "");
+        uniqueKeyword = uniqueKeyword.trim();
         return uniqueKeyword;
     }
 
@@ -616,18 +617,6 @@ public class DateParser {
             numberOfDays = determineIntDaysFromWords(containNumber);
         }
         return numberOfDays;
-    }
-
-    /**
-     * remove all other except for number of day
-     * 
-     * @param uniqueKeyword
-     * @return number of day in String
-     */
-    private static String removeAllOtherThanNumberOfDay(String uniqueKeyword) {
-        String numberOfDaysFromNow = uniqueKeyword.replaceAll(UNWANTED_ALPHA,
-                "");
-        return numberOfDaysFromNow;
     }
 
     /**

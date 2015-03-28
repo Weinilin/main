@@ -36,7 +36,7 @@ public class DateTimeParserTest {
 	public void testWhenDateNotKeyed() {
 		// deadline task without date added
 		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 3pm");
-		assertEquals(d1.getDeadlineDate(), "27/03/2015");
+		assertEquals(d1.getDeadlineDate(), "28/03/2015");
 		assertEquals(d1.getDeadlineTime(), "15:00");
 
 		// timed task without one date added
@@ -50,8 +50,8 @@ public class DateTimeParserTest {
 		// timed task with no date added
 		DateTimeParser d3 = new DateTimeParser(
 				"CS2103T assignments 4pm 6:30pm");
-		assertEquals(d3.getStartDate(), "27/03/2015");
-		assertEquals(d3.getEndDate(), "27/03/2015");
+		assertEquals(d3.getStartDate(), "28/03/2015");
+		assertEquals(d3.getEndDate(), "28/03/2015");
 		assertEquals(d3.getStartTime(), "16:00");
 		assertEquals(d3.getEndTime(), "18:30");
 	}
@@ -61,8 +61,8 @@ public class DateTimeParserTest {
 	    //test when same time is detected with no date detected
 	    DateTimeParser d3 = new DateTimeParser(
                 "CS2103T assignments 6:30pm 6:30pm");
-        assertEquals(d3.getStartDate(), "27/03/2015");
-        assertEquals(d3.getEndDate(), "28/03/2015");
+        assertEquals(d3.getStartDate(), "28/03/2015");
+        assertEquals(d3.getEndDate(), "29/03/2015");
         assertEquals(d3.getStartTime(), "18:30");
         assertEquals(d3.getEndTime(), "18:30");
         

@@ -29,7 +29,7 @@ public class DescriptionParser {
             + "\\b(\\w+ (week|month|year)(s|) after)\\b";
     private static final String AFTER_WEEKDAY_APART_KEYWORD = "(on|) next (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String THIS_WEEKDAY_APART_KEYWORD = "(on|) this (mon|tues|wed|thurs|fri|sat|sun)";
-	private static final String UNWANTED = "(end at|start at|and|\\.|~)";
+	private static final String UNWANTED = "(\\bend at\\b|\\bstart at\\b|\\band\\b|\\.|~)";
 	private String description;
 
 	public DescriptionParser(String userInput) {
@@ -56,7 +56,6 @@ public class DescriptionParser {
 		description = userInput.replaceAll("\\s+|,", " ");
 		description = description.trim();
 		setDescription(description);
-
 	}
 
 	/**

@@ -56,15 +56,20 @@ public class DateTimeParser {
      */
     private void testForExceptionCases(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) {
-        if (storageOfDate.size() == 2 || storageOfTime.size() == 2) {
+        if (storageOfDate.size() == 2) {
             testValidDates(storageOfDate);
+        }
+        if (storageOfTime.size() == 2) {
             testValidTimes(storageOfTime);
+        }
+        if (storageOfTime.size() == 2 && storageOfDate.size() == 2) {
             testValidTimesAndDates(storageOfTime, storageOfDate);
         }
     }
 
     /**
      * test if start date = end date and start time = end time
+     * 
      * @param storageOfTime
      * @param storageOfDate
      */
@@ -79,8 +84,8 @@ public class DateTimeParser {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date date1 = dateFormat.parse(storageOfDate.get(0));
             Date date2 = dateFormat.parse(storageOfDate.get(1));
-            
-            if (time1.equals(time2) && date1.equals(date2) ) {
+
+            if (time1.equals(time2) && date1.equals(date2)) {
                 throw new Exception(
                         "Impossible combination for timed task! End time must be later than start time on the same day");
             }
@@ -90,7 +95,6 @@ public class DateTimeParser {
             System.exit(0);
         }
 
-        
     }
 
     /**

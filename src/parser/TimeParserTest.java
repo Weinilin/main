@@ -49,6 +49,7 @@ public class TimeParserTest {
         assertEquals(times1,
                 TimeParser.extractTime("past noon run"));
     }
+    
     @Test
     public void testHourApartKeyword() {
       
@@ -110,6 +111,13 @@ public class TimeParserTest {
         times1.add("17:30");
         assertEquals(times1,
                 TimeParser.extractTime("mds sale start at 3.30 pm for 2 hour"));
+        
+     // test with am or pm
+        times1.clear();
+        times1.add("03:30");
+        times1.add("05:30");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 3.30 for 2 hour"));
     }
 
     @Test
@@ -163,7 +171,7 @@ public class TimeParserTest {
         assertEquals(
                 times,
                 TimeParser
-                        .extractTime("6:30 in morn sunshine"));
+                        .extractTime("6:30 in the morn sunshine"));
         
         //test in morning with semicolon
         times.clear();
