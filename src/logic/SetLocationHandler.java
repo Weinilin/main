@@ -21,13 +21,13 @@ public class SetLocationHandler extends UndoableCommandHandler {
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-        try {
-            dlc.setDatabaseLocation(parameter);
-        } catch (NullPointerException npe) {
+        if (dlc.setDatabaseLocation(parameter) {
+            return String.format(NEW_LOCATION_MESSAGE, parameter);
+        }
+        else {
             return INVALID_PATH_MESSAGE;
         }
-
-        return String.format(NEW_LOCATION_MESSAGE, parameter);
+            
     }
 
     @Override
@@ -39,5 +39,10 @@ public class SetLocationHandler extends UndoableCommandHandler {
     @Override
     void undo() {
 
+    }
+    
+    @Override
+    public CommandHandler getNewInstance() {
+        return new SetLocationHandler();
     }
 }

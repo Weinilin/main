@@ -30,4 +30,8 @@ public class ExitHandler extends CommandHandler {
         return "";
     }
 
+    @Override
+    public CommandHandler getNewInstance() {
+        return new ExitHandler();
+    }
 }

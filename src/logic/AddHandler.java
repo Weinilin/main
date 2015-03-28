@@ -93,4 +93,9 @@ class AddHandler extends UndoableCommandHandler {
     void undo() {
     	memory.removeTask(newTask);
     }
+    
+    @Override
+    public CommandHandler getNewInstance() {
+        return new AddHandler();
+    }
 }

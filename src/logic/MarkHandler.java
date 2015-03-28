@@ -103,4 +103,9 @@ class MarkHandler extends UndoableCommandHandler {
             memory.markUndone(index);
         }
     }
+    
+    @Override
+    public CommandHandler getNewInstance() {
+        return new MarkHandler();
+    }
 }

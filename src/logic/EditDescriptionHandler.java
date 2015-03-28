@@ -17,7 +17,7 @@ import application.TaskComparator;
  *
  */
 class EditDescriptionHandler extends UndoableCommandHandler {
-
+    private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
 	private static final String HELP_MESSAGE = "edit description <index> <new description>\n\t update the task description only\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 	                                        Arrays.asList("ed"));
@@ -40,7 +40,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    IndexParser ip = new IndexParser(parameter);
 	    int index = ip.getIndex();
 	    if (index < 0) {
-	        return "Invalid index " + index + "\n";
+            return INVALID_INDEX_MESSAGE;
 	    }
 	    
 	    try {
@@ -51,7 +51,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	        newTask.setEndDateTime(oldTask.getEndDateTime());
 	        newTask.setStartDateTime(oldTask.getStartDateTime());
 	    } catch (IndexOutOfBoundsException iob) {
-	        return "Invalid index " + index + "\n";
+            return INVALID_INDEX_MESSAGE;
 	    }
 	    
 	    if (newTask != null && oldTask != null) {
@@ -76,4 +76,8 @@ class EditDescriptionHandler extends UndoableCommandHandler {
         memory.removeTask(newTask);
 	}
 
+	@Override
+	public CommandHandler getNewInstance() {
+        return new EditDescriptionHandler();
+    }
 }

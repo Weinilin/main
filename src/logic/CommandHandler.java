@@ -22,7 +22,7 @@ abstract class CommandHandler {
      * @return string that contains the command 
      */
     abstract protected ArrayList<String> getAliases();
-
+    
     /**
      * execute the command based on the input from user (such as "add",
      * "delete", etc) and the parameter for executing the command. Return
@@ -38,6 +38,11 @@ abstract class CommandHandler {
      */
     abstract public String getHelp();
 
+    /**
+     * Return a new instance of the handler
+     * @return
+     */
+    abstract public CommandHandler getNewInstance();
     /**
      * creates a new task by a string containing the information of the task.
      * It will call the respective parsers to get information about the new

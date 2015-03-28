@@ -17,7 +17,7 @@ import application.TaskComparator;
  *
  */
 class EditTimeHandler extends UndoableCommandHandler {
-
+    private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
@@ -27,7 +27,6 @@ class EditTimeHandler extends UndoableCommandHandler {
     protected ArrayList<String> getAliases() {
         return aliases;
     }
-
         
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
@@ -43,7 +42,7 @@ class EditTimeHandler extends UndoableCommandHandler {
                newStartDateTime = dtp.getStartDate() + " " + dtp.getStartTime(),
                newEndDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
         if (index < 0) {
-            return "Invalid index " + index + "\n";
+            return INVALID_INDEX_MESSAGE;
         }
         
         try {
@@ -54,7 +53,7 @@ class EditTimeHandler extends UndoableCommandHandler {
             newTask.setEndDateTime(newStartDateTime);
             newTask.setStartDateTime(newEndDateTime);
         } catch (IndexOutOfBoundsException iob) {
-            return "Invalid index " + index + "\n";
+            return INVALID_INDEX_MESSAGE;
         }
         
         if (newTask != null && oldTask != null) {
@@ -77,6 +76,11 @@ class EditTimeHandler extends UndoableCommandHandler {
     void undo() {
         memory.addTask(oldTask);
         memory.removeTask(newTask);
+    }
+    
+    @Override
+    public CommandHandler getNewInstance() {
+        return new EditTimeHandler();
     }
 
 }

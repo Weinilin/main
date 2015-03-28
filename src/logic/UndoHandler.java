@@ -53,4 +53,8 @@ class UndoHandler extends UndoableCommandHandler {
         taskList.addAll(0, memory.getTaskList());
     }
 
+    @Override
+    public CommandHandler getNewInstance() {
+        return new UndoHandler();
+    }
 }

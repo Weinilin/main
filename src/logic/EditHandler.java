@@ -14,9 +14,10 @@ import application.TaskComparator;
 /**
  * CommandHandler for "edit" function
  * 
- * modify a task by specifying the field (description or time) and index
- * of the task in the ArrayList then the information that is intended to 
- * change
+ * other edit handlers will be invoked by specifying the field 
+ * (description or time) and index. If no field is selected, the whole
+ * task will be updated. Index refers to the index of task in
+ * the ArrayList then the information that is intended to change
  * @author A0114463M
  *
  */
@@ -83,29 +84,6 @@ class EditHandler extends UndoableCommandHandler {
     }
 
     /**
-     * create a task with time only, description will be updated elsewhere
-     * @param parameter
-     * @param token
-     * @param index
-     * @return
-     */
-    private Task createTimeOnlyTask(String parameter, String[] token, int index) {
-        return CommandHandler.createNewTask(getNewDescription(parameter, token, index));
-    }
-
-    /**
-     * extract the new description of the task
-     * @param parameter
-     * @param token
-     * @param index
-     * @return
-     */
-    private String getNewDescription(String parameter, String[] token, int index) {
-        return parameter.replace(token[0], "").
-                replace(Integer.toString(index + 1), "").trim();
-    }
-
-    /**
      * update the taskList in LogicController and Memory
      * @param taskList
      * @param index
@@ -150,6 +128,11 @@ class EditHandler extends UndoableCommandHandler {
     void undo() {
         memory.addTask(oldTask);
         memory.removeTask(newTask);
+    }
+    
+    @Override
+    public CommandHandler getNewInstance() {
+        return new EditHandler();
     }
 
 }

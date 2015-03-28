@@ -30,13 +30,13 @@ class DeleteHandler extends UndoableCommandHandler {
             Arrays.asList("delete", "d", "remove", "-"));
     private static final Logger deleteLogger = 
             Logger.getLogger(DeleteHandler.class.getName());
-    private ArrayList<Task> removedTask;
+    private ArrayList<Task> removedTask = new ArrayList<Task>();
+    
     @Override
     public ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
         return aliases;
     }
-
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
@@ -154,4 +154,10 @@ class DeleteHandler extends UndoableCommandHandler {
             memory.addTask(task);
         }
     }
+
+    @Override
+    public CommandHandler getNewInstance() {
+        return new DeleteHandler();
+    }
+
 }

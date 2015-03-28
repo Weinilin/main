@@ -46,4 +46,9 @@ class ClearHandler extends UndoableCommandHandler {
             memory.addTask(task);
         }
     }
+
+    @Override
+    public CommandHandler getNewInstance() {
+        return new ClearHandler();
+    }
 }
