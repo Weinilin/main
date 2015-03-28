@@ -32,7 +32,7 @@ public class DateTimeParserTest {
 
 	@Test
 	//take note that if date is not added and there is time, I set the default to current date
-	//When test, do change the date to current date. 
+	//When testing, do change the expected result's date to current date. 
 	public void testWhenDateNotKeyed() {
 		// deadline task without date added
 		DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 3pm");

@@ -36,6 +36,8 @@ public class DateParser {
     private static final String FOLLOWING_DAY_TEXT = "following day";
     private static final String AFTER_TODAY_TEXT = "after today";
     private static final String AFTER_TOMORROW_TEXT = "after tomorrow";
+    private static final String SHORT_FORM_TOMORROW_TEXT = "tmr";
+    private static final String AFTER_SHORTCUT_TMR_TEXT = "after tmr";
     private static final String WEEK_TEXT = "week";
     private static final String MONTH_TEXT = "month";
     private static final String YEAR_TEXT = "year";
@@ -479,7 +481,7 @@ public class DateParser {
         if (uniqueKeyword.equals(TODAY_TEXT)) {
             numberOfDays = 0;
         } else if (uniqueKeyword.equals(TOMORROW_TEXT)
-                || uniqueKeyword.equals("tmr")) {
+                || uniqueKeyword.equals(SHORT_FORM_TOMORROW_TEXT)) {
             numberOfDays = 1;
         } else if (uniqueKeyword.contains(NEXT_DAY_TEXT)) {
             numberOfDays = 1;
@@ -488,7 +490,7 @@ public class DateParser {
         } else if (uniqueKeyword.equals(AFTER_TODAY_TEXT)) {
             numberOfDays = 1;
         } else if (uniqueKeyword.equals(AFTER_TOMORROW_TEXT)
-                || uniqueKeyword.equals("after tmr")) {
+                || uniqueKeyword.equals(AFTER_SHORTCUT_TMR_TEXT)) {
             numberOfDays = 2;
         } else if (uniqueKeyword.contains(WEEK_TEXT)) {
             int numberOfWeek = isolateTheNumberInString(uniqueKeyword);

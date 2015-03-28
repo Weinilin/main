@@ -24,9 +24,11 @@ public class DateTimeParser {
 
         storageOfTime = TimeParser.extractTime(userInput);
         storageOfDate = DateParser.extractDate(userInput);
-       
+
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
+
+        testForExceptionCases(storageOfTime, storageOfDate);
 
         storageOfTime = addInMissingTime(storageOfTime, storageOfDate);
         storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
@@ -38,13 +40,57 @@ public class DateTimeParser {
             setDeadlineTime(storageOfTime.get(0));
             setDeadlineDate(storageOfDate.get(0));
         } else if (storageOfTime.size() == 2) {
-            testValidDates(storageOfDate);
-            testValidTimes(storageOfTime);
             setStartTime(storageOfTime.get(0));
             setEndTime(storageOfTime.get(1));
             setStartDate(storageOfDate.get(0));
             setEndDate(storageOfDate.get(1));
         }
+    }
+
+    /**
+     * 1) Key in same times and same dates 2) Key in start date later than end
+     * date 3) Key in start time later than end time
+     * 
+     * @param storageOfTime
+     * @param storageOfDate
+     */
+    private void testForExceptionCases(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) {
+        if (storageOfDate.size() == 2 || storageOfTime.size() == 2) {
+            testValidDates(storageOfDate);
+            testValidTimes(storageOfTime);
+            testValidTimesAndDates(storageOfTime, storageOfDate);
+        }
+    }
+
+    /**
+     * test if start date = end date and start time = end time
+     * @param storageOfTime
+     * @param storageOfDate
+     */
+    private void testValidTimesAndDates(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) {
+        Logger logger = Logger.getLogger("DateTimeParser");
+        try {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
+            Date time1 = timeFormat.parse(storageOfTime.get(0));
+            Date time2 = timeFormat.parse(storageOfTime.get(1));
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1 = dateFormat.parse(storageOfDate.get(0));
+            Date date2 = dateFormat.parse(storageOfDate.get(1));
+            
+            if (time1.equals(time2) && date1.equals(date2) ) {
+                throw new Exception(
+                        "Impossible combination for timed task! End time must be later than start time on the same day");
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            logger.log(Level.WARNING, "processing error", e);
+            System.exit(0);
+        }
+
+        
     }
 
     /**
@@ -54,15 +100,15 @@ public class DateTimeParser {
      * @param storageOfDate
      */
     private void testValidTimes(ArrayList<String> storageOfTime) {
-        Logger logger = Logger.getLogger("IndexParser");
+        Logger logger = Logger.getLogger("DateTimeParser");
         try {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
             Date time1 = timeFormat.parse(storageOfTime.get(0));
             Date time2 = timeFormat.parse(storageOfTime.get(1));
 
             if (time1.after(time2)) {
-                System.out.println("Time1 is after Time2");
-                throw new Exception("Invalid input of time! The start time is later than end time!");
+                throw new Exception(
+                        "Invalid input of time! The start time is later than end time!");
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -78,15 +124,15 @@ public class DateTimeParser {
      * @param storageOfDate
      */
     private void testValidDates(ArrayList<String> storageOfDate) {
-        Logger logger = Logger.getLogger("IndexParser");
+        Logger logger = Logger.getLogger("DateTimeParser");
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date date1 = dateFormat.parse(storageOfDate.get(0));
             Date date2 = dateFormat.parse(storageOfDate.get(1));
 
             if (date1.after(date2)) {
-                System.out.println("Date1 is after Date2");
-                throw new Exception("Invalid input of date! The start date is later than end date!");
+                throw new Exception(
+                        "Invalid input of date! The start date is later than end date!");
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
