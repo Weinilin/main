@@ -30,7 +30,7 @@ class DeleteHandler extends UndoableCommandHandler {
             Arrays.asList("delete", "d", "remove", "-"));
     private static final Logger deleteLogger = 
             Logger.getLogger(DeleteHandler.class.getName());
-
+    private ArrayList<Task> removedTask;
     @Override
     public ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
@@ -39,7 +39,7 @@ class DeleteHandler extends UndoableCommandHandler {
 
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         deleteLogger.entering(getClass().getName(), "preparing for delete");
 
         String[] token = parameter.split(" ");
@@ -49,7 +49,7 @@ class DeleteHandler extends UndoableCommandHandler {
 
         if (isAll(token)) {
             ClearHandler clrHandler = new ClearHandler();
-            return clrHandler.execute(token[0], "");
+            return clrHandler.execute(token[0], "", taskList);
         }
 
         String goodFeedback = new String(), 
@@ -57,8 +57,6 @@ class DeleteHandler extends UndoableCommandHandler {
                 feedback = new String();		
 
         IndexParser ip;
-        ArrayList<Task> removedTask = new ArrayList<Task>();
-
         for (String t: token) {
             ip = new IndexParser(t);
             int index = ip.getIndex() - 1;
@@ -73,7 +71,7 @@ class DeleteHandler extends UndoableCommandHandler {
         }
 
         deleteTasks(taskList, removedTask);
-
+        undoRedoManager.undo.push(this);
         generateFeedbackString(goodFeedback, badFeedback, feedback);
         return feedback;
     }
@@ -95,8 +93,7 @@ class DeleteHandler extends UndoableCommandHandler {
      * @param taskList
      * @param removedTask
      */
-    private void deleteTasks(ArrayList<Task> taskList,
-            ArrayList<Task> removedTask) {
+    private void deleteTasks(ArrayList<Task> taskList, ArrayList<Task> removedTask) {
         for (Task task: removedTask) {
             taskList.remove(task);
             memory.removeTask(task);
@@ -153,6 +150,8 @@ class DeleteHandler extends UndoableCommandHandler {
 
     @Override
     void undo() {
-
+        for (Task task: removedTask) {
+            memory.addTask(task);
+        }
     }
 }

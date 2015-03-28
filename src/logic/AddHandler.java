@@ -24,7 +24,8 @@ class AddHandler extends UndoableCommandHandler {
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
     private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
-    Task newTask;
+    static Task newTask;
+    
     @Override
     public ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
@@ -32,28 +33,29 @@ class AddHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         String[] token = parameter.split(" ");
         if (isHelpOnly(token) || isEmptyParameter(parameter)) {
             return getHelp();
         }
+
+        addLogger.entering(getClass().getName(), "Add non empty task");
+        newTask = CommandHandler.createNewTask(parameter);
+        // a non empty task is created
+        assert (newTask != null);	
+        if (memory.addTask(newTask)) {        
+            updateTaskList(taskList);
+            undoRedoManager.undo.push(this);
+            addLogger.log(Level.FINE, "Add sucess");
+            return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+        } 
         else {
-            addLogger.entering(getClass().getName(), "Add non empty task");
-            newTask = CommandHandler.createNewTask(parameter);
-            // a non empty task is created
-            assert (newTask != null);	
-            if (memory.addTask(newTask)) {        
-                updateTaskList(taskList);
-                undo.push(this);
-                addLogger.log(Level.FINE, "Add sucess");
-                return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
-            } 
-            else {
-                addLogger.log(Level.SEVERE, "Error adding new task!");
-                throw new Error(FATAL_ERROR_MESSAGE);
-            }	
-        }
+            addLogger.log(Level.SEVERE, "Error adding new task!");
+            throw new Error(FATAL_ERROR_MESSAGE);
+        }	
     }
+
+
 
     /**
      * check if the argument user typed is empty

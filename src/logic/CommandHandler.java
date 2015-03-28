@@ -15,7 +15,6 @@ import application.Task;
  */
 abstract class CommandHandler {
 
-    ArrayList<Task> taskList = LogicController.taskList;
     Memory memory = Memory.getInstance();
     /**
      * get all the aliases acceptable to the command such that
@@ -32,7 +31,7 @@ abstract class CommandHandler {
      * @param parameter - parameter for executing the command based on user input
      *@return feedback String to UI after each execution of the command
      */
-    abstract protected String execute(String command, String parameter);
+    abstract protected String execute(String command, String parameter, ArrayList<Task> taskList);
 
     /**
      * get help String for each of the commands when user types "[command] help"

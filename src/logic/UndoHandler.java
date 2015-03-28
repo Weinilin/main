@@ -17,18 +17,19 @@ class UndoHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         String[] token = parameter.split(" ");
         if (token[0].toLowerCase().equals("help")) {
             return getHelp();
         }
 
-        if (undo.empty()) {
+        if (undoRedoManager.undo.empty()) {
             return "Nothing to undo\n";
         }
         else {
-            undo.pop().undo();
-            updateTaskList();
+            UndoableCommandHandler lastElement = undoRedoManager.undo.pop();
+            lastElement.undo();
+            updateTaskList(taskList);
             return "Revoked latest change\n";
         }
 
@@ -47,7 +48,7 @@ class UndoHandler extends UndoableCommandHandler {
     /**
      * update the taskList in CommandHandler
      */
-    private void updateTaskList() {
+    private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
         taskList.addAll(0, memory.getTaskList());
     }

@@ -20,18 +20,18 @@ public class LogicController {
 
     private static final Logger logger = 
             Logger.getLogger(LogicController.class.getName());
-    static ArrayList<Task> taskList = new ArrayList<Task>();
+    private ArrayList<Task> taskList = new ArrayList<Task>();
     private CommandHandler[] handlers = {new EditTimeHandler(),
-            new EditDescriptionHandler(),
-            new UndoHandler(),
-            new AddHandler(),
-            new ClearHandler(),
-            new DeleteHandler(),
-            new EditHandler(),
-            new ExitHandler(),
-            new MarkHandler(),
-            new SetLocationHandler(),
-            new ShowHandler()};
+                                         new EditDescriptionHandler(),
+                                         new UndoHandler(),
+                                         new AddHandler(),
+                                         new ClearHandler(),
+                                         new DeleteHandler(),
+                                         new EditHandler(),
+                                         new ExitHandler(),
+                                         new MarkHandler(),
+                                         new SetLocationHandler(),
+                                         new ShowHandler()};
 
     private Hashtable<String, CommandHandler> handlerTable = 
             new Hashtable<String, CommandHandler>();
@@ -58,13 +58,14 @@ public class LogicController {
      */
     public String executeCommand(String userCommand) {
         String command = userCommand.split(" ")[0];
+        
         if (!handlerTable.containsKey(command)) {
             return "Unknown command!\n";
         }
-
         CommandHandler handler = handlerTable.get(command);
+        
         String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
-        return handler.execute(command, parameter);
+        return handler.execute(command, parameter, taskList);
     }
 
     /**

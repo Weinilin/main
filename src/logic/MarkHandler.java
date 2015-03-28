@@ -24,14 +24,14 @@ class MarkHandler extends UndoableCommandHandler {
             Arrays.asList("mark", "done"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
-
+    private ArrayList<Integer> markedTask;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         markLogger.entering(getClass().getName(), "Entering marking");
 
         String[] token = parameter.split(" ");
@@ -67,6 +67,7 @@ class MarkHandler extends UndoableCommandHandler {
     private String getTasks(ArrayList<Task> taskList, String goodFeedback,
             int index, String t) {
         taskList.get(index - 1).setStatus("done");
+        markedTask.add(index - 1);
         memory.markDone(index);		
         goodFeedback += t + " ";
         return goodFeedback;
@@ -98,6 +99,8 @@ class MarkHandler extends UndoableCommandHandler {
 
     @Override
     void undo() {
-
+        for (int index: markedTask) {
+            memory.markUndone(index);
+        }
     }
 }

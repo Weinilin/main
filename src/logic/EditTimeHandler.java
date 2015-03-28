@@ -2,10 +2,12 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import parser.DateTimeParser;
 import parser.IndexParser;
 import application.Task;
+import application.TaskComparator;
 /**
  * CommandHandler for "edit time" function.
  * 
@@ -28,7 +30,7 @@ class EditTimeHandler extends UndoableCommandHandler {
 
         
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
     	String[] token = parameter.split(" ");
 		if (token[0].toLowerCase().equals("help") || token[0].equals("")) {
 			return getHelp();
@@ -58,20 +60,23 @@ class EditTimeHandler extends UndoableCommandHandler {
         if (newTask != null && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
+            undoRedoManager.undo.push(this);
+            taskList.remove(oldTask);
+            taskList.add(newTask);
+            Collections.sort(taskList, new TaskComparator());
         }
         return "";
     }
 
     @Override
     public String getHelp() {
-        // TODO Auto-generated method stub
         return HELP_MESSAGE;
     }
 
     @Override
     void undo() {
-        // TODO Auto-generated method stub
-
+        memory.addTask(oldTask);
+        memory.removeTask(newTask);
     }
 
 }

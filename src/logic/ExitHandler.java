@@ -2,6 +2,8 @@ package logic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import application.Task;
 /**
  * exit command for CommandHandler
  * 
@@ -19,7 +21,7 @@ public class ExitHandler extends CommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         return null;
     }
 

@@ -30,14 +30,14 @@ class EditHandler extends UndoableCommandHandler {
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
-
+    Task oldTask, newTask = null;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         editLogger.entering(getClass().getName(), "preparing for editing tasks");
 
         String[] token = parameter.split(" ");
@@ -52,20 +52,23 @@ class EditHandler extends UndoableCommandHandler {
             return INVALID_INDEX_MESSAGE;
         }
 
-        Task removedTask = taskList.get(index),
-                newTask = new Task(removedTask);
-
+        try {
+            oldTask = taskList.get(index);
+        } catch (IndexOutOfBoundsException iob) {
+            return INVALID_INDEX_MESSAGE;
+        }
+        
         switch (token[0].toLowerCase()) {
             case "description":
                 EditDescriptionHandler edh = new EditDescriptionHandler();
-                return edh.execute(token[0], parameter.replaceFirst(token[0], "").trim());
+                return edh.execute(token[0], parameter.replaceFirst(token[0], "").trim(), taskList);
             case "time":
-                newTask = updateTaskByTime(parameter, token, index, newTask);				
-                break;
+                EditTimeHandler eth = new EditTimeHandler();
+                return eth.execute(token[0], parameter.replaceFirst(token[0], "").trim(), taskList);
             default:
                 try {
                     index = Integer.parseInt(token[0]) - 1;
-                    removedTask = taskList.remove(index);
+                    oldTask = taskList.remove(index);
                     newTask = CommandHandler.createNewTask(
                             parameter.replaceFirst(token[0], "").trim());
                 } catch (NumberFormatException nfe) {
@@ -74,26 +77,9 @@ class EditHandler extends UndoableCommandHandler {
                 break;
         }
 
-        updateTaskList(taskList, index, removedTask, newTask);
+        updateTaskList(taskList);
         taskList = memory.getTaskList();
         return "";
-    }
-
-
-    /**
-     * set the new time of the task
-     * @param parameter
-     * @param token
-     * @param index
-     * @param newTask
-     * @return
-     */
-    private Task updateTaskByTime(String parameter, String[] token, int index,
-            Task newTask) {
-        String description = newTask.getDescription();
-        newTask = createTimeOnlyTask(parameter, token, index);
-        newTask.setDescription(description);
-        return newTask;
     }
 
     /**
@@ -126,14 +112,14 @@ class EditHandler extends UndoableCommandHandler {
      * @param removedTask
      * @param newTask
      */
-    private void updateTaskList(ArrayList<Task> taskList, int index,
-            Task removedTask, Task newTask) {
-        if (!newTask.equals(removedTask)) {
-            taskList.remove(index);
+    private void updateTaskList(ArrayList<Task> taskList) {
+        if (newTask != null && oldTask != null) {
+            memory.removeTask(oldTask);
+            memory.addTask(newTask);
+            undoRedoManager.undo.push(this);
+            taskList.remove(oldTask);
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
-            memory.removeTask(removedTask);
-            memory.addTask(newTask);
         }
     }
 
@@ -162,7 +148,8 @@ class EditHandler extends UndoableCommandHandler {
 
     @Override
     void undo() {
-
+        memory.addTask(oldTask);
+        memory.removeTask(newTask);
     }
 
 }

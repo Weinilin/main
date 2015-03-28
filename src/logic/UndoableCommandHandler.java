@@ -6,23 +6,14 @@ import java.util.Stack;
 import application.Task;
 
 abstract class UndoableCommandHandler extends CommandHandler {
-
-	Stack<UndoableCommandHandler> undo, redo;
-
-    UndoableCommandHandler() {
-        undo = new Stack();
-      	redo = new Stack();
-    }
-
-    UndoableCommandHandler(ArrayList<Task> taskList) {
-        this.taskList = taskList;
-    }
-
+    
+    UndoRedoManager undoRedoManager = UndoRedoManager.getInstance();
+    
     @Override
     abstract protected ArrayList<String> getAliases();
 
     @Override
-    abstract protected String execute(String command, String parameter);
+    abstract protected String execute(String command, String parameter, ArrayList<Task> taskList);
 
     @Override
     abstract public String getHelp();

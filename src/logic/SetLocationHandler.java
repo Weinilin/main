@@ -3,7 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import storage.Database;
+import application.Task;
 import storage.DatabaseLocationChanger;
 
 public class SetLocationHandler extends UndoableCommandHandler {
@@ -19,7 +19,7 @@ public class SetLocationHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         DatabaseLocationChanger dlc = new DatabaseLocationChanger();
         try {
             dlc.setDatabaseLocation(parameter);
