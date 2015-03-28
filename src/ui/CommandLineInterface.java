@@ -28,6 +28,7 @@ public class CommandLineInterface {
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
 		while (true) {
+		    clearConsole();
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
@@ -48,5 +49,25 @@ public class CommandLineInterface {
 		System.out.println(message);
 	}
 
+	public final static void clearConsole()
+	{
+	    try
+	    {
+	        final String os = System.getProperty("os.name");
+
+	        if (os.contains("Windows"))
+	        {
+	            Runtime.getRuntime().exec("cls");
+	        }
+	        else
+	        {
+	            Runtime.getRuntime().exec("clear");
+	        }
+	    }
+	    catch (final Exception e)
+	    {
+	        //  Handle any exceptions.
+	    }
+	}
 	
 }

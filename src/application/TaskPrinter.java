@@ -4,6 +4,7 @@
 
 package application;
 
+import static java.lang.String.format;
 
 import java.util.ArrayList;
 
@@ -212,6 +213,10 @@ public final class TaskPrinter {
                 }
             }
         }
+    }
+    
+    private static String padRight(String s, int n) {
+        return format("%1$-" + n + "s", s);
     }
 
     private static String padMiddle(String s, int n) {
