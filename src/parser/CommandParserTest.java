@@ -8,8 +8,9 @@ public class CommandParserTest {
 
 	@Test
 	public void test() {
+	    
 		CommandParser.getCommandType("mds sale");
-		
+
 	}
 
 }

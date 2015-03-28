@@ -13,6 +13,10 @@ public class MemoryTest {
 	@Test
 	public void test() {
 		Memory memory = Memory.getInstance();
+		
+		/*
+		 * Test for remove all
+		 */
 		memory.removeAll();
 		assertEquals(memory.getTaskList().size(), 0);
 		
@@ -23,6 +27,9 @@ public class MemoryTest {
 		String deadline;
 		String status;
 
+		/*
+		 * Test for adding task
+		 */
 		ArrayList<String> task1 = new ArrayList<String>();
 		taskType = "time task";
 		task1.add(taskType);
@@ -91,18 +98,30 @@ public class MemoryTest {
 		memory.addTask(newTask4);
 		assertEquals(memory.contains(newTask4), true);
 
+		/*
+		 * Test for remove
+		 */
 		Task removedTask = memory.removeTask(newTask2);
 		assertEquals(removedTask, newTask2);
-		
+
+		/*
+		 * Test for search description
+		 */
 		ArrayList<Task> searchList = memory.searchDescription("task");
 		ArrayList<Task> correctSearchList = new ArrayList<Task>();
 		correctSearchList.add(newTask1);
 		correctSearchList.add(newTask3);
 		assertEquals(correctSearchList, searchList);
 
+		/*
+		 * Test for mark
+		 */
 		memory.markDone(1);
 		assertEquals(memory.getTaskList().get(0).getStatus(), "done");
 		
+		/*
+		 * Test for search status
+		 */
 		searchList = memory.searchStatus("not done");
 		correctSearchList = new ArrayList<Task>();
 		correctSearchList.add(newTask3);

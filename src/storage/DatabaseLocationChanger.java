@@ -11,8 +11,8 @@ public class DatabaseLocationChanger {
 		database = Database.getInstance();
 	}
 	
-	public void setDatabaseLocation(String newDatabaseFolder) {
-		database.setDatabaseLocation(newDatabaseFolder);
+	public boolean setDatabaseLocation(String newDatabaseFolder) {
+		return database.relocateDatabase(newDatabaseFolder);
 	}
 	
 }

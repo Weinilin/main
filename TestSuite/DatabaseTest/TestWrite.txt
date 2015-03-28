@@ -1,0 +1,21 @@
+Task Type           : deadline
+Description         : task1
+Start Time          : - -
+End Time            : - -
+Deadline            : 28/03/2015 21:00
+Status              : undone
+
+Task Type           : floating task
+Description         : task2
+Start Time          : - -
+End Time            : - -
+Deadline            : - -
+Status              : done
+
+Task Type           : time task
+Description         : task3
+Start Time          : 01/02/2015 01:00
+End Time            : 02/02/2015 02:00
+Deadline            : - -
+Status              : undone
+

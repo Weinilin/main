@@ -61,7 +61,6 @@ public class TaskListUI {
 			tp.printTasksWithTime(taskListMatrix1);
 			System.out.println();
 
-
 		}
 		
 		if (taskListMatrix2.size() > 1) {
@@ -74,4 +73,6 @@ public class TaskListUI {
 		}
 		
 	}
+	
+	
 }
