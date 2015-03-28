@@ -15,6 +15,8 @@ public class TaskTypeParser {
 		} else if(numberOfTimeInput == 0) {
 			taskType = "floating task";
 		}
+		
+		assert taskType != null :"error in detection detect too many time! or user key more than 2 times";
 		setTaskType(taskType);
 	}
 
