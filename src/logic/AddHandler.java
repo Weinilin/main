@@ -22,11 +22,9 @@ class AddHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
     private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
-    private ArrayList<String> aliases = new ArrayList<String>(
-            Arrays.asList("add", "a", "new", "+"));
-    private static final Logger addLogger = 
-            Logger.getLogger(AddHandler.class.getName());
-
+    private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
+    private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
+    Task newTask;
     @Override
     public ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
@@ -41,11 +39,12 @@ class AddHandler extends UndoableCommandHandler {
         }
         else {
             addLogger.entering(getClass().getName(), "Add non empty task");
-            Task newTask = CommandHandler.createNewTask(parameter);
+            newTask = CommandHandler.createNewTask(parameter);
             // a non empty task is created
             assert (newTask != null);	
-            if (memory.addTask(newTask)) {
+            if (memory.addTask(newTask)) {        
                 updateTaskList(taskList);
+                undo.push(this);
                 addLogger.log(Level.FINE, "Add sucess");
                 return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
             } 
@@ -75,12 +74,11 @@ class AddHandler extends UndoableCommandHandler {
     }
 
     /**
-     * update the taskList for LogicController
-     * @param taskList
+     * update the taskList in CommandHandler
      */
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
-        taskList.addAll(0, memory.getTaskList());
+        taskList.addAll(memory.getTaskList());
     }
 
     @Override
@@ -91,6 +89,6 @@ class AddHandler extends UndoableCommandHandler {
 
     @Override
     void undo() {
-
+    	memory.removeTask(newTask);
     }
 }

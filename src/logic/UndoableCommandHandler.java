@@ -1,15 +1,17 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import application.Task;
 
 abstract class UndoableCommandHandler extends CommandHandler {
 
-    ArrayList<Task> taskList;
+	Stack<UndoableCommandHandler> undo, redo;
 
     UndoableCommandHandler() {
-        taskList = new ArrayList<Task>();
+        undo = new Stack();
+      	redo = new Stack();
     }
 
     UndoableCommandHandler(ArrayList<Task> taskList) {

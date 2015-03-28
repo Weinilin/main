@@ -16,82 +16,82 @@ import application.Task;
  * @author A0114463M
  */
 public class LogicController {
-	private static LogicController logicController;
+    private static LogicController logicController;
 
-	private static final Logger logger = 
-			Logger.getLogger(LogicController.class.getName());
-	static ArrayList<Task> taskList = new ArrayList<Task>();
-	private CommandHandler[] handlers = {new EditTimeHandler(),
-	                                     new EditDescriptionHandler(),
-	                                     //new UndoHandler(),
-	                                     new AddHandler(),
-	                                     new ClearHandler(),
-                                         new DeleteHandler(),
-                                         new EditHandler(),
-                                         new ExitHandler(),
-                                         new MarkHandler(),
-                                         new SetLocationHandler(),
-                                         new ShowHandler()};
-	
-	private Hashtable<String, CommandHandler> handlerTable = 
-			new Hashtable<String, CommandHandler>();
-	
-	private LogicController() {
-		logger.entering(getClass().getName(), "Initiating LogicController");
-		taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
-		initializeHandlers();
-	}
+    private static final Logger logger = 
+            Logger.getLogger(LogicController.class.getName());
+    static ArrayList<Task> taskList = new ArrayList<Task>();
+    private CommandHandler[] handlers = {new EditTimeHandler(),
+            new EditDescriptionHandler(),
+            new UndoHandler(),
+            new AddHandler(),
+            new ClearHandler(),
+            new DeleteHandler(),
+            new EditHandler(),
+            new ExitHandler(),
+            new MarkHandler(),
+            new SetLocationHandler(),
+            new ShowHandler()};
+
+    private Hashtable<String, CommandHandler> handlerTable = 
+            new Hashtable<String, CommandHandler>();
+
+    private LogicController() {
+        logger.entering(getClass().getName(), "Initiating LogicController");
+        taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
+        initializeHandlers();
+    }
 
 
-	public static LogicController getInstance() {
-		if (logicController == null) {
-			logicController = new LogicController();
-		}
-		return logicController;
-	}
-	
-	/**
-	 * Take the input from user from UI and call respective
-	 * handlers. Return the feedback to UI after each execution
-	 * @param userCommand
-	 * @return - feedback to user
-	 */
-	public String executeCommand(String userCommand) {
-		String command = userCommand.split(" ")[0];
-		if (!handlerTable.containsKey(command)) {
-			return "Unknown command!\n";
-		}
-		
-		CommandHandler handler = handlerTable.get(command);
-		String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
-		return handler.execute(command, parameter);
-	}
-	
-	/**
-	 * associate the aliases of each handlers to its owner
-	 * such that correct handlers can be invoked for execution
-	 * conflicting aliases will log error
-	 */
-	private void initializeHandlers() {
-		for (CommandHandler handler: handlers) {
-			ArrayList<String> aliases = handler.getAliases();
-			for (String cmd: aliases) {
-				if (handlerTable.containsKey(cmd)) {
-					logger.log(Level.INFO, "conflicting command "+ cmd);
-				}
-				else {
-					handlerTable.put(cmd, handler);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * return the taskList in LogicController
-	 * @return 
-	 */
-	public ArrayList<Task> getTaskList() {
-		return taskList;
-	}
-	
+    public static LogicController getInstance() {
+        if (logicController == null) {
+            logicController = new LogicController();
+        }
+        return logicController;
+    }
+
+    /**
+     * Take the input from user from UI and call respective
+     * handlers. Return the feedback to UI after each execution
+     * @param userCommand
+     * @return - feedback to user
+     */
+    public String executeCommand(String userCommand) {
+        String command = userCommand.split(" ")[0];
+        if (!handlerTable.containsKey(command)) {
+            return "Unknown command!\n";
+        }
+
+        CommandHandler handler = handlerTable.get(command);
+        String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
+        return handler.execute(command, parameter);
+    }
+
+    /**
+     * associate the aliases of each handlers to its owner
+     * such that correct handlers can be invoked for execution
+     * conflicting aliases will log error
+     */
+    private void initializeHandlers() {
+        for (CommandHandler handler: handlers) {
+            ArrayList<String> aliases = handler.getAliases();
+            for (String cmd: aliases) {
+                if (handlerTable.containsKey(cmd)) {
+                    logger.log(Level.INFO, "conflicting command "+ cmd);
+                }
+                else {
+                    handlerTable.put(cmd, handler);
+                }
+            }
+        }
+    }
+
+    /**
+     * return the taskList in LogicController
+     * @return 
+     */
+    public ArrayList<Task> getTaskList() {
+        return taskList;
+    }
+
 }

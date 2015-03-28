@@ -16,7 +16,7 @@ import application.Task;
  */
 class EditTimeHandler extends UndoableCommandHandler {
 
-    private static final String HELP_MESSAGE = "edit time <index> <new description>\n\t update the task time only\n";
+    private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
     Task oldTask, newTask = null;
