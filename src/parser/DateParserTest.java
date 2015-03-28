@@ -248,6 +248,12 @@ public class DateParserTest {
         assertEquals(dates,
                 DateParser.extractDate("mds sale in 1 week time"));
         
+        // test keyword 6 :  __ weeks from now on
+        dates.clear();
+        dates.add("04/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale in 1 week from now on"));
+        
         // test s sensitivity(with s behind week or no s)
         assertEquals(dates,
                 DateParser.extractDate("mds sale start 1 weeks later"));
@@ -263,6 +269,12 @@ public class DateParserTest {
         dates.add("28/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start after 1 month "));
+        
+     // test keyword 6:  __month from now on
+        dates.clear();
+        dates.add("28/04/2015");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start 1 month from now on"));
         
         // test keyword 6: in __month times
         dates.clear();
@@ -303,6 +315,12 @@ public class DateParserTest {
         dates.add("28/03/2018");
         assertEquals(dates,
                 DateParser.extractDate("mds sale start next 3 year"));
+        
+        //  test the rest of aliases __ year  from now on
+        dates.clear();
+        dates.add("28/03/2018");
+        assertEquals(dates,
+                DateParser.extractDate("mds sale start 3 year from now on"));
 
         // test s sensitivity(with s behind year or no s)
         assertEquals(dates,
