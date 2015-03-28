@@ -57,7 +57,7 @@ public class IndexParser {
 		if (indexMatch.find()) {
 			number = indexMatch.group();
 		} else {
-			throw new Exception ("Index is not entered!!!"); 
+			throw new Exception ("Index is not entered!!!");
 		}
 		return number;
 	}
