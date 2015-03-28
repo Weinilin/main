@@ -21,13 +21,13 @@ public class SetLocationHandler extends UndoableCommandHandler {
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-        if (dlc.setDatabaseLocation(parameter) {
-            return String.format(NEW_LOCATION_MESSAGE, parameter);
-        }
-        else {
-            return INVALID_PATH_MESSAGE;
-        }
-            
+//        if (dlc.setDatabaseLocation(parameter) {
+//            return String.format(NEW_LOCATION_MESSAGE, parameter);
+//        }
+//        else {
+//            return INVALID_PATH_MESSAGE;
+//        }
+        return "";
     }
 
     @Override
