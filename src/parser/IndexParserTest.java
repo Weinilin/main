@@ -29,8 +29,8 @@ public class IndexParserTest {
 	 * test the boundary values when no digit is entered.
 	 */
 	public void testWhenNoDigit() {
-		IndexParser i1 = new IndexParser("delete");
-		assertEquals(0, i1.getIndex());
+		IndexParser i1 = new IndexParser("delete 1");
+		assertEquals(1, i1.getIndex());
 	}
 
 }
