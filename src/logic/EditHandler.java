@@ -20,7 +20,7 @@ import application.TaskComparator;
  * @author A0114463M
  *
  */
-class EditHandler extends CommandHandler {
+class EditHandler extends UndoableCommandHandler {
 
 	private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
 	private static final String HELP_MESSAGE = "edit <index> <new task>\n\t edit the task by specifying the index\n"
@@ -37,7 +37,7 @@ class EditHandler extends CommandHandler {
 	}
 
 	@Override
-	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter) {
 		editLogger.entering(getClass().getName(), "preparing for editing tasks");
 		
 		String[] token = parameter.split(" ");
@@ -171,6 +171,11 @@ class EditHandler extends CommandHandler {
 		return HELP_MESSAGE;
 	}
 
+	@Override
+	void undo() {
+		
+	}
+	
 }
 // Depreciated
 //	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {

@@ -12,11 +12,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 import application.Task;
 
 /**
  * Database handles the writing and adding of tasks to a text file stored in the disk
- *  
+ *
  * @author A0113966Y
  *
  */
@@ -24,6 +25,8 @@ import application.Task;
 public class Database {
 	private static String databaseLocation;
 	private static String configFile = "Configuration.txt";
+	private static final ArrayList<Task> EMPTY_TASKLIST = new ArrayList<Task>();
+	
 	
 	private static Database database;
 	
@@ -41,7 +44,7 @@ public class Database {
     	if (!database.exists()) {
             try {
                 database.createNewFile();
-                updateConfigFile("TaskManagerDatabase.txt");
+                updateConfigFile("Database/TaskManagerDatabase.txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -83,9 +86,10 @@ public class Database {
 	 * location of "TaskManager.txt" cannot be changed
 	 */
 
-	public boolean setDatabaseLocation(String newDatabaseFolder) {
+	public boolean relocateDatabase(String newDatabaseFolder) {
+	    assert isValidDatabaseFolder(newDatabaseFolder);
 		String newDatabaseLocation = appendDatabaseName(newDatabaseFolder);
-		File database = new File(newDatabaseLocation);
+		File database = new File(databaseLocation);
 		if (database.renameTo(new File(newDatabaseLocation))) {
 			databaseLocation = newDatabaseLocation;
 			updateConfigFile(newDatabaseLocation);
@@ -94,6 +98,18 @@ public class Database {
 			return false;
 		}
 	}
+	
+	public void changeDatabaseLocation(String newDatabaseLocation) {
+	    databaseLocation = newDatabaseLocation;
+	    
+	    if (readDatabase() == null) {
+	        writeToDatabase(null);
+	    }
+	}
+
+    private boolean isValidDatabaseFolder(String newDatabaseFolder) {
+        return newDatabaseFolder != null;
+    }
 	
 	private String appendDatabaseName(String newDatabaseFolder) {
 		return newDatabaseFolder + "/TextManagerDatabase.txt";
@@ -141,32 +157,43 @@ public class Database {
 	 */
 	
 	public ArrayList<Task> readDatabase() {
-		BufferedReader reader = null;
-		ArrayList<Task> taskList = new ArrayList<Task> ();
 		
-		try{
-			reader = new BufferedReader(new FileReader(databaseLocation));
-			String currentLine;
-			while (reader.ready()) {
-				ArrayList<String> unprocessedTask = new ArrayList<String> ();
-
-				for ( int i = 0; i < 6; i++ ) {
-					currentLine = reader.readLine();
-					String processedLine = currentLine.substring(22).trim();
-					unprocessedTask.add(processedLine);
-				}
-				currentLine = reader.readLine();
-
-				taskList.add(new Task(unprocessedTask));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			closeReader(reader);
-		}
-		
-		return taskList;
+		return readDatabase(databaseLocation);
 	}
+	
+	private ArrayList<Task> readDatabase(String databaseLocation) {
+        BufferedReader reader = null;
+        ArrayList<Task> taskList = new ArrayList<Task> ();
+        
+        try{
+            reader = new BufferedReader(new FileReader(databaseLocation));
+            String currentLine;
+            while (reader.ready()) {
+                ArrayList<String> unprocessedTask = new ArrayList<String> ();
+
+                for ( int i = 0; i < 6; i++ ) {
+                    currentLine = reader.readLine();
+                    String processedLine = currentLine.substring(22).trim();
+                    unprocessedTask.add(processedLine);
+                }
+                currentLine = reader.readLine();
+
+                taskList.add(new Task(unprocessedTask));
+            }
+        } catch (IOException e) {
+            //e.printStackTrace();
+            return EMPTY_TASKLIST;
+        } catch (IndexOutOfBoundsException iob) {
+            //e.printStackTrace();
+            return EMPTY_TASKLIST;
+        } finally {
+            closeReader(reader);
+        }
+        
+        return taskList;
+    }
+	
+
 	
 	/** 
 	 * updates "TaskMangerDatabase.txt" with new data from taskList
@@ -210,4 +237,6 @@ public class Database {
 	private boolean isValidTaskList(ArrayList<Task> taskList) {
 		return (taskList != null);
 	}
+	
+	
 }

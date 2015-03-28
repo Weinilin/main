@@ -15,9 +15,19 @@ import java.util.ArrayList;
  */
 public final class TaskPrinter {
 
-    private static final char BORDER_KNOT = '+';
-    private static final char HORIZONTAL_BORDER = '-';
-    private static final char VERTICAL_BORDER = '|';
+    
+    private static final char BORDER_TOP_LEFT = '╔';
+    private static final char BORDER_TOP_RIGHT = '╗';
+    private static final char BORDER_TOP_MID = '╦';
+    
+    private static final char BORDER_BOTTOM_LEFT = '╚';
+    private static final char BORDER_BOTTOM_RIGHT = '╝';
+    private static final char BORDER_BOTTOM_MID = '╩';
+
+
+    
+    private static final char HORIZONTAL_BORDER = '═';
+    private static final char VERTICAL_BORDER = '║';
 
     private static final String DEFAULT_AS_NULL = "-";
 
@@ -43,7 +53,7 @@ public final class TaskPrinter {
         }
         int[] widths = new int[getMaxColumns(table)];
         adjustColumnWidths(table, widths);
-        printPreparedTable(table, widths, getHorizontalBorder(widths));
+        printPreparedTable(table, widths, getHorizontalBorder(widths), getTopHorizontalBorder(widths), getBotHorizontalBorder(widths));
     }
     
     /**
@@ -60,7 +70,7 @@ public final class TaskPrinter {
         }
         int[] widths = new int[getMaxColumns(table)];
         adjustColumnWidths(table, widths);
-        printPreparedTable(table, widths, getHorizontalBorder(widths));
+        printPreparedTable(table, widths, getHorizontalBorder(widths), getTopHorizontalBorder(widths), getBotHorizontalBorder(widths));
     }
     
     
@@ -72,16 +82,25 @@ public final class TaskPrinter {
      * @param horizontalBorder 
      */
 
-    private void printPreparedTable(ArrayList<ArrayList<String>> table, int widths[], String horizontalBorder) {
+    private void printPreparedTable(ArrayList<ArrayList<String>> table, int widths[], String horizontalBorder, String topBorder, String botBorder) {
         int lineLength = horizontalBorder.length();
-        System.out.println(horizontalBorder);
+        System.out.println(topBorder);
+        boolean isFirstLine = true;
+        
         for (ArrayList<String> row : table) {
             if ( row != null ) {
+             
                 System.out.println(getRow(row, widths, lineLength));
-                System.out.println(horizontalBorder);
+                if (isFirstLine) {
+                    System.out.println(horizontalBorder);
+                    isFirstLine = false;
+                }
             }
         }
+        System.out.println(botBorder);
+
     }
+    
     
     /**
      * get each row of the table
@@ -108,13 +127,54 @@ public final class TaskPrinter {
 
     private String getHorizontalBorder(int[] widths) {
         StringBuilder builder = new StringBuilder(256);
-        builder.append(BORDER_KNOT);
+        
+        
+        
+        builder.append(VERTICAL_BORDER);
         for (int i = 0; i < widths.length; i++) {
         	int w = widths[i];
             for (int j = 0; j < w; j++) {
                 builder.append(HORIZONTAL_BORDER);
             }
-            builder.append(BORDER_KNOT);
+            builder.append(VERTICAL_BORDER);
+        }
+        return builder.toString();
+    }
+    
+    private String getTopHorizontalBorder(int[] widths) {
+        StringBuilder builder = new StringBuilder(256);
+        
+        
+        builder.append(BORDER_TOP_LEFT);
+        for (int i = 0; i < widths.length; i++) {
+            int w = widths[i];
+            for (int j = 0; j < w; j++) {
+                builder.append(HORIZONTAL_BORDER);
+            }
+            
+            if (i == widths.length - 1) {
+                builder.append(BORDER_TOP_RIGHT);
+            } else {
+                builder.append(BORDER_TOP_MID);
+            }
+        }
+        return builder.toString();
+    }
+    
+    private String getBotHorizontalBorder(int[] widths) {
+        StringBuilder builder = new StringBuilder(256);
+        
+        builder.append(BORDER_BOTTOM_LEFT);
+        for (int i = 0; i < widths.length; i++) {
+            int w = widths[i];
+            for (int j = 0; j < w; j++) {
+                builder.append(HORIZONTAL_BORDER);
+            }
+            if (i == widths.length - 1) {
+                builder.append(BORDER_BOTTOM_RIGHT);
+            } else {
+                builder.append(BORDER_BOTTOM_MID);
+            }
         }
         return builder.toString();
     }
@@ -153,6 +213,10 @@ public final class TaskPrinter {
                 }
             }
         }
+    }
+    
+    private static String padRight(String s, int n) {
+        return format("%1$-" + n + "s", s);
     }
 
     private static String padMiddle(String s, int n) {

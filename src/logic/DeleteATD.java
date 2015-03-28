@@ -28,7 +28,7 @@ public class DeleteATD {
 	@Test
 	public void testExecute() {
 		setUp();
-		dh.execute("d", "2 4 a -1 1 @#$@", taskTest);
+		dh.execute("d", "2 4 a -1 1 @#$@");
 		assertEquals(taskTest, expected);
 	}
 

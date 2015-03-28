@@ -18,7 +18,7 @@ import application.Task;
  * @author A0114463M
  *
  */
-class AddHandler extends CommandHandler {
+class AddHandler extends UndoableCommandHandler {
 	private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
 	private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
 	private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
@@ -34,9 +34,9 @@ class AddHandler extends CommandHandler {
 	}
 
 	@Override
-	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+	protected String execute(String command, String parameter) {
 		String[] token = parameter.split(" ");
-		if (isHelp(token) || isEmptyParameter(parameter)) {
+		if (isHelpOnly(token) || isEmptyParameter(parameter)) {
 			return getHelp();
 		}
 		else {
@@ -70,8 +70,8 @@ class AddHandler extends CommandHandler {
 	 * @param token
 	 * @return
 	 */
-	private boolean isHelp(String[] token) {
-		return token[0].toLowerCase().trim().equals("help");
+	private boolean isHelpOnly(String[] token) {
+		return ((token.length == 1) && (token[0].toLowerCase().trim().equals("help")));
 	}
 
 	/**
@@ -88,4 +88,9 @@ class AddHandler extends CommandHandler {
 		return HELP_MESSAGE;
 	}
 	
+
+	@Override
+	void undo() {
+		
+	}
 }
