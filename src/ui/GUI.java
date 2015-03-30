@@ -8,9 +8,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+
 import javax.swing.table.DefaultTableModel;
+
 
 
 
@@ -21,6 +21,7 @@ import storage.Memory;
 import application.Task;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -31,27 +32,33 @@ import java.util.ArrayList;
 
 import logic.LogicController;
 
-public class GUI extends JPanel implements ActionListener, TableModelListener {
+public class GUI extends JPanel implements ActionListener{
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
     private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
     
-    private static String[] columnNames = {"No.",
-                                           "Description",
-                                           "Start Time",
-                                           "End Time",
-                                           "Deadline",
-                                           "Status"};
+    private static String[] columnNames1 = {"No.",
+                                            "Description",
+                                            "Start Time",
+                                            "End Time",
+                                            "Deadline",
+                                            "Status"};
     
+    private static String[] columnNames2 = {"No.",
+                                            "Description",
+                                            "Status"};
     final static boolean shouldFill = true;
     
     private static JTextField textField;
     private static JTextArea textArea;
-    private static JTable table;
-    private static DefaultTableModel model;
+    private static JTable deadlinesAndTimeTasksTable;
+    private static JTable floatingTasksTable;
+    private static DefaultTableModel deadlinesAndTimeTasksModel;
+    private static DefaultTableModel floatingTasksModel;
+
     
-    private static ArrayList<Task> taskList;
+   
     private static Memory memory;
 
 
@@ -60,12 +67,15 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
         
         super(new GridBagLayout());
         memory = Memory.getInstance();
-        this.taskList = memory.getTaskList();
+        
+      
 
         textField = new JTextField(20);
+        textField.setFont(new Font("Arial", Font.PLAIN, 12));
         textField.addActionListener(this);
 
         textArea = new JTextArea(3, 20);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 12));
         textArea.setEditable(false);
         JScrollPane scrollPaneTextArea = new JScrollPane(textArea);
 
@@ -84,21 +94,20 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
 
 
 
-        JLabel tableLabel = new JLabel("List of Tasks", SwingConstants.CENTER);
-        tableLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12 ));
+        JLabel tableLabel1 = new JLabel("Deadlines and Time Tasks", SwingConstants.CENTER);
+        tableLabel1.setFont(new Font("Arial", Font.PLAIN, 12 ));
         
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 2;
         
-        add(tableLabel, c);
+        add(tableLabel1, c);
 
        
 
-        Object[][] data = fillData(taskList);
 
 
-        model = new DefaultTableModel(data, columnNames)
+        deadlinesAndTimeTasksModel = new DefaultTableModel(columnNames1, 0)
         {
             public boolean isCellEditable(int row, int column)
             {
@@ -106,24 +115,28 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
             }
         };
 
-        table = new JTable(model);
+        deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel);
+        deadlinesAndTimeTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        deadlinesAndTimeTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
 
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(280);
-        table.getColumnModel().getColumn(2).setPreferredWidth(120);
-        table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(4).setPreferredWidth(120);
-        table.getColumnModel().getColumn(5).setPreferredWidth(50);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(1).setPreferredWidth(280);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(4).setPreferredWidth(120);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(5).setPreferredWidth(50);
 
 
 
-        table.setPreferredScrollableViewportSize(new Dimension(730, 400));
-        table.setFillsViewportHeight(true);
+        deadlinesAndTimeTasksTable.setPreferredScrollableViewportSize(new Dimension(730, 200));
+        deadlinesAndTimeTasksTable.setFillsViewportHeight(true);
         
-        table.getModel().addTableModelListener(new DatabaseListener());
+     
+
         
-        JScrollPane scrollPane = new JScrollPane(table);
+        
+        JScrollPane scrollPane1 = new JScrollPane(deadlinesAndTimeTasksTable);
         
         c.fill = GridBagConstraints.BOTH;
      
@@ -131,52 +144,96 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
         c.gridy = 3;
        
 
-        add(scrollPane, c);
+        add(scrollPane1, c);
         
+        JLabel label2 = new JLabel("Floating Tasks", SwingConstants.CENTER);
+        label2.setFont(new Font("Arial", Font.PLAIN, 12 ));
+        
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 10;
+        
+        add(label2, c);
 
+       
+        floatingTasksModel = new DefaultTableModel(columnNames2, 0)
+        {
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;//This causes all cells to be not editable
+            }
+        };
+
+
+        floatingTasksTable = new JTable(floatingTasksModel);
+        floatingTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        floatingTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
+
+        floatingTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+        floatingTasksTable.getColumnModel().getColumn(1).setPreferredWidth(640);
+        floatingTasksTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+    
+
+
+
+        floatingTasksTable.setPreferredScrollableViewportSize(new Dimension(730, 200));
+        floatingTasksTable.setFillsViewportHeight(true);
+        
+        
+        
+        JScrollPane scrollPane2 = new JScrollPane(floatingTasksTable);
+        
+        c.fill = GridBagConstraints.BOTH;
+     
+        c.gridx = 0;
+        c.gridy = 11;
+       
+
+        add(scrollPane2, c);
+        updateTable();
 
     }
     
-    public class DatabaseListener implements TableModelListener {
-        public void tableChanged(TableModelEvent e) {
-            
-        }
-    }
-    public void tableChanged(TableModelEvent e) {
-        System.out.println(e);
-     }
     
-    private Object[][] fillData(ArrayList<Task> taskList) {
-        Object[][] data = new Object[taskList.size()][6];
+    private void updateTable() {
+
+        deadlinesAndTimeTasksModel.setRowCount(0);
+
+        ArrayList<Task> deadlinesAndTimeTasks = memory.getDeadlinesAndTimeTasks();
+
+
+        Object[][] data = new Object[deadlinesAndTimeTasks.size()][6];
 
         int taskNumber = 1;
 
-        for (int i = 0; i < taskList.size(); i++) {
+        for (int i = 0; i < deadlinesAndTimeTasks.size(); i++) {
             data[i][0] = taskNumber;
             taskNumber += 1;
-            data[i][1] = taskList.get(i).getDescription();
-            data[i][2] = taskList.get(i).getStartDateTime();
-            data[i][3] = taskList.get(i).getEndDateTime();
-            data[i][4] = taskList.get(i).getDeadline();
-            data[i][5] = taskList.get(i).getStatus();
+            data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();
+            data[i][2] = deadlinesAndTimeTasks.get(i).getStartDateTime();
+            data[i][3] = deadlinesAndTimeTasks.get(i).getEndDateTime();
+            data[i][4] = deadlinesAndTimeTasks.get(i).getDeadline();
+            data[i][5] = deadlinesAndTimeTasks.get(i).getStatus();
+            deadlinesAndTimeTasksModel.addRow(data[i]);
         }
-        
-        return data;
-    }
 
-    public void updateTable() {
-        taskList = memory.getTaskList();
-        
-        for (int i = 0; i < model.getRowCount(); i++) {
-            model.removeRow(i);
+        floatingTasksModel.setRowCount(0);
+
+        ArrayList<Task> floatingTasks = memory.getFloatingTasks();
+
+
+        Object[][] data2 = new Object[floatingTasks.size()][3];
+
+
+
+        for (int i = 0; i < floatingTasks.size(); i++) {
+            data2[i][0] = taskNumber;
+            taskNumber += 1;
+            data2[i][1] = floatingTasks.get(i).getDescription();
+            data2[i][2] = floatingTasks.get(i).getStatus();
+            floatingTasksModel.addRow(data2[i]);
         }
-        
-        Object[][] data = fillData(taskList);
-    
-        for (int i = 0; i < data.length; i++) {
-            model.addRow(data[i]);
-        }
-        
+
     }
     
     public void actionPerformed(ActionEvent evt) {
@@ -199,6 +256,7 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
         updateTable();
        
     }
+    
 
 
     /**
@@ -209,8 +267,8 @@ public class GUI extends JPanel implements ActionListener, TableModelListener {
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("Flirter's Assistant");
-        JLabel slogan = new JLabel("Life is Short. Have an Affair.", SwingConstants.CENTER);
-        slogan.setFont(new Font("Comic Sans MS", Font.PLAIN, 12 ));
+        JLabel slogan = new JLabel("Having an affair has never been so easy.", SwingConstants.CENTER);
+        slogan.setFont(new Font("Kokonor", Font.ITALIC, 12 ));
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
