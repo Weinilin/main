@@ -7,12 +7,20 @@ import application.TaskPrinter;
 
 public class TaskListUI {
 	ArrayList<Task> taskList;
+	GUI std;
 	
 	public TaskListUI(ArrayList<Task> taskList) {
 		this.taskList = taskList;
+		std = new GUI(taskList);
 	}
 	
 	public void showTask() {
+	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                std.createAndShowGUI(taskList);
+            }
+        });
+	    
 		TaskPrinter tp = new TaskPrinter();
 
 		
