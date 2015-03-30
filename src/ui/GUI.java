@@ -2,7 +2,6 @@ package ui;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -12,9 +11,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Container;
 
 
+
+
+
+
+import storage.Memory;
 import application.Task;
 
 import java.awt.BorderLayout;
@@ -22,57 +25,62 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import logic.LogicController;
 
-public class GUI extends JPanel implements ActionListener {
+public class GUI extends JPanel implements ActionListener, TableModelListener {
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
     private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
     
-    private static GUI textbox;
+    private static String[] columnNames = {"No.",
+                                           "Description",
+                                           "Start Time",
+                                           "End Time",
+                                           "Deadline",
+                                           "Status"};
     
     final static boolean shouldFill = true;
     
     private static JTextField textField;
     private static JTextArea textArea;
     private static JTable table;
+    private static DefaultTableModel model;
+    
+    private static ArrayList<Task> taskList;
+    private static Memory memory;
 
-    private final static String newline = "\n";
 
 
-    public GUI(ArrayList<Task> taskList) {
+    public GUI() {
+        
         super(new GridBagLayout());
-        super.setMaximumSize(new Dimension(730, 450));
+        memory = Memory.getInstance();
+        this.taskList = memory.getTaskList();
+
         textField = new JTextField(20);
         textField.addActionListener(this);
 
-        textArea = new JTextArea(2, 20);
+        textArea = new JTextArea(3, 20);
         textArea.setEditable(false);
-
+        JScrollPane scrollPaneTextArea = new JScrollPane(textArea);
 
         GridBagConstraints c = new GridBagConstraints();
        
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
-        c.ipadx = 730;
+        
         add(textField, c);
         
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 1;
-        c.ipadx = 730;
-        c.ipady = 20;
-        add(textArea, c);
+        add(scrollPaneTextArea, c);
 
 
 
@@ -82,34 +90,15 @@ public class GUI extends JPanel implements ActionListener {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 2;
-        c.ipadx = 730;
         
         add(tableLabel, c);
 
-        String[] columnNames = {"No.",
-                                "Description",
-                                "Start Time",
-                                "End Time",
-                                "Deadline",
-                                "Status"};
+       
 
-        Object[][] data = new Object[taskList.size()][6];
+        Object[][] data = fillData(taskList);
 
-        int taskNumber = 1;
 
-        for (int i = 0; i < taskList.size(); i++) {
-            data[i][0] = taskNumber;
-            taskNumber += 1;
-            data[i][1] = taskList.get(i).getDescription();
-            data[i][2] = taskList.get(i).getStartDateTime();
-            data[i][3] = taskList.get(i).getEndDateTime();
-            data[i][4] = taskList.get(i).getDeadline();
-            data[i][5] = taskList.get(i).getStatus();
-        }
-
-        table = new JTable(data, columnNames);
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames)
+        model = new DefaultTableModel(data, columnNames)
         {
             public boolean isCellEditable(int row, int column)
             {
@@ -117,7 +106,7 @@ public class GUI extends JPanel implements ActionListener {
             }
         };
 
-        table.setModel(model);
+        table = new JTable(model);
 
 
         table.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -132,50 +121,84 @@ public class GUI extends JPanel implements ActionListener {
         table.setPreferredScrollableViewportSize(new Dimension(730, 400));
         table.setFillsViewportHeight(true);
         
+        table.getModel().addTableModelListener(new DatabaseListener());
+        
         JScrollPane scrollPane = new JScrollPane(table);
         
         c.fill = GridBagConstraints.BOTH;
+     
         c.gridx = 0;
         c.gridy = 3;
-        c.ipadx = 730;
-        c.ipady = 400;
+       
 
         add(scrollPane, c);
+        
+
 
     }
+    
+    public class DatabaseListener implements TableModelListener {
+        public void tableChanged(TableModelEvent e) {
+            
+        }
+    }
+    public void tableChanged(TableModelEvent e) {
+        System.out.println(e);
+     }
+    
+    private Object[][] fillData(ArrayList<Task> taskList) {
+        Object[][] data = new Object[taskList.size()][6];
 
+        int taskNumber = 1;
+
+        for (int i = 0; i < taskList.size(); i++) {
+            data[i][0] = taskNumber;
+            taskNumber += 1;
+            data[i][1] = taskList.get(i).getDescription();
+            data[i][2] = taskList.get(i).getStartDateTime();
+            data[i][3] = taskList.get(i).getEndDateTime();
+            data[i][4] = taskList.get(i).getDeadline();
+            data[i][5] = taskList.get(i).getStatus();
+        }
+        
+        return data;
+    }
+
+    public void updateTable() {
+        taskList = memory.getTaskList();
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.removeRow(i);
+        }
+        
+        Object[][] data = fillData(taskList);
+    
+        for (int i = 0; i < data.length; i++) {
+            model.addRow(data[i]);
+        }
+        
+    }
+    
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
         textField.selectAll();
 
-        //Make sure the new text is visible, even if there
-        //was a selection in the text area.
-        textArea.setCaretPosition(textArea.getDocument().getLength());
+      
 
         String feedback = processUserInput(text);
+    
+
+        System.out.println(feedback);
         textArea.setText(feedback);
 
+        //Make sure the new text is visible, even if there
+        //was a selection in the text area.
+        
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+        
+        updateTable();
+       
     }
-
-    private void printDebugData(JTable table) {
-        int numRows = table.getRowCount();
-        int numCols = table.getColumnCount();
-        javax.swing.table.TableModel model = table.getModel();
-
-        System.out.println("Value of data: ");
-        for (int i=0; i < numRows; i++) {
-            System.out.print("    row " + i + ":");
-            for (int j=0; j < numCols; j++) {
-                System.out.print("  " + model.getValueAt(i, j));
-            }
-            System.out.println();
-        }
-        System.out.println("--------------------------");
-    }
-
-
-
-
 
 
     /**
@@ -183,10 +206,10 @@ public class GUI extends JPanel implements ActionListener {
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    static void createAndShowGUI(ArrayList<Task> taskList) {
+    private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Task Manager");
-        JLabel slogan = new JLabel(":)", SwingConstants.CENTER);
+        JFrame frame = new JFrame("Flirter's Assistant");
+        JLabel slogan = new JLabel("Life is Short. Have an Affair.", SwingConstants.CENTER);
         slogan.setFont(new Font("Comic Sans MS", Font.PLAIN, 12 ));
 
 
@@ -194,7 +217,7 @@ public class GUI extends JPanel implements ActionListener {
         frame.setLayout(new BorderLayout());
 
         //Create and set up the content pane.
-        GUI gui = new GUI(taskList);
+        GUI gui = new GUI();
         frame.add(gui, BorderLayout.CENTER);
         frame.add(slogan, BorderLayout.SOUTH);
 
@@ -209,8 +232,7 @@ public class GUI extends JPanel implements ActionListener {
         String message;
         LogicController commandHandler = LogicController.getInstance();
 
-        TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
-
+        
         printMessageToUser(String.format(WELCOME_MESSAGE));
 
         printMessageToUser(String.format(COMMAND_MESSAGE));
@@ -222,6 +244,10 @@ public class GUI extends JPanel implements ActionListener {
         }         
 
         return message;
+    }
+    
+    public void run() {
+        createAndShowGUI();
     }
 
     public void printMessageToUser(String message){
