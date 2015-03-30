@@ -11,15 +11,11 @@ public class TaskListUI {
 	
 	public TaskListUI(ArrayList<Task> taskList) {
 		this.taskList = taskList;
-		std = new GUI(taskList);
+		std = new GUI();
 	}
 	
 	public void showTask() {
-	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                std.createAndShowGUI(taskList);
-            }
-        });
+	    std.run();
 	    
 		TaskPrinter tp = new TaskPrinter();
 
