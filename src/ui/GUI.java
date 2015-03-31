@@ -42,7 +42,7 @@ import logic.LogicController;
 
 public class GUI extends JPanel implements ActionListener{
     
-   
+    public static final char STAR = '\u2605';
     
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
@@ -149,10 +149,9 @@ public class GUI extends JPanel implements ActionListener{
 
                 DateParser dp = new DateParser(dateTime);
 
-           
+                
 
                 if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
-
                     c.setForeground(Color.RED);
 
                 } else {
@@ -162,6 +161,7 @@ public class GUI extends JPanel implements ActionListener{
                 String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 5);
                 
                 if (status.equals("undone")) {
+                    
                     c.setBackground(new Color(0,0,0,0));
                     c.setFont(new Font("Arial", Font.BOLD, 12 ));
                 } else {
@@ -293,12 +293,30 @@ public class GUI extends JPanel implements ActionListener{
         for (int i = 0; i < deadlinesAndTimeTasks.size(); i++) {
             data[i][0] = taskNumber;
             taskNumber += 1;
-            data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();
-            
+            data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();      
             data[i][2] = deadlinesAndTimeTasks.get(i).getStartDateTime();
             data[i][3] = deadlinesAndTimeTasks.get(i).getEndDateTime();
             data[i][4] = deadlinesAndTimeTasks.get(i).getDeadline();
             data[i][5] = deadlinesAndTimeTasks.get(i).getStatus();
+            
+            String dateTime;
+            String deadline = (String) data[i][4];
+            if (!deadline.equals("- -")) {
+                dateTime = deadline;
+            } else {
+                dateTime = (String) data[i][3];
+            }
+
+
+            DateParser dp = new DateParser(dateTime);
+
+           
+
+            if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis() && ((String)data[i][5]).equals("undone")) {
+                
+                data[i][1] = "*** " + (String) data[i][1] ;
+            }
+            
             deadlinesAndTimeTasksModel.addRow(data[i]);
         }
        
@@ -376,6 +394,8 @@ public class GUI extends JPanel implements ActionListener{
         frame.pack();
         frame.setVisible(true);
     }
+    
+    
 
     public String processUserInput(String userInput){
         String message;
