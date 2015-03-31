@@ -76,6 +76,7 @@ public class GUI extends JPanel implements ActionListener{
 
         textArea = new JTextArea(3, 20);
         textArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        textArea.setForeground(Color.MAGENTA);
         textArea.setEditable(false);
         JScrollPane scrollPaneTextArea = new JScrollPane(textArea);
 
@@ -118,6 +119,7 @@ public class GUI extends JPanel implements ActionListener{
         deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel);
         deadlinesAndTimeTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
         deadlinesAndTimeTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
+        deadlinesAndTimeTasksTable.setForeground(Color.BLUE);
 
 
         deadlinesAndTimeTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -167,6 +169,7 @@ public class GUI extends JPanel implements ActionListener{
 
         floatingTasksTable = new JTable(floatingTasksModel);
         floatingTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        floatingTasksTable.setForeground(Color.BLUE);
         floatingTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
 
         floatingTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
