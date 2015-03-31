@@ -1,5 +1,6 @@
 package ui;
 
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -8,20 +9,27 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import java.util.Enumeration;
 
 
 
 
 
 
-import storage.Memory;
+
+
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
+import parser.DateParser;
 import application.Task;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -33,6 +41,9 @@ import java.util.ArrayList;
 import logic.LogicController;
 
 public class GUI extends JPanel implements ActionListener{
+    
+   
+    
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
@@ -58,15 +69,21 @@ public class GUI extends JPanel implements ActionListener{
     private static DefaultTableModel floatingTasksModel;
 
     
-   
-    private static Memory memory;
 
+    private static LogicController lc;
+   
 
 
     public GUI() {
-        
         super(new GridBagLayout());
-        memory = Memory.getInstance();
+
+
+
+
+
+      
+       
+        lc = LogicController.getInstance();
         
       
 
@@ -76,6 +93,7 @@ public class GUI extends JPanel implements ActionListener{
 
         textArea = new JTextArea(3, 20);
         textArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        textArea.setForeground(Color.MAGENTA);
         textArea.setEditable(false);
         JScrollPane scrollPaneTextArea = new JScrollPane(textArea);
 
@@ -115,9 +133,55 @@ public class GUI extends JPanel implements ActionListener{
             }
         };
 
-        deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel);
+        deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel) {
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
+            {
+                Component c = super.prepareRenderer(renderer, row, column);
+
+                String dateTime;
+                String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(row, 4);
+                if (!deadline.equals("- -")) {
+                    dateTime = deadline;
+                } else {
+                    dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(row, 3);
+                }
+
+
+                DateParser dp = new DateParser(dateTime);
+
+           
+
+                if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
+
+                    c.setForeground(Color.RED);
+
+                } else {
+                    c.setForeground(Color.BLUE);
+                }
+                
+                String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 5);
+                
+                if (status.equals("undone")) {
+                    c.setBackground(new Color(0,0,0,0));
+                    c.setFont(new Font("Arial", Font.BOLD, 12 ));
+                } else {
+                    c.setBackground(new Color(0,180,150,30));
+
+
+                }
+                
+              
+
+
+                return c;
+            }
+
+        };
+
+
         deadlinesAndTimeTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
         deadlinesAndTimeTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
+        deadlinesAndTimeTasksTable.setForeground(Color.BLUE);
 
 
         deadlinesAndTimeTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -165,8 +229,28 @@ public class GUI extends JPanel implements ActionListener{
         };
 
 
-        floatingTasksTable = new JTable(floatingTasksModel);
+        floatingTasksTable = new JTable(floatingTasksModel) {
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
+            {
+                Component c = super.prepareRenderer(renderer, row, column);
+
+                String status = (String) floatingTasksTable.getValueAt(row, 2);
+                
+                if (status.equals("undone")) {
+                    c.setBackground(new Color(0,0,0,0));
+                    c.setFont(new Font("Arial", Font.BOLD, 12 ));
+                } else {
+                    c.setBackground(new Color(0,180,150,30));
+
+
+                }
+
+                return c;
+            }
+        };
+        
         floatingTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        floatingTasksTable.setForeground(Color.BLUE);
         floatingTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
 
         floatingTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -199,7 +283,7 @@ public class GUI extends JPanel implements ActionListener{
 
         deadlinesAndTimeTasksModel.setRowCount(0);
 
-        ArrayList<Task> deadlinesAndTimeTasks = memory.getDeadlinesAndTimeTasks();
+        ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks(lc.getTaskList());
 
 
         Object[][] data = new Object[deadlinesAndTimeTasks.size()][6];
@@ -210,16 +294,21 @@ public class GUI extends JPanel implements ActionListener{
             data[i][0] = taskNumber;
             taskNumber += 1;
             data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();
+            
             data[i][2] = deadlinesAndTimeTasks.get(i).getStartDateTime();
             data[i][3] = deadlinesAndTimeTasks.get(i).getEndDateTime();
             data[i][4] = deadlinesAndTimeTasks.get(i).getDeadline();
             data[i][5] = deadlinesAndTimeTasks.get(i).getStatus();
             deadlinesAndTimeTasksModel.addRow(data[i]);
         }
+       
+       
+
+
 
         floatingTasksModel.setRowCount(0);
 
-        ArrayList<Task> floatingTasks = memory.getFloatingTasks();
+        ArrayList<Task> floatingTasks = getFloatingTasks(lc.getTaskList());
 
 
         Object[][] data2 = new Object[floatingTasks.size()][3];
@@ -245,18 +334,19 @@ public class GUI extends JPanel implements ActionListener{
         String feedback = processUserInput(text);
     
 
-        System.out.println(feedback);
         textArea.setText(feedback);
 
         //Make sure the new text is visible, even if there
         //was a selection in the text area.
-        
+
         textArea.setCaretPosition(textArea.getDocument().getLength());
-        
-        updateTable();
+
        
+        updateTable();
+        
+
     }
-    
+
 
 
     /**
@@ -267,6 +357,7 @@ public class GUI extends JPanel implements ActionListener{
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("Flirter's Assistant");
+        frame.setMinimumSize(new Dimension(735,590));
         JLabel slogan = new JLabel("Having an affair has never been so easy.", SwingConstants.CENTER);
         slogan.setFont(new Font("Kokonor", Font.ITALIC, 12 ));
 
@@ -311,13 +402,34 @@ public class GUI extends JPanel implements ActionListener{
     public void printMessageToUser(String message){
         System.out.println(message);
     }
-//    public static void main(String[] args) {
-//        //Schedule a job for the event-dispatching thread:
-//        //creating and showing this application's GUI.
-//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                createAndShowGUI();
-//            }
-//        });
-//    }
+    
+    public ArrayList<Task> getDeadlinesAndTimeTasks(ArrayList<Task> taskList) {
+        ArrayList<Task> deadlinesAndTimeTasks = new ArrayList<Task> ();
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            String taskType = currentTask.getTaskType();
+            
+            if (taskType.equals("deadline") || taskType.equals("time task") ) {
+                deadlinesAndTimeTasks.add(currentTask);
+            }
+        }
+
+        return deadlinesAndTimeTasks;
+    }
+    
+    public ArrayList<Task> getFloatingTasks(ArrayList<Task> taskList) {
+        ArrayList<Task> floatingTasks = new ArrayList<Task> ();
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            String taskType = currentTask.getTaskType();
+            
+            if (taskType.equals("floating task")) {
+                floatingTasks.add(currentTask);
+            }
+        }
+        
+        return floatingTasks;
+    }
 }
