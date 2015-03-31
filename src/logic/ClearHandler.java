@@ -47,8 +47,4 @@ class ClearHandler extends UndoableCommandHandler {
         }
     }
 
-    @Override
-    public CommandHandler getNewInstance() {
-        return new ClearHandler();
-    }
 }

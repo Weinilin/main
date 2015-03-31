@@ -38,11 +38,7 @@ abstract class CommandHandler {
      */
     abstract public String getHelp();
 
-    /**
-     * Return a new instance of the handler
-     * @return
-     */
-    abstract public CommandHandler getNewInstance();
+    
     /**
      * creates a new task by a string containing the information of the task.
      * It will call the respective parsers to get information about the new
