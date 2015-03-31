@@ -2,8 +2,6 @@ package application;
 
 import java.util.ArrayList;
 
-import ui.TaskListUI;
-
 public class Task {
 	
 	private static final String[] dataField = {

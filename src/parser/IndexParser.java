@@ -19,6 +19,7 @@ public class IndexParser {
 		} catch (Exception e) {
 			System.err.println("NoDigitException: " + e.getMessage());
 			logger.log(Level.WARNING, "processing error", e);
+			System.exit(0);
 		}
 		setIndex(detectedIndex);
 	}
@@ -56,7 +57,7 @@ public class IndexParser {
 		if (indexMatch.find()) {
 			number = indexMatch.group();
 		} else {
-			throw new Exception ("Index is not entered!!!"); 
+			throw new Exception ("Index is not entered!!!");
 		}
 		return number;
 	}

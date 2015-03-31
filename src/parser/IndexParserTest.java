@@ -27,10 +27,11 @@ public class IndexParserTest {
 	@Test
 	/**
 	 * test the boundary values when no digit is entered.
+	 * this will fail and send an exception message and exit the program
 	 */
 	public void testWhenNoDigit() {
 		IndexParser i1 = new IndexParser("delete");
-		assertEquals(0, i1.getIndex());
+		assertEquals(1, i1.getIndex());
 	}
 
 }

@@ -24,6 +24,8 @@ public class Memory {
 	private final String DONE = "done";
 	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
+	
+
 	private static Memory memory;
 	
 	private static final Logger memoryLogger = Logger.getLogger(Memory.class.getName());
@@ -180,6 +182,7 @@ public class Memory {
 	
 	private void sortTaskList() {
 		Collections.sort(taskList, new TaskComparator());
+		
 	}
 	
 	public void markDone(int index) {
@@ -192,6 +195,16 @@ public class Memory {
 		memoryLogger.log(Level.FINE, "mark success");
 		memoryLogger.exiting(getClass().getName(), "marking task");
 	}
+	
+	public void markDone(Task doneTask) {
+        memoryLogger.entering(getClass().getName(), "marking task");
+        Task task = taskList.get(taskList.indexOf(doneTask));
+        task.setStatus(DONE);
+        sortTaskList();
+        writeToDatabase();
+        memoryLogger.log(Level.FINE, "mark success");
+        memoryLogger.exiting(getClass().getName(), "marking task");
+    }
 	
 	public void editTaskType(int index, String newTaskType) {
 		memoryLogger.entering(getClass().getName(), "editing taskType");
@@ -243,6 +256,36 @@ public class Memory {
 	
 	public boolean isValidIndex(int index) {
 		return (index > 0 && index <= taskList.size());
+	}
+	
+	public ArrayList<Task> getDeadlinesAndTimeTasks() {
+	    ArrayList<Task> deadlinesAndTimeTasks = new ArrayList<Task> ();
+	    
+	    for (int i = 0; i < taskList.size(); i++) {
+	        Task currentTask = taskList.get(i);
+	        String taskType = currentTask.getTaskType();
+	        
+	        if (taskType.equals("deadline") || taskType.equals("time task") ) {
+	            deadlinesAndTimeTasks.add(currentTask);
+	        }
+	    }
+
+	    return deadlinesAndTimeTasks;
+	}
+	
+	public ArrayList<Task> getFloatingTasks() {
+	    ArrayList<Task> floatingTasks = new ArrayList<Task> ();
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            String taskType = currentTask.getTaskType();
+            
+            if (taskType.equals("floating task")) {
+                floatingTasks.add(currentTask);
+            }
+        }
+        
+        return floatingTasks;
 	}
 
 }

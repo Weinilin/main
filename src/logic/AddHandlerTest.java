@@ -35,11 +35,11 @@ public class AddHandlerTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		ah.execute("+", " read Harry Porter ");
-		ah.execute("add", "dinner 6-7");
-		ah.execute("a", "Reflection by 22:00 tomorrow");
+		ah.execute("+", " read Harry Porter ", taskTest);
+		ah.execute("add", "dinner 6-7", taskTest);
+		ah.execute("a", "Reflection by 22:00 tomorrow", taskTest);
 
-		assertEquals(ah.execute("+", "help"), ah.getHelp());
+		assertEquals(ah.execute("+", "help", taskTest), ah.getHelp(), taskTest);
 		assertEquals(taskTest, expected);
 	}
 
