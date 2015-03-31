@@ -153,10 +153,24 @@ public class GUI extends JPanel implements ActionListener{
                 System.out.println("next");
 
                 if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
+
                     c.setForeground(Color.RED);
+
                 } else {
                     c.setForeground(Color.BLUE);
                 }
+                
+                String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 5);
+                
+                if (status.equals("undone")) {
+                    c.setBackground(new Color(200,0,182,20));
+
+                } else {
+                    c.setBackground(new Color(0,0,182,20));
+
+                }
+                
+              
 
 
                 return c;
