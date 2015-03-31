@@ -138,28 +138,27 @@ public class GUI extends JPanel implements ActionListener{
                 Component c = super.prepareRenderer(renderer, row, column);
 
                 String dateTime;
-                for (int i = 0; i < deadlinesAndTimeTasksTable.getRowCount(); i++) {
-                    String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(i, 4);
-                    if (!deadline.equals("- -")) {
-                        dateTime = deadline;
-                    } else {
-                        dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(i, 3);
-                    }
-
-                    System.out.println(dateTime);
-
-                    DateParser dp = new DateParser(dateTime);
-
-                    System.out.println(dp.getDateTimeInMilliseconds() - System.currentTimeMillis());
-                    System.out.println("next");
-              
-                    if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
-                        c.setForeground(Color.RED);
-                    } else {
-                        c.setForeground(Color.BLUE);
-                    }
+                String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(row, 4);
+                if (!deadline.equals("- -")) {
+                    dateTime = deadline;
+                } else {
+                    dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(row, 3);
                 }
-                
+
+                System.out.println(dateTime);
+
+                DateParser dp = new DateParser(dateTime);
+
+                System.out.println(dp.getDateTimeInMilliseconds() - System.currentTimeMillis());
+                System.out.println("next");
+
+                if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
+                    c.setForeground(Color.RED);
+                } else {
+                    c.setForeground(Color.BLUE);
+                }
+
+
                 return c;
             }
 
