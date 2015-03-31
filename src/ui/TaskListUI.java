@@ -7,12 +7,16 @@ import application.TaskPrinter;
 
 public class TaskListUI {
 	ArrayList<Task> taskList;
+	GUI std;
 	
 	public TaskListUI(ArrayList<Task> taskList) {
 		this.taskList = taskList;
+		std = new GUI();
 	}
 	
 	public void showTask() {
+	    std.run();
+	    
 		TaskPrinter tp = new TaskPrinter();
 
 		
