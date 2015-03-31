@@ -21,7 +21,7 @@ public class DateParser {
             + "|\\b(after today)\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year)\\b";
     private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
-            + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))";
+            + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))|(\\w+ (week|month|year)(s|) from now)";
     private static final String NEXT_WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String THIS_WEEKDAY_APART_KEYWORD = " this (mon|tues|wed|thurs|fri|sat|sun)";
     private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
