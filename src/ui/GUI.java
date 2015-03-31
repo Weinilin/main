@@ -41,35 +41,8 @@ import logic.LogicController;
 
 public class GUI extends JPanel implements ActionListener{
     
-    public class MyTableCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-           
-            
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
-            String dateTime;
-            for (int i = 0; i < deadlinesAndTimeTasksTable.getRowCount(); i++) {
-                String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(i, 4);
-                if (!deadline.equals("- -")) {
-                    dateTime = deadline;
-                } else {
-                    dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(i, 3);
-                }
-
-                System.out.println(dateTime);
-
-                DateParser dp = new DateParser(dateTime);
-
-                if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
-                    c.setForeground(Color.RED);
-                }
-            }
-
-            return c;
-          
-            
-        }
-    }
+   
+    
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
@@ -160,7 +133,36 @@ public class GUI extends JPanel implements ActionListener{
         };
 
         deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel) {
-           
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
+            {
+                Component c = super.prepareRenderer(renderer, row, column);
+
+                String dateTime;
+                for (int i = 0; i < deadlinesAndTimeTasksTable.getRowCount(); i++) {
+                    String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(i, 4);
+                    if (!deadline.equals("- -")) {
+                        dateTime = deadline;
+                    } else {
+                        dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(i, 3);
+                    }
+
+                    System.out.println(dateTime);
+
+                    DateParser dp = new DateParser(dateTime);
+
+                    System.out.println(dp.getDateTimeInMilliseconds() - System.currentTimeMillis());
+                    System.out.println("next");
+              
+                    if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
+                        c.setForeground(Color.RED);
+                    } else {
+                        c.setForeground(Color.BLUE);
+                    }
+                }
+                
+                return c;
+            }
+
         };
 
 
@@ -267,40 +269,10 @@ public class GUI extends JPanel implements ActionListener{
             data[i][5] = deadlinesAndTimeTasks.get(i).getStatus();
             deadlinesAndTimeTasksModel.addRow(data[i]);
         }
-        Enumeration<TableColumn> en = deadlinesAndTimeTasksTable.getColumnModel().getColumns();
-
-        while (en.hasMoreElements()) {
-            TableColumn tc = en.nextElement();
-            tc.setCellRenderer(new MyTableCellRenderer());
-        }
+       
        
 
-//        for (int i = 0; i < deadlinesAndTimeTasksTable.getRowCount(); i++) {
-//            
-//            
-//            if (!deadlinesAndTimeTasks.get(i).getTaskType().equals("floating task")) {
-//                String dateTime = null;
-//                
-//                if (deadlinesAndTimeTasks.get(i).getTaskType().equals("deadline")) {
-//                    dateTime = deadlinesAndTimeTasks.get(i).getDeadline();
-//                } else if (deadlinesAndTimeTasks.get(i).getTaskType().equals("time task")) {
-//                    dateTime = deadlinesAndTimeTasks.get(i).getEndDateTime();
-//                }
-//            
-//                DateParser dp = new DateParser(dateTime);
-//                
-//                
-//                
-//                if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) { 
-//                    for (int j = 0; j < deadlinesAndTimeTasksTable.getColumnCount(); j++) {
-//                        TableColumn column = deadlinesAndTimeTasksTable.getColumnModel().getColumn(j);
-//
-//
-//                        column.setCellRenderer(new TableCellRenderer());
-//                    }
-//                }
-//            } 
-//        }
+
 
         floatingTasksModel.setRowCount(0);
 
