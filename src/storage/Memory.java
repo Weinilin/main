@@ -193,6 +193,16 @@ public class Memory {
 		memoryLogger.exiting(getClass().getName(), "marking task");
 	}
 	
+	public void markDone(Task doneTask) {
+        memoryLogger.entering(getClass().getName(), "marking task");
+        Task task = taskList.get(taskList.indexOf(doneTask));
+        task.setStatus(DONE);
+        sortTaskList();
+        writeToDatabase();
+        memoryLogger.log(Level.FINE, "mark success");
+        memoryLogger.exiting(getClass().getName(), "marking task");
+    }
+	
 	public void editTaskType(int index, String newTaskType) {
 		memoryLogger.entering(getClass().getName(), "editing taskType");
 		assert isValidIndex(index);
