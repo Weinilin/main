@@ -23,13 +23,11 @@ class UndoHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        if (undoRedoManager.undo.empty()) {
+        if (!undoRedoManager.canUndo()) {
             return "Nothing to undo\n";
         }
         else {
-            UndoableCommandHandler lastElement = undoRedoManager.undo.pop();
-            lastElement.undo();
-            updateTaskList(taskList);
+            undoRedoManager.undo();
             return "Revoked latest change\n";
         }
 

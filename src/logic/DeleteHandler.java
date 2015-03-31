@@ -70,12 +70,19 @@ class DeleteHandler extends UndoableCommandHandler {
             } 
         }
 
+        recordMemoryChanges(taskList);
         deleteTasks(taskList, removedTask);
-        undoRedoManager.undo.push(this);
         generateFeedbackString(goodFeedback, badFeedback, feedback);
         return feedback;
     }
-
+    
+    private void recordMemoryChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder deleteRecorder = new UndoRedoRecorder(taskList);
+        for (Task task: removedTask) {
+            deleteRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.DELETE, task, task));
+            undoRedoManager.addNewRecord(deleteRecorder);
+        }
+    }
 
     private void generateFeedbackString(String goodFeedback,
             String badFeedback, String feedback) {

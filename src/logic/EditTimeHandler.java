@@ -59,7 +59,6 @@ class EditTimeHandler extends UndoableCommandHandler {
         if (newTask != null && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            undoRedoManager.undo.push(this);
             taskList.remove(oldTask);
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());

@@ -42,17 +42,20 @@ class AddHandler extends UndoableCommandHandler {
         addLogger.entering(getClass().getName(), "Add non empty task");
         newTask = CommandHandler.createNewTask(parameter);
         // a non empty task is created
-        assert (newTask != null);	
-        if (memory.addTask(newTask)) {        
-            updateTaskList(taskList);
-            undoRedoManager.undo.push(this);
-            addLogger.log(Level.FINE, "Add sucess");
-            return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
-        } 
-        else {
-            addLogger.log(Level.SEVERE, "Error adding new task!");
-            throw new Error(FATAL_ERROR_MESSAGE);
-        }	
+        assert (newTask != null);
+        
+        memory.addTask(newTask); 
+        recordMemoryChanges(taskList);
+        updateTaskList(taskList);            
+        addLogger.log(Level.FINE, "Add sucess");
+        return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+       
+    }
+
+    private void recordMemoryChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder addRecorder = new UndoRedoRecorder(taskList);
+        addRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.ADD, newTask, newTask));
+        undoRedoManager.addNewRecord(addRecorder);
     }
 
 

@@ -23,7 +23,7 @@ class ShowHandler extends CommandHandler{
     private static final String EMPTY_LIST_MESSAGE = "There is no task\n";
     private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
     private ArrayList<String> aliases = new ArrayList<String>(
-            Arrays.asList("show", "s", "display"));
+            Arrays.asList("show", "s", "display", "search"));
     private static final Logger showLogger =
             Logger.getLogger(DeleteHandler.class.getName());
 
