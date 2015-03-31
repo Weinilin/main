@@ -62,7 +62,8 @@ class EditDescriptionHandler extends UndoableCommandHandler {
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
 	    }
-	    return "";
+	    return "Changed " + oldTask.getDescription() + " to " +
+	    		newTask.getDescription() + "\n";
 	}
 
 	@Override
@@ -76,8 +77,4 @@ class EditDescriptionHandler extends UndoableCommandHandler {
         memory.removeTask(newTask);
 	}
 
-	@Override
-	public CommandHandler getNewInstance() {
-        return new EditDescriptionHandler();
-    }
 }

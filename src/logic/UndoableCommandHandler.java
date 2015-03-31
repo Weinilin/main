@@ -20,6 +20,4 @@ abstract class UndoableCommandHandler extends CommandHandler {
 
     abstract void undo();    
 
-    @Override
-    abstract  public CommandHandler getNewInstance();
 }

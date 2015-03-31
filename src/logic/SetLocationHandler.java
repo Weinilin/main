@@ -41,8 +41,4 @@ public class SetLocationHandler extends UndoableCommandHandler {
 
     }
     
-    @Override
-    public CommandHandler getNewInstance() {
-        return new SetLocationHandler();
-    }
 }
