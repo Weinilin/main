@@ -77,8 +77,4 @@ class EditDescriptionHandler extends UndoableCommandHandler {
         memory.removeTask(newTask);
 	}
 
-	@Override
-	public CommandHandler getNewInstance() {
-        return new EditDescriptionHandler();
-    }
 }

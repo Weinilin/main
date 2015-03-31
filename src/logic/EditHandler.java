@@ -129,11 +129,6 @@ class EditHandler extends UndoableCommandHandler {
         memory.addTask(oldTask);
         memory.removeTask(newTask);
     }
-    
-    @Override
-    public CommandHandler getNewInstance() {
-        return new EditHandler();
-    }
 
 }
 // Depreciated

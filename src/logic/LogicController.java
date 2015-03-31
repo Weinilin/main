@@ -64,10 +64,7 @@ public class LogicController {
         }
         
         CommandHandler handler = handlerTable.get(command);
-        if (handler instanceof UndoableCommandHandler) {
-            handler = handler.getNewInstance();
-        }
-        
+                
         String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
         return handler.execute(command, parameter, taskList);
     }

@@ -99,9 +99,4 @@ class ShowHandler extends CommandHandler{
     public String getHelp() {
         return HELP_MESSAGE;
     }
-    
-    @Override
-    public CommandHandler getNewInstance() {
-        return new ExitHandler();
-    }
 }
