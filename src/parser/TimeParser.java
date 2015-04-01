@@ -4,21 +4,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class TimeParser {
     private static final String TIME_TO_TIME_KEYWORD = "[^/:,.]\\b(((\\d+[.:,](\\d+)|\\d+)(-| to | - )(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|)))\\b";
     private static final String HOURS_APART_KEYWORD = "\\b(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm|))\\b for \\d+ (hour|hours|hr|hrs))\\b";
-    private static final String TIME_AM_OR_PM_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+    private static final String TWELVE_HOUR_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b"
+            + "|\\b(@ |due on |on |at |from |to |by |due )\\d{2}\\b";
     private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(\\d+|\\d+[:.,]\\d+)(\\s|)o'clock\\b";
     private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(on |at |from |to |)noon\\b)|(\\b(on |at |from |to |)midnight\\b)";
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(from |to |)(before midnight|before noon)\\b)";
-    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)(\\s|\\S)(o'clock|am|pm|)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
+    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)(\\s|)(o'clock|am|pm|)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
             + "| at (the |)morning\\b| at (the |)morn\\b))";
-    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)";
-    private static final String 
+    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)|[^./]\\b\\d{3,4}(\\s|\\S)(hour(s|)|hr(s|)|)\\b";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(from |to |)(past midnight|past noon|after noon|after midnight)\\b)";
     private static final String TO_BE_REMOVED_KEYWORD = "(before midnight|before noon|"
             + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|in the afternoon|in the night|in the (morning|morn)|at the afternoon|at the night|at the (morning|morn)|o'clock|past noon|past"
-            + "midnight|noon|midnight|\\s|-|to|at|from)";
+            + "midnight|noon|midnight|\\s|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due ))";
     private static int index;
     private static String userInputLeft;
 
@@ -75,8 +77,8 @@ public class TimeParser {
                 userInput);
         storageOfTime = spotPastMidnightOrNoonKeyword(storageOfTime, userInput);
         storageOfTime = spotNoonOrMidnight(storageOfTime, userInput);
-        storageOfTime = spotTimeWithPmOrAm(storageOfTime, userInput);
         storageOfTime = spotHHOclockKeyword(storageOfTime, userInput);
+        storageOfTime = spotTwelveHourFormat(storageOfTime, userInput);
         storageOfTime = spotTwentyFourHHKeyword(storageOfTime, userInput);
 
         return storageOfTime;
@@ -161,6 +163,7 @@ public class TimeParser {
 
         while (containTime.find()) {
             String time = containTime.group();
+
             testValidTime(time);
             userInputLeft = userInputLeft.replaceAll(time, "");
 
@@ -210,7 +213,7 @@ public class TimeParser {
             testValidTime(startTime);
             startTime = changeToHourFormat(startTime);
             int hhInTime = getHH(startTime);
-            
+
             String numberOfHour = detectNumberOfHour(time);
             int numberOfHours = Integer.parseInt(numberOfHour);
 
@@ -367,8 +370,8 @@ public class TimeParser {
             int hhTimeWitham = getHH(timeWitham);
             int hhTimeWithpm = getHH(timeWithpm);
 
-            toBeAdded = detectWhichOneIsRight(toBeAdded, timeWitham,
-                    timeWithpm, hhTimeWitham, hhTimeWithpm, hhTime);
+            toBeAdded = getTheStartTime(toBeAdded, timeWitham, timeWithpm,
+                    hhTimeWitham, hhTimeWithpm, hhTime);
             toBeAdded = changeToHourFormat(toBeAdded);
 
             assert checkValid24HourTime(timeList[1]) == true : "Wrong convertion of time";
@@ -389,19 +392,19 @@ public class TimeParser {
      * @param timeWithpm
      * @param hhInTimeWitham
      * @param hhInTimeWithpm
-     * @param hhOfTime
+     * @param hhOfEndTime
      * @return the right timing when switch to hour format when am or pm is not
      *         on the back of the time.
      */
-    private static String detectWhichOneIsRight(String toBeAdded,
-            String timeWitham, String timeWithpm, int hhInTimeWitham,
-            int hhInTimeWithpm, int hhOfTime) {
-        if (hhInTimeWitham < hhOfTime && hhInTimeWithpm < hhOfTime) {
-            toBeAdded = whenBothLessThan(timeWitham, timeWithpm,
+    private static String getTheStartTime(String toBeAdded, String timeWitham,
+            String timeWithpm, int hhInTimeWitham, int hhInTimeWithpm,
+            int hhOfEndTime) {
+        if (hhInTimeWitham < hhOfEndTime && hhInTimeWithpm < hhOfEndTime) {
+            toBeAdded = getTheNearestTime(timeWitham, timeWithpm,
                     hhInTimeWitham, hhInTimeWithpm);
-        } else if (hhInTimeWitham < hhOfTime) {
+        } else if (hhInTimeWitham < hhOfEndTime) {
             toBeAdded = timeWitham;
-        } else if (hhInTimeWithpm < hhOfTime) {
+        } else if (hhInTimeWithpm < hhOfEndTime) {
             toBeAdded = timeWithpm;
         } else if (hhInTimeWitham == hhInTimeWithpm) {
             toBeAdded = timeWithpm;
@@ -410,15 +413,16 @@ public class TimeParser {
     }
 
     /**
-     * when both start time hour format is less than the end time.
-     * Find out which start time is nearer to the end time
+     * when both start time hour format is less than the end time. Find out
+     * which start time is nearer to the end time
+     * 
      * @param timeWitham
      * @param timeWithpm
      * @param amTime1stNum
      * @param hhInTimeWithpm
      * @return the nearer start time when the am/pm is not input.
      */
-    private static String whenBothLessThan(String timeWitham,
+    private static String getTheNearestTime(String timeWitham,
             String timeWithpm, int hhInTimeWitham, int hhInTimeWithpm) {
         String toBeAdded;
         if (hhInTimeWitham < hhInTimeWithpm) {
@@ -454,31 +458,109 @@ public class TimeParser {
     }
 
     /**
-     * throw and catch exception when the user key in time that has hour more
-     * than 23 and minutes more than 59
+     * throw and catch exception for invalid time for both 24 hour and 12 hour
+     * format
      * 
      * @param time
      */
-    private static void testValidTime(String time) {
+    private static void testValidTime(String time)
+            throws IllegalArgumentException {
         int timeInHour, timeInMin;
+        boolean ifTwelveHour;
+
         try {
-            time = removePMOrAm(time);
             time = removeUnwantedParts(time);
-        
+            ifTwelveHour = checkTwelveOrTwentyFourFormat(time);
+            time = removePMOrAmOrOclock(time);
+
             if (time.contains(":") || time.contains(".") || time.contains(",")) {
                 timeInHour = getHH(time);
                 timeInMin = Integer.parseInt(getMinutes(time));
-            } else {
+            } else if (time.length() <= 2) {
                 timeInHour = Integer.parseInt(time);
                 timeInMin = 0;
+            } else if (time.length() == 3) {
+                timeInHour = Integer.parseInt(time.substring(0, 1));
+                timeInMin = Integer.parseInt(time.substring(1));
+            } else if (time.length() == 4) {
+                timeInHour = Integer.parseInt(time.substring(0, 2));
+                timeInMin = Integer.parseInt(time.substring(2));
+            } else {
+                timeInHour = 0;
+                timeInMin = 0;
             }
-            if (timeInHour > 23 || timeInHour < 0 || timeInMin < 0
-                    || timeInMin > 59) {
-                throw new Exception("Time entered is invalid!");
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+
+            getExceptionForInvalidTime(timeInHour, timeInMin, ifTwelveHour);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * get the exception for either 24 hour and 12 hour format
+     * 
+     * @param timeInHour
+     * @param timeInMin
+     * @param ifTwelveHour
+     * @throws IllegalArgumentException
+     */
+    private static void getExceptionForInvalidTime(int timeInHour,
+            int timeInMin, boolean ifTwelveHour)
+            throws IllegalArgumentException {
+        if (ifTwelveHour) {
+            test12HourFormat(timeInHour, timeInMin);
+        } else {
+            test24HourFormat(timeInHour, timeInMin);
+        }
+    }
+
+    /**
+     * test 12 hour format of 0 <= hour <= 12 and 0 <= minutes <= 60
+     * 
+     * @param timeInHour
+     * @param timeInMin
+     * @throws IllegalArgumentException
+     */
+    private static void test12HourFormat(int timeInHour, int timeInMin)
+            throws IllegalArgumentException {
+        if (timeInHour > 12 || timeInHour < 0 || timeInMin < 0
+                || timeInMin > 59) {
+            throw new IllegalArgumentException("Time entered is invalid!");
+        }
+    }
+
+    /**
+     * check if it is 24 hour format or 12 hour format
+     * 
+     * @param time
+     * @return 12 hour format return true and 24 hour format return false
+     */
+    private static boolean checkTwelveOrTwentyFourFormat(String time) {
+        boolean ifTwelveHour;
+
+        if (time.contains("am") || time.contains("o'clock")
+                || time.contains("pm")) {
+            ifTwelveHour = true;
+        } else {
+            ifTwelveHour = false;
+        }
+
+        return ifTwelveHour;
+    }
+
+    /**
+     * test 24 hour format of 0 <= hour <= 23 and 0 <= minutes <= 60
+     * 
+     * @param timeInHour
+     * @param timeInMin
+     * @throws IllegalArgumentException
+     */
+    private static void test24HourFormat(int timeInHour, int timeInMin)
+            throws IllegalArgumentException {
+        if (timeInHour > 23 || timeInHour < 0 || timeInMin < 0
+                || timeInMin > 59) {
+            throw new IllegalArgumentException("Time entered is invalid!");
         }
     }
 
@@ -494,7 +576,7 @@ public class TimeParser {
         int timeInHour, timeInMin;
         boolean validTime = true;
 
-        time = removePMOrAm(time);
+        time = removePMOrAmOrOclock(time);
         time = removeUnwantedParts(time);
         if (time.length() > 2) {
             timeInHour = getHH(time);
@@ -516,8 +598,8 @@ public class TimeParser {
      * @param time
      * @return time without am or pm
      */
-    private static String removePMOrAm(String time) {
-        time = time.replaceAll("\\s+|pm|am", "");
+    private static String removePMOrAmOrOclock(String time) {
+        time = time.replaceAll("\\s+|pm|am|o'clock", "");
         return time;
     }
 
@@ -527,9 +609,9 @@ public class TimeParser {
      * @param storageOfTime
      * @return storage of time containing the time detected.
      */
-    private static ArrayList<String> spotTimeWithPmOrAm(
+    private static ArrayList<String> spotTwelveHourFormat(
             ArrayList<String> storageOfTime, String userInput) {
-        Pattern timeDetector = Pattern.compile(TIME_AM_OR_PM_KEYWORD);
+        Pattern timeDetector = Pattern.compile(TWELVE_HOUR_KEYWORD);
         Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
@@ -580,8 +662,7 @@ public class TimeParser {
 
         while (matchedWithTime.find()) {
 
-            userInputLeft = userInputLeft.replaceAll(NOON_MIDNIGHT_KEYWORD,
-                    "");
+            userInputLeft = userInputLeft.replaceAll(NOON_MIDNIGHT_KEYWORD, "");
             String time = matchedWithTime.group();
 
             if (matchedForIndex.find()) {
@@ -639,15 +720,19 @@ public class TimeParser {
      */
     private static String changeToHourFormat(String time) {
         if (time.contains("am")) {
-            time = removePMOrAm(time);
+            time = removePMOrAmOrOclock(time);
             time = switchToAmHour(time);
         } else if (time.contains("pm")) {
-            time = removePMOrAm(time);
+            time = removePMOrAmOrOclock(time);
             time = switchToPMHour(time);
         } else if (time.contains(".") || time.contains(",")) {
             time = changePuncToSemicolon(time);
-        } else if (!time.contains(":")) {
+        } else if (!time.contains(":") && time.length() <= 2) {
             time = time + ":00";
+        } else if (time.length() == 3) {
+            time = time.substring(0, 1) + ":" + time.substring(1);
+        } else if (time.length() == 4) {
+            time = time.substring(0, 2) + ":" + time.substring(2);
         }
 
         time = putOneZeroAtFront(time);
@@ -656,8 +741,9 @@ public class TimeParser {
     }
 
     /**
-     * when the length is equal to 4 --> H:MM (eg: 2:30)
-     * Thus, have to put one zero in front to HH:MM (eg: 02:30)
+     * when the length is equal to 4 --> H:MM (eg: 2:30) Thus, have to put one
+     * zero in front to HH:MM (eg: 02:30)
+     * 
      * @param time
      * @return HH:MM
      */
@@ -676,6 +762,7 @@ public class TimeParser {
      * @return time in HH:MM
      */
     private static String switchToAmHour(String time) {
+        time = time.trim();
         int index = getIndex(time);
         if (time.length() > 2 && time.charAt(0) == '1' && time.charAt(1) == '2') {
             time = "00" + ":" + time.substring(index + 1);

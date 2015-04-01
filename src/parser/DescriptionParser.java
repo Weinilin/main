@@ -7,29 +7,29 @@ import java.util.regex.Pattern;
 public class DescriptionParser {
     public static final String TIME_TO_TIME_KEYWORD = "(from|)[^/:,.]\\b(((\\d+[.:,](\\d+)|\\d+)(-| to | - )(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|)))\\b";
     private static final String HOURS_APART_KEYWORD = "\\b(start at \\b(on |at |from |to |due | due on |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b for \\d+ hour(\\s|))\\b";
-    private static final String TIME_AM_OR_PM_KEYWORD = "\\b(due on |on |at |from |to |by |due |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
-    private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(due on |on |at |from |to |by |due |)((\\d+|\\d+[:.,]\\d+)(\\s|)o'clock)\\b";
-    private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(due on |on |at |from |to |by |due |)noon\\b)|(\\b(due on |on |at |from |to |by |due |)midnight\\b)";
-    private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(due on |on |at |from |to |by |due |)(before midnight|before noon)\\b)";
-    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(due on |on |at |from |to |by |due |)"
+    private static final String TWELVE_HOUR_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b|\\b(@ |due on |on |at |from |to |by |due )\\d{2}\\b";
+    private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |)((\\d+|\\d+[:.,]\\d+)(\\s|)o'clock)\\b";
+    private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(@ |due on |on |at |from |to |by |due |)noon\\b)|(\\b(due on |on |at |from |to |by |due |)midnight\\b)";
+    private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(@ |due on |on |at |from |to |by |due |)(before midnight|before noon)\\b)";
+    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(@ |due on |on |at |from |to |by |due |)"
             + "(\\d+[.:,](\\d+)|\\d+)(\\s|\\S)(o'clock|am|pm|)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
                     + "| at (the |)morning\\b| at (the |)morn\\b))";
-    private static final String TWENTY_FOUR_HH_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b\\d+[:.,]\\d+\\b)";
-    private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(due on |on |at |from |to |by |due |)(past midnight|past noon|after noon|after midnight)\\b)";
-    private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |by |due | due on |)(\\d+([/.]\\d+[/.]\\d+|[/.]\\d+\\b)\\b)";
-    private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(due on |on |at |from |to |by |due |)(\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
+    private static final String TWENTY_FOUR_HH_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due)(\\b\\d{1,2}[:.,]\\d{2}\\b)|[^./]\\b\\d{3,4}(\\s|\\S)(hour(s|)|hr(s|)|)\\b";
+    private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(@ |due on |on |at |from |to |by |due |)(past midnight|past noon|after noon|after midnight)\\b)";
+    private static final String DDMMYYYY_KEYWORD = "\\b(@ |due on | on |at |from |to |by |due |)(\\d+([/.]\\d+[/.]\\d+|[/.]\\d+\\b)\\b)";
+    private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |)(\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
             + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|\\S)(\\d+\\b|))";
-    private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(due on |on |at |from |to |by |due |)(\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
+    private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |)(\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
             + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|))";
-    private static final String AFTER_DAYS_APART_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
+    private static final String AFTER_DAYS_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)(\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
             + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b)";
-    private static final String DAYS_APART_VOCAB_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day(s|)\\b|\\b(the\\s|)next day(s|)\\b|\\b(after today)"
+    private static final String DAYS_APART_VOCAB_KEYWORD = "(@ |due on |on |at |from |to |by |due |)(\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day(s|)\\b|\\b(the\\s|)next day(s|)\\b|\\b(after today)"
             + "\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year(s|))\\b)";
-    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
+    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)(\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
             + "\\b(\\w+ (week|month|year)(s|) after)\\b)";
-    private static final String AFTER_WEEKDAY_APART_KEYWORD = "(due on |on |at |from |to |by |due |)next (mon|tues|wed|thurs|fri|sat|sun)(day|)";
-    private static final String THIS_WEEKDAY_APART_KEYWORD = "(due on |on |at |from |to |by |due |)this (mon|tues|wed|thurs|fri|sat|sun)(day|)";
+    private static final String AFTER_WEEKDAY_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)next (mon|tues|wed|thurs|fri|sat|sun)(day|)";
+    private static final String THIS_WEEKDAY_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)this (mon|tues|wed|thurs|fri|sat|sun)(day|)";
 	private static final String UNWANTED = "(\\bend at\\b|\\bstart at\\b|\\band\\b|\\.|~)";
 	private String description;
 
@@ -42,8 +42,8 @@ public class DescriptionParser {
 		userInput = replace(userInput, MORNING_AFTERNOON_NIGHT_KEYWORD);
 		userInput = replace(userInput, PAST_NOON_PAST_MIDNIGHT_KEYWORD);
 		userInput = replace(userInput, NOON_MIDNIGHT_KEYWORD);
-		userInput = replace(userInput, TIME_AM_OR_PM_KEYWORD);
 		userInput = replace(userInput, TIME_WITH_OCLOCK_KEYWORD);
+		userInput = replace(userInput, TWELVE_HOUR_KEYWORD);
 		userInput = replace(userInput, TWENTY_FOUR_HH_KEYWORD);
 		userInput = replace(userInput, DDMMYYYY_KEYWORD);
 		userInput = replace(userInput, DD_MONNTHINWORD_YYYY_KEYWORD);
