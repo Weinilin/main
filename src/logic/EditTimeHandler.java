@@ -22,7 +22,7 @@ class EditTimeHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
-    Task oldTask, newTask;
+    Task oldTask, newTask = null;
     
     @Override
     protected ArrayList<String> getAliases() {

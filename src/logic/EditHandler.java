@@ -31,7 +31,7 @@ class EditHandler extends UndoableCommandHandler {
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
-    Task oldTask, newTask;
+    Task oldTask, newTask = null;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;

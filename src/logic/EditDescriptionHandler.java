@@ -21,7 +21,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	private static final String HELP_MESSAGE = "edit description <index> <new description>\n\t update the task description only\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 	                                        Arrays.asList("ed"));
-	Task oldTask, newTask;
+	Task oldTask, newTask = null;
 	
 	@Override
 	protected ArrayList<String> getAliases() {
