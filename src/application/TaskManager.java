@@ -1,4 +1,3 @@
-
 package application;
 
 import java.util.Scanner;
@@ -38,6 +37,18 @@ class TaskManager	{
 	
 	public static void printMessageToUser(String message){
         System.out.println(message);
+    }
+
+}
+package application;
+
+import ui.CommandLineInterface;
+
+class TaskManager   {
+    
+    public static void main (String[] args) {       
+        CommandLineInterface cli = new CommandLineInterface();
+        cli.processUserInput();
     }
 
 }
