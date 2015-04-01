@@ -91,7 +91,7 @@ public class DateParserTest {
         // test without year
         dates.clear();
         dates.add("12/01/2015");
-        assertEquals(dates, DateParser.extractDate("mds sale 12 jan."));
+        assertEquals(dates, DateParser.extractDate("mds sale at 12 jan."));
 
         // test date with year
         dates.clear();
@@ -176,23 +176,23 @@ public class DateParserTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tomorrow
         dates.clear();
-        dates.add("29/03/2015");
+        dates.add("02/04/2015");
         assertEquals(dates, DateParser.extractDate("mds sale from tomorrow"));
 
         // test keyword 5: tmr
         dates.clear();
-        dates.add("29/03/2015");
+        dates.add("02/04/2015");
         assertEquals(dates, DateParser.extractDate("mds sale from tmr"));
 
         // test keyword 5: the following day
         dates.clear();
-        dates.add("29/03/2015");
+        dates.add("02/04/2015");
         assertEquals(dates,
                 DateParser.extractDate("mds sale the following day"));
 
         // test keyword 5: the next day
         dates.clear();
-        dates.add("29/03/2015");
+        dates.add("02/04/2015");
         assertEquals(dates, DateParser.extractDate("mds sale the next day"));
 
         // test keyword 5: after today
