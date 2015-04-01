@@ -11,8 +11,8 @@ import storage.DatabaseLocationChanger;
  * @author A0114463M
  *
  */
-class UndoRedoRecord {
-    private static enum ActionType {
+class UndoRedoAction {
+    public static enum ActionType {
         ADD, DELETE, EDIT, MARK, SETLOCATION
     };
     Memory memory = Memory.getInstance();
@@ -21,13 +21,13 @@ class UndoRedoRecord {
     private String oldPath, newPath = null;
 
     /**
-     * Construct a new new record associating with task changes
+     * Construct a new new record associating with task changes of edit
      * @param action - ActionType other than SETLOCATION
      * @param oldTask - task that has been removed from memory
      * @param newTask - task that has been added to memory
      * 
      */
-    public UndoRedoRecord(ActionType action, Task oldTask, Task newTask) {
+    public UndoRedoAction(ActionType action, Task oldTask, Task newTask) {
         this.action = action;
         this.oldTask = oldTask;
         this.newTask = newTask;
@@ -39,7 +39,7 @@ class UndoRedoRecord {
      * @param oldPath - old path of storage
      * @param newPath - new path of storage
      */
-    public UndoRedoRecord(ActionType action, String oldPath, String newPath) {
+    public UndoRedoAction(ActionType action, String oldPath, String newPath) {
         this.action = action;
         this.oldPath = oldPath;
         this.newPath = newPath;

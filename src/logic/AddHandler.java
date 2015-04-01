@@ -20,7 +20,7 @@ import application.Task;
  */
 class AddHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
-    private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
+//  private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
     private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
@@ -42,17 +42,20 @@ class AddHandler extends UndoableCommandHandler {
         addLogger.entering(getClass().getName(), "Add non empty task");
         newTask = CommandHandler.createNewTask(parameter);
         // a non empty task is created
-        assert (newTask != null);	
-        if (memory.addTask(newTask)) {        
-            updateTaskList(taskList);
-            undoRedoManager.undo.push(this);
-            addLogger.log(Level.FINE, "Add sucess");
-            return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
-        } 
-        else {
-            addLogger.log(Level.SEVERE, "Error adding new task!");
-            throw new Error(FATAL_ERROR_MESSAGE);
-        }	
+        assert (newTask != null);
+        
+        memory.addTask(newTask); 
+        recordMemoryChanges(taskList);
+        updateTaskList(taskList);            
+        addLogger.log(Level.FINE, "Add sucess");
+        return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+       
+    }
+
+    private void recordMemoryChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder addRecorder = new UndoRedoRecorder(taskList);
+        addRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.ADD, newTask, newTask));
+        undoRedoManager.addNewRecord(addRecorder);
     }
 
 
@@ -86,12 +89,6 @@ class AddHandler extends UndoableCommandHandler {
     @Override
     public String getHelp() {
         return HELP_MESSAGE;
-    }
-
-
-    @Override
-    void undo() {
-    	memory.removeTask(newTask);
     }
     
 }

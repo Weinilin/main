@@ -8,22 +8,10 @@ import java.util.regex.Pattern;
 
 public class IndexParser {
 	private int index;
-
+	private String input;
 	public IndexParser(String userInput) {
-		int detectedIndex = 0;
-		Logger logger = Logger.getLogger("IndexParser");
-		try {
-			logger.log(Level.INFO, "going to start processing");
-			String number = getNumber(userInput);
-			detectedIndex = Integer.parseInt(number);
-		} catch (Exception e) {
-			System.err.println("NoDigitException: " + e.getMessage());
-			logger.log(Level.WARNING, "processing error", e);
-			System.exit(0);
-		}
-		setIndex(detectedIndex);
+	    input = userInput;
 	}
-
 	/**
 	 * set the index
 	 * @param detectedIndex
@@ -35,11 +23,23 @@ public class IndexParser {
 
 	/**
 	 * Extract the index.
+	 * 
 	 * @return positive index if number is detected, throw exception error if no digit is 
 	 * entered by the user. Since the program could not execute the command without the
 	 * index (a digit) being detect.
+	 * @throws NumberFormatException when user enters a non-integer string
 	 */
-	public int getIndex() {
+	public int getIndex() throws NumberFormatException{
+        int detectedIndex = 0;
+//      Logger logger = Logger.getLogger("IndexParser");
+        try {
+//          logger.log(Level.INFO, "going to start processing");
+            String number = getNumber(input);
+            detectedIndex = Integer.parseInt(number);
+        } catch (Exception e) {
+            throw new NumberFormatException (input + " is not a number!\n");
+        }
+        setIndex(detectedIndex);
 		return index;
 	}
 
