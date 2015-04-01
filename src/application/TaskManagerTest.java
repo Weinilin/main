@@ -17,7 +17,9 @@ public class TaskManagerTest {
     
     Task task1 = CommandHandler.createNewTask("task a"),
          task2 = CommandHandler.createNewTask("task b from 10am to 12pm"),
-         task3 = CommandHandler.createNewTask("task c by 8pm");
+         task3 = CommandHandler.createNewTask("task c by 8pm"),
+         task4 = CommandHandler.createNewTask("task d from 6am to 7am"),
+         task5 = CommandHandler.createNewTask("task e by 3 days later");
    
     ArrayList<Task> expected = new ArrayList<Task>();
     CommandLineInterface cli = new CommandLineInterface();
@@ -38,6 +40,25 @@ public class TaskManagerTest {
         expected.clear();
         expected.add(task3);
         expected.add(task1);
+        Collections.sort(expected, new TaskComparator());
+        assertEquals(lc.getTaskList().toString(), expected.toString());
+    }
+    
+    @Test
+    public void testMainAdd3() {
+        cli.processUserInput("a task d 0600-0700");
+        expected.add(task4);
+        Collections.sort(expected, new TaskComparator());
+        assertEquals(lc.getTaskList().toString(), expected.toString());
+    }
+    
+    @Test
+    public void testMainAdd4() {
+        cli.processUserInput("add task e by 05/04 23:59");
+        expected.clear();
+        expected.add(task1);
+        expected.add(task3);
+        expected.add(task5);
         Collections.sort(expected, new TaskComparator());
         assertEquals(lc.getTaskList().toString(), expected.toString());
     }
