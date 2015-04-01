@@ -20,7 +20,7 @@ import application.Task;
  */
 class AddHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
-    private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
+//  private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
     private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
@@ -89,12 +89,6 @@ class AddHandler extends UndoableCommandHandler {
     @Override
     public String getHelp() {
         return HELP_MESSAGE;
-    }
-
-
-    @Override
-    void undo() {
-    	memory.removeTask(newTask);
     }
     
 }
