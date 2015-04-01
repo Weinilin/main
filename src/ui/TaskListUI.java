@@ -2,18 +2,20 @@ package ui;
 
 import java.util.ArrayList;
 
+import logic.LogicController;
 import application.Task;
 import application.TaskPrinter;
 
 public class TaskListUI {
-	private ArrayList<Task> taskList;
 	
-	public TaskListUI(ArrayList<Task> taskList) {
-		this.taskList = taskList;
+	
+	public TaskListUI() {
+		
 	}
 	
 	public void showTask() {
-	    
+        LogicController lc = LogicController.getInstance();
+        ArrayList<Task> taskList = lc.getTaskList();
 		TaskPrinter tp = new TaskPrinter();
 
 		
