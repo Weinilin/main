@@ -213,6 +213,7 @@ public class DateParser {
      */
     private static String getNextWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
         String dateOfTheTask = "";
+     
         if (todayDayOfWeek == dayOfTheWeek) {
             dateOfTheTask = addToTheCurrentDateByDays(7);
         } else {
@@ -480,7 +481,7 @@ public class DateParser {
             dayOfWeek = 2;
         } else if (userInput.contains("wed")) {
             dayOfWeek = 3;
-        } else if (userInput.contains("thrus")) {
+        } else if (userInput.contains("thurs")) {
             dayOfWeek = 4;
         } else if (userInput.contains("fri")) {
             dayOfWeek = 5;
