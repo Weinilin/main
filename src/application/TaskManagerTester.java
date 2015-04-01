@@ -6,9 +6,9 @@ public class TaskManagerTester {
     TaskManagerTester(CommandLineInterface cli) {
         String feedback = cli.processUserInput("setLocation TestSuite/SetLocationTest");
         if (feedback.equals("The file is now saved to TestSuite/SetLocationTest")) {
-            System.out.println("add sucess");
+            System.out.println("set location sucess");
         } else {
-            System.out.println("add fail");
+            System.out.println("set location fail");
         }
         
         
