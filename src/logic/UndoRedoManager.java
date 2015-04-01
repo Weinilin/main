@@ -46,17 +46,22 @@ class UndoRedoManager {
             UndoRedoRecorder latestChange = undo.pop();
             latestChange.performUndo();
             redo.push(latestChange);
-            return latestChange.getTaskList();
+            return latestChange.getCurrentTaskList();
         }
         else {
             return new ArrayList<Task>();
         }
     }
     
-    public ArrayList<Task> redo() {
-        UndoRedoRecorder lastChange = redo.pop();
-        lastChange.performUndo();
-        undo.push(lastChange);
-        return lastChange.getTaskList();
+    public ArrayList<Task> redo() { 
+        if (canRedo()) {
+            UndoRedoRecorder lastChange = redo.pop();
+            lastChange.performRedo();
+            undo.push(lastChange);
+            return lastChange.getChangedTaskList();
+        }
+        else {
+            return new ArrayList<Task>();
+        }
     }
 }

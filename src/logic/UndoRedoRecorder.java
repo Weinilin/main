@@ -16,18 +16,27 @@ public class UndoRedoRecorder {
 
     private ArrayList<UndoRedoAction> actionList = new ArrayList<UndoRedoAction>();
     private ArrayList<Task> currentTaskList = new ArrayList<Task>();
+    private ArrayList<Task> changedTaskList = new ArrayList<Task>();
     
     public UndoRedoRecorder(ArrayList<Task> taskList) {
         currentTaskList.clear();
         currentTaskList.addAll(taskList);
     }
     
+    void recordUpdatedList(ArrayList<Task> updatedList) {
+        changedTaskList.clear();
+        changedTaskList.addAll(updatedList);
+    }
     public void appendAction(UndoRedoAction newAction) {
         actionList.add(newAction);
     }
     
-    public ArrayList<Task> getTaskList() {
+    public ArrayList<Task> getCurrentTaskList() {
         return currentTaskList;
+    }
+    
+    public ArrayList<Task> getChangedTaskList() {
+        return changedTaskList;
     }
     
     public void performUndo() {

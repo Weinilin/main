@@ -21,7 +21,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	private static final String HELP_MESSAGE = "edit description <index> <new description>\n\t update the task description only\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 	                                        Arrays.asList("ed"));
-	Task oldTask, newTask;
+	Task oldTask, newTask = null;
 	
 	@Override
 	protected ArrayList<String> getAliases() {
@@ -52,23 +52,34 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    
         newTask.setDescription(dp.getDescription());
         
-	    if ((newTask != oldTask) && (oldTask != null)) {
-	        memory.removeTask(oldTask);
-	        memory.addTask(newTask);
-            recordMemoryChanges(taskList);
-            taskList.remove(oldTask);
-            taskList.add(newTask);
-            Collections.sort(taskList, new TaskComparator());
-	    }
+	    performEdit(taskList);
 	    return "Changed " + oldTask.getDescription() + " to " +
 	    		newTask.getDescription() + "\n";
 	}
 
+
+    private void performEdit(ArrayList<Task> taskList) {
+        if ((newTask != oldTask) && (oldTask != null)) {
+	        memory.removeTask(oldTask);
+	        memory.addTask(newTask);
+            recordMemoryChanges(taskList);
+            Collections.sort(taskList, new TaskComparator());
+	    }
+    }
+
 	private void recordMemoryChanges(ArrayList<Task> taskList) {
-	    UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
-	    editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
-	    undoRedoManager.addNewRecord(editRecorder);
+        UndoRedoRecorder editDescriptionRecorder = new UndoRedoRecorder(taskList);
+        editDescriptionRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        updateTaskList(taskList);
+        editDescriptionRecorder.recordUpdatedList(taskList);
+        undoRedoManager.addNewRecord(editDescriptionRecorder);
 	}
+	  
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
+    }
+    
 	@Override
 	public String getHelp() {
 		return HELP_MESSAGE;
