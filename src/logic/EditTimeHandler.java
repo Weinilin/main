@@ -78,9 +78,6 @@ class EditTimeHandler extends UndoableCommandHandler {
         memory.removeTask(newTask);
     }
     
-    @Override
-    public CommandHandler getNewInstance() {
-        return new EditTimeHandler();
-    }
+
 
 }

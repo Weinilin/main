@@ -155,9 +155,5 @@ class DeleteHandler extends UndoableCommandHandler {
         }
     }
 
-    @Override
-    public CommandHandler getNewInstance() {
-        return new DeleteHandler();
-    }
 
 }

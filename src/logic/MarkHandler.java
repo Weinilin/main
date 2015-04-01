@@ -24,7 +24,7 @@ class MarkHandler extends UndoableCommandHandler {
             Arrays.asList("mark", "done"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
-    private ArrayList<Integer> markedTask;
+    private ArrayList<Task> markedTask = new ArrayList<Task>();
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -39,39 +39,31 @@ class MarkHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        String goodFeedback = new String();
+        String goodFeedback = "";
+        String badFeedback = "";
         IndexParser ip;
         int index;
         for (String t: token) {
             ip = new IndexParser(t);
-            index = ip.getIndex();
+            index = ip.getIndex() - 1;
             try {
-                goodFeedback = getTasks(taskList, goodFeedback, index, t);
+                taskList.get(index).setStatus("done");
+                markedTask.add(taskList.get(index));
+                goodFeedback += t + " ";
             } catch (IndexOutOfBoundsException iob) {
+                badFeedback += t + " ";
                 markLogger.log(Level.WARNING, "Invalid index", iob);
-                return INVALID_INDEX_MESSAGE;
             } 
         }
-
+        
+        for (Task done: markedTask) {
+            memory.markDone(done);
+        }
+        
         return String.format(MARKED_MESSAGE, goodFeedback);
     }
 
-    /**
-     * get the tasks than can be marked to done
-     * @param taskList
-     * @param goodFeedback
-     * @param index
-     * @param t
-     * @return
-     */
-    private String getTasks(ArrayList<Task> taskList, String goodFeedback,
-            int index, String t) {
-        taskList.get(index - 1).setStatus("done");
-        markedTask.add(index - 1);
-        memory.markDone(index);		
-        goodFeedback += t + " ";
-        return goodFeedback;
-    }
+   
 
     /**
      * check if the argument user typed is empty
@@ -99,13 +91,8 @@ class MarkHandler extends UndoableCommandHandler {
 
     @Override
     void undo() {
-        for (int index: markedTask) {
-            memory.markUndone(index);
-        }
-    }
-    
-    @Override
-    public CommandHandler getNewInstance() {
-        return new MarkHandler();
+//        for (int index: markedTask) {
+//            memory.markUndone(index);
+//        }
     }
 }
