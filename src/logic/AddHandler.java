@@ -41,6 +41,9 @@ class AddHandler extends UndoableCommandHandler {
 
         addLogger.entering(getClass().getName(), "Add non empty task");
         newTask = CommandHandler.createNewTask(parameter);
+        if (newTask.getDescription().equals("")) {
+            return "No description fro new task\n";
+        }
         // a non empty task is created
         assert (newTask != null);
         
