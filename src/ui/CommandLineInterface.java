@@ -30,7 +30,6 @@ public class CommandLineInterface {
 
 	    message = commandHandler.executeCommand(userInput);
 						
-		std.updateTable();
 		taskListUI.showTask();
 		
 		return message;
