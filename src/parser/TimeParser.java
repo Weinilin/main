@@ -11,7 +11,7 @@ public class TimeParser {
     private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(\\d+|\\d+[:.,]\\d+)(\\s|)o'clock\\b";
     private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(on |at |from |to |)noon\\b)|(\\b(on |at |from |to |)midnight\\b)";
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(from |to |)(before midnight|before noon)\\b)";
-    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
+    private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)(\\s|\\S)(o'clock|am|pm|)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
             + "| at (the |)morning\\b| at (the |)morn\\b))";
     private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d+[:.,]\\d+\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(from |to |)(past midnight|past noon|after noon|after midnight)\\b)";
