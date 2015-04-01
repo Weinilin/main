@@ -27,7 +27,7 @@ class UndoHandler extends UndoableCommandHandler {
             return "Nothing to undo\n";
         }
         else {
-            undoRedoManager.undo();
+            updateTaskList(undoRedoManager.undo());
             return "Revoked latest change\n";
         }
 
@@ -48,7 +48,7 @@ class UndoHandler extends UndoableCommandHandler {
      */
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
-        taskList.addAll(0, memory.getTaskList());
+        taskList.addAll(0, taskList);
     }
 
 }

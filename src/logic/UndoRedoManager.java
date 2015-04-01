@@ -1,7 +1,8 @@
 package logic;
 
 import java.util.Stack;
-
+import java.util.ArrayList;
+import application.Task;
 class UndoRedoManager {
 
     private static UndoRedoManager undoRedoManager;
@@ -32,15 +33,17 @@ class UndoRedoManager {
         return !redo.isEmpty();
     }
     
-    public void undo() {
+    public ArrayList<Task> undo() {
         UndoRedoRecorder latestChange = undo.pop();
         latestChange.performUndo();
         redo.push(latestChange);
+        return latestChange.getTaskList();
     }
     
-    public void redo() {
+    public ArrayList<Task> redo() {
         UndoRedoRecorder lastChange = redo.pop();
         lastChange.performUndo();
         undo.push(lastChange);
+        return lastChange.getTaskList();
     }
 }
