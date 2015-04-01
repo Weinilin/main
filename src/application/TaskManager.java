@@ -1,4 +1,3 @@
-
 package application;
 
 import java.util.Scanner;
@@ -7,6 +6,7 @@ import ui.CommandLineInterface;
 import ui.GUI;
 import ui.TaskListUI;
 
+<<<<<<< HEAD
 class TaskManager	{
     
     private static final String COMMAND_MESSAGE = new String("Command: ");
@@ -39,6 +39,7 @@ class TaskManager	{
 	
 	public static void printMessageToUser(String message){
         System.out.println(message);
+
     }
 
 }
