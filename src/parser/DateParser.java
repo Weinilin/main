@@ -647,7 +647,7 @@ public class DateParser {
             int month = convertMonthToNumber(dateOfTheTask);
 
             testValidMonth(month);
-            // testValidDay(day, year, month);
+            testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 
@@ -810,7 +810,7 @@ public class DateParser {
             int month = getMonth(ddMMYYYY);
 
             testValidMonth(month);
-            // testValidDay(day, year, month);
+            testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 
