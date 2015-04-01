@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import parser.DateTimeParser;
 import parser.IndexParser;
+import parser.TaskTypeParser;
 import application.Task;
 import application.TaskComparator;
 /**
@@ -21,7 +22,7 @@ class EditTimeHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
-    Task oldTask, newTask = null;
+    Task oldTask, newTask;
     
     @Override
     protected ArrayList<String> getAliases() {
@@ -36,8 +37,9 @@ class EditTimeHandler extends UndoableCommandHandler {
 		}
 		
         DateTimeParser dtp = new DateTimeParser(parameter);
+        TaskTypeParser ttp = new TaskTypeParser(parameter);
         IndexParser ip = new IndexParser(parameter);
-        int index = ip.getIndex();
+        int index = ip.getIndex() - 1;
         String newDeadline = dtp.getDeadlineDate() + " " + dtp.getDeadlineTime(),
                newStartDateTime = dtp.getStartDate() + " " + dtp.getStartTime(),
                newEndDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
@@ -47,36 +49,37 @@ class EditTimeHandler extends UndoableCommandHandler {
         
         try {
             oldTask = taskList.remove(index);
-            newTask.setDescription(oldTask.getDescription());
-            newTask.setStatus(oldTask.getStatus());
-            newTask.setDeadline(newDeadline);
-            newTask.setEndDateTime(newStartDateTime);
-            newTask.setStartDateTime(newEndDateTime);
+            newTask = new Task(oldTask);
         } catch (IndexOutOfBoundsException iob) {
             return INVALID_INDEX_MESSAGE;
         }
+
+        newTask.setDeadline(newDeadline);
+        newTask.setEndDateTime(newEndDateTime);
+        newTask.setStartDateTime(newStartDateTime);
+        newTask.setTaskType(ttp.getTaskType());
         
-        if (newTask != null && oldTask != null) {
+        if ((newTask != oldTask) && (oldTask != null)) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
+            recordMemoryChanges(taskList);
             taskList.remove(oldTask);
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
         }
-        return "";
+        return "Task \"" + newTask.getDescription() + "\" has changed time\n";
     }
-
+    
+    private void recordMemoryChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
+        editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        undoRedoManager.addNewRecord(editRecorder);
+    }
+    
     @Override
     public String getHelp() {
         return HELP_MESSAGE;
     }
-
-    @Override
-    void undo() {
-        memory.addTask(oldTask);
-        memory.removeTask(newTask);
-    }
-    
 
 
 }

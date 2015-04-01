@@ -48,11 +48,4 @@ class ClearHandler extends UndoableCommandHandler {
     }
 
 
-    @Override
-    void undo() {
-        for (Task task: oldTaskList) {
-            memory.addTask(task);
-        }
-    }
-
 }

@@ -87,12 +87,4 @@ class MarkHandler extends UndoableCommandHandler {
     public String getHelp() {
         return HELP_MESSAGE;
     }
-
-
-    @Override
-    void undo() {
-//        for (int index: markedTask) {
-//            memory.markUndone(index);
-//        }
-    }
 }

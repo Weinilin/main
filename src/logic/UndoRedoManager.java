@@ -3,6 +3,14 @@ package logic;
 import java.util.Stack;
 import java.util.ArrayList;
 import application.Task;
+
+/**
+ * This class manages all the actions that perform changes to 
+ * memory by UndoableCommandHandlers. A redo stack is also implemented
+ * to record actions that has been called for undo for redo purposes
+ *  * @author A0114463M
+ *
+ */
 class UndoRedoManager {
 
     private static UndoRedoManager undoRedoManager;
@@ -34,10 +42,15 @@ class UndoRedoManager {
     }
     
     public ArrayList<Task> undo() {
-        UndoRedoRecorder latestChange = undo.pop();
-        latestChange.performUndo();
-        redo.push(latestChange);
-        return latestChange.getTaskList();
+        if (canUndo()) {
+            UndoRedoRecorder latestChange = undo.pop();
+            latestChange.performUndo();
+            redo.push(latestChange);
+            return latestChange.getTaskList();
+        }
+        else {
+            return new ArrayList<Task>();
+        }
     }
     
     public ArrayList<Task> redo() {
