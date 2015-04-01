@@ -9,24 +9,10 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import java.util.Enumeration;
-
-
-
-
-
-
-
-
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
 import parser.DateParser;
 import application.Task;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -37,12 +23,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import logic.LogicController;
 
 public class GUI extends JPanel implements ActionListener{
-    
-    public static final char STAR = '\u2605';
     
 
     private static final String COMMAND_MESSAGE = new String("Command: ");
@@ -68,7 +51,7 @@ public class GUI extends JPanel implements ActionListener{
     private static DefaultTableModel deadlinesAndTimeTasksModel;
     private static DefaultTableModel floatingTasksModel;
 
-    
+    private static CommandLineInterface CLI;
 
     private static LogicController lc;
    
@@ -80,8 +63,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
-
-      
+      CLI = new CommandLineInterface();
        
         lc = LogicController.getInstance();
         
@@ -233,6 +215,7 @@ public class GUI extends JPanel implements ActionListener{
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
             {
                 Component c = super.prepareRenderer(renderer, row, column);
+                c.setForeground(Color.BLUE);
 
                 String status = (String) floatingTasksTable.getValueAt(row, 2);
                 
@@ -279,7 +262,7 @@ public class GUI extends JPanel implements ActionListener{
     }
     
     
-    private void updateTable() {
+    public void updateTable() {
 
         deadlinesAndTimeTasksModel.setRowCount(0);
 
@@ -348,8 +331,8 @@ public class GUI extends JPanel implements ActionListener{
         textField.selectAll();
 
       
-
-        String feedback = processUserInput(text);
+        System.out.println(text);
+        String feedback = CLI.processUserInputFromGUI(text);
     
 
         textArea.setText(feedback);
@@ -359,7 +342,7 @@ public class GUI extends JPanel implements ActionListener{
 
         textArea.setCaretPosition(textArea.getDocument().getLength());
 
-       
+    
         updateTable();
         
 
@@ -374,10 +357,9 @@ public class GUI extends JPanel implements ActionListener{
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Flirter's Assistant");
+        JFrame frame = new JFrame("Task's Manager");
         frame.setMinimumSize(new Dimension(735,590));
-        JLabel slogan = new JLabel("Having an affair has never been so easy.", SwingConstants.CENTER);
-        slogan.setFont(new Font("Kokonor", Font.ITALIC, 12 ));
+      
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -386,7 +368,6 @@ public class GUI extends JPanel implements ActionListener{
         //Create and set up the content pane.
         GUI gui = new GUI();
         frame.add(gui, BorderLayout.CENTER);
-        frame.add(slogan, BorderLayout.SOUTH);
 
 
         //Display the window.
@@ -397,23 +378,24 @@ public class GUI extends JPanel implements ActionListener{
     
     
 
-    public String processUserInput(String userInput){
-        String message;
-        LogicController commandHandler = LogicController.getInstance();
-
-        
-        printMessageToUser(String.format(WELCOME_MESSAGE));
-
-        printMessageToUser(String.format(COMMAND_MESSAGE));
-
-        message = commandHandler.executeCommand(userInput);
-        if (message == null) {
-            printMessageToUser(GOODBYE_MESSAGE);
-            System.exit(0);
-        }         
-
-        return message;
-    }
+//    public String processUserInput(String userInput){
+//        String message;
+//        LogicController commandHandler = LogicController.getInstance();
+//
+//        
+//        printMessageToUser(String.format(WELCOME_MESSAGE));
+//
+//        printMessageToUser(String.format(COMMAND_MESSAGE));
+//
+//        System.out.println(userInput);
+//        message = commandHandler.executeCommand(userInput);
+//        if (message == null) {
+//            printMessageToUser(GOODBYE_MESSAGE);
+//            System.exit(0);
+//        }         
+//
+//        return message;
+//    }
     
     public void run() {
         createAndShowGUI();

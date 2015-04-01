@@ -10,6 +10,8 @@ public class CommandLineInterface {
 	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
 	private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
 	private Scanner scanner;
+	
+
 
 	public CommandLineInterface(){
 	} 	
@@ -24,11 +26,13 @@ public class CommandLineInterface {
 		
 		TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
 		taskListUI.showTask();
-	
+       
+
+		GUI std = new GUI();
+	    std.run();
 		printMessageToUser(String.format(WELCOME_MESSAGE));
 
 		while (true) {
-		    clearConsole();
 			printMessageToUser(String.format(COMMAND_MESSAGE));
 			userCommand = scanner.nextLine();
 			message = commandHandler.executeCommand(userCommand);
@@ -37,8 +41,32 @@ public class CommandLineInterface {
 				System.exit(0);
 			}			
 			printMessageToUser(message);
+			std.updateTable();
 			taskListUI.showTask();
 		}
+	}
+
+
+	public String processUserInputFromGUI(String userInput){
+	    String message;
+	    LogicController commandHandler = LogicController.getInstance();
+
+
+	    printMessageToUser(String.format(WELCOME_MESSAGE));
+
+	    printMessageToUser(String.format(COMMAND_MESSAGE));
+
+	    message = commandHandler.executeCommand(userInput);
+	    if (message == null) {
+	        printMessageToUser(GOODBYE_MESSAGE);
+	        System.exit(0);
+	    }         
+	    
+	    TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
+	    taskListUI.showTask();
+
+	    return message;
+
 	}
 
 	/**
@@ -49,25 +77,6 @@ public class CommandLineInterface {
 		System.out.println(message);
 	}
 
-	public final static void clearConsole()
-	{
-	    try
-	    {
-	        final String os = System.getProperty("os.name");
-
-	        if (os.contains("Windows"))
-	        {
-	            Runtime.getRuntime().exec("cls");
-	        }
-	        else
-	        {
-	            Runtime.getRuntime().exec("clear");
-	        }
-	    }
-	    catch (final Exception e)
-	    {
-	        //  Handle any exceptions.
-	    }
-	}
+	
 	
 }

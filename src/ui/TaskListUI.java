@@ -6,16 +6,13 @@ import application.Task;
 import application.TaskPrinter;
 
 public class TaskListUI {
-	ArrayList<Task> taskList;
-	GUI std;
+	private ArrayList<Task> taskList;
 	
 	public TaskListUI(ArrayList<Task> taskList) {
 		this.taskList = taskList;
-		std = new GUI();
 	}
 	
 	public void showTask() {
-	    std.run();
 	    
 		TaskPrinter tp = new TaskPrinter();
 
@@ -76,6 +73,10 @@ public class TaskListUI {
 
 		}
 		
+	}
+	
+	public ArrayList<Task> getTaskList() {
+	    return taskList;
 	}
 	
 	
