@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.text.ParseException;
 
 public class DateParser {
-    private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b";
+    private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/.]\\d+\\b)\\b";
     private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
             + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|\\S)(\\d+\\b|)";
     private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
@@ -19,7 +19,7 @@ public class DateParser {
             + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b|\\b(in \\w+ day(s|) time(s|))\\b";
     private static final String DAYS_APART_VOCAB_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day(s|)\\b|\\b(the\\s|)next day(s|)\\b|\\b(after today)"
             + "\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year(s|))\\b)";
-    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
+    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b\\w+ (week|month|year)(s|)\\b|\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
             + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))|(\\w+ (week|month|year)(s|) from now)";
     private static final String NEXT_WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
@@ -137,6 +137,7 @@ public class DateParser {
      * @return the user input all in lower case.
      */
     private static String switchAllToLowerCase(String userInput) {
+        userInput = userInput.replaceAll("\\s+", " ");
         userInput = " " + userInput.toLowerCase() + " ";
         return userInput;
     }

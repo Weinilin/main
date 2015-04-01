@@ -44,7 +44,7 @@ public class DescriptionParserTest {
 		DescriptionParser d8 = new DescriptionParser("CS2103T assignment at 2nd march at 2pm");
 		assertEquals(d8.getDescription(), "cs2103t assignment");
 		
-		DescriptionParser d7 = new DescriptionParser("On this mon for CS2103T assignment");
+		DescriptionParser d7 = new DescriptionParser("On this   mon for CS2103T assignment");
 		assertEquals(d7.getDescription(), "for cs2103t assignment");
 		
 		//test for floating

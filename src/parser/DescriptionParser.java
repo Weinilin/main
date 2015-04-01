@@ -16,7 +16,7 @@ public class DescriptionParser {
                     + "| at (the |)morning\\b| at (the |)morn\\b))";
     private static final String TWENTY_FOUR_HH_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b\\d+[:.,]\\d+\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(due on |on |at |from |to |by |due |)(past midnight|past noon|after noon|after midnight)\\b)";
-    private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |by |due | due on |)(\\d+([/.]\\d+[/.]\\d+|[/]\\d+\\b)\\b)";
+    private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |by |due | due on |)(\\d+([/.]\\d+[/.]\\d+|[/.]\\d+\\b)\\b)";
     private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(due on |on |at |from |to |by |due |)(\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
             + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|\\S)(\\d+\\b|))";
     private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(due on |on |at |from |to |by |due |)(\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
@@ -65,7 +65,7 @@ public class DescriptionParser {
 	 * @return the user input all in lower case. 
 	 */
 	private String switchAllToLowerCase(String userInput) {
-	    userInput.replaceAll("\\s+", " ");
+	    userInput = userInput.replaceAll("\\s+", " ");
 		userInput = " " + userInput.toLowerCase() + " ";
 		return userInput;
 	}
