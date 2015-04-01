@@ -9,6 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.text.ParseException;
 
+import javax.swing.JOptionPane;
+
 public class DateParser {
     private static final String DDMMYYYY_KEYWORD = "\\b(on |at |from |to |)\\d+([/.]\\d+[/.]\\d+|[/.]\\d+\\b)\\b";
     private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
@@ -16,10 +18,10 @@ public class DateParser {
     private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(on |at |from |to |)\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
             + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|)";
     private static final String AFTER_DAYS_APART_KEYWORD = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
-            + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b|\\b(in \\w+ day(s|) time(s|))\\b";
+            + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b|\\b(in \\w+ day(s|) time(s|))\\b|\\b(for \\w+ day(s|))\\b";
     private static final String DAYS_APART_VOCAB_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day(s|)\\b|\\b(the\\s|)next day(s|)\\b|\\b(after today)"
             + "\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year(s|))\\b)";
-    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b\\w+ (week|month|year)(s|)\\b|\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
+    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(\\bfor \\w+ (week|month|year)(s|)\\b)|\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
             + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))|(\\w+ (week|month|year)(s|) from now)";
     private static final String NEXT_WEEKDAY_APART_KEYWORD = " next (mon|tues|wed|thurs|fri|sat|sun)";
@@ -76,6 +78,7 @@ public class DateParser {
         try {
             date = sdf.parse(formattedDateTime);
         } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
             e.printStackTrace();
         }
 
@@ -256,6 +259,7 @@ public class DateParser {
                 dateOfTheTask = addToTheCurrentDateByYear(numberOfYears);
             }
 
+            addCurrentDate(storageOfDate, uniqueKeyword);
             storageOfDate.add(dateOfTheTask);
 
             int indexMatch = matchWithIndex.start();
@@ -263,6 +267,20 @@ public class DateParser {
         }
 
         return storageOfDate;
+    }
+
+    /**
+     * add current date to the storage if "for" is detected
+     * @param storageOfDate
+     * @param uniqueKeyword
+     */
+    private static void addCurrentDate(ArrayList<String> storageOfDate,
+            String uniqueKeyword) {
+        if(uniqueKeyword.contains("for")) {
+            DateFormat date = new SimpleDateFormat(DATE_FORMAT);
+            Calendar cal = Calendar.getInstance();
+            storageOfDate.add(date.format(cal.getTime()));
+        }
     }
 
     /**
@@ -307,18 +325,19 @@ public class DateParser {
      * @param todayDayOfWeek
      * @return DD/MM/YYYY
      */
-    private static String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
+    private static String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek)
+    throws IllegalArgumentException {
         String dateOfTheTask = "";
         try {
             if (todayDayOfWeek < dayOfTheWeek) {
                 dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek
                         - todayDayOfWeek);
             } else {
-                throw new Exception("This week, " + dayOfTheWeek + " has pass!");
+                throw new IllegalArgumentException("This week, " + dayOfTheWeek + " has pass!");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
 
         return dateOfTheTask;
@@ -437,6 +456,7 @@ public class DateParser {
 
             int numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
             dateOfTask = addToTheCurrentDateByDays(numberOfDays);
+            addCurrentDate(storageOfDate, uniqueKeyword);
             storageOfDate.add(dateOfTask);
 
             int indexMatch = toGetIndex.start();
@@ -848,14 +868,14 @@ public class DateParser {
      * 
      * @param month
      */
-    private static void testValidMonth(int month) {
+    private static void testValidMonth(int month) throws IllegalArgumentException {
         try {
             if (month <= 0 || month > 12) {
-                throw new Exception("Invalid Month Keyed!");
+                throw new IllegalArgumentException ("Invalid Month Keyed!");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -865,24 +885,25 @@ public class DateParser {
      * 
      * @param day
      */
-    private static void testValidDay(int day, int year, int month) {
+    private static void testValidDay(int day, int year, int month) throws IllegalArgumentException {
         try {
             Calendar calendar = Calendar.getInstance();
 
             if (year != 0) {
                 calendar.set(Calendar.YEAR, year);
             }
-            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.MONTH, month - 1);
 
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
             if (exceedMaxDaysOnThatMonth(day, maxDays)) {
-                throw new Exception(
+                throw new IllegalArgumentException(
                         "Invalid Day Keyed! Exceed the maximum day in that month");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+            System.out.print("day: "+day+" year: "+year+ " month: "+month+" max: "+maxDays);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

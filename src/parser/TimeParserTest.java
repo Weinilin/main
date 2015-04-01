@@ -242,7 +242,7 @@ public class TimeParserTest {
     /*
      * test digit pm/am hour format am/pm
      */
-    public void testTimeWithAmOrPm() {
+    public void testTwelveHourTime() {
         // test with semicolon format of am 
         ArrayList<String> times = new ArrayList<String>();
         times.clear();
@@ -275,6 +275,12 @@ public class TimeParserTest {
         times.clear();
         times.add("03:30");
         assertEquals(times, TimeParser.extractTime("mds sale 3,30am"));
+        
+     // test with <conjunction> 12 hour format
+        times.clear();
+        times.add("11:00");
+        assertEquals(times,
+                TimeParser.extractTime("mds sale start at 11"));
     }
 
     @Test
@@ -443,6 +449,46 @@ public class TimeParserTest {
         assertEquals(times,
                 TimeParser.extractTime("mds sale 00,20"));
     }
+
+    @Test
+    /**
+     * test twenty hour format(HH:MM) without the punctuation between
+     * hour and minute and with or without hour or hr or hrs or hours behind it. 
+     */
+    public void test24HourWithoutPunc() {
+        ArrayList<String> times1 = new ArrayList<String>();
+     
+        // test with hrs
+        times1.clear();
+        times1.add("11:00");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 1100 hrs"));
+        
+     // test with hr
+        times1.clear();
+        times1.add("12:00");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 1200 hr"));
+        
+     // test with hour
+        times1.clear();
+        times1.add("15:00");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 1500 hour"));
+        
+     // test with hours
+        times1.clear();
+        times1.add("16:00");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 1600 hours"));
+        
+        //test without hrs/hours/hour/hr
+        times1.clear();
+        times1.add("13:00");
+        assertEquals(times1,
+                TimeParser.extractTime("mds sale start at 1300"));
+    }
+        
 
     @Test
     /*
