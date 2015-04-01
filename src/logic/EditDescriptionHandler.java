@@ -21,7 +21,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	private static final String HELP_MESSAGE = "edit description <index> <new description>\n\t update the task description only\n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 	                                        Arrays.asList("ed"));
-	Task oldTask, newTask = null;
+	Task oldTask, newTask;
 	
 	@Override
 	protected ArrayList<String> getAliases() {
@@ -36,25 +36,23 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 			return getHelp();
 		}
 		
-	    DescriptionParser dp = new DescriptionParser(parameter);
+	    DescriptionParser dp = new DescriptionParser(parameter.replaceFirst(token[0], ""));
 	    IndexParser ip = new IndexParser(parameter);
-	    int index = ip.getIndex();
+	    int index = ip.getIndex() - 1;
 	    if (index < 0) {
             return INVALID_INDEX_MESSAGE;
 	    }
 	    
 	    try {
 	        oldTask = taskList.remove(index);
-	        newTask.setDescription(dp.getDescription());
-	        newTask.setStatus(oldTask.getStatus());
-	        newTask.setDeadline(oldTask.getDeadline());
-	        newTask.setEndDateTime(oldTask.getEndDateTime());
-	        newTask.setStartDateTime(oldTask.getStartDateTime());
+	        newTask = new Task(oldTask);
 	    } catch (IndexOutOfBoundsException iob) {
             return INVALID_INDEX_MESSAGE;
 	    }
 	    
-	    if (newTask != null && oldTask != null) {
+        newTask.setDescription(dp.getDescription());
+        
+	    if ((newTask != oldTask) && (oldTask != null)) {
 	        memory.removeTask(oldTask);
 	        memory.addTask(newTask);
             taskList.remove(oldTask);
@@ -70,10 +68,5 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 		return HELP_MESSAGE;
 	}
 
-	@Override
-	void undo() {
-        memory.addTask(oldTask);
-        memory.removeTask(newTask);
-	}
 
 }

@@ -39,10 +39,6 @@ class UndoHandler extends UndoableCommandHandler {
         return "undo\n\t revoke latest change";
     }
 
-    @Override
-    void undo() {
-    }
-
     /**
      * update the taskList in CommandHandler
      */

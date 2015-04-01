@@ -90,11 +90,5 @@ class AddHandler extends UndoableCommandHandler {
     public String getHelp() {
         return HELP_MESSAGE;
     }
-
-
-    @Override
-    void undo() {
-    	memory.removeTask(newTask);
-    }
     
 }

@@ -154,13 +154,4 @@ class DeleteHandler extends UndoableCommandHandler {
         return HELP_MESSAGE;
     }
 
-
-    @Override
-    void undo() {
-        for (Task task: removedTask) {
-            memory.addTask(task);
-        }
-    }
-
-
 }

@@ -36,9 +36,5 @@ public class SetLocationHandler extends UndoableCommandHandler {
         return "setlocation <path>\n\t set the directory that tasks will be saved to\n";
     }
 
-    @Override
-    void undo() {
-
-    }
     
 }

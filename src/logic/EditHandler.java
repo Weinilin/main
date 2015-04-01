@@ -31,7 +31,7 @@ class EditHandler extends UndoableCommandHandler {
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
-    Task oldTask, newTask = null;
+    Task oldTask, newTask;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -58,7 +58,7 @@ class EditHandler extends UndoableCommandHandler {
         } catch (IndexOutOfBoundsException iob) {
             return INVALID_INDEX_MESSAGE;
         }
-        
+
         switch (token[0].toLowerCase()) {
             case "description":
                 EditDescriptionHandler edh = new EditDescriptionHandler();
@@ -69,12 +69,17 @@ class EditHandler extends UndoableCommandHandler {
             default:
                 try {
                     index = Integer.parseInt(token[0]) - 1;
-                    oldTask = taskList.remove(index);
-                    newTask = CommandHandler.createNewTask(
-                            parameter.replaceFirst(token[0], "").trim());
                 } catch (NumberFormatException nfe) {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
-                }
+                    return INVALID_INDEX_MESSAGE;
+            }
+
+            try {
+                oldTask = taskList.remove(index);
+                newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
+            } catch (IndexOutOfBoundsException iob) {
+                return INVALID_INDEX_MESSAGE;
+            }
                 break;
         }
 
@@ -91,7 +96,7 @@ class EditHandler extends UndoableCommandHandler {
      * @param newTask
      */
     private void updateTaskList(ArrayList<Task> taskList) {
-        if (newTask != null && oldTask != null) {
+        if (newTask != oldTask && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
             taskList.remove(oldTask);
@@ -123,11 +128,6 @@ class EditHandler extends UndoableCommandHandler {
         return HELP_MESSAGE;
     }
 
-    @Override
-    void undo() {
-        memory.addTask(oldTask);
-        memory.removeTask(newTask);
-    }
 
 }
 // Depreciated
