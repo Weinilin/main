@@ -17,8 +17,8 @@ public class DateParser {
             + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|)";
     private static final String AFTER_DAYS_APART_KEYWORD = "\\b(after \\w+ day(s|))\\b|(\\w+ day(s|) after)|\\b(next(\\s\\w+\\s)day(s|)"
             + "\\b)|(\\w+ day(s|) from now)|(\\w+ day(s|) later)\\b|\\b(in \\w+ day(s|) time(s|))\\b";
-    private static final String DAYS_APART_VOCAB_KEYWORD = "\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day\\b|\\b(the\\s|)next day\\b"
-            + "|\\b(after today)\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year)\\b";
+    private static final String DAYS_APART_VOCAB_KEYWORD = "(due on |on |at |from |to |by |due |)(\\b((tomorrow|tmr)\\b|\\b(the\\s|)following day(s|)\\b|\\b(the\\s|)next day(s|)\\b|\\b(after today)"
+            + "\\b|\\btoday\\b|\\b(after (tomorrow|tmr)\\b)|\\bfortnight\\b|\\b(the\\s|)next year(s|))\\b)";
     private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = " \\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
             + "\\b(\\w+ (week|month|year)(s|) after)\\b|\\b(next(\\s\\w+\\s)(week|month|year)(s|))|(\\w+ (week|month|year)(s|) from now)";
@@ -647,7 +647,7 @@ public class DateParser {
             int month = convertMonthToNumber(dateOfTheTask);
 
             testValidMonth(month);
-            // testValidDay(day, year, month);
+            testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 
@@ -810,7 +810,7 @@ public class DateParser {
             int month = getMonth(ddMMYYYY);
 
             testValidMonth(month);
-            // testValidDay(day, year, month);
+            testValidDay(day, year, month);
 
             setDateIntoCalendar(day, month - 1, year, calendar);
 

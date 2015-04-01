@@ -14,15 +14,13 @@ public class TimeParserTEMPTEST {
      
         // test with am or pm
         times1.clear();
-        times1.add("15:30");
-        times1.add("17:30");
+        times1.add("23:00");
         assertEquals(times1,
-                TimeParser.extractTime("mds sale start at 12pm-12:20pm"));
+                TimeParser.extractTime("mds sale start at 11 o'clock in the afternoon"));
     }
         
         
     
-    
-    }
+}
 
 
