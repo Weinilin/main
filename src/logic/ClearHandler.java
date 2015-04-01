@@ -30,7 +30,6 @@ class ClearHandler extends UndoableCommandHandler {
         oldTaskList = new ArrayList<Task>(taskList);
         recordMemoryChanges(taskList);
         memory.removeAll();
-        taskList.clear();
         return ALL_CLEAR_MESSAGE;
     }
     
@@ -38,10 +37,18 @@ class ClearHandler extends UndoableCommandHandler {
         UndoRedoRecorder clearRecorder = new UndoRedoRecorder(taskList);
         for (Task removedTask: oldTaskList) {
             clearRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.DELETE, removedTask, removedTask));
-            undoRedoManager.addNewRecord(clearRecorder);
         }
+        updateTaskList(taskList);
+        clearRecorder.recordUpdatedList(taskList);
+        undoRedoManager.addNewRecord(clearRecorder);
     }
     
+    /**
+     * update the taskList in CommandHandler
+     */
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.clear();
+    }
     @Override
     public String getHelp() {
         return HELP_MESSAGE;

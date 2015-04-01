@@ -59,21 +59,30 @@ class EditTimeHandler extends UndoableCommandHandler {
         newTask.setStartDateTime(newStartDateTime);
         newTask.setTaskType(ttp.getTaskType());
         
+        performEdit(taskList);
+        return "Task \"" + newTask.getDescription() + "\" has changed time\n";
+    }
+
+    private void performEdit(ArrayList<Task> taskList) {
         if ((newTask != oldTask) && (oldTask != null)) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
             recordMemoryChanges(taskList);
-            taskList.remove(oldTask);
-            taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
         }
-        return "Task \"" + newTask.getDescription() + "\" has changed time\n";
     }
     
     private void recordMemoryChanges(ArrayList<Task> taskList) {
-        UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
-        editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
-        undoRedoManager.addNewRecord(editRecorder);
+        UndoRedoRecorder editTimeRecorder = new UndoRedoRecorder(taskList);
+        editTimeRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        updateTaskList(taskList);
+        editTimeRecorder.recordUpdatedList(taskList);
+        undoRedoManager.addNewRecord(editTimeRecorder);
+    }
+    
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
     }
     
     @Override

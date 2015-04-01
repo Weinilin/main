@@ -24,6 +24,7 @@ public class LogicController {
     private CommandHandler[] handlers = {new EditTimeHandler(),
                                          new EditDescriptionHandler(),
                                          new UndoHandler(),
+                                         new RedoHandler(),
                                          new AddHandler(),
                                          new ClearHandler(),
                                          new DeleteHandler(),

@@ -5,6 +5,15 @@ import java.util.Arrays;
 
 import application.Task;
 
+/**
+ * CommandHandler for "undo" function
+ * This class will access the undoRedoManager and see if undo actions can be
+ * executed. Prompt message to user if no action or not enough actions can be undone,
+ * otherwise revert the changes of memory and tasklist in LogicController.
+ * 
+ * @author A0114463M
+ *
+ */
 class UndoHandler extends UndoableCommandHandler {
 
     private ArrayList<String> aliases = new ArrayList<String>(
@@ -12,7 +21,6 @@ class UndoHandler extends UndoableCommandHandler {
 
     @Override
     protected ArrayList<String> getAliases() {
-        // TODO Auto-generated method stub
         return aliases;
     }
 
@@ -24,8 +32,9 @@ class UndoHandler extends UndoableCommandHandler {
         }
 
         if (undoRedoManager.canUndo()) {
-            updateTaskList(undoRedoManager.undo());
-            return "Revoked latest change\n";
+            taskList.clear();
+            taskList.addAll(undoRedoManager.undo());
+            return "The last change has been discarded\n";
         }
         else {                  
             return "Nothing to undo\n";
@@ -37,13 +46,4 @@ class UndoHandler extends UndoableCommandHandler {
         // TODO Auto-generated method stub
         return "undo\n\t revoke latest change";
     }
-
-    /**
-     * update the taskList in CommandHandler
-     */
-    private void updateTaskList(ArrayList<Task> taskList) {
-        taskList.clear();
-        taskList.addAll(0, memory.getTaskList());
-    }
-
 }
