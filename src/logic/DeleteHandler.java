@@ -24,7 +24,7 @@ import parser.IndexParser;
 class DeleteHandler extends UndoableCommandHandler {
 
     private static final String HELP_MESSAGE = "delete <index>\n\t remove the respective task of the index from TaskManager\n";
-    private static final String GOODFEEDBACK_MESSAGE = "Removed tasks %1$s\n";
+    private static final String GOODFEEDBACK_MESSAGE = "Removed task %1$s\n";
     private static final String BADFEEDBACK_MESSAGE = "Invalid input %1$s\n";	
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("delete", "d", "remove", "-"));
@@ -47,7 +47,7 @@ class DeleteHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        if (isAll(token)) {
+        if (isDeleteAll(token)) {
             ClearHandler clrHandler = new ClearHandler();
             return clrHandler.execute(token[0], "", taskList);
         }
@@ -56,23 +56,35 @@ class DeleteHandler extends UndoableCommandHandler {
                 badFeedback = new String(),
                 feedback = new String();		
 
-        IndexParser ip;
         for (String t: token) {
-            ip = new IndexParser(t);
-            int index = ip.getIndex() - 1;
+            IndexParser ip = new IndexParser(t);
+            int index;
+            try {
+                index = ip.getIndex() - 1;
+            } catch (NumberFormatException nfe) {
+                badFeedback = appendFeedback(badFeedback, t);
+                continue;
+            }
             try {
                 removedTask.add(taskList.get(index));				
                 goodFeedback = appendFeedback(goodFeedback, t);
                 deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback = appendFeedback(badFeedback, t);
-                deleteLogger.log(Level.WARNING, t + " is invalid!\n", iob);			
+                deleteLogger.log(Level.WARNING, t + " is invalid!\n");			
             } 
         }
 
         recordMemoryChanges(taskList);
         deleteTasks(taskList, removedTask);
-        generateFeedbackString(goodFeedback, badFeedback, feedback);
+        
+        if (!goodFeedback.equals("")) {
+            feedback += String.format(GOODFEEDBACK_MESSAGE, goodFeedback);
+        }
+        if (!badFeedback.equals("")) {
+            feedback += String.format(BADFEEDBACK_MESSAGE, badFeedback);
+        }
+        
         return feedback;
     }
     
@@ -80,19 +92,12 @@ class DeleteHandler extends UndoableCommandHandler {
         UndoRedoRecorder deleteRecorder = new UndoRedoRecorder(taskList);
         for (Task task: removedTask) {
             deleteRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.DELETE, task, task));
+        }
+        if (!deleteRecorder.isEmpty()) {
             undoRedoManager.addNewRecord(deleteRecorder);
         }
     }
 
-    private void generateFeedbackString(String goodFeedback,
-            String badFeedback, String feedback) {
-        if (!goodFeedback.equals("")) {
-            feedback.concat(String.format(GOODFEEDBACK_MESSAGE, goodFeedback));
-        }
-        if (!badFeedback.equals("")) {
-            feedback.concat(String.format(BADFEEDBACK_MESSAGE, badFeedback));
-        }
-    }
 
 
     /**
@@ -125,7 +130,7 @@ class DeleteHandler extends UndoableCommandHandler {
      * @param token
      * @return
      */
-    private boolean isAll(String[] token) {
+    private boolean isDeleteAll(String[] token) {
         return token[0].toLowerCase().trim().equals("all");
     }
 

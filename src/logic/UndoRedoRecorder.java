@@ -41,4 +41,8 @@ public class UndoRedoRecorder {
             ura.redo();
         }
     }
+    
+    public boolean isEmpty() {
+        return actionList.isEmpty();
+    }
 }

@@ -88,6 +88,7 @@ class EditHandler extends UndoableCommandHandler {
         return "";
     }
 
+
     /**
      * update the taskList in LogicController and Memory
      * @param taskList
@@ -99,12 +100,19 @@ class EditHandler extends UndoableCommandHandler {
         if (newTask != oldTask && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
+            recordMemoryChanges(taskList);
             taskList.remove(oldTask);
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
         }
     }
-
+    
+    private void recordMemoryChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
+        editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        undoRedoManager.addNewRecord(editRecorder);
+    }
+    
     /**
      * check if the argument user typed is empty
      * @param parameter

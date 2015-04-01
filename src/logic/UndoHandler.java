@@ -23,14 +23,13 @@ class UndoHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        if (!undoRedoManager.canUndo()) {
-            return "Nothing to undo\n";
-        }
-        else {
+        if (undoRedoManager.canUndo()) {
             updateTaskList(undoRedoManager.undo());
             return "Revoked latest change\n";
         }
-
+        else {                  
+            return "Nothing to undo\n";
+        }
     }
 
     @Override
@@ -44,7 +43,7 @@ class UndoHandler extends UndoableCommandHandler {
      */
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
-        taskList.addAll(0, taskList);
+        taskList.addAll(0, memory.getTaskList());
     }
 
 }

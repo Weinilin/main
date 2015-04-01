@@ -55,6 +55,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    if ((newTask != oldTask) && (oldTask != null)) {
 	        memory.removeTask(oldTask);
 	        memory.addTask(newTask);
+            recordMemoryChanges(taskList);
             taskList.remove(oldTask);
             taskList.add(newTask);
             Collections.sort(taskList, new TaskComparator());
@@ -63,6 +64,11 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    		newTask.getDescription() + "\n";
 	}
 
+	private void recordMemoryChanges(ArrayList<Task> taskList) {
+	    UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
+	    editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+	    undoRedoManager.addNewRecord(editRecorder);
+	}
 	@Override
 	public String getHelp() {
 		return HELP_MESSAGE;
