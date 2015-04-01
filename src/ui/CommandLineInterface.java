@@ -22,15 +22,12 @@ public class CommandLineInterface {
 		String message;
 		LogicController commandHandler = LogicController.getInstance();
 		
-		TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
-		taskListUI.showTask();
        
 
 		
 
 	    message = commandHandler.executeCommand(userInput);
 						
-		taskListUI.showTask();
 		
 		return message;
 	}
@@ -41,16 +38,11 @@ public class CommandLineInterface {
 	    LogicController commandHandler = LogicController.getInstance();
 
 
-	    printMessageToUser(String.format(WELCOME_MESSAGE));
-
-	    printMessageToUser(String.format(COMMAND_MESSAGE));
 
 	    message = commandHandler.executeCommand(userInput);
 	            
 	    
-	    TaskListUI taskListUI = new TaskListUI(commandHandler.getTaskList());
-	    taskListUI.showTask();
-
+	  
 	    return message;
 
 	}

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import ui.CommandLineInterface;
 import ui.GUI;
+import ui.TaskListUI;
 
 class TaskManager	{
     
@@ -14,17 +15,24 @@ class TaskManager	{
 	public static void main (String[] args)	{	
 		CommandLineInterface cli = new CommandLineInterface();
 		Scanner scanner = new Scanner(System.in);
-		
+
 		GUI std = new GUI();
         std.run();
+        
+        TaskListUI taskListUI = new TaskListUI();
+        taskListUI.showTask();
+
 		
 	    printMessageToUser(String.format(WELCOME_MESSAGE));
+        printMessageToUser(String.format(COMMAND_MESSAGE));
 
 		while (true) {
-		    printMessageToUser(String.format(COMMAND_MESSAGE));
 		    String userInput = scanner.nextLine();
 		    String feedback = cli.processUserInput(userInput);
 	        printMessageToUser(feedback);
+	        taskListUI.showTask();
+	        printMessageToUser(String.format(COMMAND_MESSAGE));
+
 		}
 	}
 	
