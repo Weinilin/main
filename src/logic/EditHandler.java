@@ -31,7 +31,7 @@ class EditHandler extends UndoableCommandHandler {
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
-    Task oldTask, newTask;
+    Task oldTask, newTask = null;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -83,33 +83,34 @@ class EditHandler extends UndoableCommandHandler {
                 break;
         }
 
-        updateTaskList(taskList);
-        taskList = memory.getTaskList();
+        performEdit(taskList);
         return "";
     }
 
 
     /**
-     * update the taskList in LogicController and Memory
+     * execute the changes in Memory
      * @param taskList
-     * @param index
-     * @param removedTask
-     * @param newTask
      */
-    private void updateTaskList(ArrayList<Task> taskList) {
+    private void performEdit(ArrayList<Task> taskList) {
         if (newTask != oldTask && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            recordMemoryChanges(taskList);
-            taskList.remove(oldTask);
-            taskList.add(newTask);
+            recordMemoryChanges(taskList);            
             Collections.sort(taskList, new TaskComparator());
         }
+    }
+    
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
     }
     
     private void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
         editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        updateTaskList(taskList);
+        editRecorder.recordUpdatedList(taskList);
         undoRedoManager.addNewRecord(editRecorder);
     }
     

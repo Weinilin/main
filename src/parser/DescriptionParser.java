@@ -28,8 +28,10 @@ public class DescriptionParser {
     private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)(\\b(in \\w+ (week|month|year)(s|) time(s|))\\b|"
             + "\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(after \\w+ (week|month|year)(s|)\\b)|"
             + "\\b(\\w+ (week|month|year)(s|) after)\\b)";
-    private static final String AFTER_WEEKDAY_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)next (mon|tues|wed|thurs|fri|sat|sun)(day|)";
-    private static final String THIS_WEEKDAY_APART_KEYWORD = "(@ |due on |on |at |from |to |by |due |)this (mon|tues|wed|thurs|fri|sat|sun)(day|)";
+
+    private static final String AFTER_WEEKDAY_APART_KEYWORD = "(due on |on |at |from |to |by |due |)next (wednesday|(mon|tues|wed|thurs|fri|sat|sun)(day|))";
+    private static final String THIS_WEEKDAY_APART_KEYWORD = "(due on |on |at |from |to |by |due |)this (wednesday|(mon|tues|wed|thurs|fri|sat|sun)(day|))";
+
 	private static final String UNWANTED = "(\\bend at\\b|\\bstart at\\b|\\band\\b|\\.|~)";
 	private String description;
 

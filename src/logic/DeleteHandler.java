@@ -71,7 +71,6 @@ class DeleteHandler extends UndoableCommandHandler {
                 deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback = appendFeedback(badFeedback, t);
-                deleteLogger.log(Level.WARNING, t + " is invalid!\n");			
             } 
         }
 
