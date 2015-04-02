@@ -12,11 +12,12 @@ public class TimeParserTEMPTEST {
     public void test() {
         ArrayList<String> times1 = new ArrayList<String>();
      
-        // test with am or pm
+     // test HH:MM o'clock
         times1.clear();
-        times1.add("23:00");
+        times1.add("11:00");
         assertEquals(times1,
-                TimeParser.extractTime("mds sale start at 11 o'clock in the afternoon"));
+                TimeParser.extractTime("mds sale start at 11"));
+  
     }
         
         
