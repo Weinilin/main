@@ -292,9 +292,9 @@ public class TimeParserTest {
         ArrayList<String> times = new ArrayList<String>();
      // test HH o'clock
         times.clear();
-        times.add("11:00");
+        times.add("10:00");
         assertEquals(times,
-                TimeParser.extractTime("11 o'clock"));
+                TimeParser.extractTime("add go run one round on this sun from 10 o’clock"));
 
      // test HH:MM o'clock
         times.clear();

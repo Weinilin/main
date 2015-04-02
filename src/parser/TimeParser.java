@@ -9,18 +9,19 @@ import javax.swing.JOptionPane;
 public class TimeParser {
     private static final String TIME_TO_TIME_KEYWORD = "[^/:,.]\\b(((\\d+[.:,](\\d+)|\\d+)(-| to | - )(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|)))\\b";
     private static final String HOURS_APART_KEYWORD = "\\b(start at \\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm|))\\b for \\d+ (hour|hours|hr|hrs))\\b";
-    private static final String TWELVE_HOUR_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b"
-            + "|\\b(@ |due on |on |at |from |to |by |due )\\d{2}\\b";
-    private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(\\d+|\\d+[:.,]\\d+)(\\s|)o'clock\\b";
+    private static final String TWELVE_HOUR_KEYWORD = "\\b(on |at |from |to |)(\\d+[.:,]\\d+|\\d+)((\\s|)(am|pm))\\b";
+         //   + "|\\b(@ |due on |on |at |from |to |by |due )\\d{2}\\b"; --> error
+    private static final String TIME_WITH_OCLOCK_KEYWORD = "\\b(\\d+[:.,]\\d+|\\d+)(\\s|)o('|’)clock\\b";
     private static final String NOON_MIDNIGHT_KEYWORD = "(\\b(on |at |from |to |)noon\\b)|(\\b(on |at |from |to |)midnight\\b)";
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(from |to |)(before midnight|before noon)\\b)";
     private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(from |to |)(\\d+[.:,](\\d+)|\\d+)(\\s|)(o'clock|am|pm|)( in (the |)(morning|morn)\\b| in (the |)afternoon\\b| in (the |)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
             + "| at (the |)morning\\b| at (the |)morn\\b))";
-    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)|[^./]\\b\\d{3,4}(\\s|\\S)(hour(s|)|hr(s|)|)\\b";
+    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)"
+            + "|[^./]\\b\\d{3,4}(\\s|\\S)(hour(s|)|hr(s|)|)\\b";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(from |to |)(past midnight|past noon|after noon|after midnight)\\b)";
     private static final String TO_BE_REMOVED_KEYWORD = "(before midnight|before noon|"
             + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|in the afternoon|in the night|in the (morning|morn)|at the afternoon|at the night|at the (morning|morn)|o'clock|past noon|past"
-            + "midnight|noon|midnight|\\s|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due ))";
+            + "midnight|noon|midnight|\\s|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due |o’clock))";
     private static int index;
     private static String userInputLeft;
 
@@ -163,7 +164,7 @@ public class TimeParser {
 
         while (containTime.find()) {
             String time = containTime.group();
-
+System.out.println("time: "+time);
             testValidTime(time);
             userInputLeft = userInputLeft.replaceAll(time, "");
 

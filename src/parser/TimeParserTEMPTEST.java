@@ -14,9 +14,9 @@ public class TimeParserTEMPTEST {
      
      // test HH:MM o'clock
         times1.clear();
-        times1.add("11:00");
+        times1.add("19:00");
         assertEquals(times1,
-                TimeParser.extractTime("mds sale start at 11"));
+                TimeParser.extractTime("add go buy herbal tea today in 7pm at night."));
   
     }
         

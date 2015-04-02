@@ -51,6 +51,9 @@ public class DescriptionParserTest {
 		DescriptionParser d9 = new DescriptionParser("CS2103T assignment!");
 		assertEquals(d9.getDescription(), "cs2103t assignment!");
 		
+		//extra testing
+		DescriptionParser d11 = new DescriptionParser("add complete developer guide on 13/04 ");
+        assertEquals(d11.getDescription(), "add complete developer guide");
 	}
 
 }

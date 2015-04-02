@@ -17,7 +17,7 @@ public class TaskTypeParserTest {
 		assertEquals("floating task", t2.getTaskType());
 
 		// deadlines task
-		TaskTypeParser t3 = new TaskTypeParser("krej at 2pm 25/06/2015");
+		TaskTypeParser t3 = new TaskTypeParser("add start reading ST2334 notes by this sat at 0930");
 		assertEquals("deadline", t3.getTaskType());
 		
 		// time task
