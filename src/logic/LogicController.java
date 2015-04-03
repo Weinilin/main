@@ -22,16 +22,17 @@ public class LogicController {
     private static final Logger logger = 
             Logger.getLogger(LogicController.class.getName());
     private ArrayList<Task> taskList = new ArrayList<Task>();
-    private CommandHandler[] handlers = {new EditTimeHandler(),
-                                         new EditDescriptionHandler(),
-                                         new UndoHandler(),
-                                         new RedoHandler(),
+    private CommandHandler[] handlers = {
                                          new AddHandler(),
                                          new ClearHandler(),
                                          new DeleteHandler(),
                                          new EditHandler(),
+                                         new EditTimeHandler(),
+                                         new EditDescriptionHandler(),
                                          new ExitHandler(),
                                          new MarkHandler(),
+                                         new UndoHandler(),
+                                         new RedoHandler(),
                                          new SetLocationHandler(),
                                          new ShowHandler()};
 
@@ -58,21 +59,46 @@ public class LogicController {
      * @param userCommand
      * @return - feedback to user
      */
-    public String executeCommand(String userCommand) {
-        String command = userCommand.trim().split(" ")[0];
+    public String executeCommand(String userCommand) {        
+        String[] inputToken = userCommand.trim().split(" ");
         
-        if (isValidKeyword(command)) {
+        if (isHelp(inputToken[0])) {
+            if (isHelpOnly(inputToken) && (isUnknownCommand(inputToken[1]))) {
+                String help = "";
+                help = prepareHelp(help);
+                return help;
+            }
+            else {
+                return handlerTable.get(inputToken[1]).getHelp();
+            }
+        }
+        
+        if (isUnknownCommand(inputToken[0])) {
             return executeAddByDefault(userCommand);            
         }
         
-        CommandHandler handler = handlerTable.get(command);
+        CommandHandler handler = handlerTable.get(inputToken[0]);
                 
-        String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
-        return handler.execute(command, parameter, taskList);
+        String parameter = userCommand.replaceFirst(Pattern.quote(inputToken[0]), "").trim();
+        return handler.execute(inputToken[0], parameter, taskList);
     }
 
 
-    private boolean isValidKeyword(String command) {
+    private String prepareHelp(String help) {
+        for (CommandHandler handler: handlers)
+            help += handler.getHelp();
+        return help;
+    }
+
+
+    private boolean isHelpOnly(String[] inputToken) {
+        return inputToken.length == 0;
+    }
+
+    private boolean isHelp(String command) {
+        return command.trim().toLowerCase().equals("help");
+    }
+    private boolean isUnknownCommand(String command) {
         return !handlerTable.containsKey(command);
     }
 
