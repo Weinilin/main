@@ -1,42 +1,61 @@
 package ui;
 
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import parser.DateParser;
+
 import application.Task;
+import application.TimeAnalyser;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import logic.LogicController;
 
-public class GUI extends JPanel implements ActionListener{
+public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEventDispatcher{
     
 
-    private static final String COMMAND_MESSAGE = new String("Command: ");
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
-    private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
     
     private static String[] columnNames1 = {"No.",
                                             "Description",
                                             "Start Time",
                                             "End Time",
-                                            "Deadline",
                                             "Status"};
     
     private static String[] columnNames2 = {"No.",
@@ -54,30 +73,45 @@ public class GUI extends JPanel implements ActionListener{
     private static CommandLineInterface CLI;
 
     private static LogicController lc;
-   
 
+    private static JScrollPane scrollPane1;
+    private static JScrollPane scrollPane2;
+    
 
+    
     public GUI() {
         super(new GridBagLayout());
 
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getKeyCode() == e.VK_ESCAPE) {
+                    System.exit(0);
+                }
+                return false;
+            }
+        });
 
 
 
-      CLI = new CommandLineInterface();
-       
+        CLI = new CommandLineInterface();
+
         lc = LogicController.getInstance();
-        
-      
+
+
 
         textField = new JTextField(20);
         textField.setFont(new Font("Arial", Font.PLAIN, 12));
         textField.addActionListener(this);
 
-        textArea = new JTextArea(3, 20);
+        textArea = new JTextArea(4, 20);
         textArea.setFont(new Font("Arial", Font.PLAIN, 12));
-        textArea.setForeground(Color.MAGENTA);
+        textArea.setLineWrap(true);
+        textArea.setText(WELCOME_MESSAGE);
+
         textArea.setEditable(false);
         JScrollPane scrollPaneTextArea = new JScrollPane(textArea);
+        
 
         GridBagConstraints c = new GridBagConstraints();
        
@@ -120,31 +154,28 @@ public class GUI extends JPanel implements ActionListener{
             {
                 Component c = super.prepareRenderer(renderer, row, column);
 
-                String dateTime;
-                String deadline = (String) deadlinesAndTimeTasksTable.getValueAt(row, 4);
-                if (!deadline.equals("- -")) {
-                    dateTime = deadline;
-                } else {
-                    dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(row, 3);
-                }
-
-
-                DateParser dp = new DateParser(dateTime);
-
                 
 
-                if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis()) {
+                String dateTime;
+           
+                dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(row, 3);
+                
+
+
+                TimeAnalyser ta = new TimeAnalyser();
+                
+                if (ta.getDateTimeInMilliseconds(dateTime) < System.currentTimeMillis()) {
                     c.setForeground(Color.RED);
 
                 } else {
                     c.setForeground(Color.BLUE);
                 }
                 
-                String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 5);
+                String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 4);
                 
                 if (status.equals("undone")) {
-                    
-                    c.setBackground(new Color(0,0,0,0));
+                    c.setBackground(Color.WHITE);
+
                     c.setFont(new Font("Arial", Font.BOLD, 12 ));
                 } else {
                     c.setBackground(new Color(0,180,150,30));
@@ -152,37 +183,79 @@ public class GUI extends JPanel implements ActionListener{
 
                 }
                 
-              
+                Color lightPink = new Color(255, 204, 255);
+                
+                int modelRow = convertRowIndexToModel(row);
+                if (isRowSelected(modelRow)) {
+                    c.setBackground(lightPink);
+                }
 
+                
+                
 
                 return c;
             }
 
         };
 
+        deadlinesAndTimeTasksTable.setRowSelectionAllowed(true);
+        deadlinesAndTimeTasksTable.setCellSelectionEnabled(false);
 
+        
         deadlinesAndTimeTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
         deadlinesAndTimeTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
         deadlinesAndTimeTasksTable.setForeground(Color.BLUE);
 
 
         deadlinesAndTimeTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(1).setPreferredWidth(280);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(1).setPreferredWidth(400);
         deadlinesAndTimeTasksTable.getColumnModel().getColumn(2).setPreferredWidth(120);
         deadlinesAndTimeTasksTable.getColumnModel().getColumn(3).setPreferredWidth(120);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(4).setPreferredWidth(120);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+        deadlinesAndTimeTasksTable.getColumnModel().getColumn(4).setPreferredWidth(50);
 
 
 
-        deadlinesAndTimeTasksTable.setPreferredScrollableViewportSize(new Dimension(730, 200));
+        deadlinesAndTimeTasksTable.setPreferredScrollableViewportSize(new Dimension(700, 160));
         deadlinesAndTimeTasksTable.setFillsViewportHeight(true);
         
-     
+        deadlinesAndTimeTasksTable.setRowSelectionAllowed(true);
+        deadlinesAndTimeTasksTable.setColumnSelectionAllowed(true);
+        deadlinesAndTimeTasksTable.setCellSelectionEnabled(true);
+
 
         
-        
         JScrollPane scrollPane1 = new JScrollPane(deadlinesAndTimeTasksTable);
+        
+        final int rows = 11;
+        
+
+
+      
+        
+        deadlinesAndTimeTasksTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), "scroll down");
+        deadlinesAndTimeTasksTable.getActionMap().put("scroll down", new AbstractAction() {        
+            public void actionPerformed(ActionEvent ae) {
+                int height = deadlinesAndTimeTasksTable.getRowHeight()*(rows-1);
+                JScrollBar bar = scrollPane1.getVerticalScrollBar();
+                bar.setValue( bar.getValue()+height );
+            }
+                
+               
+        });
+    
+        deadlinesAndTimeTasksTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, 0), "scroll up");
+        deadlinesAndTimeTasksTable.getActionMap().put("scroll up", new AbstractAction() {     
+            public void actionPerformed(ActionEvent ae) {
+                int height = deadlinesAndTimeTasksTable.getRowHeight()*(rows-1);
+                JScrollBar bar = scrollPane1.getVerticalScrollBar();
+                bar.setValue( bar.getValue()-height );
+            }
+        });
+        
+        
+        
+      
+        
         
         c.fill = GridBagConstraints.BOTH;
      
@@ -228,6 +301,13 @@ public class GUI extends JPanel implements ActionListener{
 
                 }
 
+                Color lightPink = new Color(255, 204, 255);
+                
+                int modelRow = convertRowIndexToModel(row);
+                if (isRowSelected(modelRow)) {
+                    c.setBackground(lightPink);
+                }
+                
                 return c;
             }
         };
@@ -243,12 +323,34 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
-        floatingTasksTable.setPreferredScrollableViewportSize(new Dimension(730, 200));
+        floatingTasksTable.setPreferredScrollableViewportSize(new Dimension(700, 160));
         floatingTasksTable.setFillsViewportHeight(true);
         
         
         
         JScrollPane scrollPane2 = new JScrollPane(floatingTasksTable);
+        
+        
+        floatingTasksTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), "scroll down");
+        floatingTasksTable.getActionMap().put("scroll down", new AbstractAction() {        
+            public void actionPerformed(ActionEvent ae) {
+                int height = floatingTasksTable.getRowHeight()*(rows-1);
+                
+                JScrollBar bar = scrollPane2.getVerticalScrollBar();
+                bar.setValue( bar.getValue()+height );
+            }
+                
+               
+        });
+    
+        floatingTasksTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, 0), "scroll up");
+        floatingTasksTable.getActionMap().put("scroll up", new AbstractAction() {     
+            public void actionPerformed(ActionEvent ae) {
+                int height = floatingTasksTable.getRowHeight()*(rows-1);
+                JScrollBar bar = scrollPane2.getVerticalScrollBar();
+                bar.setValue( bar.getValue()-height );
+            }
+        });
         
         c.fill = GridBagConstraints.BOTH;
      
@@ -257,9 +359,15 @@ public class GUI extends JPanel implements ActionListener{
        
 
         add(scrollPane2, c);
+        
+        
+
         updateTable();
 
+
     }
+    
+    
     
     
     public void updateTable() {
@@ -269,7 +377,7 @@ public class GUI extends JPanel implements ActionListener{
         ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks(lc.getTaskList());
 
 
-        Object[][] data = new Object[deadlinesAndTimeTasks.size()][6];
+        Object[][] data = new Object[deadlinesAndTimeTasks.size()][5];
 
         int taskNumber = 1;
 
@@ -278,33 +386,30 @@ public class GUI extends JPanel implements ActionListener{
             taskNumber += 1;
             data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();      
             data[i][2] = deadlinesAndTimeTasks.get(i).getStartDateTime();
-            data[i][3] = deadlinesAndTimeTasks.get(i).getEndDateTime();
-            data[i][4] = deadlinesAndTimeTasks.get(i).getDeadline();
-            data[i][5] = deadlinesAndTimeTasks.get(i).getStatus();
             
-            String dateTime;
-            String deadline = (String) data[i][4];
-            if (!deadline.equals("- -")) {
-                dateTime = deadline;
-            } else {
-                dateTime = (String) data[i][3];
-            }
-
-
-            DateParser dp = new DateParser(dateTime);
-
+            String deadline = deadlinesAndTimeTasks.get(i).getDeadline();
+            String endDateTime = deadlinesAndTimeTasks.get(i).getEndDateTime();
+            
            
-
-            if (dp.getDateTimeInMilliseconds() < System.currentTimeMillis() && ((String)data[i][5]).equals("undone")) {
-                
-                data[i][1] = "*** " + (String) data[i][1] ;
+            
+            if (endDateTime.equals("- -")) {
+                data[i][3] = deadline;
+            } else {
+                data[i][3] = endDateTime;
             }
+            
+           
+            data[i][4] = deadlinesAndTimeTasks.get(i).getStatus();
+            
+      
+
+
+          
             
             deadlinesAndTimeTasksModel.addRow(data[i]);
         }
        
-       
-
+        updateRowHeights();
 
 
         floatingTasksModel.setRowCount(0);
@@ -331,7 +436,7 @@ public class GUI extends JPanel implements ActionListener{
         textField.selectAll();
 
       
-        System.out.println(text);
+       
         String feedback = CLI.processUserInputFromGUI(text);
     
 
@@ -358,8 +463,9 @@ public class GUI extends JPanel implements ActionListener{
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("Task's Manager");
-        frame.setMinimumSize(new Dimension(735,590));
+        frame.setMinimumSize(new Dimension(710,510));
       
+     
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -367,6 +473,9 @@ public class GUI extends JPanel implements ActionListener{
 
         //Create and set up the content pane.
         GUI gui = new GUI();
+        
+        
+        
         frame.add(gui, BorderLayout.CENTER);
 
 
@@ -376,26 +485,7 @@ public class GUI extends JPanel implements ActionListener{
         frame.setVisible(true);
     }
     
-    
-
-//    public String processUserInput(String userInput){
-//        String message;
-//        LogicController commandHandler = LogicController.getInstance();
-//
-//        
-//        printMessageToUser(String.format(WELCOME_MESSAGE));
-//
-//        printMessageToUser(String.format(COMMAND_MESSAGE));
-//
-//        System.out.println(userInput);
-//        message = commandHandler.executeCommand(userInput);
-//        if (message == null) {
-//            printMessageToUser(GOODBYE_MESSAGE);
-//            System.exit(0);
-//        }         
-//
-//        return message;
-//    }
+   
     
     public void run() {
         createAndShowGUI();
@@ -434,4 +524,27 @@ public class GUI extends JPanel implements ActionListener{
         
         return floatingTasks;
     }
+    
+    private void updateRowHeights()
+    {
+        try
+        {
+            for (int row = 0; row < deadlinesAndTimeTasksTable.getRowCount(); row++)
+            {
+                int rowHeight = deadlinesAndTimeTasksTable.getRowHeight();
+
+                for (int column = 0; column < deadlinesAndTimeTasksTable.getColumnCount(); column++)
+                {
+                    Component comp = deadlinesAndTimeTasksTable.prepareRenderer(deadlinesAndTimeTasksTable.getCellRenderer(row, column), row, column);
+                    rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+                }
+
+                deadlinesAndTimeTasksTable.setRowHeight(row, rowHeight);
+            }
+        }
+        catch(ClassCastException e) {}
+    }
+
+
+
 }

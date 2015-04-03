@@ -77,9 +77,9 @@ public class TaskListUI {
 		
 	}
 	
-	public ArrayList<Task> getTaskList() {
-	    return taskList;
-	}
+//	public ArrayList<Task> getTaskList() {
+//	    return taskList;
+//	}
 	
 	
 }
