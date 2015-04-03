@@ -42,6 +42,7 @@ class DeleteHandler extends UndoableCommandHandler {
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         deleteLogger.entering(getClass().getName(), "preparing for delete");
 
+        reset();
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmptyParameter(parameter)) {
             return getHelp();
@@ -55,7 +56,6 @@ class DeleteHandler extends UndoableCommandHandler {
         String goodFeedback = new String(), 
                 badFeedback = new String(),
                 feedback = new String();		
-
         for (String t: token) {
             IndexParser ip = new IndexParser(t);
             int index;
@@ -74,8 +74,7 @@ class DeleteHandler extends UndoableCommandHandler {
             } 
         }
 
-        recordMemoryChanges(taskList);
-        deleteTasks(taskList, removedTask);
+        recordChanges(taskList);
         
         if (!goodFeedback.equals("")) {
             feedback += String.format(GOODFEEDBACK_MESSAGE, goodFeedback);
@@ -87,31 +86,26 @@ class DeleteHandler extends UndoableCommandHandler {
         return feedback;
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder deleteRecorder = new UndoRedoRecorder(taskList);
         for (Task task: removedTask) {
             deleteRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.DELETE, task, task));
+            taskList.remove(task);
+            memory.removeTask(task);
         }
         if (!deleteRecorder.isEmpty()) {
+            deleteRecorder.recordUpdatedList(taskList);
             undoRedoManager.addNewRecord(deleteRecorder);
         }
     }
 
-
-
     /**
-     * delete the tasks in taskList and memory
-     * @param taskList
-     * @param removedTask
+     * reset the status of handler
      */
-    private void deleteTasks(ArrayList<Task> taskList, ArrayList<Task> removedTask) {
-        for (Task task: removedTask) {
-            taskList.remove(task);
-            memory.removeTask(task);
-        }
+    private void reset() {
+        removedTask.clear();
     }
-
-
     /**
      * append the indexes for valid deletion or invalid input
      * @param goodFeedback

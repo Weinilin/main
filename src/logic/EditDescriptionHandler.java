@@ -31,6 +31,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    
 	@Override
 	protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+	    reset();
 		String[] token = parameter.split(" ");
 		if (token[0].toLowerCase().equals("help") || token[0].equals("")) {
 			return getHelp();
@@ -56,18 +57,30 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    return "Changed " + oldTask.getDescription() + " to " +
 	    		newTask.getDescription() + "\n";
 	}
+	
+	/**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+        oldTask = null;
+    }
 
 
+    /**
+     * Perform the edit in Memory
+     * @param taskList taskList shown to user
+     */
     private void performEdit(ArrayList<Task> taskList) {
         if ((newTask != oldTask) && (oldTask != null)) {
 	        memory.removeTask(oldTask);
 	        memory.addTask(newTask);
-            recordMemoryChanges(taskList);
+            recordChanges(taskList);
             Collections.sort(taskList, new TaskComparator());
 	    }
     }
-
-	private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editDescriptionRecorder = new UndoRedoRecorder(taskList);
         editDescriptionRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);

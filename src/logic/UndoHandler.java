@@ -46,4 +46,9 @@ class UndoHandler extends UndoableCommandHandler {
         // TODO Auto-generated method stub
         return "undo\n\t revoke latest change";
     }
+    
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
+        
+    }
 }

@@ -45,4 +45,9 @@ class RedoHandler extends UndoableCommandHandler {
         // TODO Auto-generated method stub
         return "redo\n\t discard the undo actions";
     }
+    
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
+        
+    }
 }
