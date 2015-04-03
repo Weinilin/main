@@ -54,7 +54,8 @@ class AddHandler extends UndoableCommandHandler {
        
     }
 
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder addRecorder = new UndoRedoRecorder(taskList);
         addRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.ADD, newTask, newTask));
         updateTaskList(taskList);     

@@ -87,4 +87,9 @@ class MarkHandler extends UndoableCommandHandler {
     public String getHelp() {
         return HELP_MESSAGE;
     }
+    
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
+        
+    }
 }

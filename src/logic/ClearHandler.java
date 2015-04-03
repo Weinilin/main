@@ -33,7 +33,8 @@ class ClearHandler extends UndoableCommandHandler {
         return ALL_CLEAR_MESSAGE;
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder clearRecorder = new UndoRedoRecorder(taskList);
         for (Task removedTask: oldTaskList) {
             clearRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.DELETE, removedTask, removedTask));

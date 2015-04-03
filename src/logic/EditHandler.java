@@ -106,7 +106,8 @@ class EditHandler extends UndoableCommandHandler {
         taskList.add(newTask);
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
         editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);

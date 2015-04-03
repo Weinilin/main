@@ -72,7 +72,8 @@ class EditTimeHandler extends UndoableCommandHandler {
         }
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editTimeRecorder = new UndoRedoRecorder(taskList);
         editTimeRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);

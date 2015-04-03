@@ -3,9 +3,10 @@ package logic;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
+import parser.TaskTypeParser;
 import storage.Memory;
 import application.Task;
 
@@ -60,14 +61,24 @@ public class LogicController {
     public String executeCommand(String userCommand) {
         String command = userCommand.trim().split(" ")[0];
         
-        if (!handlerTable.containsKey(command)) {
-            return "Unknown command!\n";
+        if (isValidKeyword(command)) {
+            return executeAddByDefault(userCommand);            
         }
         
         CommandHandler handler = handlerTable.get(command);
                 
         String parameter = userCommand.replaceFirst(Pattern.quote(command), "").trim();
         return handler.execute(command, parameter, taskList);
+    }
+
+
+    private boolean isValidKeyword(String command) {
+        return !handlerTable.containsKey(command);
+    }
+
+
+    private String executeAddByDefault(String userCommand) {
+        return handlerTable.get("add").execute("add", userCommand, taskList);
     }
 
     /**

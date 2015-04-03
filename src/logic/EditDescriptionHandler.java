@@ -66,8 +66,8 @@ class EditDescriptionHandler extends UndoableCommandHandler {
             Collections.sort(taskList, new TaskComparator());
 	    }
     }
-
-	private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordMemoryChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editDescriptionRecorder = new UndoRedoRecorder(taskList);
         editDescriptionRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);
