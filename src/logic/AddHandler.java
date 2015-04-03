@@ -34,6 +34,7 @@ class AddHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
         String[] token = parameter.split(" ");
         if (isHelpOnly(token) || isEmpty(parameter)) {
             return getHelp();
@@ -48,13 +49,14 @@ class AddHandler extends UndoableCommandHandler {
         assert (newTask != null);
         
         memory.addTask(newTask); 
-        recordMemoryChanges(taskList);       
+        recordChanges(taskList);       
         addLogger.log(Level.FINE, "Add sucess");
         return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
        
     }
 
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder addRecorder = new UndoRedoRecorder(taskList);
         addRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.ADD, newTask, newTask));
         updateTaskList(taskList);     
@@ -63,6 +65,12 @@ class AddHandler extends UndoableCommandHandler {
        
     }
 
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+    }
 
 
     /**
