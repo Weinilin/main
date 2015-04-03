@@ -48,7 +48,7 @@ class UndoHandler extends UndoableCommandHandler {
     }
     
     @Override
-    void recordMemoryChanges(ArrayList<Task> taskList) {
+    void recordChanges(ArrayList<Task> taskList) {
         
     }
 }

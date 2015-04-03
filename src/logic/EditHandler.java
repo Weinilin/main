@@ -39,8 +39,7 @@ class EditHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-        editLogger.entering(getClass().getName(), "preparing for editing tasks");
-
+        reset();
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmpty(parameter)) {
             return getHelp();
@@ -72,14 +71,14 @@ class EditHandler extends UndoableCommandHandler {
                 } catch (NumberFormatException nfe) {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
-            }
+                }
 
-            try {
-                oldTask = taskList.remove(index);
-                newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
-            } catch (IndexOutOfBoundsException iob) {
-                return INVALID_INDEX_MESSAGE;
-            }
+                try {
+                    oldTask = taskList.remove(index);
+                    newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
+                } catch (IndexOutOfBoundsException iob) {
+                    return INVALID_INDEX_MESSAGE;
+                }
                 break;
         }
 
@@ -87,7 +86,14 @@ class EditHandler extends UndoableCommandHandler {
         return "";
     }
 
-
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+        oldTask = null;
+    }
+    
     /**
      * execute the changes in Memory
      * @param taskList
@@ -96,7 +102,7 @@ class EditHandler extends UndoableCommandHandler {
         if (newTask != oldTask && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            recordMemoryChanges(taskList);            
+            recordChanges(taskList);            
             Collections.sort(taskList, new TaskComparator());
         }
     }
@@ -107,7 +113,7 @@ class EditHandler extends UndoableCommandHandler {
     }
     
     @Override
-    void recordMemoryChanges(ArrayList<Task> taskList) {
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
         editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);

@@ -31,6 +31,7 @@ class EditTimeHandler extends UndoableCommandHandler {
         
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
     	String[] token = parameter.split(" ");
 		if (token[0].toLowerCase().equals("help") || token[0].equals("")) {
 			return getHelp();
@@ -67,18 +68,26 @@ class EditTimeHandler extends UndoableCommandHandler {
         if ((newTask != oldTask) && (oldTask != null)) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            recordMemoryChanges(taskList);
+            recordChanges(taskList);
             Collections.sort(taskList, new TaskComparator());
         }
     }
     
     @Override
-    void recordMemoryChanges(ArrayList<Task> taskList) {
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editTimeRecorder = new UndoRedoRecorder(taskList);
         editTimeRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
         updateTaskList(taskList);
         editTimeRecorder.recordUpdatedList(taskList);
         undoRedoManager.addNewRecord(editTimeRecorder);
+    }
+    
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+        oldTask = null;
     }
     
     private void updateTaskList(ArrayList<Task> taskList) {

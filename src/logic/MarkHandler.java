@@ -32,6 +32,7 @@ class MarkHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
         markLogger.entering(getClass().getName(), "Entering marking");
 
         String[] token = parameter.split(" ");
@@ -63,7 +64,12 @@ class MarkHandler extends UndoableCommandHandler {
         return String.format(MARKED_MESSAGE, goodFeedback);
     }
 
-   
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        markedTask.clear();
+    }
 
     /**
      * check if the argument user typed is empty
@@ -89,7 +95,7 @@ class MarkHandler extends UndoableCommandHandler {
     }
     
     @Override
-    void recordMemoryChanges(ArrayList<Task> taskList) {
+    void recordChanges(ArrayList<Task> taskList) {
         
     }
 }

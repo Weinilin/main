@@ -18,5 +18,5 @@ abstract class UndoableCommandHandler extends CommandHandler {
     @Override
     abstract public String getHelp();
 
-    abstract void recordMemoryChanges(ArrayList<Task> taskList);
+    abstract void recordChanges(ArrayList<Task> taskList);
 }
