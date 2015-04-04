@@ -20,7 +20,7 @@ class MarkHandler extends UndoableCommandHandler {
 
     private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
     private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
-    private static final String MARKED_MESSAGE = "Marked %1$s as done\n";
+    private static final String MARKED_MESSAGE = "Marked %1$s as done. It has been archieved\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("mark", "done"));
     private static final Logger markLogger = 
@@ -112,6 +112,7 @@ class MarkHandler extends UndoableCommandHandler {
             Task task = taskList.get(index);
             markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
             task.setStatus("done");
+            taskList.remove(task);
             memory.markDone(task);
         }
         if (!markRecorder.isEmpty()) {

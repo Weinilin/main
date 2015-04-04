@@ -41,7 +41,7 @@ public class LogicController {
 
     private LogicController() {
         logger.entering(getClass().getName(), "Initiating LogicController");
-        taskList = new ArrayList<Task>(Memory.getInstance().getTaskList());
+        taskList = new ArrayList<Task>(Memory.getInstance().searchStatus("undone"));
         initializeHandlers();
     }
 
