@@ -76,7 +76,7 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         
         String dateTime;
         
-        dateTime = (String) table.getValueAt(row, 3);
+        dateTime = (String) table.getValueAt(row, 2);
         
 
 

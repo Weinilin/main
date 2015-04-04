@@ -56,16 +56,27 @@ public class Memory {
 		memoryLogger.entering(getClass().getName(), "adding a new task to taskList");
 		assert isValidTask(newTask);
 
-		if (alreadyExists(newTask)) {
-		    return 2;
-		}
-
+	
+	
 		String taskType = newTask.getTaskType();
 
 		
+		
 		if (taskType.equals("time task")) { 
-		    if (existingTasksClashWith(newTask)) {
+		    if (exactTimeSlotExists(newTask)) {
 		        return 3;
+		    }
+		    
+		    if (hasTasksWithinInterval(newTask)) {
+		    	return 3;
+		    }
+		    
+//		    if (isWithinInterval(newTask)) {
+//		    	return 3;
+//		    }
+//		    
+		    if (isOverlap(newTask)) {
+		    	return 3;
 		    }
 		}
 
@@ -80,47 +91,124 @@ public class Memory {
 		memoryLogger.exiting(getClass().getName(), "adding a new task to taskList");
 		return 1;
 	}
-	
-	private boolean alreadyExists(Task task) {
-	   return taskList.contains(task);
+
+	private boolean isOverlap(Task task) {
+		ArrayList<Task> timeTasks = getTimeTasks();
+		TimeAnalyser ta = new TimeAnalyser();
+
+		String startTime = task.getStartDateTime();
+		long startTimeInMillis = ta.getDateTimeInMilliseconds(startTime);
+
+		String endTime = task.getEndDateTime();
+		long endTimeInMillis = ta.getDateTimeInMilliseconds(endTime);
+
+
+		for (int i = 0; i < timeTasks.size(); i++) {
+			Task currentTask = timeTasks.get(i);
+			String startTime2 = currentTask.getStartDateTime();
+			long startTime2InMillis = ta.getDateTimeInMilliseconds(startTime2);
+
+			String endTime2 = currentTask.getEndDateTime();
+			long endTime2InMillis = ta.getDateTimeInMilliseconds(endTime2);
+
+
+			if (endTime2InMillis > endTimeInMillis && startTime2InMillis < endTimeInMillis ||
+					startTime2InMillis < startTimeInMillis && endTime2InMillis > startTimeInMillis) {
+				return true;
+			} 
+		}
+
+		return false;
+		
+	}
+	private boolean isWithinInterval(Task task) {
+		ArrayList<Task> timeTasks = getTimeTasks();
+		TimeAnalyser ta = new TimeAnalyser();
+
+		String startTime = task.getStartDateTime();
+		long startTimeInMillis = ta.getDateTimeInMilliseconds(startTime);
+
+		String endTime = task.getEndDateTime();
+		long endTimeInMillis = ta.getDateTimeInMilliseconds(endTime);
+
+
+		for (int i = 0; i < timeTasks.size(); i++) {
+			Task currentTask = timeTasks.get(i);
+			String startTime2 = currentTask.getStartDateTime();
+			long startTime2InMillis = ta.getDateTimeInMilliseconds(startTime2);
+
+			String endTime2 = currentTask.getEndDateTime();
+			long endTime2InMillis = ta.getDateTimeInMilliseconds(endTime2);
+
+
+			if (endTime2InMillis > endTimeInMillis && startTime2InMillis < endTimeInMillis &&
+					startTime2InMillis < startTimeInMillis && endTime2InMillis > startTimeInMillis) {
+				return true;
+			} 
+		}
+
+		return false;
+	}
+
+	private boolean hasTasksWithinInterval(Task task) {
+		ArrayList<Task> timeTasks = getTimeTasks();
+
+		TimeAnalyser ta = new TimeAnalyser();
+
+		String startTime = task.getStartDateTime();
+		long startTimeInMillis = ta.getDateTimeInMilliseconds(startTime);
+
+		String endTime = task.getEndDateTime();
+		long endTimeInMillis = ta.getDateTimeInMilliseconds(endTime);
+
+
+		for (int i = 0; i < timeTasks.size(); i++) {
+			Task currentTask = timeTasks.get(i);
+			String startTime2 = currentTask.getStartDateTime();
+			long startTime2InMillis = ta.getDateTimeInMilliseconds(startTime2);
+
+			String endTime2 = currentTask.getEndDateTime();
+			long endTime2InMillis = ta.getDateTimeInMilliseconds(endTime2);
+
+			
+			if (endTime2InMillis < endTimeInMillis && endTime2InMillis > startTimeInMillis ||
+					startTime2InMillis > startTimeInMillis && startTime2InMillis < endTimeInMillis) {
+				return true;
+			} 
+		}
+		
+		return false;
 	}
 	
-	private boolean existingTasksClashWith(Task task) {
-	    TimeAnalyser ta = new TimeAnalyser();
-	    
-	    String startTimeOfAddedTask = task.getStartDateTime();
-	    String endTimeOfAddedTask = task.getEndDateTime();
-	    
-	    long startTimeOfAddedTaskInMilliseconds = ta.getDateTimeInMilliseconds(startTimeOfAddedTask);
-	    long endTimeOfAddedTaskInMilliseconds = ta.getDateTimeInMilliseconds(endTimeOfAddedTask);
-	    
-	    for (int i = 0; i < taskList.size(); i++) {
+		
+		
+		
+	
+	
+	
+	
+	private boolean exactTimeSlotExists(Task task) {
+		ArrayList<Task> timeTasks = getTimeTasks();
 
-	    	Task currentTask = taskList.get(i);
-	    	String taskType = currentTask.getTaskType();
-
-	    	if (taskType.equals("time task")) {
-
-	    		String startTime = currentTask.getStartDateTime();
-	    		String endTime = currentTask.getEndDateTime();
-
-	    		long startTimeInMilliseconds = ta.getDateTimeInMilliseconds(startTime);
-	    		long endTimeInMilliseconds = ta.getDateTimeInMilliseconds(endTime);
-
-	    		if (startTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && startTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
-	    			return true;
-	    		}
-
-	    		if (endTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && endTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
-	    			return true;
-	    		}
-	    	}
-
-	    }
-
-	    return false;
+		String startTime = task.getStartDateTime();
+		String endTime = task.getEndDateTime();
+		
+		for (int i = 0; i < timeTasks.size(); i++) {
+			Task currentTask = timeTasks.get(i);
+			String startTime2 = currentTask.getStartDateTime();
+			String endTime2 = currentTask.getEndDateTime();
+			
+			if (startTime.equals(startTime2) && endTime.equals(endTime2)) {
+				return true;
+			} 
+		}
+		
+		return false;
 	}
+	
 
+	
+	
 	private void writeToDatabase() {
 		memoryLogger.entering(getClass().getName(), "writing new task to database");
 		Database database = Database.getInstance();
@@ -355,6 +443,21 @@ public class Memory {
         return floatingTasks;
 	}
 	
+	public ArrayList<Task> getTimeTasks() {
+	    ArrayList<Task> timeTasks = new ArrayList<Task> ();
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            String taskType = currentTask.getTaskType();
+            
+            if (taskType.equals("time task")) {
+                timeTasks.add(currentTask);
+            }
+        }
+        
+        return timeTasks;
+	}
+	
 	public ArrayList<Task> getDone() {
 	    ArrayList<Task> doneTasks = new ArrayList<Task> ();
 	    
@@ -429,5 +532,9 @@ public class Memory {
         
         return false;
     }
+	
+	private void sortTasksBasedOnEndTime(ArrayList<Task> timeTasks) {
+		Collections.sort(timeTasks, new TimeTasksSorter());
+	}
 
 }
