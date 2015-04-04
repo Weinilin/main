@@ -14,11 +14,7 @@ class TaskManager	{
 	public static void main (String[] args)	{	
 		CommandLineInterface cli = new CommandLineInterface();
 		Scanner scanner = new Scanner(System.in);
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> master
 		GUI std = new GUI();
         std.run();
         

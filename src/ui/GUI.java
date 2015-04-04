@@ -317,16 +317,9 @@ public class GUI extends JPanel implements ActionListener{
             data[i][1] = deadlinesAndTimeTasks.get(i).getDescription();      
             data[i][2] = deadlinesAndTimeTasks.get(i).getStartDateTime();
             
-            String deadline = deadlinesAndTimeTasks.get(i).getDeadline();
-            String endDateTime = deadlinesAndTimeTasks.get(i).getEndDateTime();
-            
            
+            data[i][3] = deadlinesAndTimeTasks.get(i).getEndDateTime();
             
-            if (endDateTime.equals("- -")) {
-                data[i][3] = deadline;
-            } else {
-                data[i][3] = endDateTime;
-            }
             
            
             data[i][4] = deadlinesAndTimeTasks.get(i).getStatus();
