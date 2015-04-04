@@ -184,7 +184,7 @@ public class Memory {
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
 			Task task = taskList.get(i);
-			if (task.getStatus().contains(status)) {
+			if (task.getStatus().equals(status)) {
 				searchList.add(task);
 			}
 		}

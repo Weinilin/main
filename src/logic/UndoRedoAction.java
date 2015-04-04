@@ -70,14 +70,16 @@ class UndoRedoAction {
             case ADD:
                 return (memory.removeTask(newTask) != null);
             case DELETE:
-                return (memory.addTask(oldTask));
+                return (memory.addTask(oldTask) == 1);
+                
             case EDIT:
-                return ((memory.addTask(oldTask) && (memory.removeTask(newTask) != null)));
-                //case MARK:
-                //	return (memory.)
+                return ((memory.addTask(oldTask) == 1 && (memory.removeTask(newTask) != null)));
+            case MARK:
+                 memory.markUndone(oldTask);
+                 return true;
             case SETLOCATION:
-                DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-                return dlc.setDatabaseLocation(oldPath);
+                 DatabaseLocationChanger dlc = new DatabaseLocationChanger();
+                 return dlc.setDatabaseLocation(oldPath);
             default:
                 return false;
         }
@@ -86,11 +88,11 @@ class UndoRedoAction {
     public boolean redo() {
         switch (action) {
             case ADD:
-                return (memory.addTask(newTask));
+                return (memory.addTask(newTask) == 1);
             case DELETE:
                 return (memory.removeTask(oldTask) != null);
             case EDIT:
-                return ((memory.addTask(newTask) && (memory.removeTask(oldTask) != null)));
+                return ((memory.addTask(newTask) == 1 && (memory.removeTask(oldTask) != null)));
                 //case MARK:
                 //	return (memory.)
             case SETLOCATION:

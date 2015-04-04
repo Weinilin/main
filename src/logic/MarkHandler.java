@@ -14,17 +14,20 @@ import java.util.logging.Logger;
  * 
  * Mark a task as done by typing the keyword following 
  * by the index of task that is intended to be marked
+ * @author A0114463M
  */
 class MarkHandler extends UndoableCommandHandler {
 
     private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
-    private static final String INVALID_INDEX_MESSAGE = "Index invalid! Please check yout input\n";
-    private static final String MARKED_MESSAGE = "Marked %1$s as done\n";
+    private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
+    private static final String MARKED_MESSAGE = "Marked %1$s as done. It has been archieved\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("mark", "done"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
     private ArrayList<Task> markedTask = new ArrayList<Task>();
+    private ArrayList<Integer> markedTaskIndex = new ArrayList<Integer>();
+    
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -46,22 +49,31 @@ class MarkHandler extends UndoableCommandHandler {
         int index;
         for (String t: token) {
             ip = new IndexParser(t);
-            index = ip.getIndex() - 1;
             try {
-                taskList.get(index).setStatus("done");
+                index = ip.getIndex() - 1;
                 markedTask.add(taskList.get(index));
+                markedTaskIndex.add(index);
                 goodFeedback += t + " ";
+            } catch (NumberFormatException nfe) {
+                badFeedback += t + " ";
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback += t + " ";
                 markLogger.log(Level.WARNING, "Invalid index", iob);
             } 
         }
         
+        recordChanges(taskList);
+        
         for (Task done: markedTask) {
             memory.markDone(done);
         }
         
-        return String.format(MARKED_MESSAGE, goodFeedback);
+        if (!goodFeedback.equals("")) {
+            return String.format(MARKED_MESSAGE, goodFeedback);
+        } else {
+            return String.format(INVALID_INDEX_MESSAGE, badFeedback);
+        }
+        
     }
 
     /**
@@ -94,8 +106,18 @@ class MarkHandler extends UndoableCommandHandler {
         return HELP_MESSAGE;
     }
     
-    @Override
     void recordChanges(ArrayList<Task> taskList) {
-        
+        UndoRedoRecorder markRecorder = new UndoRedoRecorder(taskList);
+        for (int index: markedTaskIndex) {
+            Task task = taskList.get(index);
+            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
+            task.setStatus("done");
+            taskList.remove(task);
+            memory.markDone(task);
+        }
+        if (!markRecorder.isEmpty()) {
+            markRecorder.recordUpdatedList(taskList);
+            undoRedoManager.addNewRecord(markRecorder);
+        }
     }
 }

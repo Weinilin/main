@@ -35,6 +35,7 @@ class AddHandler extends UndoableCommandHandler {
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
         reset();
+        String feedback = "";
         String[] token = parameter.split(" ");
         if (isHelpOnly(token) || isEmpty(parameter)) {
             return getHelp();
@@ -48,11 +49,21 @@ class AddHandler extends UndoableCommandHandler {
         // a non empty task is created
         assert (newTask != null);
         
-        memory.addTask(newTask); 
-        recordChanges(taskList);       
-        addLogger.log(Level.FINE, "Add sucess");
-        return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
-       
+        int addStatus = memory.addTask(newTask); 
+        switch (addStatus) {
+            case 1:
+                recordChanges(taskList);       
+                addLogger.log(Level.FINE, "Add sucess");
+                feedback = String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+                break;
+            case 2:
+                feedback = "Task already exists\n";
+                break;
+            case 3:
+                feedback = "Existing task clasing with new task\n";
+                break;
+        }
+        return feedback;
     }
 
     @Override
@@ -96,7 +107,7 @@ class AddHandler extends UndoableCommandHandler {
      */
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
-        taskList.addAll(memory.getTaskList());
+        taskList.addAll(memory.searchStatus("undone"));
     }
 
     @Override
