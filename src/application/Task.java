@@ -28,7 +28,7 @@ public class Task {
 		this.status = task.getStatus();
 	}
 	
-	public Task(String taskType, String description, String startDateTime, String endDateTime, String deadline, String status) {
+	public Task(String taskType, String description, String startDateTime, String endDateTime, String status) {
 		this.taskType = taskType;
 		this.description = description;
 		this.startDateTime = startDateTime;

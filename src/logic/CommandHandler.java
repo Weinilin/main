@@ -55,11 +55,10 @@ public abstract class CommandHandler {
         String taskType = ttp.getTaskType();
 
         DateTimeParser dtp = new DateTimeParser(taskInformation);
-        String deadline = dtp.getDeadlineDate() + " " + dtp.getDeadlineTime();
         String startDateTime = dtp.getStartDate() + " " + dtp.getStartTime();
         String endDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
  
-        Task newTask = new Task(taskType, description, startDateTime, endDateTime, deadline, "undone");
+        Task newTask = new Task(taskType, description, startDateTime, endDateTime, "undone");
         return newTask;
     }
 }
