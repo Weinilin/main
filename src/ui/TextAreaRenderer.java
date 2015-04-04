@@ -60,21 +60,30 @@ public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
         // set the Font, Color, etc. 
         renderer.getTableCellRendererComponent(table, value, 
                 isSelected, hasFocus, row, column); 
-        setForeground(renderer.getForeground()); 
+        
+        
+        Color blue = new Color(0, 0, 255);
+        Color mediumBlue = new Color(0,180,150,30);
+
+        Color lightBlue = new Color(170, 204, 255);
+//        setForeground(renderer.getForeground()); 
         setBackground(renderer.getBackground()); 
         setBorder(renderer.getBorder()); 
         setFont(new Font("Arial", Font.BOLD, 12 ));
         setText(renderer.getText()); 
+        
         
 
         String status = (String) table.getValueAt(row, 2);
         
         if (status.equals("undone")) {
             setBackground(new Color(0,0,0,0));
+            setForeground(blue); 
 
         } else if (status.equals("done")) {
             
-           setBackground(new Color(0,180,150,30));
+           setForeground(lightBlue); 
+
 
 
         }
