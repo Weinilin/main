@@ -15,11 +15,15 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import application.Task;
 import application.TimeAnalyser;
@@ -47,7 +51,7 @@ import java.util.Vector;
 
 import logic.LogicController;
 
-public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEventDispatcher{
+public class GUI extends JPanel implements ActionListener{
     
 
     private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
@@ -149,55 +153,9 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
             }
         };
 
-        deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel) {
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
-            {
-                Component c = super.prepareRenderer(renderer, row, column);
+        deadlinesAndTimeTasksTable = new JTable(deadlinesAndTimeTasksModel);
 
-                
-
-                String dateTime;
-           
-                dateTime = (String) deadlinesAndTimeTasksTable.getValueAt(row, 3);
-                
-
-
-                TimeAnalyser ta = new TimeAnalyser();
-                
-                if (ta.getDateTimeInMilliseconds(dateTime) < System.currentTimeMillis()) {
-                    c.setForeground(Color.RED);
-
-                } else {
-                    c.setForeground(Color.BLUE);
-                }
-                
-                String status = (String) deadlinesAndTimeTasksTable.getValueAt(row, 4);
-                
-                if (status.equals("undone")) {
-                    c.setBackground(Color.WHITE);
-
-                    c.setFont(new Font("Arial", Font.BOLD, 12 ));
-                } else {
-                    c.setBackground(new Color(0,180,150,30));
-
-
-                }
-                
-                Color lightPink = new Color(255, 204, 255);
-                
-                int modelRow = convertRowIndexToModel(row);
-                if (isRowSelected(modelRow)) {
-                    c.setBackground(lightPink);
-                }
-
-                
-                
-
-                return c;
-            }
-
-        };
-
+        
         deadlinesAndTimeTasksTable.setRowSelectionAllowed(true);
         deadlinesAndTimeTasksTable.setCellSelectionEnabled(false);
 
@@ -207,11 +165,6 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
         deadlinesAndTimeTasksTable.setForeground(Color.BLUE);
 
 
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(1).setPreferredWidth(400);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(2).setPreferredWidth(120);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(3).setPreferredWidth(120);
-        deadlinesAndTimeTasksTable.getColumnModel().getColumn(4).setPreferredWidth(50);
 
 
 
@@ -284,42 +237,14 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
         };
 
 
-        floatingTasksTable = new JTable(floatingTasksModel) {
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
-            {
-                Component c = super.prepareRenderer(renderer, row, column);
-                c.setForeground(Color.BLUE);
-
-                String status = (String) floatingTasksTable.getValueAt(row, 2);
-                
-                if (status.equals("undone")) {
-                    c.setBackground(new Color(0,0,0,0));
-                    c.setFont(new Font("Arial", Font.BOLD, 12 ));
-                } else {
-                    c.setBackground(new Color(0,180,150,30));
-
-
-                }
-
-                Color lightPink = new Color(255, 204, 255);
-                
-                int modelRow = convertRowIndexToModel(row);
-                if (isRowSelected(modelRow)) {
-                    c.setBackground(lightPink);
-                }
-                
-                return c;
-            }
-        };
+        floatingTasksTable = new JTable(floatingTasksModel);
+        
         
         floatingTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
         floatingTasksTable.setForeground(Color.BLUE);
         floatingTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
 
-        floatingTasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-        floatingTasksTable.getColumnModel().getColumn(1).setPreferredWidth(640);
-        floatingTasksTable.getColumnModel().getColumn(2).setPreferredWidth(50);
-    
+
 
 
 
@@ -360,8 +285,8 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
 
         add(scrollPane2, c);
         
-        
-
+        setUpColumnWidth2();
+        setUpColumnWidth() ;
         updateTable();
 
 
@@ -372,6 +297,8 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
     
     public void updateTable() {
 
+       
+        
         deadlinesAndTimeTasksModel.setRowCount(0);
 
         ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks(lc.getTaskList());
@@ -409,8 +336,11 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
             deadlinesAndTimeTasksModel.addRow(data[i]);
         }
        
-        updateRowHeights();
+      
+        
+   
 
+ 
 
         floatingTasksModel.setRowCount(0);
 
@@ -428,6 +358,10 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
             data2[i][2] = floatingTasks.get(i).getStatus();
             floatingTasksModel.addRow(data2[i]);
         }
+        
+        
+        
+        
 
     }
     
@@ -525,26 +459,100 @@ public class GUI extends JPanel implements ActionListener, ChangeListener, KeyEv
         return floatingTasks;
     }
     
-    private void updateRowHeights()
-    {
-        try
-        {
-            for (int row = 0; row < deadlinesAndTimeTasksTable.getRowCount(); row++)
-            {
-                int rowHeight = deadlinesAndTimeTasksTable.getRowHeight();
+   
 
-                for (int column = 0; column < deadlinesAndTimeTasksTable.getColumnCount(); column++)
-                {
-                    Component comp = deadlinesAndTimeTasksTable.prepareRenderer(deadlinesAndTimeTasksTable.getCellRenderer(row, column), row, column);
-                    rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
-                }
-
-                deadlinesAndTimeTasksTable.setRowHeight(row, rowHeight);
-            }
-        }
-        catch(ClassCastException e) {}
+    private void setUpColumnWidth() {
+        final int colNo = floatingTasksTable.getColumnCount();
+        
+        //_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        floatingTasksTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        
+        Runnable runColWidthSetup = setAllColumns(colNo);
+        SwingUtilities.invokeLater(runColWidthSetup);
     }
 
+    /**
+     * @param colNo
+     * @return
+     */
+    private Runnable setAllColumns(final int colNo) {
+        Runnable runColWidthSetup = new Runnable(){
+            @Override
+            public void run(){
+                for (int i = 0; i < colNo; i++) {
+                    TableColumn column = floatingTasksTable.getColumnModel().getColumn(i);
+                    
+                    boolean isID = i == 0;
+                    boolean isDesc = i == 1;
+                    boolean isStatus = i == 2;
 
+                    if (isID) {
+                        column.setCellRenderer(new TextAreaRenderer());
+                        column.setPreferredWidth(40);
+                    } else if (isDesc) {
+                        column.setCellRenderer(new TextAreaRenderer());
+                        column.setPreferredWidth(640);
+                    } else if (isStatus) {
+                        column.setCellRenderer(new TextAreaRenderer());
+                        column.setPreferredWidth(50);
+                    }
+                }
+                
+                
+            }
+        };
+        return runColWidthSetup;
+    }
+
+    private void setUpColumnWidth2() {
+        final int colNo = deadlinesAndTimeTasksTable.getColumnCount();
+        
+        //_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        deadlinesAndTimeTasksTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        
+        Runnable runColWidthSetup = setAllColumns2(colNo);
+        SwingUtilities.invokeLater(runColWidthSetup);
+    }
+
+    /**
+     * @param colNo
+     * @return
+     */
+    private Runnable setAllColumns2(final int colNo) {
+        Runnable runColWidthSetup = new Runnable(){
+            @Override
+            public void run(){
+                for (int i = 0; i < colNo; i++) {
+                    TableColumn column = deadlinesAndTimeTasksTable.getColumnModel().getColumn(i);
+                    
+                    boolean isID = i == 0;
+                    boolean isDesc = i == 1;
+                    boolean isStartTime = i == 2;
+                    boolean isEndTime = i == 3;
+                    boolean isStatus = i == 4;
+
+                    if (isID) {
+                        column.setCellRenderer(new TextAreaRenderer1());
+                        column.setPreferredWidth(40);
+                    } else if (isDesc) {
+                        column.setCellRenderer(new TextAreaRenderer1());
+                        column.setPreferredWidth(400);
+                    } else if (isStartTime) {
+                        column.setCellRenderer(new TextAreaRenderer1());
+                        column.setPreferredWidth(120);
+                    } else if (isEndTime) {
+                        column.setCellRenderer(new TextAreaRenderer1());
+                        column.setPreferredWidth(120);
+                    } else if (isStatus) {
+                        column.setCellRenderer(new TextAreaRenderer1());
+                        column.setPreferredWidth(50);
+                    }
+                }
+                
+                
+            }
+        };
+        return runColWidthSetup;
+    }
 
 }
