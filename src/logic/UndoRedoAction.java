@@ -17,8 +17,8 @@ class UndoRedoAction {
     };
     Memory memory = Memory.getInstance();
     private ActionType action;
-    private Task oldTask, newTask = null;
-    private String oldPath, newPath = null;
+    private Task oldTask, newTask;
+    private String oldPath, newPath;
 
     /**
      * Construct a new new record associating with task changes of edit
@@ -86,9 +86,9 @@ class UndoRedoAction {
     public boolean redo() {
         switch (action) {
             case ADD:
-                return (memory.removeTask(oldTask) != null);
-            case DELETE:
                 return (memory.addTask(newTask));
+            case DELETE:
+                return (memory.removeTask(oldTask) != null);
             case EDIT:
                 return ((memory.addTask(newTask) && (memory.removeTask(oldTask) != null)));
                 //case MARK:

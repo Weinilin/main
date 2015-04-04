@@ -31,7 +31,7 @@ class EditHandler extends UndoableCommandHandler {
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
-    Task oldTask, newTask;
+    Task oldTask, newTask = null;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -39,8 +39,7 @@ class EditHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
-        editLogger.entering(getClass().getName(), "preparing for editing tasks");
-
+        reset();
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmpty(parameter)) {
             return getHelp();
@@ -72,44 +71,53 @@ class EditHandler extends UndoableCommandHandler {
                 } catch (NumberFormatException nfe) {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
-            }
+                }
 
-            try {
-                oldTask = taskList.remove(index);
-                newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
-            } catch (IndexOutOfBoundsException iob) {
-                return INVALID_INDEX_MESSAGE;
-            }
+                try {
+                    oldTask = taskList.remove(index);
+                    newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
+                } catch (IndexOutOfBoundsException iob) {
+                    return INVALID_INDEX_MESSAGE;
+                }
                 break;
         }
 
-        updateTaskList(taskList);
-        taskList = memory.getTaskList();
+        performEdit(taskList);
         return "";
     }
 
-
     /**
-     * update the taskList in LogicController and Memory
-     * @param taskList
-     * @param index
-     * @param removedTask
-     * @param newTask
+     * reset the handler when it is called
      */
-    private void updateTaskList(ArrayList<Task> taskList) {
+    private void reset() {
+        newTask = null;
+        oldTask = null;
+    }
+    
+    /**
+     * execute the changes in Memory
+     * @param taskList
+     */
+    private void performEdit(ArrayList<Task> taskList) {
         if (newTask != oldTask && oldTask != null) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            recordMemoryChanges(taskList);
-            taskList.remove(oldTask);
-            taskList.add(newTask);
+            recordChanges(taskList);            
             Collections.sort(taskList, new TaskComparator());
         }
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
+    }
+    
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
         editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        updateTaskList(taskList);
+        editRecorder.recordUpdatedList(taskList);
         undoRedoManager.addNewRecord(editRecorder);
     }
     

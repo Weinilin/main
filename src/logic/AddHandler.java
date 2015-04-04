@@ -24,7 +24,7 @@ class AddHandler extends UndoableCommandHandler {
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
     private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
-    static Task newTask;
+    static Task newTask = null;
     
     @Override
     public ArrayList<String> getAliases() {
@@ -34,30 +34,43 @@ class AddHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
         String[] token = parameter.split(" ");
-        if (isHelpOnly(token) || isEmptyParameter(parameter)) {
+        if (isHelpOnly(token) || isEmpty(parameter)) {
             return getHelp();
         }
 
         addLogger.entering(getClass().getName(), "Add non empty task");
         newTask = CommandHandler.createNewTask(parameter);
+        if (isEmpty(newTask.getDescription())) {
+            return "No description for new task\n";
+        }
         // a non empty task is created
         assert (newTask != null);
         
         memory.addTask(newTask); 
-        recordMemoryChanges(taskList);
-        updateTaskList(taskList);            
+        recordChanges(taskList);       
         addLogger.log(Level.FINE, "Add sucess");
         return String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
        
     }
 
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder addRecorder = new UndoRedoRecorder(taskList);
         addRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.ADD, newTask, newTask));
+        updateTaskList(taskList);     
+        addRecorder.recordUpdatedList(taskList);
         undoRedoManager.addNewRecord(addRecorder);
+       
     }
 
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+    }
 
 
     /**
@@ -65,8 +78,8 @@ class AddHandler extends UndoableCommandHandler {
      * @param parameter
      * @return
      */
-    private boolean isEmptyParameter(String parameter) {
-        return parameter.trim().equals("");
+    private boolean isEmpty(String string) {
+        return string.trim().equals("");
     }
 
     /**
