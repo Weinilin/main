@@ -41,8 +41,7 @@ class EditTimeHandler extends UndoableCommandHandler {
         TaskTypeParser ttp = new TaskTypeParser(parameter);
         IndexParser ip = new IndexParser(parameter);
         int index = ip.getIndex() - 1;
-        String newDeadline = dtp.getDeadlineDate() + " " + dtp.getDeadlineTime(),
-               newStartDateTime = dtp.getStartDate() + " " + dtp.getStartTime(),
+        String newStartDateTime = dtp.getStartDate() + " " + dtp.getStartTime(),
                newEndDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
         if (index < 0) {
             return INVALID_INDEX_MESSAGE;
@@ -55,7 +54,6 @@ class EditTimeHandler extends UndoableCommandHandler {
             return INVALID_INDEX_MESSAGE;
         }
 
-        newTask.setDeadline(newDeadline);
         newTask.setEndDateTime(newEndDateTime);
         newTask.setStartDateTime(newStartDateTime);
         newTask.setTaskType(ttp.getTaskType());
