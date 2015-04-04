@@ -18,17 +18,19 @@ public class TimeAnalyser {
     public TimeAnalyser() {}
     // need another constructor for parsing unformatted string
     private void processFormattedString(String dateTime) {
-    
+//        System.out.println(dateTime);
+
         String processedDateTime = dateTime.replaceAll("[:/]", " ");
+
         String[] token = processedDateTime.split("\\s+");
    
-     
+//        System.out.println(processedDateTime);
 
-        day = Integer.parseInt(token[0]);
-        month = Integer.parseInt(token[1]);
-        year = Integer.parseInt(token[2]);
-        hour = Integer.parseInt(token[3]);
-        minute = Integer.parseInt(token[4]);
+        day = Integer.parseInt(token[1]);
+        month = Integer.parseInt(token[2]);
+        year = Integer.parseInt(token[3]);
+        hour = Integer.parseInt(token[4]);
+        minute = Integer.parseInt(token[5]);
         
     }
 

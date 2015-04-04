@@ -9,7 +9,6 @@ public class Task {
 		"Description",
 		"Start Time",
 		"End Time",
-		"Deadline",
 		"Status"
 	};
 	
@@ -41,7 +40,7 @@ public class Task {
 		this.description = taskInformation.get(1);
 		this.startDateTime = taskInformation.get(2);
 		this.endDateTime = taskInformation.get(3);
-		this.status = taskInformation.get(5);
+		this.status = taskInformation.get(4);
 	}
 	public void setStartDateTime(String newStartDateTime) {
 		startDateTime = newStartDateTime;
@@ -84,19 +83,19 @@ public class Task {
 //	}
 	
 	public String getStartDate() {
-		return startDateTime.substring(0, 10);
+		return startDateTime.substring(4).substring(0, 10);
 	}
 	
 	public String getStartTime() {
-		return startDateTime.substring(11, 16);
+		return startDateTime.substring(4).substring(11, 16);
 	}
 	
 	public String getEndDate(){
-		return endDateTime.substring(0, 10);
+		return endDateTime.substring(4).substring(0, 10);
 	}
 	
 	public String getEndTime(){
-		return endDateTime.substring(11, 16);
+		return endDateTime.substring(4).substring(11, 16);
 	}
 	
 //	public String getDeadlineDate() {
