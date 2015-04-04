@@ -101,6 +101,7 @@ class MarkHandler extends UndoableCommandHandler {
      */
     private void reset() {
         markedTask.clear();
+        markedTaskIndex.clear();
         goodFeedback = "";
         badFeedback = "";
         index = -1;
