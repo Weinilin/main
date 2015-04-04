@@ -71,7 +71,9 @@ public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
         
         if (status.equals("undone")) {
             setBackground(new Color(0,0,0,0));
+
         } else if (status.equals("done")) {
+            
            setBackground(new Color(0,180,150,30));
 
 
