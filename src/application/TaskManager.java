@@ -28,9 +28,16 @@ class TaskManager	{
 		while (true) {
 		    String userInput = scanner.nextLine();
 		    String feedback = cli.processUserInput(userInput);
+		    
+		    if (feedback == null) {
+		        System.exit(0);
+		    }
+		    
 	        printMessageToUser(feedback);
 	        taskListUI.showTask();
 	        printMessageToUser(String.format(COMMAND_MESSAGE));
+            System.out.println("xx");
+
 
 		}
 	}
