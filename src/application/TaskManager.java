@@ -14,13 +14,18 @@ class TaskManager	{
 	public static void main (String[] args)	{	
 		CommandLineInterface cli = new CommandLineInterface();
 		Scanner scanner = new Scanner(System.in);
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> master
 		GUI std = new GUI();
         std.run();
         
         TaskListUI taskListUI = new TaskListUI();
-      //  taskListUI.showTask();
-        
+        taskListUI.showTask();
+
+		
 	    printMessageToUser(String.format(WELCOME_MESSAGE));
         printMessageToUser(String.format(COMMAND_MESSAGE));
 
@@ -30,14 +35,12 @@ class TaskManager	{
 	        printMessageToUser(feedback);
 	        taskListUI.showTask();
 	        printMessageToUser(String.format(COMMAND_MESSAGE));
-	        System.out.println(feedback);
+
 		}
-		
 	}
 	
 	public static void printMessageToUser(String message){
         System.out.println(message);
-
     }
 
 }

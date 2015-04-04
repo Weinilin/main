@@ -22,7 +22,7 @@ class EditTimeHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
-    Task oldTask, newTask;
+    Task oldTask, newTask = null;
     
     @Override
     protected ArrayList<String> getAliases() {
@@ -31,6 +31,7 @@ class EditTimeHandler extends UndoableCommandHandler {
         
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
     	String[] token = parameter.split(" ");
 		if (token[0].toLowerCase().equals("help") || token[0].equals("")) {
 			return getHelp();
@@ -59,21 +60,39 @@ class EditTimeHandler extends UndoableCommandHandler {
         newTask.setStartDateTime(newStartDateTime);
         newTask.setTaskType(ttp.getTaskType());
         
+        performEdit(taskList);
+        return "Task \"" + newTask.getDescription() + "\" has changed time\n";
+    }
+
+    private void performEdit(ArrayList<Task> taskList) {
         if ((newTask != oldTask) && (oldTask != null)) {
             memory.removeTask(oldTask);
             memory.addTask(newTask);
-            recordMemoryChanges(taskList);
-            taskList.remove(oldTask);
-            taskList.add(newTask);
+            recordChanges(taskList);
             Collections.sort(taskList, new TaskComparator());
         }
-        return "Task \"" + newTask.getDescription() + "\" has changed time\n";
     }
     
-    private void recordMemoryChanges(ArrayList<Task> taskList) {
-        UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
-        editRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
-        undoRedoManager.addNewRecord(editRecorder);
+    @Override
+    void recordChanges(ArrayList<Task> taskList) {
+        UndoRedoRecorder editTimeRecorder = new UndoRedoRecorder(taskList);
+        editTimeRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.EDIT, oldTask, newTask));
+        updateTaskList(taskList);
+        editTimeRecorder.recordUpdatedList(taskList);
+        undoRedoManager.addNewRecord(editTimeRecorder);
+    }
+    
+    /**
+     * reset the handler when it is called
+     */
+    private void reset() {
+        newTask = null;
+        oldTask = null;
+    }
+    
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
     }
     
     @Override

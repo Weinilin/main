@@ -8,11 +8,15 @@ public class DateTimeParserTestTEMP {
 
     @Test
     public void test() {
-        DateTimeParser d1 = new DateTimeParser("add go run one round on this sun from 10 o’clock to 11 am ");
-        //assertEquals(d1.getDeadlineDate(), "15/04/2015");
-        assertEquals(d1.getStartTime(), "10:00");
-        assertEquals(d1.getEndTime(), "11:00");
+        DateTimeParser d12 = new DateTimeParser(
+                "CS2103T assignments 10pm to 9pm today");
+        assertEquals(d12.getStartDate(), "Fri 03/04/2015");
+        assertEquals(d12.getEndDate(), "Sat 04/04/2015");
+        assertEquals(d12.getStartTime(), "22:00");
+        assertEquals(d12.getEndTime(), "21:00");
+
         
+    
         
     }
 
