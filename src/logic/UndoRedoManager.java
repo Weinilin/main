@@ -8,7 +8,7 @@ import application.Task;
  * This class manages all the actions that perform changes to 
  * memory by UndoableCommandHandlers. A redo stack is also implemented
  * to record actions that has been called for undo for redo purposes
- *  * @author A0114463M
+ * @author A0114463M
  *
  */
 class UndoRedoManager {
