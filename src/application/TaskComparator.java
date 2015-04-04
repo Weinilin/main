@@ -2,7 +2,6 @@ package application;
 
 import java.util.Comparator;
 
-import parser.DateParser;
 
 public class TaskComparator implements Comparator<Task> {
 	
@@ -38,11 +37,10 @@ public class TaskComparator implements Comparator<Task> {
 			dateTime2 = task2.getDeadline();
 		}
 		
-		DateParser dateParser1 = new DateParser(dateTime1);
-		long dateTime1InMilliseconds = dateParser1.getDateTimeInMilliseconds();
+		TimeAnalyser ta = new TimeAnalyser();
+		long dateTime1InMilliseconds = ta.getDateTimeInMilliseconds(dateTime1);
 		
-		DateParser dateParser2 = new DateParser(dateTime2);
-		long dateTime2InMilliseconds = dateParser2.getDateTimeInMilliseconds();
+		long dateTime2InMilliseconds = ta.getDateTimeInMilliseconds(dateTime2);
 
 		if (dateTime1InMilliseconds <= dateTime2InMilliseconds) {
 			return -1;
