@@ -6,6 +6,7 @@ package storage;
 
 import application.Task;
 import application.TaskComparator;
+import application.TimeAnalyser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,8 @@ import java.util.logging.Level;
 public class Memory {
 	
 	private final String DONE = "done";
+	private final String UNDONE = "undone";
+
 	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
 	
@@ -206,6 +209,16 @@ public class Memory {
         memoryLogger.exiting(getClass().getName(), "marking task");
     }
 	
+	public void markUndone(Task undoneTask) {
+        memoryLogger.entering(getClass().getName(), "marking task");
+        Task task = taskList.get(taskList.indexOf(undoneTask));
+        task.setStatus(UNDONE);
+        sortTaskList();
+        writeToDatabase();
+        memoryLogger.log(Level.FINE, "mark success");
+        memoryLogger.exiting(getClass().getName(), "marking task");
+    }
+	
 	public void editTaskType(int index, String newTaskType) {
 		memoryLogger.entering(getClass().getName(), "editing taskType");
 		assert isValidIndex(index);
@@ -287,5 +300,80 @@ public class Memory {
         
         return floatingTasks;
 	}
+	
+	public ArrayList<Task> getDone() {
+	    ArrayList<Task> doneTasks = new ArrayList<Task> ();
+	    
+	    for (int i = 0; i < taskList.size(); i++) {
+	        Task currentTask = taskList.get(i);
+	        String status = currentTask.getStatus();
+	        
+	        if (status.equals("done")) {
+	            doneTasks.add(currentTask);
+	        }
+	    }
+	    
+	    return doneTasks;
+	}
+	
+	public ArrayList<Task> getUndone() {
+        ArrayList<Task> undoneTasks = new ArrayList<Task> ();
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = taskList.get(i);
+            String status = currentTask.getStatus();
+            
+            if (status.equals("undone")) {
+                undoneTasks.add(currentTask);
+            }
+        }
+        
+        return undoneTasks;
+    }
+	
+	public ArrayList<Task> getBetween(String date1, String date2) {
+	    ArrayList<Task> searchList = new ArrayList<Task>();
+	    TimeAnalyser ta = new TimeAnalyser();
+	   
+	    
+	    ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks();
+	    
+	    for (int i = 0; i < deadlinesAndTimeTasks.size(); i++) {
+	        Task currentTask = deadlinesAndTimeTasks.get(i);
+	        String date;
+	        
+	        if (isDeadline(currentTask)) {
+	            date = currentTask.getDeadline();
+	        } else {
+	            date = currentTask.getStartDate();
+	        }
+            
+            if (ta.compare(date1, date) == 1 && ta.compare(date, date2) == 1) {
+                searchList.add(currentTask);
+            }
+	    }
+	    
+	    return searchList;
+	}
+	
+	private boolean isDeadline(Task task) {
+	    String status = task.getStatus();
+	    
+	    if (status.equals("deadline")) {
+	        return true;
+	    }
+	    
+	    return false;
+	}
+	
+	private boolean isTimeTask(Task task) {
+        String status = task.getStatus();
+        
+        if (status.equals("time task")) {
+            return true;
+        }
+        
+        return false;
+    }
 
 }

@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 public class DateTimeParser {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String TIME_FORMAT = "HH:mm";
@@ -74,7 +76,7 @@ public class DateTimeParser {
      * @param storageOfDate
      */
     private void testValidTimesAndDates(ArrayList<String> storageOfTime,
-            ArrayList<String> storageOfDate) {
+            ArrayList<String> storageOfDate) throws IllegalArgumentException {
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
@@ -86,13 +88,16 @@ public class DateTimeParser {
             Date date2 = dateFormat.parse(storageOfDate.get(1));
 
             if (time1.equals(time2) && date1.equals(date2)) {
-                throw new Exception(
+                throw new IllegalArgumentException(
                         "Impossible combination for timed task! End time must be later than start time on the same day");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            logger.log(Level.WARNING, "processing error", e);
-            System.exit(0);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+            // logger.log(Level.WARNING, "processing error", e);        
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -103,7 +108,7 @@ public class DateTimeParser {
      * 
      * @param storageOfDate
      */
-    private void testValidTimes(ArrayList<String> storageOfTime) {
+    private void testValidTimes(ArrayList<String> storageOfTime) throws IllegalArgumentException {
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
@@ -111,12 +116,17 @@ public class DateTimeParser {
             Date time2 = timeFormat.parse(storageOfTime.get(1));
 
             if (time1.after(time2)) {
-                throw new Exception(
+                throw new IllegalArgumentException(
                         "Invalid input of time! The start time is later than end time!");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            logger.log(Level.WARNING, "processing error", e);
+        } catch (IllegalArgumentException e) {
+           // throw new IllegalArgumentException(e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+            // logger.log(Level.WARNING, "processing error", e);
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            e.printStackTrace();
             System.exit(0);
         }
 
@@ -127,7 +137,7 @@ public class DateTimeParser {
      * 
      * @param storageOfDate
      */
-    private void testValidDates(ArrayList<String> storageOfDate) {
+    private void testValidDates(ArrayList<String> storageOfDate) throws IllegalArgumentException{
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -135,13 +145,16 @@ public class DateTimeParser {
             Date date2 = dateFormat.parse(storageOfDate.get(1));
 
             if (date1.after(date2)) {
-                throw new Exception(
+                throw new IllegalArgumentException(
                         "Invalid input of date! The start date is later than end date!");
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            logger.log(Level.WARNING, "processing error", e);
-            System.exit(0);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+           // logger.log(Level.WARNING, "processing error", e);
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -279,7 +292,6 @@ public class DateTimeParser {
             if (storageOfTime.size() == 0 && storageOfDate.size() == 1) {
                 storageOfTime.add("23:59");
             } else if (storageOfTime.size() == 0 && storageOfDate.size() == 2) {
-
                 String currentTime = getCurrentTime();
                 storageOfTime.add(currentTime);
                 storageOfTime.add(addOneHourToTime(currentTime));
@@ -447,8 +459,8 @@ public class DateTimeParser {
         try {
             date1 = dateFormat.parse(date);
         } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
             e.printStackTrace();
-            System.exit(0);
         }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date1);

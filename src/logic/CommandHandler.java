@@ -13,7 +13,7 @@ import application.Task;
  * All handlers in Logic (except undo) shall extend this class so that all
  * handlers have functions of execute() and getHelp()
  */
-abstract class CommandHandler {
+public abstract class CommandHandler {
 
     Memory memory = Memory.getInstance();
     /**
@@ -46,7 +46,7 @@ abstract class CommandHandler {
      *@param taskInformation - the input from user that specifies the task
      *@return new task object created based on the input from user.
      */
-    protected static Task createNewTask(String taskInformation) {
+    public static Task createNewTask(String taskInformation) {
         DescriptionParser descriptionParser = new DescriptionParser(taskInformation);
         String description = descriptionParser.getDescription();
         assert (description.trim() != ""); // ensure that the task has some description for it

@@ -24,6 +24,7 @@ public class LogicController {
     private CommandHandler[] handlers = {new EditTimeHandler(),
                                          new EditDescriptionHandler(),
                                          new UndoHandler(),
+                                         new RedoHandler(),
                                          new AddHandler(),
                                          new ClearHandler(),
                                          new DeleteHandler(),
@@ -57,7 +58,7 @@ public class LogicController {
      * @return - feedback to user
      */
     public String executeCommand(String userCommand) {
-        String command = userCommand.split(" ")[0];
+        String command = userCommand.trim().split(" ")[0];
         
         if (!handlerTable.containsKey(command)) {
             return "Unknown command!\n";
