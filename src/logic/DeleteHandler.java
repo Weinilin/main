@@ -31,7 +31,10 @@ class DeleteHandler extends UndoableCommandHandler {
     private static final Logger deleteLogger = 
             Logger.getLogger(DeleteHandler.class.getName());
     private ArrayList<Task> removedTask = new ArrayList<Task>();
-    
+    private String goodFeedback = new String(), 
+                   badFeedback = new String(),
+                   feedback = new String();    
+    private int index;
     @Override
     public ArrayList<String> getAliases() {
         // TODO Auto-generated method stub
@@ -53,12 +56,40 @@ class DeleteHandler extends UndoableCommandHandler {
             return clrHandler.execute(token[0], "", taskList);
         }
 
-        String goodFeedback = new String(), 
-                badFeedback = new String(),
-                feedback = new String();		
+        IndexParser parameterParser = new IndexParser(parameter);
+        try {
+            index = parameterParser.getIndex() - 1;
+            deleteByIndex(taskList, token);
+        } catch (NumberFormatException nfe) {
+            for (Task task: taskList) {
+                if (task.getDescription().contains(parameter)) {
+                    removedTask.add(task);
+                    break;                    
+                }                
+            }
+        }
+        
+        
+
+        recordChanges(taskList);
+        
+        if (!goodFeedback.equals("")) {
+            feedback += String.format(GOODFEEDBACK_MESSAGE, goodFeedback);
+        }
+        if (!badFeedback.equals("")) {
+            feedback += String.format(BADFEEDBACK_MESSAGE, badFeedback);
+        }
+        
+        return feedback;
+    }
+
+    /**
+     * @param taskList
+     * @param token
+     */
+    private void deleteByIndex(ArrayList<Task> taskList, String[] token) {
         for (String t: token) {
             IndexParser ip = new IndexParser(t);
-            int index;
             try {
                 index = ip.getIndex() - 1;
             } catch (NumberFormatException nfe) {
@@ -73,17 +104,6 @@ class DeleteHandler extends UndoableCommandHandler {
                 badFeedback = appendFeedback(badFeedback, t);
             } 
         }
-
-        recordChanges(taskList);
-        
-        if (!goodFeedback.equals("")) {
-            feedback += String.format(GOODFEEDBACK_MESSAGE, goodFeedback);
-        }
-        if (!badFeedback.equals("")) {
-            feedback += String.format(BADFEEDBACK_MESSAGE, badFeedback);
-        }
-        
-        return feedback;
     }
     
     @Override
@@ -105,6 +125,10 @@ class DeleteHandler extends UndoableCommandHandler {
      */
     private void reset() {
         removedTask.clear();
+        goodFeedback = "";
+        badFeedback = "";
+        feedback = "";
+        index = -1;
     }
     /**
      * append the indexes for valid deletion or invalid input

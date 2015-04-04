@@ -22,7 +22,7 @@ class MarkHandler extends UndoableCommandHandler {
     private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
     private static final String MARKED_MESSAGE = "Marked %1$s as done. It has been archieved\n";
     private ArrayList<String> aliases = new ArrayList<String>(
-            Arrays.asList("mark", "done"));
+            Arrays.asList("mark", "done", "m"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
     private ArrayList<Task> markedTask = new ArrayList<Task>();
