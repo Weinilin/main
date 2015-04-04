@@ -69,8 +69,6 @@ class DeleteHandler extends UndoableCommandHandler {
             }
         }
         
-        
-
         recordChanges(taskList);
         
         if (!goodFeedback.equals("")) {
