@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import parser.TaskTypeParser;
 import storage.Memory;
 import application.Task;
 
