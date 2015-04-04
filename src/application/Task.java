@@ -9,7 +9,6 @@ public class Task {
 		"Description",
 		"Start Time",
 		"End Time",
-		"Deadline",
 		"Status"
 	};
 	
