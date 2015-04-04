@@ -3,11 +3,11 @@ package logic;
 
 import java.util.ArrayList;
 
-import parser.DescriptionParser;
-import parser.TaskTypeParser;
-import parser.DateTimeParser;
-import storage.Memory;
-import application.Task;
+import src.parser.DescriptionParser;
+import src.parser.TaskTypeParser;
+import src.parser.DateTimeParser;
+import src.storage.Memory;
+import src.application.Task;
 
 /**
  * All handlers in Logic (except undo) shall extend this class so that all
@@ -55,11 +55,10 @@ public abstract class CommandHandler {
         String taskType = ttp.getTaskType();
 
         DateTimeParser dtp = new DateTimeParser(taskInformation);
-        String deadline = dtp.getDeadlineDate() + " " + dtp.getDeadlineTime();
         String startDateTime = dtp.getStartDate() + " " + dtp.getStartTime();
         String endDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
  
-        Task newTask = new Task(taskType, description, startDateTime, endDateTime, deadline, "undone");
+        Task newTask = new Task(taskType, description, startDateTime, endDateTime, "undone");
         return newTask;
     }
 }
