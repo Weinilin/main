@@ -63,7 +63,7 @@ public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
         setForeground(renderer.getForeground()); 
         setBackground(renderer.getBackground()); 
         setBorder(renderer.getBorder()); 
-        setFont(renderer.getFont()); 
+        setFont(new Font("Arial", Font.BOLD, 12 ));
         setText(renderer.getText()); 
         
 

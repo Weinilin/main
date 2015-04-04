@@ -65,7 +65,7 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         setForeground(renderer.getForeground()); 
         setBackground(renderer.getBackground()); 
         setBorder(renderer.getBorder()); 
-        setFont(renderer.getFont()); 
+        setFont(new Font("Arial", Font.BOLD, 12 ));
         setText(renderer.getText()); 
         
         
@@ -89,7 +89,6 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         if (status.equals("undone")) {
             setBackground(Color.WHITE);
 
-//            setFont(new Font("Arial", Font.BOLD, 12 ));
         } else {
             setBackground(new Color(0,180,150,30));
 
