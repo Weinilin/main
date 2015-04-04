@@ -28,13 +28,13 @@ public class TaskComparator implements Comparator<Task> {
 		if (isTimeTask(task1)) {
 			dateTime1 = task1.getStartDateTime();
 		} else {
-			dateTime1 = task1.getDeadline();
+			dateTime1 = task1.getEndDateTime();
 		}
 		
 		if (isTimeTask(task2)) {
 			dateTime2 = task2.getStartDateTime();
 		} else {
-			dateTime2 = task2.getDeadline();
+			dateTime2 = task2.getEndDateTime();
 		}
 		
 		TimeAnalyser ta = new TimeAnalyser();

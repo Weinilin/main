@@ -193,17 +193,17 @@ public class Memory {
 		return searchList;
 	}
 	
-	public void editDeadline(int index, String newDeadline) {
-		memoryLogger.entering(getClass().getName(), "editing deadline");
-		assert isValidIndex(index);
-		Task task = taskList.get(index - 1);
-		task.setDeadline(newDeadline);
-		sortTaskList();
-		writeToDatabase();
-		memoryLogger.log(Level.FINE, "edit success");
-		memoryLogger.exiting(getClass().getName(), "editing deadline");
-
-	}
+//	public void editDeadline(int index, String newDeadline) {
+//		memoryLogger.entering(getClass().getName(), "editing deadline");
+//		assert isValidIndex(index);
+//		Task task = taskList.get(index - 1);
+//		task.setDeadline(newDeadline);
+//		sortTaskList();
+//		writeToDatabase();
+//		memoryLogger.log(Level.FINE, "edit success");
+//		memoryLogger.exiting(getClass().getName(), "editing deadline");
+//
+//	}
 	
 	public void editTime(int index, String newStartDateTime, String newEndDateTime) {
 		memoryLogger.entering(getClass().getName(), "editing time");
@@ -390,7 +390,7 @@ public class Memory {
 	        String date;
 	        
 	        if (isDeadline(currentTask)) {
-	            date = currentTask.getDeadline();
+	            date = currentTask.getEndDateTime();
 	        } else {
 	            date = currentTask.getStartDate();
 	        }

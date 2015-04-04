@@ -171,7 +171,7 @@ public class Database {
             while (reader.ready()) {
                 ArrayList<String> unprocessedTask = new ArrayList<String> ();
 
-                for ( int i = 0; i < 6; i++ ) {
+                for ( int i = 0; i < 5; i++ ) {
                     currentLine = reader.readLine();
                     String processedLine = currentLine.substring(22).trim();
                     unprocessedTask.add(processedLine);

@@ -18,7 +18,6 @@ public class Task {
 	private String description;
 	private String startDateTime;
 	private String endDateTime;
-	private String deadline;
 	private String status;
 		
 	public Task(Task task) {
@@ -26,7 +25,6 @@ public class Task {
 		this.description = task.getDescription();
 		this.startDateTime = task.getStartDateTime();
 		this.endDateTime = task.getEndDateTime();
-		this.deadline = task.getDeadline();
 		this.status = task.getStatus();
 	}
 	
@@ -35,7 +33,6 @@ public class Task {
 		this.description = description;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
-		this.deadline = deadline;
 		this.status = status;
 	}
 	
@@ -44,7 +41,6 @@ public class Task {
 		this.description = taskInformation.get(1);
 		this.startDateTime = taskInformation.get(2);
 		this.endDateTime = taskInformation.get(3);
-		this.deadline = taskInformation.get(4);
 		this.status = taskInformation.get(5);
 	}
 	public void setStartDateTime(String newStartDateTime) {
@@ -55,9 +51,9 @@ public class Task {
 		endDateTime = newEndDateTime;
 	}
 	
-	public void setDeadline(String newDeadline) {
-		deadline = newDeadline;
-	}
+//	public void setDeadline(String newDeadline) {
+//		deadline = newDeadline;
+//	}
 
 	public void setStatus(String newStatus) {
 		status = newStatus;
@@ -83,9 +79,9 @@ public class Task {
 		return endDateTime;
 	}
 	
-	public String getDeadline() {
-		return deadline;
-	}
+//	public String getDeadline() {
+//		return deadline;
+//	}
 	
 	public String getStartDate() {
 		return startDateTime.substring(0, 10);
@@ -103,13 +99,13 @@ public class Task {
 		return endDateTime.substring(11, 16);
 	}
 	
-	public String getDeadlineDate() {
-		return deadline.substring(0, 10);
-	}
+//	public String getDeadlineDate() {
+//		return deadline.substring(0, 10);
+//	}
 	
-	public String getDeadlineTime() {
-		return deadline.substring(11, 16);
-	}
+//	public String getDeadlineTime() {
+//		return deadline.substring(11, 16);
+//	}
 	
 	public String getStatus(){
 		return status;
@@ -120,13 +116,9 @@ public class Task {
 	}
 	
 	public String getDateTime() {
-		if (taskType.equals("time task")) {
-			return getStartDateTime() + " - " + getEndDateTime();
-		} else if (taskType.equals("deadline")) {
-			return getDeadline();
-		} else {
-			return "-";
-		}
+		
+		return getStartDateTime() + " - " + getEndDateTime();
+		
 	}
 	
 	public boolean isDone() {
@@ -146,7 +138,6 @@ public class Task {
 			getDescription(),
 			getStartDateTime(),
 			getEndDateTime(),
-			getDeadline(),
 			getStatus()
 		};
 		
@@ -158,7 +149,7 @@ public class Task {
 	}
 	
 	public String[] toStringArray() {
-		String[] stringArray = {getTaskType(), getDescription(), getStartDateTime(), getEndDateTime(), getDeadline(), getStatus()};
+		String[] stringArray = {getTaskType(), getDescription(), getStartDateTime(), getEndDateTime(), getStatus()};
 		return stringArray;
 	}
 
