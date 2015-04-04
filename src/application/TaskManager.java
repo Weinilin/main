@@ -21,9 +21,10 @@ class TaskManager	{
         TaskListUI taskListUI = new TaskListUI();
         taskListUI.showTask();
 
-		
+
 	    printMessageToUser(String.format(WELCOME_MESSAGE));
         printMessageToUser(String.format(COMMAND_MESSAGE));
+        System.out.println("xx");
 
 		while (true) {
 		    String userInput = scanner.nextLine();
@@ -36,7 +37,6 @@ class TaskManager	{
 	        printMessageToUser(feedback);
 	        taskListUI.showTask();
 	        printMessageToUser(String.format(COMMAND_MESSAGE));
-            System.out.println("xx");
 
 
 		}

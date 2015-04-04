@@ -15,8 +15,7 @@ public class DateTimeParser {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String TIME_FORMAT = "HH:mm";
     private static int numberOfTime;
-    private static String deadlineTime = "-";
-    private static String deadlineDate = "-";
+    private static String description;
     private static String startTime = "-", endTime = "-", startDate = "-",
             endDate = "-";
 
@@ -24,23 +23,79 @@ public class DateTimeParser {
         ArrayList<String> storageOfTime = new ArrayList<String>();
         ArrayList<String> storageOfDate = new ArrayList<String>();
 
-        storageOfTime = TimeParser.extractTime(userInput);
-        storageOfDate = DateParser.extractDate(userInput);
+        Time1Parser times = new Time1Parser(userInput);
+        storageOfTime = times.getTimeList();
+
+        Date1Parser dates = new Date1Parser(times.getInputLeft());
+        storageOfDate = dates.getDateList();
+
+        System.out.println("my: " + storageOfTime + " " + storageOfDate);
+
+        DateTimeNatty dateTimeNatty = new DateTimeNatty(dates.getInputLeft());
+        storageOfTime.addAll(dateTimeNatty.getTimeList());
+        storageOfDate.addAll(dateTimeNatty.getDateList());
+        description = dateTimeNatty.getDescription();
+
+        System.out.println("Natty: " + storageOfTime + " " + storageOfDate);
 
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
 
         testForExceptionCases(storageOfTime, storageOfDate);
 
-        storageOfTime = addInMissingTime(storageOfTime, storageOfDate);
-        storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
+        try {
+            storageOfTime = addInMissingTime(storageOfTime, storageOfDate);
+            storageOfDate = addInMissingDate(storageOfTime, storageOfDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        addWeekDayToDate(storageOfDate);
         setNumberOfTime(storageOfTime);
         setAllParametersToDash();
 
+        setAllParameters(storageOfTime, storageOfDate);
+    }
+    
+    public String getUserInputLeft(){
+        return description;
+        
+    }
+
+    /**
+     * add weekday to the start of the date into <weekDay> dd/mm/yyyy
+     * 
+     * @param storageOfDate
+     *            :contains date in dd/mm/yyyy
+     */
+    private void addWeekDayToDate(ArrayList<String> storageOfDate) {
+
+        for (int i = 0; i < storageOfDate.size(); i++) {
+            if (storageOfDate.get(i).substring(0, 1).matches("\\d")) {
+                String weekDay = WeekDayParser.getWeekDay(storageOfDate.get(i));
+                storageOfDate.set(i, weekDay + " " + storageOfDate.get(i));
+            }
+        }
+
+    }
+
+    /**
+     * set all parameters : start time and date, end time and date, deadline
+     * time and deadline time
+     * 
+     * @param storageOfTime
+     *            : contains all time
+     * @param storageOfDate
+     *            contains all date
+     */
+    private void setAllParameters(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) {
+
         if (storageOfTime.size() == 1) {
-            setDeadlineTime(storageOfTime.get(0));
-            setDeadlineDate(storageOfDate.get(0));
+            setStartTime(storageOfTime.get(0));
+            setEndTime("-");
+            setStartDate(storageOfDate.get(0));
+            setEndDate("-");
         } else if (storageOfTime.size() == 2) {
             setStartTime(storageOfTime.get(0));
             setEndTime(storageOfTime.get(1));
@@ -58,27 +113,61 @@ public class DateTimeParser {
      */
     private void testForExceptionCases(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) {
-        if (storageOfDate.size() == 2) {
-            testValidDates(storageOfDate);
-        }
-        if (storageOfTime.size() == 2) {
-            testValidTimes(storageOfTime);
-        }
-        if (storageOfTime.size() == 2 && storageOfDate.size() == 2) {
-            testValidTimesAndDates(storageOfTime, storageOfDate);
-        }
+
+        testValidDates(storageOfDate);
+        testValidTimes(storageOfTime, storageOfDate);
     }
 
     /**
-     * test if start date = end date and start time = end time
+     * 1. check of the meeting started but is still ongoing 2. check for overdue
+     * task by time keyed 3. check for impossible combination of timed task like
+     * start time < end time on same day
      * 
      * @param storageOfTime
+     *            : contains time detect
      * @param storageOfDate
+     *            : contains date detect
      */
-    private void testValidTimesAndDates(ArrayList<String> storageOfTime,
+    private void testValidTimes(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) throws IllegalArgumentException {
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
+
+            int numberBeforeCurrentTime = countNumberBeforeCurrentTime(storageOfTime);
+            boolean isStartTimeBeforeCurrent = ifStartTimeBeforeCurrent(storageOfTime);
+
+            System.out.println("storageOfTime: " + storageOfTime.size());
+            checkOverdueTime(storageOfTime, storageOfDate,
+                    numberBeforeCurrentTime, isStartTimeBeforeCurrent);
+            
+            if ((storageOfDate.size() > 0 && isStartTimeBeforeCurrent && storageOfDate
+                    .get(0).equals(getCurrentDate()))) {
+                JOptionPane.showMessageDialog(null,
+                        "The meeting have started and is still ongoing.");
+            }
+
+            checkImpossibleTimedTask(storageOfTime, storageOfDate);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARNING, "processing error", e);
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * check impossible combination of time task
+     * For example, same day with two same date keyed by user
+     * @param storageOfTime : time contained all time detected
+     * @param storageOfDate : date contined all date detected
+     * @throws ParseException
+     */
+    private void checkImpossibleTimedTask(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) throws ParseException {
+        if (storageOfTime.size() == 2 && storageOfDate.size() == 2) {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
             Date time1 = timeFormat.parse(storageOfTime.get(0));
             Date time2 = timeFormat.parse(storageOfTime.get(1));
@@ -87,75 +176,207 @@ public class DateTimeParser {
             Date date1 = dateFormat.parse(storageOfDate.get(0));
             Date date2 = dateFormat.parse(storageOfDate.get(1));
 
-            if (time1.equals(time2) && date1.equals(date2)) {
+            if ((time1.after(time2) || time1.equals(time2))
+                    && date1.equals(date2)) {
                 throw new IllegalArgumentException(
                         "Impossible combination for timed task! End time must be later than start time on the same day");
             }
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            throw new IllegalArgumentException(e.getMessage());
-            // logger.log(Level.WARNING, "processing error", e);        
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            e.printStackTrace();
         }
-
     }
 
     /**
-     * the start time should be earlier than the end time test if it is
-     * otherwise
+     * check 1) user key in overdue time that before current time
+     * 2) user key in task that have start time before current time but end time that is after current time
+     * @param storageOfTime : contains time detected
+     * @param storageOfDate : contains date detected
+     * @param numberBeforeCurrentTime : number of time detected that is before the current time
+     * @param isStartTimeBeforeCurrent : true if the start time is before current time, otherwise false
+     */
+    private void checkOverdueTime(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate, int numberBeforeCurrentTime,
+            boolean isStartTimeBeforeCurrent) {
+        if (storageOfTime.size() == 1
+                && numberBeforeCurrentTime == 1
+                && (storageOfDate.size() == 1 && storageOfDate.get(0)
+                        .equals(getCurrentDate()))) {
+            throw new IllegalArgumentException(
+                    "Time keyed past the current time. The task have overdue!");
+        } else if ((storageOfDate.size() == 2
+                && numberBeforeCurrentTime == 2
+                && storageOfDate.get(0).equals(getCurrentDate()) && storageOfDate
+                .get(1).equals(getCurrentDate()))) {
+            throw new IllegalArgumentException(
+                    "Time keyed past the current time. The task have overdue!");
+        } 
+    }
+
+    /**
+     * check if the start time is before the current time
+     * 
+     * @param storageOfTime
+     *            : contains time detected in user input
+     * @return true if the time is before current time otherwise false.
+     * @throws ParseException
+     */
+    private boolean ifStartTimeBeforeCurrent(ArrayList<String> storageOfTime)
+            throws ParseException {
+        boolean isStartTimeBeforeCurrent = false;
+        if (storageOfTime.size() >= 1) {
+            String currentTime = getCurrentTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            Date time = dateFormat.parse(storageOfTime.get(0));
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time);
+            Date timeNow = dateFormat.parse(currentTime);
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(timeNow);
+
+            System.out.println("calendar2.getTime(): " + calendar2.getTime()
+                    + "(calendar1.getTime(): " + calendar1.getTime());
+            if (calendar2.getTime().after(calendar1.getTime())) {
+                isStartTimeBeforeCurrent = true;
+            }
+
+        }
+        return isStartTimeBeforeCurrent;
+    }
+
+    /**
+     * calculate the number of time keyed past the current time
      * 
      * @param storageOfDate
+     *            : stored time keyed by user in hh:mm format
+     * @param numberPastCurrentDate
+     *            : store the number that past current time
+     * @return number of time keyed past current time
+     * @throws ParseException
      */
-    private void testValidTimes(ArrayList<String> storageOfTime) throws IllegalArgumentException {
+    private int countNumberBeforeCurrentTime(ArrayList<String> storageOfTime)
+            throws ParseException {
+        int numberBeforeCurrentTime = 0;
+        for (int i = 0; i < storageOfTime.size(); i++) {
+            String currentTime = getCurrentTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            Date time = dateFormat.parse(storageOfTime.get(i));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(time);
+            Date timeForNow = dateFormat.parse(currentTime);
+            Calendar calendarOfCurrentTime = Calendar.getInstance();
+            calendarOfCurrentTime.setTime(timeForNow);
+
+            if (calendarOfCurrentTime.getTime().after(calendar.getTime())) {
+                numberBeforeCurrentTime++;
+            }
+
+        }
+        return numberBeforeCurrentTime;
+    }
+
+    /**
+     * check that the date keyed have past the current date 
+     * 1. 2 dates will keyed, 1 date
+     * before current date : remainder to the user that the meeting started. 
+     * 2. 2 will keyed, 2 dates
+     * before current date or 1 date will keyed and pass current date: error since it is long overdue
+     * 
+     * @param storageOfDate
+     *            : contains all dates detected in user input
+     * @throws IllegalArgumentException
+     *             : error for addition of overdue task
+     */
+    private void testValidDates(ArrayList<String> storageOfDate)
+            throws IllegalArgumentException {
+
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
-            Date time1 = timeFormat.parse(storageOfTime.get(0));
-            Date time2 = timeFormat.parse(storageOfTime.get(1));
+            checkOverdueDate(storageOfDate);
+            giveRemainderForOngoingTimeTask(storageOfDate);
 
-            if (time1.after(time2)) {
-                throw new IllegalArgumentException(
-                        "Invalid input of time! The start time is later than end time!");
+            if (storageOfDate.size() == 2) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date1 = dateFormat.parse(storageOfDate.get(0));
+                Date date2 = dateFormat.parse(storageOfDate.get(1));
+
+                if (date1.after(date2)) {
+                    throw new IllegalArgumentException(
+                            "Impossible combination for timed task! End date must be later than start date");
+                }
             }
         } catch (IllegalArgumentException e) {
-           // throw new IllegalArgumentException(e.getMessage());
+            logger.log(Level.WARNING, "processing error", e);
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
-            // logger.log(Level.WARNING, "processing error", e);
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             e.printStackTrace();
-            System.exit(0);
         }
-
     }
 
     /**
-     * start date should be earlier than the end date test if it is otherwise
+     * give remainder user key in task that have start date before current date but end date that is after current date
+     * @param storageOfDate :contains dates detected
+     * @throws ParseException
+     */
+    private void giveRemainderForOngoingTimeTask(ArrayList<String> storageOfDate)
+            throws ParseException {
+        int numberBeforeCurrentDate = countNumberBeforeCurrentDate(storageOfDate);
+         if (storageOfDate.size() == 2
+                && numberBeforeCurrentDate == 1) {
+            JOptionPane.showMessageDialog(null,
+                    "The meeting have started and is still ongoing.");
+        }
+    }
+
+    /**
+     * 2) user key in task that have start time before current time but end time that is after current time
+     * @param storageOfDate :contains dates detected
+     * @throws ParseException
+     */
+    private void checkOverdueDate(ArrayList<String> storageOfDate)
+            throws ParseException {
+        int numberBeforeCurrentDate = countNumberBeforeCurrentDate(storageOfDate);
+
+        System.out.println("numberBeforeCurrentDate: "
+                + numberBeforeCurrentDate);
+        if (storageOfDate.size() == 1 && numberBeforeCurrentDate == 1) {
+            throw new IllegalArgumentException(
+                    "Date keyed past the current date. The task have overdue!");
+        } else if (storageOfDate.size() == 2
+                && numberBeforeCurrentDate == 2) {
+            throw new IllegalArgumentException(
+                    "Date keyed past the current date. The task have overdue!");
+        } 
+    }
+
+    /**
+     * calculate the number of date keyed past the current date
      * 
      * @param storageOfDate
+     *            : stored date keyed by user in <weekday> dd/mm/yyyy format
+     * @param numberPastCurrentDate
+     *            : store the number that past current date
+     * @return number of date keyed past current day
+     * @throws ParseException
      */
-    private void testValidDates(ArrayList<String> storageOfDate) throws IllegalArgumentException{
-        Logger logger = Logger.getLogger("DateTimeParser");
-        try {
+    private int countNumberBeforeCurrentDate(ArrayList<String> storageOfDate)
+            throws ParseException {
+        int numberBeforeCurrentDate = 0;
+        for (int i = 0; i < storageOfDate.size(); i++) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            Date date1 = dateFormat.parse(storageOfDate.get(0));
-            Date date2 = dateFormat.parse(storageOfDate.get(1));
+            Date date1 = dateFormat.parse(storageOfDate.get(i));
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(date1);
+            Calendar calendar2 = Calendar.getInstance();
+            String currentDate = getCurrentDate();
+            Date dateOfToday = dateFormat.parse(currentDate);
+            calendar2.setTime(dateOfToday);
 
-            if (date1.after(date2)) {
-                throw new IllegalArgumentException(
-                        "Invalid input of date! The start date is later than end date!");
+            if (calendar2.getTime().after(calendar1.getTime())) {
+                numberBeforeCurrentDate++;
             }
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            throw new IllegalArgumentException(e.getMessage());
-           // logger.log(Level.WARNING, "processing error", e);
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            e.printStackTrace();
+
         }
+        return numberBeforeCurrentDate;
     }
 
     /**
@@ -166,8 +387,6 @@ public class DateTimeParser {
         setEndTime("-");
         setStartDate("-");
         setEndDate("-");
-        setDeadlineTime("-");
-        setDeadlineDate("-");
     }
 
     /**
@@ -243,64 +462,56 @@ public class DateTimeParser {
     }
 
     /**
-     * set the deadline date
-     * 
-     * @param string
-     */
-    private void setDeadlineDate(String date) {
-        deadlineDate = date;
-
-    }
-
-    /**
-     * get date for deadline
-     * 
-     * @return deadline date
-     */
-    public String getDeadlineDate() {
-        return deadlineDate;
-    }
-
-    /**
-     * set the deadline time if the taskType is deadline.
-     * 
-     * @param string
-     */
-    private static void setDeadlineTime(String time) {
-        deadlineTime = time;
-    }
-
-    /**
-     * get deadline time
-     * 
-     * @return time
-     */
-    public String getDeadlineTime() {
-        return deadlineTime;
-    }
-
-    /**
      * add in the time that is not keyed in by the user and by the the right
      * interpreted
      * 
      * @param storageOfTime
+     *            :contains all time detected
      * @param storageOfDate
+     *            :conatains all date detected
+     * @throws ParseException
      */
-    private static ArrayList<String> addInMissingTime(
-            ArrayList<String> storageOfTime, ArrayList<String> storageOfDate) {
+    private ArrayList<String> addInMissingTime(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) throws ParseException {
         if (storageOfTime.size() < storageOfDate.size()) {
             if (storageOfTime.size() == 0 && storageOfDate.size() == 1) {
                 storageOfTime.add("23:59");
             } else if (storageOfTime.size() == 0 && storageOfDate.size() == 2) {
-                String currentTime = getCurrentTime();
-                storageOfTime.add(currentTime);
-                storageOfTime.add(addOneHourToTime(currentTime));
+                addTimeWhenNoTimeAndTwoDate(storageOfTime, storageOfDate);
 
             } else if (storageOfTime.size() == 1 && storageOfDate.size() == 2) {
-                storageOfTime.add(addOneHourToTime(storageOfTime.get(0)));
+                storageOfTime.add("23:59");
             }
         }
         return storageOfTime;
+    }
+
+    /**
+     * add missing two times when 2 dates and no time is detected
+     * 
+     * @param storageOfTime
+     *            : contains time detected
+     * @param storageOfDate
+     *            : contains date detected
+     * @throws ParseException
+     */
+    private void addTimeWhenNoTimeAndTwoDate(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) throws ParseException {
+        int numberBeforeCurrentDate = countNumberBeforeCurrentDate(storageOfDate);
+        String currentTime = getCurrentTime();
+        // today - today, today - tomorrow
+        if (storageOfDate.get(0).equals(getCurrentDate())) {
+            storageOfTime.add(currentTime);
+            storageOfTime.add("23:59");
+
+            // yesterday - today
+        } else if (numberBeforeCurrentDate == 1) {
+            storageOfTime.add("23:59");
+            storageOfTime.add("23:59");
+        } else {
+            storageOfTime.add("00:00");
+            storageOfTime.add("23:59");
+        }
     }
 
     /**
@@ -308,38 +519,163 @@ public class DateTimeParser {
      * interpreted
      * 
      * @param storageOfTime
+     *            :time detected by user
      * @param storageOfDate
+     *            date detected by user
      * @throws ParseException
      */
-    private static ArrayList<String> addInMissingDate(
-            ArrayList<String> storageOfTime, ArrayList<String> storageOfDate) {
+    private ArrayList<String> addInMissingDate(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate) throws ParseException {
+        int numberBeforeCurrentTime = countNumberBeforeCurrentTime(storageOfTime);
+        boolean isStartTimeBeforeCurrent = ifStartTimeBeforeCurrent(storageOfTime);
+        String currentDate = getCurrentDate();
+        String nextDayDate = addDateToNumberOfDay(1, currentDate);
+        String afterTwoDaysDate = addDateToNumberOfDay(2, currentDate);
 
+        System.out.println("BEFORE: " + storageOfTime.size() + " time: "
+                + storageOfTime + " date: " + storageOfDate.size());
         if (storageOfDate.size() < storageOfTime.size()) {
             if (storageOfDate.size() == 0 && storageOfTime.size() == 1) {
-                storageOfDate.add(getCurrentDate());
-
-            } else if (storageOfDate.size() == 0 && storageOfTime.size() == 2
-                    && storageOfTime.get(0).equals(storageOfTime.get(1))) {
-
-                storageOfDate.add(getCurrentDate());
-                storageOfDate.add(addDateToNumberOfDay(1, getCurrentDate()));
-
+                // System.out.println("BEFORE: " + storageOfTime);
+                addDateWhenZeroDateAndOneTime(storageOfDate,
+                        numberBeforeCurrentTime, currentDate, nextDayDate);
             } else if (storageOfDate.size() == 0 && storageOfTime.size() == 2) {
 
-                storageOfDate.add(getCurrentDate());
-                storageOfDate.add(getCurrentDate());
-
-            } else if (storageOfDate.size() == 1 && storageOfTime.size() == 2
-                    && storageOfTime.get(0).equals(storageOfTime.get(1))) {
-
-                storageOfDate
-                        .add(addDateToNumberOfDay(1, storageOfDate.get(0)));
+                addDatesWhenZeroDateAndTwoTime(storageOfTime, storageOfDate,
+                        numberBeforeCurrentTime, isStartTimeBeforeCurrent,
+                        currentDate, nextDayDate, afterTwoDaysDate);
 
             } else if (storageOfDate.size() == 1 && storageOfTime.size() == 2) {
-                storageOfDate.add(storageOfDate.get(0));
+                addDateWhenOneDateAndTwoTimes(storageOfTime, storageOfDate,
+                        numberBeforeCurrentTime, currentDate, nextDayDate);
             }
+            System.out.println("ifStartTimeLaterThanEnd: "
+
+            + "storageOfDateAfterAdding: " + storageOfDate
+                    + " numberBeforeCurrentTime: " + numberBeforeCurrentTime
+                    + " isStartTimeBeforeCurrent: " + isStartTimeBeforeCurrent);
+            System.out.println("TIME: " + storageOfTime);
         }
         return storageOfDate;
+    }
+
+    /**
+     * add dates when 0 date and 1 time was detected
+     * @param storageOfDate : to be store with date
+     * @param numberBeforeCurrentTime : number of time before current time
+     * @param currentDate 
+     * @param nextDayDate : tomorrow date
+     */
+    private void addDateWhenZeroDateAndOneTime(ArrayList<String> storageOfDate,
+            int numberBeforeCurrentTime, String currentDate, String nextDayDate) {
+        if (numberBeforeCurrentTime == 1) {
+            storageOfDate.add(nextDayDate);
+        } else {
+            storageOfDate.add(currentDate);
+        }
+    }
+
+    /**
+     * add when 1 dates and 2 times was detected
+     * @param storageOfTime: contain the times detected
+     * @param storageOfDate : to be store with date
+     * @param numberBeforeCurrentTime : number of time before current time
+     * @param currentDate
+     * @param nextDayDate : tomorrow date
+     * @throws ParseException
+     */
+    private void addDateWhenOneDateAndTwoTimes(ArrayList<String> storageOfTime,
+            ArrayList<String> storageOfDate, int numberBeforeCurrentTime,
+            String currentDate, String nextDayDate) throws ParseException {
+        if (storageOfTime.get(0).equals(storageOfTime.get(1)) || ifStartTimeLaterThanEnd(storageOfTime)) {
+            
+            storageOfDate.add(addDateToNumberOfDay(1,
+                    storageOfDate.get(0)));
+            
+        } else if (storageOfDate.get(0).equals(currentDate)
+                && !ifStartTimeLaterThanEnd(storageOfTime)) {
+            
+            storageOfDate.add(currentDate);
+            
+        } else if (storageOfDate.get(0).equals(currentDate)
+                && (ifStartTimeLaterThanEnd(storageOfTime) || numberBeforeCurrentTime == 2)) {
+            
+            storageOfDate.add(nextDayDate);
+            
+        } else if (!ifStartTimeLaterThanEnd(storageOfTime)) {
+            
+            storageOfDate.add(storageOfDate.get(0));
+        }
+    }
+
+    /**
+     * add dates when 0 dates and 2 time is detected
+     * @param storageOfTime :contains of time detcted
+     * @param storageOfDate :to be stored with the new date
+     * @param numberBeforeCurrentTime : number of times detected before current time
+     * @param isStartTimeBeforeCurrent : true if start time is before current time
+     * @param currentDate
+     * @param nextDayDate
+     * @param afterTwoDaysDate
+     * @throws ParseException
+     */
+    private void addDatesWhenZeroDateAndTwoTime(
+            ArrayList<String> storageOfTime, ArrayList<String> storageOfDate,
+            int numberBeforeCurrentTime, boolean isStartTimeBeforeCurrent,
+            String currentDate, String nextDayDate, String afterTwoDaysDate)
+            throws ParseException {
+        if (storageOfTime.get(0).equals(storageOfTime.get(1))
+                || (!isStartTimeBeforeCurrent && numberBeforeCurrentTime == 1) || (numberBeforeCurrentTime == 0
+                && ifStartTimeLaterThanEnd(storageOfTime))) {
+
+            storageOfDate.add(currentDate);
+            storageOfDate.add(nextDayDate);
+
+        } else if (numberBeforeCurrentTime == 1
+                && isStartTimeBeforeCurrent || numberBeforeCurrentTime == 2
+                        && !ifStartTimeLaterThanEnd(storageOfTime)) {
+            storageOfDate.add(nextDayDate);
+            storageOfDate.add(nextDayDate);
+            
+        } else if (numberBeforeCurrentTime == 2
+                && ifStartTimeLaterThanEnd(storageOfTime)) {
+            storageOfDate.add(nextDayDate);
+            storageOfDate.add(afterTwoDaysDate);
+            
+        } else if (numberBeforeCurrentTime == 0
+                && !ifStartTimeLaterThanEnd(storageOfTime)) {
+            storageOfDate.add(currentDate);
+            storageOfDate.add(currentDate);
+        }
+    }
+
+    /**
+     * check if start time is later than end time
+     * 
+     * @param storageOfTime
+     *            : contain time detected
+     * @return true if start time later than end time otherwise false
+     * @throws ParseException
+     */
+    private boolean ifStartTimeLaterThanEnd(ArrayList<String> storageOfTime)
+            throws ParseException {
+        boolean isStartTimeLaterThanEnd = false;
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        Date time1 = timeFormat.parse(storageOfTime.get(0));
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(time1);
+        Date time2 = timeFormat.parse(storageOfTime.get(1));
+        Calendar calendar3 = Calendar.getInstance();
+        calendar3.setTime(time2);
+
+        System.out.println("ifStartTimeLaterThanEnd: "
+                + isStartTimeLaterThanEnd + " time1 " + time1 + " time2: "
+                + time2);
+        if (calendar2.getTime().after(calendar3.getTime())) {
+            isStartTimeLaterThanEnd = true;
+        }
+
+        return isStartTimeLaterThanEnd;
     }
 
     /**
@@ -348,7 +684,7 @@ public class DateTimeParser {
      * @param time
      * @return time in HH:MM
      */
-    private static String addOneHourToTime(String time) {
+    private String addOneHourToTime(String time) {
 
         int hourTime = getHourTime(time); // take note if 2am -->String
 
@@ -369,7 +705,7 @@ public class DateTimeParser {
      * @param hhInTime
      * @return HH in time
      */
-    private static int addTimeWithHours(int numberOfHours, int hhInTime) {
+    private int addTimeWithHours(int numberOfHours, int hhInTime) {
 
         hhInTime = hhInTime + numberOfHours;
 
@@ -385,7 +721,7 @@ public class DateTimeParser {
      * @param hhInTime
      * @return HH in string
      */
-    private static String toString(int hhInTime) {
+    private String toString(int hhInTime) {
         String hhTimeInString;
         if (hhInTime < 10) {
             hhTimeInString = "0" + hhInTime;
