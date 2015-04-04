@@ -14,11 +14,12 @@ import java.util.logging.Logger;
  * 
  * Mark a task as done by typing the keyword following 
  * by the index of task that is intended to be marked
+ * @author A0114463M
  */
 class MarkHandler extends UndoableCommandHandler {
 
     private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
-    private static final String INVALID_INDEX_MESSAGE = "Index invalid! Please check yout input\n";
+    private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
     private static final String MARKED_MESSAGE = "Marked %1$s as done\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("mark", "done"));
@@ -48,11 +49,13 @@ class MarkHandler extends UndoableCommandHandler {
         int index;
         for (String t: token) {
             ip = new IndexParser(t);
-            index = ip.getIndex() - 1;
             try {
+                index = ip.getIndex() - 1;
                 markedTask.add(taskList.get(index));
                 markedTaskIndex.add(index);
                 goodFeedback += t + " ";
+            } catch (NumberFormatException nfe) {
+                badFeedback += t + " ";
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback += t + " ";
                 markLogger.log(Level.WARNING, "Invalid index", iob);
@@ -65,7 +68,12 @@ class MarkHandler extends UndoableCommandHandler {
             memory.markDone(done);
         }
         
-        return String.format(MARKED_MESSAGE, goodFeedback);
+        if (!goodFeedback.equals("")) {
+            return String.format(MARKED_MESSAGE, goodFeedback);
+        } else {
+            return String.format(INVALID_INDEX_MESSAGE, badFeedback);
+        }
+        
     }
 
     /**
