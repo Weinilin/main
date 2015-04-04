@@ -50,6 +50,7 @@ class ClearHandler extends UndoableCommandHandler {
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
     }
+    
     @Override
     public String getHelp() {
         return HELP_MESSAGE;

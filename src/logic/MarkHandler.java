@@ -22,12 +22,15 @@ class MarkHandler extends UndoableCommandHandler {
     private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
     private static final String MARKED_MESSAGE = "Marked %1$s as done. It has been archieved\n";
     private ArrayList<String> aliases = new ArrayList<String>(
-            Arrays.asList("mark", "done"));
+            Arrays.asList("mark", "done", "m"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
     private ArrayList<Task> markedTask = new ArrayList<Task>();
     private ArrayList<Integer> markedTaskIndex = new ArrayList<Integer>();
-    
+
+    private String goodFeedback = "",
+                   badFeedback = "";
+    int index;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -43,10 +46,40 @@ class MarkHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        String goodFeedback = "";
-        String badFeedback = "";
+        IndexParser ip = new IndexParser(parameter);
+        try {
+            index = ip.getIndex() - 1;
+            markByIndex(taskList, token);
+        } catch (NumberFormatException nfe) {
+            for (Task task: taskList) {
+                if (task.getDescription().contains(parameter)) {
+                    markedTask.add(task);
+                    index = taskList.indexOf(task);
+                    markedTaskIndex.add(index);
+                    goodFeedback += index + 1;
+                    break;                    
+                }                
+            }
+        }              
+        recordChanges(taskList);
+        
+        for (Task done: markedTask) {
+            memory.markDone(done);
+        }        
+        if (!goodFeedback.equals("")) {
+            return String.format(MARKED_MESSAGE, goodFeedback);
+        } else {
+            return String.format(INVALID_INDEX_MESSAGE, badFeedback);
+        }
+        
+    }
+
+    /**
+     * @param taskList
+     * @param token
+     */
+    private void markByIndex(ArrayList<Task> taskList, String[] token) {
         IndexParser ip;
-        int index;
         for (String t: token) {
             ip = new IndexParser(t);
             try {
@@ -61,19 +94,6 @@ class MarkHandler extends UndoableCommandHandler {
                 markLogger.log(Level.WARNING, "Invalid index", iob);
             } 
         }
-        
-        recordChanges(taskList);
-        
-        for (Task done: markedTask) {
-            memory.markDone(done);
-        }
-        
-        if (!goodFeedback.equals("")) {
-            return String.format(MARKED_MESSAGE, goodFeedback);
-        } else {
-            return String.format(INVALID_INDEX_MESSAGE, badFeedback);
-        }
-        
     }
 
     /**
@@ -81,6 +101,9 @@ class MarkHandler extends UndoableCommandHandler {
      */
     private void reset() {
         markedTask.clear();
+        goodFeedback = "";
+        badFeedback = "";
+        index = -1;
     }
 
     /**
