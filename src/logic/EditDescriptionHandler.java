@@ -43,6 +43,9 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    if (index < 0) {
             return INVALID_INDEX_MESSAGE;
 	    }
+	    if (isEmpty(dp.getDescription())) {
+            return "No description for new task\n";
+	    }
 	    
 	    try {
 	        oldTask = taskList.remove(index);
@@ -66,7 +69,9 @@ class EditDescriptionHandler extends UndoableCommandHandler {
         oldTask = null;
     }
 
-
+    private boolean isEmpty(String string) {
+        return string.trim().equals("");
+    }
     /**
      * Perform the edit in Memory
      * @param taskList taskList shown to user
@@ -79,6 +84,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
             Collections.sort(taskList, new TaskComparator());
 	    }
     }
+    
     @Override
     void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editDescriptionRecorder = new UndoRedoRecorder(taskList);

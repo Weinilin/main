@@ -25,6 +25,8 @@ class MarkHandler extends UndoableCommandHandler {
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
     private ArrayList<Task> markedTask = new ArrayList<Task>();
+    private ArrayList<Integer> markedTaskIndex = new ArrayList<Integer>();
+    
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -48,14 +50,16 @@ class MarkHandler extends UndoableCommandHandler {
             ip = new IndexParser(t);
             index = ip.getIndex() - 1;
             try {
-                taskList.get(index).setStatus("done");
                 markedTask.add(taskList.get(index));
+                markedTaskIndex.add(index);
                 goodFeedback += t + " ";
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback += t + " ";
                 markLogger.log(Level.WARNING, "Invalid index", iob);
             } 
         }
+        
+        recordChanges(taskList);
         
         for (Task done: markedTask) {
             memory.markDone(done);
@@ -94,8 +98,17 @@ class MarkHandler extends UndoableCommandHandler {
         return HELP_MESSAGE;
     }
     
-    @Override
     void recordChanges(ArrayList<Task> taskList) {
-        
+        UndoRedoRecorder markRecorder = new UndoRedoRecorder(taskList);
+        for (int index: markedTaskIndex) {
+            Task task = taskList.get(index);
+            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
+            task.setStatus("done");
+            memory.markDone(task);
+        }
+        if (!markRecorder.isEmpty()) {
+            markRecorder.recordUpdatedList(taskList);
+            undoRedoManager.addNewRecord(markRecorder);
+        }
     }
 }

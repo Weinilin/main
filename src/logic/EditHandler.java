@@ -72,10 +72,13 @@ class EditHandler extends UndoableCommandHandler {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
                 }
-
+                
+                newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());                
+                if (isEmptyDescription(newTask)) {
+                    return "No description for new task\n";
+                }
                 try {
-                    oldTask = taskList.remove(index);
-                    newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());
+                    oldTask = taskList.remove(index);                   
                 } catch (IndexOutOfBoundsException iob) {
                     return INVALID_INDEX_MESSAGE;
                 }
@@ -107,11 +110,11 @@ class EditHandler extends UndoableCommandHandler {
         }
     }
     
-    private void updateTaskList(ArrayList<Task> taskList) {
-        taskList.remove(oldTask);
-        taskList.add(newTask);
-    }
     
+    private boolean isEmptyDescription(Task task) {
+        return isEmpty(task.getDescription());
+    }
+       
     @Override
     void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editRecorder = new UndoRedoRecorder(taskList);
@@ -121,10 +124,15 @@ class EditHandler extends UndoableCommandHandler {
         undoRedoManager.addNewRecord(editRecorder);
     }
     
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.remove(oldTask);
+        taskList.add(newTask);
+    }
+    
     /**
      * check if the argument user typed is empty
      * @param parameter
-     * @return
+     * @return true if 
      */
     private boolean isEmpty(String parameter) {
         return parameter.trim().equals("");
@@ -146,19 +154,3 @@ class EditHandler extends UndoableCommandHandler {
 
 
 }
-// Depreciated
-//	protected boolean editTask(String taskInformation) throws IndexOutOfBoundsException {
-//		DeleteHandler dh = new DeleteHandler(memory);
-//		AddHandler ah = new AddHandler(memory);
-//		TaskData oldTask = new TaskData();
-//		TaskData newTask = CommandHandler.createNewTask(taskInformation.substring(taskInformation.indexOf(" ")));	
-//		try  {
-//			oldTask = dh.deleteTask(taskInformation);
-//			ah.addTask(newTask);
-//		} catch (IndexOutOfBoundsException iob) {
-//			return false;
-//		}
-//		
-//		return true;
-//	}
-//}

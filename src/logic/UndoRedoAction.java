@@ -73,11 +73,12 @@ class UndoRedoAction {
                 return (memory.addTask(oldTask));
             case EDIT:
                 return ((memory.addTask(oldTask) && (memory.removeTask(newTask) != null)));
-                //case MARK:
-                //	return (memory.)
+            case MARK:
+                 memory.markUndone(oldTask);
+                 return true;
             case SETLOCATION:
-                DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-                return dlc.setDatabaseLocation(oldPath);
+                 DatabaseLocationChanger dlc = new DatabaseLocationChanger();
+                 return dlc.setDatabaseLocation(oldPath);
             default:
                 return false;
         }
