@@ -87,6 +87,7 @@ public class Memory {
 	
 	private boolean existingTasksClashWith(Task task) {
 	    TimeAnalyser ta = new TimeAnalyser();
+	    
 	    String startTimeOfAddedTask = task.getStartDateTime();
 	    String endTimeOfAddedTask = task.getEndDateTime();
 	    
@@ -94,26 +95,32 @@ public class Memory {
 	    long endTimeOfAddedTaskInMilliseconds = ta.getDateTimeInMilliseconds(endTimeOfAddedTask);
 	    
 	    for (int i = 0; i < taskList.size(); i++) {
-	        Task currentTask = taskList.get(i);
-	        String startTime = currentTask.getStartDateTime();
-	        String endTime = currentTask.getEndDateTime();
-	        
-	        long startTimeInMilliseconds = ta.getDateTimeInMilliseconds(startTime);
-	        long endTimeInMilliseconds = ta.getDateTimeInMilliseconds(endTime);
-	        
-	        if (startTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && startTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
-	            return true;
-	        }
-	        
-	        if (endTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && endTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
-                return true;
-            }
-	        
+
+	    	Task currentTask = taskList.get(i);
+	    	String taskType = currentTask.getTaskType();
+
+	    	if (taskType.equals("time task")) {
+
+	    		String startTime = currentTask.getStartDateTime();
+	    		String endTime = currentTask.getEndDateTime();
+
+	    		long startTimeInMilliseconds = ta.getDateTimeInMilliseconds(startTime);
+	    		long endTimeInMilliseconds = ta.getDateTimeInMilliseconds(endTime);
+
+	    		if (startTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && startTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
+	    			return true;
+	    		}
+
+	    		if (endTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && endTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
+	    			return true;
+	    		}
+	    	}
+
 	    }
-	    
+
 	    return false;
 	}
-	
+
 	private void writeToDatabase() {
 		memoryLogger.entering(getClass().getName(), "writing new task to database");
 		Database database = Database.getInstance();

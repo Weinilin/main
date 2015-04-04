@@ -537,13 +537,13 @@ public class GUI extends JPanel implements ActionListener{
                         column.setPreferredWidth(40);
                     } else if (isDesc) {
                         column.setCellRenderer(new TextAreaRenderer1());
-                        column.setPreferredWidth(400);
+                        column.setPreferredWidth(360);
                     } else if (isStartTime) {
                         column.setCellRenderer(new TextAreaRenderer1());
-                        column.setPreferredWidth(120);
+                        column.setPreferredWidth(140);
                     } else if (isEndTime) {
                         column.setCellRenderer(new TextAreaRenderer1());
-                        column.setPreferredWidth(120);
+                        column.setPreferredWidth(140);
                     } else if (isStatus) {
                         column.setCellRenderer(new TextAreaRenderer1());
                         column.setPreferredWidth(50);
