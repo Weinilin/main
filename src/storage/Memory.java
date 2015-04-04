@@ -52,19 +52,66 @@ public class Memory {
 	 * @param newTask - new task created
 	 * @return 
 	 */
-	public boolean addTask(Task newTask) {
+	public int addTask(Task newTask) {
 		memoryLogger.entering(getClass().getName(), "adding a new task to taskList");
 		assert isValidTask(newTask);
+
+		if (alreadyExists(newTask)) {
+		    return 2;
+		}
+
+		String taskType = newTask.getTaskType();
+
+		
+		if (taskType.equals("time task")) { 
+		    if (existingTasksClashWith(newTask)) {
+		        return 3;
+		    }
+		}
+
 		if (taskList.add(newTask)) {
-			memoryLogger.log(Level.FINE, "add success");
+		    memoryLogger.log(Level.FINE, "add success");
 		} else {
-			memoryLogger.log(Level.SEVERE, "Error adding new task!");
+		    memoryLogger.log(Level.SEVERE, "Error adding new task!");
 			throw new Error("Fatal error! Unable to add Task");
 		}
 		sortTaskList();
 		writeToDatabase();
 		memoryLogger.exiting(getClass().getName(), "adding a new task to taskList");
-		return true;
+		return 1;
+	}
+	
+	private boolean alreadyExists(Task task) {
+	   return taskList.contains(task);
+	}
+	
+	private boolean existingTasksClashWith(Task task) {
+	    TimeAnalyser ta = new TimeAnalyser();
+	    String startTimeOfAddedTask = task.getStartDateTime();
+	    String endTimeOfAddedTask = task.getEndDateTime();
+	    
+	    long startTimeOfAddedTaskInMilliseconds = ta.getDateTimeInMilliseconds(startTimeOfAddedTask);
+	    long endTimeOfAddedTaskInMilliseconds = ta.getDateTimeInMilliseconds(endTimeOfAddedTask);
+	    
+	    for (int i = 0; i < taskList.size(); i++) {
+	        Task currentTask = taskList.get(i);
+	        String startTime = currentTask.getStartDateTime();
+	        String endTime = currentTask.getEndDateTime();
+	        
+	        long startTimeInMilliseconds = ta.getDateTimeInMilliseconds(startTime);
+	        long endTimeInMilliseconds = ta.getDateTimeInMilliseconds(endTime);
+	        
+	        if (startTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && startTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
+	            return true;
+	        }
+	        
+	        if (endTimeOfAddedTaskInMilliseconds >= startTimeInMilliseconds && endTimeOfAddedTaskInMilliseconds <= endTimeInMilliseconds) {
+                return true;
+            }
+	        
+	    }
+	    
+	    return false;
 	}
 	
 	private void writeToDatabase() {
