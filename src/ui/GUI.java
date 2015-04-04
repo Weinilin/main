@@ -45,6 +45,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -107,6 +108,8 @@ public class GUI extends JPanel implements ActionListener{
         textField = new JTextField(20);
         textField.setFont(new Font("Arial", Font.PLAIN, 12));
         textField.addActionListener(this);
+
+     
 
         textArea = new JTextArea(4, 20);
         textArea.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -397,9 +400,13 @@ public class GUI extends JPanel implements ActionListener{
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("Task's Manager");
-        frame.setMinimumSize(new Dimension(710,510));
+        frame.setMinimumSize(new Dimension(710,520));
       
-     
+        JLabel slogan = new JLabel("Managing Tasks Like A Boss", SwingConstants.CENTER);
+        slogan.setFont(new Font("Kokonor", Font.ITALIC, 12 ));
+
+
+  
 
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -411,6 +418,7 @@ public class GUI extends JPanel implements ActionListener{
         
         
         frame.add(gui, BorderLayout.CENTER);
+        frame.add(slogan, BorderLayout.SOUTH);
 
 
         //Display the window.
