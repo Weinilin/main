@@ -49,7 +49,8 @@ public class TaskManagerTester {
         CommandLineInterface cli = new CommandLineInterface();
         String feedbackForError = cli
                 .processUserInput("delete 1");
-        if (feedbackForError.equals("Invalid input 1")) {
+        
+        if (feedbackForError.equals("Removed task 1")) {
             System.out.println("detect error when task list is empty successful.");
         } else {
             System.out.println("detect error when task list is empty fail!");
@@ -57,7 +58,8 @@ public class TaskManagerTester {
 
         cli.processUserInput("add meeting 2 to 3pm");
         String feedbackDeleteOneTask = cli.processUserInput("delete 1");
-        if (feedbackDeleteOneTask.equals("Removed task 1 ")) {
+        System.out.println("feedbackDeleteOneTask: "+feedbackDeleteOneTask);
+        if (feedbackDeleteOneTask.equals("Removed task 1")) {
             System.out.println("remove one task successful");
         } else {
             System.out.println("remove one task fail.");
@@ -71,5 +73,8 @@ public class TaskManagerTester {
         } else {
             System.out.println("remove two in a row fail");
         }
+    }
+    public static void main (String[] args) {   
+        TaskManagerTester t1 = new TaskManagerTester();
     }
     }
