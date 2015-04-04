@@ -48,7 +48,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 	    }
 	    
 	    try {
-	        oldTask = taskList.remove(index);
+	        oldTask = taskList.get(index);
 	        newTask = new Task(oldTask);
 	    } catch (IndexOutOfBoundsException iob) {
             return INVALID_INDEX_MESSAGE;

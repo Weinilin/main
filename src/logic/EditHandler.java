@@ -67,18 +67,17 @@ class EditHandler extends UndoableCommandHandler {
                 return eth.execute(token[0], parameter.replaceFirst(token[0], "").trim(), taskList);
             default:
                 try {
-                    index = Integer.parseInt(token[0]) - 1;
+                    index = ip.getIndex() - 1;
                 } catch (NumberFormatException nfe) {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
-                }
-                
+                }                
                 newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());                
                 if (isEmptyDescription(newTask)) {
                     return "No description for new task\n";
                 }
                 try {
-                    oldTask = taskList.remove(index);                   
+                    oldTask = taskList.get(index);                   
                 } catch (IndexOutOfBoundsException iob) {
                     return INVALID_INDEX_MESSAGE;
                 }
