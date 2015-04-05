@@ -42,23 +42,34 @@ class UndoHandler extends UndoableCommandHandler {
             }
         }
         else {
-            try {
-                IndexParser ip = new IndexParser(token[0]);
-                steps = ip.getIndex();
-            } catch (NumberFormatException nfe) {
-                return "Invalid steps to undo\n";
-            }
-            if (steps > undoRedoManager.getUndoSize()) {
-                return "Not enought steps to undo\n";
-            }
-            else {
-                for (int i = 0; i < steps; i++) {
+            if (isAll(token[0])) {
+                while (undoRedoManager.canUndo()) {
                     updateTaskList(taskList);
                 }
-                return String.format(UNDO_STEPS_MESSAGE, Integer.toString(steps));
+                return "All changes has been discarded\n";
             }
-                
+            else {
+                try {
+                    IndexParser ip = new IndexParser(token[0]);
+                    steps = ip.getIndex();
+                } catch (NumberFormatException nfe) {
+                    return "Invalid steps to undo\n";
+                }
+                if (steps > undoRedoManager.getUndoSize()) {
+                    return "Not enought steps to undo\n";
+                }
+                else {
+                    for (int i = 0; i < steps; i++) {
+                        updateTaskList(taskList);
+                    }
+                    return String.format(UNDO_STEPS_MESSAGE, Integer.toString(steps));
+                }
+            } 
         }
+    }
+
+    private boolean isAll(String string) {
+        return string.toLowerCase().trim().equals("all");
     }
 
     private void updateTaskList(ArrayList<Task> taskList) {

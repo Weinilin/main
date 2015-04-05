@@ -44,6 +44,12 @@ class RedoHandler extends UndoableCommandHandler {
             }
         }
         else {
+            if (isAll(token[0])) {
+                while (undoRedoManager.canRedo()) {
+                    updateTaskList(taskList);
+                }
+                return "All undos has been repeated\n";
+            }
             try {
                 IndexParser ip = new IndexParser(token[0]);
                 steps = ip.getIndex();
@@ -61,7 +67,11 @@ class RedoHandler extends UndoableCommandHandler {
             }
         }
     }
-
+    
+    private boolean isAll(String string) {
+        return string.toLowerCase().trim().equals("all");
+    }
+    
     private void updateTaskList(ArrayList<Task> taskList) {
         taskList.clear();
         taskList.addAll(undoRedoManager.redo());
