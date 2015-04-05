@@ -177,6 +177,7 @@ public class GUI extends JPanel implements ActionListener{
         
         deadlinesAndTimeTasksTable.setRowSelectionAllowed(true);
         deadlinesAndTimeTasksTable.setCellSelectionEnabled(false);
+        deadlinesAndTimeTasksTable.setShowGrid(false);
 
         
         deadlinesAndTimeTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -261,7 +262,7 @@ public class GUI extends JPanel implements ActionListener{
         floatingTasksTable.setFont(new Font("Arial", Font.PLAIN, 12));
         floatingTasksTable.setForeground(Color.BLUE);
         floatingTasksTable.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
-
+        floatingTasksTable.setShowGrid(false);
 
 
 
