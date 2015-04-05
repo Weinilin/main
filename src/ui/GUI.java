@@ -1,10 +1,11 @@
 package ui;
 
-
+import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -28,14 +29,15 @@ import javax.swing.table.TableColumnModel;
 import application.Task;
 import application.TimeAnalyser;
 
+import java.awt.AWTKeyStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.KeyEventDispatcher;
@@ -43,11 +45,14 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import logic.LogicController;
@@ -82,18 +87,29 @@ public class GUI extends JPanel implements ActionListener{
     private static JScrollPane scrollPane1;
     private static JScrollPane scrollPane2;
     
+    private static JFrame frame;
+    
 
     
     public GUI() {
         super(new GridBagLayout());
 
+       
+        
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
 
             public boolean dispatchKeyEvent(KeyEvent e) {
                 if (e.getKeyCode() == e.VK_ESCAPE) {
                     System.exit(0);
                 }
+                
+                if (e.getKeyCode() == e.VK_ALT) {
+                	frame.setState(Frame.ICONIFIED);
+                }
+         
+               
                 return false;
+
             }
         });
 
@@ -105,7 +121,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
-        textField = new JTextField(20);
+        textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, 12));
         textField.addActionListener(this);
 
@@ -170,8 +186,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
-
-        deadlinesAndTimeTasksTable.setPreferredScrollableViewportSize(new Dimension(700, 160));
+        deadlinesAndTimeTasksTable.setPreferredScrollableViewportSize(new Dimension(680, 160));
         deadlinesAndTimeTasksTable.setFillsViewportHeight(true);
         
         deadlinesAndTimeTasksTable.setRowSelectionAllowed(true);
@@ -251,7 +266,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
-        floatingTasksTable.setPreferredScrollableViewportSize(new Dimension(700, 160));
+        floatingTasksTable.setPreferredScrollableViewportSize(new Dimension(680, 160));
         floatingTasksTable.setFillsViewportHeight(true);
         
         
@@ -298,7 +313,15 @@ public class GUI extends JPanel implements ActionListener{
     
     
     
-    public void updateTable() {
+    private void setActionMap(javax.swing.Action saveAction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	public void updateTable() {
 
        
         
@@ -368,9 +391,22 @@ public class GUI extends JPanel implements ActionListener{
       
        
         String feedback = CLI.processUserInputFromGUI(text);
+        
+
+        if (text.equals("help")) {
+        	JTextArea helpPopUp = new JTextArea(feedback);
+        	helpPopUp.setEditable(false);
+        	helpPopUp.setLineWrap(true); 
+            helpPopUp.setWrapStyleWord(true); 
+        	helpPopUp.setFont(new Font("Arial", Font.PLAIN, 12 ));
+        	helpPopUp.setSize(450, 1);
+        	JOptionPane.showMessageDialog(null, helpPopUp, "Help Message",  
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
     
 
         textArea.setText(feedback);
+        }
 
         //Make sure the new text is visible, even if there
         //was a selection in the text area.
@@ -380,7 +416,6 @@ public class GUI extends JPanel implements ActionListener{
     
         updateTable();
         
-
     }
 
 
@@ -392,15 +427,15 @@ public class GUI extends JPanel implements ActionListener{
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Task's Manager");
-        frame.setMinimumSize(new Dimension(710,520));
+        frame = new JFrame("Task's Manager");
+        frame.setResizable(false);
       
         JLabel slogan = new JLabel("Managing Tasks Like A Boss", SwingConstants.CENTER);
         slogan.setFont(new Font("Kokonor", Font.ITALIC, 12 ));
 
 
   
-
+        Clock clock = new Clock();
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -409,8 +444,9 @@ public class GUI extends JPanel implements ActionListener{
         GUI gui = new GUI();
         
         
-        
+        frame.add(clock, BorderLayout.NORTH);
         frame.add(gui, BorderLayout.CENTER);
+        
         frame.add(slogan, BorderLayout.SOUTH);
 
 
