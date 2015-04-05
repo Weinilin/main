@@ -42,7 +42,7 @@ public class DateTimeParser {
         storageOfTime = dateTimeNatty.getTimeList();
         storageOfDate = dateTimeNatty.getDateList();
         description = dateTimeNatty.getDescription();
-
+        
     //    System.out.println("Natty: " + dateTimeNatty.getTimeList() + " "
       //          + dateTimeNatty.getDateList());
 
@@ -864,5 +864,9 @@ public class DateTimeParser {
      */
     public int getNumberOfTime() {
         return numberOfTime;
+    }
+
+    public String getUserInputLeft() { 
+        return description;
     }
 }

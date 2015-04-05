@@ -39,8 +39,8 @@ public class Time1Parser {
             throws Exception {
         userInput = removeThoseHashTag(userInput);
         userInput = switchAllToLowerCase(userInput);
-        userInput = removeThoseHashTag(leftOverUserInput);
-        userInput = switchAllToLowerCase(leftOverUserInput);
+        leftOverUserInput = removeThoseHashTag(leftOverUserInput);
+        leftOverUserInput = switchAllToLowerCase(leftOverUserInput);
         userInputLeft = leftOverUserInput;
 
         goThroughTimeFormat(userInput);
@@ -85,22 +85,30 @@ public class Time1Parser {
      * @return user input without ~
      */
     private String removeThoseHashTag(String userInput) {
+
         ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
+        ArrayList<String> hashTag = new ArrayList<String>();
         Pattern hashTagDetector = Pattern.compile("\\~");
         Matcher containHashTag = hashTagDetector.matcher(userInput);
 
         while (containHashTag.find()) {
+
             hashTagIndex.add(containHashTag.start());
-
-        }
-
-        if (hashTagIndex.size() >= 2) {
-            for (int i = 0; i < hashTagIndex.size(); i += 2) {
-                userInput = userInput.substring(0, hashTagIndex.get(i))
-                        + userInput.substring(hashTagIndex.get(i + 1) + 1);
+           
+            if (hashTagIndex.size() == 2) {
+                hashTag.add(userInput.substring(hashTagIndex.get(0),
+                        hashTagIndex.get(1) + 1));
+                hashTagIndex.clear();
             }
+
         }
 
+        for (int i = 0; i < hashTag.size(); i++) {
+
+            userInput = userInput.replaceAll(hashTag.get(i), "");
+
+        }
+      
         return userInput;
     }
 
@@ -139,7 +147,7 @@ public class Time1Parser {
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
-         //   System.out.println("time: " + time);
+            // System.out.println("time: " + time);
             testValidTime(time);
 
             userInputLeft = userInputLeft.replaceAll(time, "");
@@ -254,7 +262,7 @@ public class Time1Parser {
 
         while (containTime.find()) {
             String time = containTime.group();
-         
+
             testValidTime(time);
             userInputLeft = userInputLeft.replaceAll(time, "");
 
@@ -733,7 +741,7 @@ public class Time1Parser {
         } else if (timeList[1].contains("am") || timeList[1].contains("pm")) {
             ifStartTimeContainsAmPm = false;
         }
-   
+
         return ifStartTimeContainsAmPm;
     }
 
