@@ -3,7 +3,7 @@ package parser;
 public class DescriptionParser {
     private String description;
 
-    public DescriptionParser(String userInput) {
+    public DescriptionParser(String userInput) throws Exception {
         String partOfDescription;
 
         

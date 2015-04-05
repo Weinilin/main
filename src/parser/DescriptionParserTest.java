@@ -13,7 +13,7 @@ import org.junit.Test;
 public class DescriptionParserTest {
 
 	@Test
-	public void withHashTagTest() {
+	public void withHashTagTest() throws Exception {
 	    
 	    DescriptionParser d3 = new DescriptionParser("~CS2103T assignment~ at 2pm 23/4");
 
@@ -50,7 +50,7 @@ public class DescriptionParserTest {
 	
 
 	@Test
-	public void testWithoutHashTag(){
+	public void testWithoutHashTag() throws Exception{
 	    
 	  //extra testing
         DescriptionParser d11 = new DescriptionParser("add complete developer guide on 13/04 ");

@@ -11,54 +11,65 @@ import javax.swing.JOptionPane;
 
 public class Date1Parser {
 
-    private final String DDMMYYYY_KEYWORD = "\\b\\d+([/.]\\d+[/.-]\\d+|[/.-]\\d+\\b)\\b";
-    private final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
-            + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|\\S)(\\d+\\b|)";
-    private final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b\\d{0,}(th|nd|rd|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
-            + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)(\\d+\\b|)";
-    private final String AFTER_DAYS_APART_KEYWORD = "\\b((\\w+ day(s|) after)"
+    private static final String DDMMYYYY_KEYWORD = "\\b\\d+([/.-]\\d+[/.-]\\d+|[/.-]\\d+\\b)\\b";
+    private static final String BEFORE_AFTER_MMDD_KEYWORD = "\\b\\w+(\\s|)(day(s|) before|the day(s|) before|(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)( before| after)) (\\d+([/.]\\d+[/.-]\\d+|[/.-]\\d+)\\b)";
+    private static final String DETECT_ONLY_BY_NATTY_KEYWORD = "(\\b(next|this|at|by|due on|on|due) (mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|) (or|and) "
+            + "(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)\\b)";
+    private static final String DD_MONNTHINWORD_YYYY_KEYWORD = "\\b(\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|\\S)(of |)(january\\b|febuary\\b|march\\b|april\\b|may\\b|june\\b|july\\b|august\\b"
+            + "|september\\b|octobor\\b|november\\b|december\\b)(\\s|)((in (the|) (year|yr)(s|))|)(\\s|)(\\d+\\b|)";
+    private static final String DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD = "\\b(\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|\\S)(of |)(jan\\b|feb\\b|mar\\b|apr\\b|may\\b|jun\\b|jul\\b|aug\\b"
+            + "|sep\\b|oct\\b|nov\\b|dec\\b)(\\s|\\S)((in (the|) (year|yr)(s|))|)(\\s|)(\\d+\\b|)";
+    private static final String AFTER_DAYS_APART_KEYWORD = "\\b((\\w+ day(s|) after)"
             + "\\b)|(\\w+ day(s|) later)\\b";
-    private final String DAYS_APART_VOCAB_KEYWORD = "(\\btmr\\b|\\b(the\\s|)following day(s|)\\b|\\b(after today)"
-            + "\\b|\\b(after (tmr)\\b)|(\\bfortnight\\b)\\b)";
-    private final String THIS_WEEKDAY_APART_KEYWORD = "\\b(on|by|due on|due|from|to|at|@|this)( this|)\\s(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)\\b";
-    private final String NEXT_WEEKDAY_APART_KEYWORD = "\\b(on|by|due on|due|from|to|at|@|next)( next|) (mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)\\b";
-    private final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(\\b(\\w+ (week|month|year)(s|) later\\b)|\\b(\\w+ (week|month|year)(s|) after)\\b)";
-    private final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
-    private final String TO_BE_REMOVED_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |next |this )\\b";
-    private final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DAYS_APART_VOCAB_KEYWORD = "(\\btmr\\b|\\b(the\\s|)following day(s|)\\b|\\b(after today)"
+            + "\\b|\\b(after (tomorrow|tmr)\\b)|(\\bfortnight\\b)\\b)";
+    private static final String THIS_WEEKDAY_APART_KEYWORD = "\\b(on|by|due on|due|from|to|at|@|this)( this|)\\s(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)\\b";
+    private static final String NEXT_WEEKDAY_APART_KEYWORD = "\\b(on|by|due on|due|from|to|at|@|next)( next|) (mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)\\b";
+    private static final String WEEKS_MONTHS_YEARS_APART_KEYWORD = "(\\b(\\w+ (week|wk|month|mth|year|yr)(s|) later\\b)|\\b(\\w+ (week|wk|month|mth|year|yr)(s|) after)\\b)";
+    private static final String NUMBERIC_KEYWORD = "(\\b\\d+\\b)";
+    private static final String TO_BE_REMOVED_KEYWORD = "\\b(@ |due on |on |at |from |to |by |due |next |this |((in (the|) (year|yr)(s|))))\\b";
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
     private String[] wordOfNumDays = { "one", "two", "three", "four", "five",
             "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
             "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
             "eighteen", "nineteen" };
-    private final String FOLLOWING_DAY_TEXT = "following day";
-    private final String AFTER_TODAY_TEXT = "after today";
-    private final String AFTER_TOMORROW_TEXT = "after tomorrow";
-    private final String SHORT_FORM_TOMORROW_TEXT = "tmr";
-    private final String AFTER_SHORTCUT_TMR_TEXT = "after tmr";
-    private final String WEEK_TEXT = "week";
-    private final String MONTH_TEXT = "month";
-    private final String YEAR_TEXT = "year";
-    private final String FORTNIGHT_TEXT = "fortnight";
-    private final int WEEK_UNIT = 7;
-    private final int FORTNIGHT_UNIT = 14;
+    private static final int WEEK_UNIT = 7;
+    private static final int FORTNIGHT_UNIT = 14;
     private String inputLeft;
+    private String inputThatDetectNatty = "";
     private int index;
     private ArrayList<String> storageOfDate = new ArrayList<String>();
+    private String feedback;
 
-    public Date1Parser(String userInput) {
-        userInput = switchAllToLowerCase(userInput);
-        inputLeft = userInput;     
-        goThroughDetectionMethod(userInput);
+    public Date1Parser (){
+        
+    }
+    public Date1Parser(String userInput) throws IllegalArgumentException {
+        extractDate(userInput, userInput);
     }
 
+    public void extractDate(String userInput, String leftOverInput)  throws IllegalArgumentException{
+        userInput = switchAllToLowerCase(userInput);
+        userInput = switchAllToLowerCase(leftOverInput);
+        inputLeft = leftOverInput;
+        goThroughDetectionMethod(userInput);
+    }
     
+    /**
+     * return feedback(exception) to user.
+     * @return
+     */
+    public String getFeedBack() {
+        return feedback;
+    }
+
     /**
      * to prevent case sensitive, switch all to lower case
      * 
      * @param userInput
      * @return the user input all in lower case.
      */
-    private  String switchAllToLowerCase(String userInput) {
+    private String switchAllToLowerCase(String userInput) {
         userInput = userInput.replaceAll("\\s+", " ");
         userInput = " " + userInput.toLowerCase() + " ";
         return userInput;
@@ -70,7 +81,7 @@ public class Date1Parser {
      * @return the input left after removing all the date detected
      */
     public String getInputLeft() {
-        return inputLeft;
+        return inputThatDetectNatty + " " + inputLeft;
     }
 
     /**
@@ -82,6 +93,14 @@ public class Date1Parser {
     public ArrayList<String> getDateList() {
         return storageOfDate;
     }
+    
+    /**
+     * get the last index of the position of date in user input
+     * @return
+     */
+    public int getIndex() {
+        return index;
+    }
 
     /**
      * go through the whole detection of different formats
@@ -90,16 +109,66 @@ public class Date1Parser {
      * @param dates
      * @return all of the dates detected in DD/MM/YYYY
      */
-    private void goThroughDetectionMethod(String userInput) {
+    private void goThroughDetectionMethod(String userInput) throws IllegalArgumentException{
 
+        spotInputWithMMDDBEFOREAFTER(userInput);
+        spotInputCouldDetectOnlyNatty(userInput);
+        spotDDMonthInWordYYYY(userInput, DD_MONNTHINWORD_YYYY_KEYWORD);
+        spotDDMonthInWordYYYY(userInput, DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD);
         spotDDMMYYYYKeyword(userInput);
-        spotDDMonthInWordYYYY(inputLeft, DD_MONNTHINWORD_YYYY_KEYWORD);
-        spotDDMonthInWordYYYY(inputLeft, DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD);
         spotAfterDaysApartKeyword(userInput);
         spotDaysApartVocab(userInput);
         spotWeekMonthYearApartKeyword(userInput);
         spotThisWeekdayApartKeyWord(userInput);
         spotNextWeekdayApartKeyWord(userInput);
+
+    }
+
+    /**
+     * to prevent the detection in this dateParser as only natty could read the keyword with the right
+     * date
+     * @param inputLeft2
+     */
+    private void spotInputCouldDetectOnlyNatty(String userInput) {
+   
+        Pattern detector = Pattern.compile(DETECT_ONLY_BY_NATTY_KEYWORD);
+        Matcher containComplicationWord = detector.matcher(userInput);
+        
+        while (containComplicationWord.find()) {
+            inputLeft = inputLeft.replaceAll(DETECT_ONLY_BY_NATTY_KEYWORD, "");
+            inputThatDetectNatty = inputThatDetectNatty + " " + containComplicationWord.group();
+        }
+    }
+
+    /**
+     * to ensure that the natty could detect the days before or after a date that is dd/mm/yyyy
+     * format 
+     * @param userInput
+     */
+    private void spotInputWithMMDDBEFOREAFTER(String userInput) {
+        String dateOfTheTask = "";
+       
+        Pattern detector = Pattern.compile(BEFORE_AFTER_MMDD_KEYWORD);
+        Matcher containComplicationWord = detector.matcher(userInput);
+
+        while (containComplicationWord.find()) {
+            inputLeft = inputLeft.replaceAll(BEFORE_AFTER_MMDD_KEYWORD, "");
+         
+            String word = "";
+            dateOfTheTask = spotDDMMYYYYKeyword(userInput);
+            storageOfDate.remove(dateOfTheTask);
+            String[] partOfDate = splitTheStringIntoPart(dateOfTheTask);
+            String monthInWord = convertMonthToWord(partOfDate[1]);
+
+            word = containComplicationWord.group();
+            word = word.replaceAll(DDMMYYYY_KEYWORD, "");
+
+            assert partOfDate.length != 3 : "could not change the date format to dd/mm/yyyy";
+           
+            inputThatDetectNatty = inputThatDetectNatty + word + " "
+                    + partOfDate[0] + " " + monthInWord + " " + partOfDate[2];
+
+        }
 
     }
 
@@ -133,7 +202,7 @@ public class Date1Parser {
             setThePosition(indexMatched);
         }
     }
-    
+
     /**
      * get the final date after day of weeks is being added
      * 
@@ -144,7 +213,7 @@ public class Date1Parser {
      */
     private String getNextWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
         String dateOfTheTask = "";
-     
+
         if (todayDayOfWeek == dayOfTheWeek) {
             dateOfTheTask = addToTheCurrentDateByDays(7);
         } else {
@@ -153,7 +222,7 @@ public class Date1Parser {
         }
 
         return dateOfTheTask;
-    }    
+    }
 
     /**
      * detect after no weeks, after no months, after no years s is not sensitive
@@ -172,17 +241,17 @@ public class Date1Parser {
             uniqueKeyword = containDate.group();
             inputLeft = inputLeft.replaceAll(uniqueKeyword, "");
 
-            if (uniqueKeyword.contains("week")) {
+            if (uniqueKeyword.contains("week") || uniqueKeyword.contains("wk")) {
 
                 numberOfDays = getNumberOfDaysDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByDays(numberOfDays);
 
-            } else if (uniqueKeyword.contains("month")) {
+            } else if (uniqueKeyword.contains("month") || uniqueKeyword.contains("mth")) {
 
                 numberOfMonths = getNumberOfMonthDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByMonth(numberOfMonths);
 
-            } else if (uniqueKeyword.contains("year")) {
+            } else if (uniqueKeyword.contains("year") || uniqueKeyword.contains("yr")) {
 
                 numberOfYears = getNumberOfYearsDetected(uniqueKeyword);
                 dateOfTheTask = addToTheCurrentDateByYear(numberOfYears);
@@ -216,7 +285,7 @@ public class Date1Parser {
             int todayDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 
             thisWeekdayInput = removeUnwantedParts(thisWeekdayInput);
-            String[] containsWeekday = thisWeekdayInput.split(" ");
+           
             int dayOfTheWeek = detectDayOfWeek(thisWeekdayInput);
             dateOfTheTask = getThisWeekayDate(dayOfTheWeek, todayDayOfWeek);
             storageOfDate.add(dateOfTheTask);
@@ -237,7 +306,7 @@ public class Date1Parser {
     private String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek)
             throws IllegalArgumentException {
         String dateOfTheTask = "";
-      
+
         try {
             if (todayDayOfWeek <= dayOfTheWeek) {
                 dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek
@@ -407,19 +476,19 @@ public class Date1Parser {
     private int getNumberOfDaysDetected(String uniqueKeyword) {
         int numberOfDays = 0;
 
-        if (uniqueKeyword.equals(SHORT_FORM_TOMORROW_TEXT)) {
+        if (uniqueKeyword.equals("tmr")) {
             numberOfDays = 1;
-        } else if (uniqueKeyword.contains(FOLLOWING_DAY_TEXT)) {
+        } else if (uniqueKeyword.contains("following day")) {
             numberOfDays = 1;
-        } else if (uniqueKeyword.equals(AFTER_TODAY_TEXT)) {
+        } else if (uniqueKeyword.equals("after today")) {
             numberOfDays = 1;
-        } else if (uniqueKeyword.equals(AFTER_TOMORROW_TEXT)
-                || uniqueKeyword.equals(AFTER_SHORTCUT_TMR_TEXT)) {
+        } else if (uniqueKeyword.equals("after tomorrow")
+                || uniqueKeyword.equals("after tmr")) {
             numberOfDays = 2;
-        } else if (uniqueKeyword.contains(WEEK_TEXT)) {
+        } else if (uniqueKeyword.contains("week") || uniqueKeyword.contains("wk")) {
             int numberOfWeek = isolateTheNumberInString(uniqueKeyword);
             numberOfDays = WEEK_UNIT * numberOfWeek;
-        } else if (uniqueKeyword.contains(FORTNIGHT_TEXT)) {
+        } else if (uniqueKeyword.contains("fortnight")) {
             int numberOfFornight = isolateTheNumberInString(uniqueKeyword);
             numberOfDays = FORTNIGHT_UNIT * numberOfFornight;
         } else {
@@ -438,7 +507,7 @@ public class Date1Parser {
     private int getNumberOfMonthDetected(String uniqueKeyword) {
         int numberOfMonth = 0;
 
-        if (uniqueKeyword.contains(MONTH_TEXT)) {
+        if (uniqueKeyword.contains("month") || uniqueKeyword.contains("mth")) {
             numberOfMonth = isolateTheNumberInString(uniqueKeyword);
         }
 
@@ -454,7 +523,7 @@ public class Date1Parser {
     private int getNumberOfYearsDetected(String uniqueKeyword) {
         int numberOfYear = 0;
 
-        if (uniqueKeyword.contains(YEAR_TEXT)) {
+        if (uniqueKeyword.contains("year") || uniqueKeyword.contains("yr")) {
             numberOfYear = isolateTheNumberInString(uniqueKeyword);
         }
 
@@ -546,7 +615,8 @@ public class Date1Parser {
      * 
      * @param userInput
      */
-    private void spotDDMonthInWordYYYY(String userInput, String keyword) {
+    private void spotDDMonthInWordYYYY(String userInput, String keyword) throws 
+    IllegalArgumentException{
         String dateOfTheTask = "";
 
         Pattern dateDetector = Pattern.compile(keyword);
@@ -555,18 +625,19 @@ public class Date1Parser {
 
         while (containDate.find() && toGetIndex.find()) {
             dateOfTheTask = containDate.group();
-            inputLeft = inputLeft.replaceAll(keyword, "");
 
             DateFormat date = new SimpleDateFormat(DATE_FORMAT);
             Calendar calendar = Calendar.getInstance();
-
-            System.out.println("dateOfTask: " + dateOfTheTask);
-            // dateOfTheTask = removeAll
+           
             dateOfTheTask = removeUnwantedParts(dateOfTheTask);
             int day = getDay(dateOfTheTask);
             int year = getYear(dateOfTheTask);
             int month = convertMonthToNumber(dateOfTheTask);
 
+            if(day == 0){         
+                break;
+            }
+            
             testValidMonth(month);
             testValidDay(day, year, month);
 
@@ -575,6 +646,7 @@ public class Date1Parser {
             dateOfTheTask = date.format(calendar.getTime());
 
             storageOfDate.add(dateOfTheTask);
+            inputLeft = inputLeft.replaceAll(keyword, "");
 
             int indexOfDatePosition = toGetIndex.start();
             setThePosition(indexOfDatePosition);
@@ -606,21 +678,20 @@ public class Date1Parser {
     private int getDay(String dateOfTheTask) {
         int day = 0;
         Pattern numberPattern = Pattern
-                .compile("\\w+(?=nd)|\\w+(?=th)|\\w+(?=rd)|\\w+");
+                .compile("\\d+|\\w+");
         Matcher containDay = numberPattern.matcher(dateOfTheTask);
         String text;
-
+        
         if (containDay.find()) {
             text = containDay.group();
 
-            System.out.println("text: " + text);
             if (isNumeric(text)) {
                 day = Integer.parseInt(text);
             } else if (text.equals("twenty")) {
-                text = text.replaceAll(text, "");
+                text = dateOfTheTask.replaceAll(text, "");
                 day = 20 + getNextWord(text);
             } else if (text.equals("thirty")) {
-                text = text.replaceAll(text, "");
+                text = dateOfTheTask.replaceAll(text, "");
                 day = 30 + getNextWord(text);
             } else {
                 day = determineIntDaysFromWords(text);
@@ -639,7 +710,7 @@ public class Date1Parser {
 
             day = determineIntDaysFromWords(text);
         }
-        return 0;
+        return day;
     }
 
     /**
@@ -727,8 +798,10 @@ public class Date1Parser {
      * detct DD/MM and DD/MM/YYYY
      * 
      * @param userInput
+     * @return date dd/mm/yyyy
+     * @throws IllegalArgumentException
      */
-    private void spotDDMMYYYYKeyword(String userInput) {
+    private String spotDDMMYYYYKeyword(String userInput) throws IllegalArgumentException{
         String dateOfTheTask = "";
 
         Pattern dateDetector = Pattern.compile(DDMMYYYY_KEYWORD);
@@ -737,20 +810,18 @@ public class Date1Parser {
 
         while (containDate.find() && toGetIndex.find()) {
             Calendar calendar = Calendar.getInstance();
-            dateOfTheTask = containDate.group();
             inputLeft = inputLeft.replaceAll(DDMMYYYY_KEYWORD, "");
+            dateOfTheTask = containDate.group();
 
             dateOfTheTask = dateOfTheTask.replaceAll("on |from |at |to ", "");
 
             // so we could detect both (YYYY/MM/DD) and (DD/MM/YYYY)
-            // date format
             String containYearAndDay = getYearAndDayInAString(dateOfTheTask);
 
             int day = getDay(containYearAndDay);
             int year = getYear(containYearAndDay);
             int month = getMonth(dateOfTheTask);
 
-            System.out.println("day: " + day);
             testValidMonth(month);
             testValidDay(day, year, month);
 
@@ -763,7 +834,48 @@ public class Date1Parser {
 
             int indexPositionOfThisDate = toGetIndex.start();
             setThePosition(indexPositionOfThisDate);
+
         }
+        return dateOfTheTask;
+
+    }
+
+    /**
+     * convert month from integer to word
+     * 
+     * @param string
+     * @return
+     */
+    private String convertMonthToWord(String monthInWord) {
+        String month = "";
+
+        if (monthInWord.equals("01")) {
+            month = "jan";
+        } else if (monthInWord.equals("02")) {
+            month = "feb";
+        } else if (monthInWord.equals("03")) {
+            month = "mar";
+        } else if (monthInWord.equals("04")) {
+            month = "apr";
+        } else if (monthInWord.equals("05")) {
+            month = "may";
+        } else if (monthInWord.equals("06")) {
+            month = "jun";
+        } else if (monthInWord.equals("07")) {
+            month = "jul";
+        } else if (monthInWord.equals("08")) {
+            month = "aug";
+        } else if (monthInWord.equals("09")) {
+            month = "september";
+        } else if (monthInWord.equals("10")) {
+            month = "oct";
+        } else if (monthInWord.equals("11")) {
+            month = "nov";
+        } else if (monthInWord.equals("12")) {
+            month = "dec";
+        }
+
+        return month;
     }
 
     /**
@@ -796,6 +908,7 @@ public class Date1Parser {
             }
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+            feedback = e.getMessage();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -818,16 +931,13 @@ public class Date1Parser {
 
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            System.out.print("day: " + day + " year: " + year + " month: "
-                    + month + " max: " + maxDays);
-
             if (day == 0 || exceedMaxDaysOnThatMonth(day, maxDays)) {
                 throw new IllegalArgumentException(
                         "Invalid Day Keyed! Exceed the maximum day in that month");
             }
-            System.out.print("day: " + day + " year: " + year + " month: "
-                    + month + " max: " + maxDays);
+           
         } catch (IllegalArgumentException e) {
+            feedback = e.getMessage();
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         }
