@@ -33,7 +33,7 @@ class AddHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception {
         reset();
         String feedback = "";
         String[] token = parameter.split(" ");
