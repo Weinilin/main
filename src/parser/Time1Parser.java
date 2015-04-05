@@ -542,7 +542,6 @@ public class Time1Parser {
                 calendarOfMeridiemKeyed, calendarMaunalSetToAm,
                 calendarMaunalSetToPm);
 
-        timeSelected = changeToHourFormat(timeSelected);
 
         assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
         assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
@@ -569,19 +568,26 @@ public class Time1Parser {
             Calendar calendarOfMeridiemKeyed, Calendar calendarMaunalSetToAm,
             Calendar calendarMaunalSetToPm) {
         String timeSelected;
+        
+        
         if (calendarOfMeridiemKeyed.equals(calendarMaunalSetToPm)) {
             timeSelected = timeSetToAM;
+           
         } else if (calendarOfMeridiemKeyed.equals(calendarMaunalSetToAm)) {
             timeSelected = timeSetToPM;
+          
         } else if (calendarOfMeridiemKeyed.after(calendarMaunalSetToPm)
                 && calendarOfMeridiemKeyed.after(calendarMaunalSetToAm)) {
             timeSelected = getLaterTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
+            
         } else if (calendarOfMeridiemKeyed.before(calendarMaunalSetToPm)
                 && calendarOfMeridiemKeyed.before(calendarMaunalSetToAm)) {
+         
             timeSelected = getLaterTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
         } else {
+         
             timeSelected = getEarlierTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
         }
@@ -609,6 +615,7 @@ public class Time1Parser {
             timeSelected = timeSetToPM;
         }
 
+      
         return timeSelected;
     }
 
@@ -627,11 +634,12 @@ public class Time1Parser {
         String timeSelected = "";
 
         if (calendarMaunalSetToAm.after(calendarMaunalSetToPm)) {
-
             timeSelected = timeSetToAM;
-        } else if (calendarMaunalSetToPm.after(calendarMaunalSetToAm)) {
+        } else if (calendarMaunalSetToPm.after(calendarMaunalSetToAm) || timeSetToAM.equals("00:00")) {
             timeSelected = timeSetToPM;
+           
         }
+       
 
         return timeSelected;
     }
@@ -667,8 +675,6 @@ public class Time1Parser {
         timeSelected = getSelectedEndTime(timeSetToAM, timeSetToPM,
                 calendarOfMeridiemKeyed, calendarMaunalSetToAm,
                 calendarMaunalSetToPm);
-
-        timeSelected = changeToHourFormat(timeSelected);
 
         assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
         assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
@@ -967,7 +973,7 @@ public class Time1Parser {
      * @return time in hour format (HH:MM)
      */
     private String changeToHourFormat(String time) {
-
+        
         if (time.contains("am")) {
             time = removePMOrAmOrOclock(time);
             time = switchToAmHour(time);
@@ -985,7 +991,7 @@ public class Time1Parser {
        
 
         time = putOneZeroAtFront(time);
-
+        
         return time;
     }
 
@@ -1096,7 +1102,7 @@ public class Time1Parser {
             timeNormal++;
         }
         time = time + ":" + minTime;
-    //    System.out.println("userHourTime: "+userHourTime+" minTime: "+ "time" +time);
+    //   System.out.println("userHourTime: "+userHourTime+" minTime: "+ "time" +time);
         return time;
     }
 
