@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import parser.IndexParser;
 import application.Task;
 
 /**
@@ -17,6 +18,8 @@ class RedoHandler extends UndoableCommandHandler {
 
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("redo", "r"));
+    private static final String REDO_STEPS_MESSAGE = "Repeated last %1$s changes\n";
+            
 
     @Override
     protected ArrayList<String> getAliases() {
@@ -25,24 +28,61 @@ class RedoHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        int steps = 0;
         String[] token = parameter.split(" ");
         if (token[0].toLowerCase().equals("help")) {
             return getHelp();
         }
-
-        if (undoRedoManager.canRedo()) {
-            taskList.clear();
-            taskList.addAll(undoRedoManager.redo());
-            return "The last undo has been discarded\n";
+        
+        if (isRedoOnly(parameter)) {
+            if (undoRedoManager.canRedo()) {
+                updateTaskList(taskList);
+                return "The last undo has been discarded\n";
+            }
+            else {                  
+                return "Nothing to redo\n";
+            }
         }
-        else {                  
-            return "Nothing to redo\n";
+        else {
+            if (isAll(token[0])) {
+                while (undoRedoManager.canRedo()) {
+                    updateTaskList(taskList);
+                }
+                return "All undos has been repeated\n";
+            }
+            try {
+                IndexParser ip = new IndexParser(token[0]);
+                steps = ip.getIndex();
+            } catch (NumberFormatException nfe) {
+                return "Invalid steps to redo\n";
+            }
+            if (steps > undoRedoManager.getRedoSize()) {
+                return "Not enought steps to redo\n";
+            }
+            else {
+                for (int i = 0; i < steps; i++) {
+                    updateTaskList(taskList);
+                }
+                return String.format(REDO_STEPS_MESSAGE, Integer.toString(steps));
+            }
         }
     }
-
+    
+    private boolean isAll(String string) {
+        return string.toLowerCase().trim().equals("all");
+    }
+    
+    private void updateTaskList(ArrayList<Task> taskList) {
+        taskList.clear();
+        taskList.addAll(undoRedoManager.redo());
+    }
+    
+    private boolean isRedoOnly(String parameter) {
+        return parameter.toLowerCase().trim().equals("");
+    }
+    
     @Override
     public String getHelp() {
-        // TODO Auto-generated method stub
         return "redo\n\t discard the undo actions";
     }
     
