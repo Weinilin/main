@@ -3,7 +3,7 @@ package parser;
 public class TaskTypeParser {
 	private String taskType;
 
-	public TaskTypeParser(String userInput) {
+	public TaskTypeParser(String userInput) throws Exception {
 		DateTimeParser dateTime = new DateTimeParser(userInput);
 		int numberOfTimeInput = dateTime.getNumberOfTime();
 		String taskType = null;

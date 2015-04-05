@@ -3,7 +3,7 @@ package parser;
 public class DescriptionParser {
     private String description;
 
-    public DescriptionParser(String userInput) {
+    public DescriptionParser(String userInput) throws Exception {
         String partOfDescription;
 
         
@@ -20,7 +20,6 @@ public class DescriptionParser {
         String description = piecePartsOfDescription(escapedText,
                 partOfDescription, lowerCaseInput, userInput);
 
-        description = description.trim();
         description = removeTheExtraSpace(description);
         setDescription(description);
     }
@@ -52,6 +51,7 @@ public class DescriptionParser {
 
     
     private String removeTheExtraSpace(String partOfDescription) {
+        partOfDescription = partOfDescription.trim();
         partOfDescription = partOfDescription.replaceAll("\\s+", " ");
         return partOfDescription;
     }
@@ -85,6 +85,7 @@ public class DescriptionParser {
                             .equals(eachWordInDescription[j])) {
                 
                 description = description + " " + eachWordUserInput[i];
+                
                 j++;
 
             } else if (k < eachEscapedText.length
@@ -93,10 +94,11 @@ public class DescriptionParser {
                 eachWordUserInput[i] = eachWordUserInput[i].replaceAll("\\~",
                         "");
                 description = description + " " + eachWordUserInput[i];
+               
                 
-                k++;
-                
+                k++;              
             }
+            
 
         }
         return description;

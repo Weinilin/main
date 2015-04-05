@@ -2,6 +2,8 @@ package parser;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 /**
@@ -15,24 +17,31 @@ public class DateTimeParserTest {
 
     //test the addition of time when the user miss out
     @Test
-    public void testWhenTimeNotKeyed() {
+    public void testWhenTimeNotKeyed() throws Exception {
         // deadline task without time added and have 1 date
         DateTimeParser d1 = new DateTimeParser(
                 "add start reading ST2334 notes by this sat");
-        assertEquals(d1.getStartDate(), "Sat 04/04/2015");
-        assertEquals(d1.getStartTime(), "23:59");
+        assertEquals(d1.getEndDate(), "Sat 04/04/2015");
+        assertEquals(d1.getEndTime(), "23:59");
+        assertEquals(d1.getStartDate(), "-");
+        assertEquals(d1.getStartTime(), "-");
 
         // deadline task without time and 1 date --> today
         DateTimeParser d4 = new DateTimeParser(
                 "add start reading ST2334 notes by Friday");
-        assertEquals(d4.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d4.getStartTime(), "23:59");
+        assertEquals(d4.getEndDate(), "Fri 03/04/2015");
+        assertEquals(d4.getEndTime(), "23:59");
+        assertEquals(d1.getStartDate(), "-");
+        assertEquals(d1.getStartTime(), "-");
+
 
         // deadline task without time and 1 date
         DateTimeParser d6 = new DateTimeParser(
                 "add start reading ST2334 notes next Friday");
-        assertEquals(d6.getStartDate(), "Fri 10/04/2015");
-        assertEquals(d6.getStartTime(), "23:59");
+        assertEquals(d6.getStartDate(), "-");
+        assertEquals(d6.getStartTime(), "-");
+        assertEquals(d6.getEndDate(), "Fri 10/04/2015");
+        assertEquals(d6.getEndTime(), "23:59");
 
         // timed task with only one time added and 2 dates added
         DateTimeParser d2 = new DateTimeParser(
@@ -57,7 +66,6 @@ public class DateTimeParserTest {
         assertEquals(d5.getEndDate(), "Sat 04/04/2015");
         // current time is set for start time pls ensure that it is set to ur
         // com current time
-
         // assertEquals(d5.getStartTime(), "19:55");
         assertEquals(d5.getEndTime(), "23:59");
 
@@ -101,16 +109,20 @@ public class DateTimeParserTest {
     // to current date
     // When testing, do change the expected result's date to current date.
     // and if the time pass the current time, it will the next day
-    public void testWhenDateNotKeyed() {
+    public void testWhenDateNotKeyed() throws Exception {
         // deadline task without date added and past current time : 3pm
         DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 10pm");
-        assertEquals(d1.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d1.getStartTime(), "22:00");
+        assertEquals(d1.getEndDate(), "Sun 05/04/2015");
+        assertEquals(d1.getEndTime(), "22:00");
+        assertEquals(d1.getStartDate(), "-");
+        assertEquals(d1.getStartTime(), "-");
         
         // deadline task without date added and before current time : 3pm
-        DateTimeParser d6 = new DateTimeParser("CS2103T assignments due 2pm");
-        assertEquals(d6.getStartDate(), "Sat 04/04/2015");
-        assertEquals(d6.getStartTime(), "14:00");
+        DateTimeParser d6 = new DateTimeParser("CS2103T assignments due 8am");
+        assertEquals(d6.getEndDate(), "Mon 06/04/2015");
+        assertEquals(d6.getEndTime(), "08:00");
+        assertEquals(d6.getStartDate(), "-");
+        assertEquals(d6.getStartTime(), "-");
 
         // timed task with one date added start time is later than end time
         DateTimeParser d2 = new DateTimeParser(
@@ -131,16 +143,16 @@ public class DateTimeParserTest {
      // timed task with one date (today) added and 2 times past current time:3pm
         DateTimeParser d11 = new DateTimeParser(
                 "CS2103T assignments 9pm to 10pm today");
-        assertEquals(d11.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d11.getEndDate(), "Fri 03/04/2015");
+        assertEquals(d11.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d11.getEndDate(), "Sun 05/04/2015");
         assertEquals(d11.getStartTime(), "21:00");
         assertEquals(d11.getEndTime(), "22:00");
         
      // timed task with one date (today) added and 2 times past current time:3pm with start>end time
         DateTimeParser d12 = new DateTimeParser(
                 "CS2103T assignments 10pm to 9pm today");
-        assertEquals(d12.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d12.getEndDate(), "Sat 04/04/2015");
+        assertEquals(d12.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d12.getEndDate(), "Mon 06/04/2015");
         assertEquals(d12.getStartTime(), "22:00");
         assertEquals(d12.getEndTime(), "21:00");
 
@@ -148,29 +160,29 @@ public class DateTimeParserTest {
         // timed task with no date added and start time is not later than end
         // time
         DateTimeParser d3 = new DateTimeParser("CS2103T assignments 4pm 6:30pm");
-        assertEquals(d3.getStartDate(), "Sat 04/04/2015");
-        assertEquals(d3.getEndDate(), "Sat 04/04/2015");
+        assertEquals(d3.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d3.getEndDate(), "Sun 05/04/2015");
         assertEquals(d3.getStartTime(), "16:00");
         assertEquals(d3.getEndTime(), "18:30");
 
         // timed task with no date added and start time is later than end time
         DateTimeParser d4 = new DateTimeParser("CS2103T assignments 9pm 6:45pm");
-        assertEquals(d4.getStartDate(), "Sat 04/04/2015");
-        assertEquals(d4.getEndDate(), "Sun 05/04/2015");
+        assertEquals(d4.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d4.getEndDate(), "Mon 06/04/2015");
         assertEquals(d4.getStartTime(), "21:00");
         assertEquals(d4.getEndTime(), "18:45");
 
         // timed task with no date added and end time before current time : 3pm
         DateTimeParser d5 = new DateTimeParser("CS2103T assignments 5pm 1pm");
-        assertEquals(d5.getStartDate(), "Sat 04/04/2015");
-        assertEquals(d5.getEndDate(), "Sun 05/04/2015");
+        assertEquals(d5.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d5.getEndDate(), "Mon 06/04/2015");
         assertEquals(d5.getStartTime(), "17:00");
         assertEquals(d5.getEndTime(), "13:00");
         
         // timed task with no date added and past current time :3pm
         DateTimeParser d7 = new DateTimeParser("CS2103T assignments 10pm 11:10pm");
-        assertEquals(d7.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d7.getEndDate(), "Fri 03/04/2015");
+        assertEquals(d7.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d7.getEndDate(), "Sun 05/04/2015");
         assertEquals(d7.getStartTime(), "22:00");
         assertEquals(d7.getEndTime(), "23:10");
         
@@ -178,12 +190,12 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void testWhenSameTime() {
+    public void testWhenSameTime() throws Exception {
         // test when same time is detected with no date detected
         DateTimeParser d3 = new DateTimeParser(
                 "CS2103T assignments 6:30pm 6:30pm");
-        assertEquals(d3.getStartDate(), "Fri 03/04/2015");
-        assertEquals(d3.getEndDate(), "Sat 04/04/2015");
+        assertEquals(d3.getStartDate(), "Sun 05/04/2015");
+        assertEquals(d3.getEndDate(), "Mon 06/04/2015");
         assertEquals(d3.getStartTime(), "18:30");
         assertEquals(d3.getEndTime(), "18:30");
 
@@ -197,12 +209,14 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void normalTest() {
+    public void normalTest() throws Exception {
         // deadlines test
         DateTimeParser d1 = new DateTimeParser(
                 "CS2103T assignments due 23/5/2015 2pm");
-        assertEquals(d1.getStartDate(), "Sat 23/05/2015");
-        assertEquals(d1.getStartTime(), "14:00");
+        assertEquals(d1.getEndDate(), "Sat 23/05/2015");
+        assertEquals(d1.getEndTime(), "14:00");
+        assertEquals(d1.getStartDate(), "-");
+        assertEquals(d1.getStartTime(), "-");
 
         // timed test
         DateTimeParser d2 = new DateTimeParser(
@@ -227,7 +241,7 @@ public class DateTimeParserTest {
      * Pls be remind that this test case is sensitive to the current time of your computer
      * set it according 
      */
-    public void testForRemaindar() {
+    public void testForRemaindar() throws Exception {
         // today --> start time before current time but one end time past.
         DateTimeParser d4 = new DateTimeParser("add 03 April 4pm 8pm");
         assertEquals(d4.getStartDate(), "Fri 03/04/2015");
@@ -251,13 +265,20 @@ public class DateTimeParserTest {
 
     }
     
-    
+    @Test
+    public void testForDash() throws Exception{
+        DateTimeParser d1 = new DateTimeParser("dasdh");
+        assertEquals(d1.getStartDate(), "-");
+        assertEquals(d1.getEndDate(), "-");
+        assertEquals(d1.getStartTime(), "-");
+        assertEquals(d1.getEndTime(), "-");
+    }
     
     /*
      * test for error like : 1) start time > end time 2) start date > end date
      */
-    /*
-    public void testError(){
+    
+    public void testError() throws Exception{
         //should pop up error window in gui
         // test for 2) start date > end date
         DateTimeParser d10 = new DateTimeParser(
@@ -270,5 +291,19 @@ public class DateTimeParserTest {
         
         
     }
-*/
+    
+    //test position like past midnight will be detect 1st by time1Parser then noon will then be 
+    //detect by dateTimeNatty (detect in this way: 00:01 --> 12) but the right time position
+    // should be 12:00 --> 00:01
+    //check if the result be 12:00 --> 00:01
+    @Test
+    public void testPosition() throws Exception{
+      
+        DateTimeParser dt = new DateTimeParser("mds sale noon past midnight");
+       
+        assertEquals("12:00", dt.getStartTime());
+       
+        assertEquals("00:01", dt.getEndTime());
+    }
+
 }

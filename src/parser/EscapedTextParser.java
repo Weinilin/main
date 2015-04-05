@@ -29,23 +29,29 @@ public class EscapedTextParser {
      */
     private String removeThoseHashTag(String userInput) {
         ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
-        Pattern hashTagDetector = Pattern.compile("~");
+        ArrayList<String> hashTag = new ArrayList<String>();
+        Pattern hashTagDetector = Pattern.compile("\\~");
         Matcher containHashTag = hashTagDetector.matcher(userInput);
 
         while (containHashTag.find()) {
+
             hashTagIndex.add(containHashTag.start());
+            
+            if (hashTagIndex.size() == 2) {
+                hashTag.add(userInput.substring(hashTagIndex.get(0),
+                        hashTagIndex.get(1) + 1));
+                hashTagIndex.clear();
+            }
 
         }
-        
-        if (hashTagIndex.size() >= 2) {
-            for (int i = 0; i < hashTagIndex.size(); i += 2) {
-                textEscaped = textEscaped
-                        + " "
-                        + userInput.substring(hashTagIndex.get(i) + 1,
-                                hashTagIndex.get(i + 1));
-            }
+
+        System.out.println("hashTag: " + hashTag);
+        for (int i = 0; i < hashTag.size(); i++) {
+            textEscaped = textEscaped + " " + hashTag.get(i);
         }
-        
+      
+        textEscaped =  textEscaped.replaceAll("\\~", "");
+        System.out.println("textEscaped: " + textEscaped);
         textEscaped = textEscaped.trim();
         return textEscaped;
     }

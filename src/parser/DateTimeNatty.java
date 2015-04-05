@@ -5,56 +5,81 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.ParseLocation;
 import com.joestelmach.natty.Parser;
 
 public class DateTimeNatty {
-    private  final String DATE_FORMAT = "EEE dd/MM/yyyy HH:mm";
-    private  final String NUMBERIC_KEYWORD = "(\\b\\d{0,3}\\b)";
-    private  ArrayList<String> storageOfDate = new ArrayList<String>();
-    private  ArrayList<String> storageOfTime = new ArrayList<String>();
-    private  ArrayList<String> dateTextInUserInput = new ArrayList<String>();
-    private  String userInputLeftAfterParsing;
+    private ArrayList<String> storageOfDate = new ArrayList<String>();
+    private ArrayList<String> storageOfTime = new ArrayList<String>();
+    private ArrayList<String> dateTextInUserInput = new ArrayList<String>();
+    private String userInputLeftAfterParsing;
     private String description;
-    private  int index;
+    private int indexTime;
+    private int indexDate;
+
+    public DateTimeNatty() {
+
+    }
 
     public DateTimeNatty(String userInput) {
+        extractDateTime(userInput, userInput, storageOfDate, storageOfTime, 0,
+                0);
+    }
+
+    public void extractDateTime(String userInput, String leftOverInput,
+            ArrayList<String> dates, ArrayList<String> times,
+            int indexPrevTime, int indexPrevDate) {
         List<DateGroup> groups = new ArrayList<DateGroup>();
-        // List<Date> dates = new ArrayList<Date>();
+
         storageOfDate.clear();
         storageOfTime.clear();
+        storageOfDate.addAll(dates);
+        storageOfTime.addAll(times);
+        
         Parser dateTimeParser = new Parser();
-      
-        // userInputLeftAfterParsing : remove those detected --> prevent infinite loop
-        userInputLeftAfterParsing = userInput;
-        //description --> remove those that is detected and used.(like eve detect but will be discarded)
-        description = userInput;
-        System.out.println("groups: " + groups + " userInput: " + userInput);
+
+        indexTime = indexPrevTime;
+        indexDate = indexPrevDate;
+        // userInputLeftAfterParsing : remove those detected --> prevent
+        // infinite loop
+        userInputLeftAfterParsing = leftOverInput;
+
+        // description --> remove those that is detected and used.(like eve
+        // detect but will be discarded)
+        description = leftOverInput;
+
+      //  System.out
+        //        .println("groups: " + groups + " userInput: " + leftOverInput);
         while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
-            System.out.println(" userInput: " + userInputLeftAfterParsing);
+         //   System.out.println(" userInputLeftAfterParsing: "
+           //         + userInputLeftAfterParsing);
             parseDateAndTime(groups, userInput);
 
-            // changeDateFormat(dateTimeList, dates);
-            System.out.println("dateTime: " + storageOfDate + " "
-                    + storageOfTime);
-
-            // System.out.println(" userInput: " + userInputLeftAfterParsing);
+       //     System.out.println("dateTime: " + storageOfDate + " "
+         //           + storageOfTime);
         }
     }
 
-    public String getDescription(){
+    /**
+     * get the left over of user input after all detection of time and date
+     * @return part of description
+     */
+    public String getDescription() {
         return description;
     }
+
     /**
      * get the date time list containing date and time in <weekday> <dd/mm/yyy>
      * 
      * @return a list containing date in <weekday> <dd/mm/yyyy>
      */
 
-    public  ArrayList<String> getDateList() {
+    public ArrayList<String> getDateList() {
         return storageOfDate;
     }
 
@@ -63,36 +88,46 @@ public class DateTimeNatty {
      * 
      * @return a list containing date and time in <hh:mm>
      */
-    public  ArrayList<String> getTimeList() {
+    public ArrayList<String> getTimeList() {
         return storageOfTime;
     }
-    
+
     /**
      * 1. change the date to String 2. change from<weekday> <month in word>
      * <day> <hh:mm:ss> <timezone> <year> to <weekday> <day/month/year> <hh:mm>
+     * 3. bypass those like eve that should be in description 
      * 
      * @param dates
      *            : contains all of the date detected
-     * @param parseMap : contains which date and time is detected
+     * @param parseMapF
+     *            : contains which date and time is detected
      */
 
-    private void changeDateFormat(List<Date> dates, Map<String, List<ParseLocation>> parseMap) {
-        System.out.println("CHANGEdates: " + dates);
+    private void changeDateFormat(List<Date> dates,
+            Map<String, List<ParseLocation>> parseMap, String matchingValue,
+            int position) {
+      
         for (int i = 0; i < dates.size(); i++) {
             String time = getTime(dates.get(i));
             String date = getDate(dates.get(i));
 
-            if (parseMap.containsKey("date") && i + 1 <= parseMap.get("date").size()) {
+            if (parseMap.containsKey("date")
+                    && i + 1 <= parseMap.get("date").size()
+                    || parseMap.containsKey("relative_date_span")
+                    || parseMap.containsKey("day_of_week")) {
                 storageOfDate.add(date);
+                setDatePosition(position, matchingValue);
             }
 
-            if ((parseMap.containsKey("explicit_time") && i + 1 <= parseMap.get("explicit_time").size())
+            if ((parseMap.containsKey("explicit_time") && i + 1 <= parseMap
+                    .get("explicit_time").size())
                     || parseMap.containsKey("relative_time_span")) {
                 storageOfTime.add(time);
+                setTimePosition(position, matchingValue);
             }
 
-            System.out.println("date: " + storageOfDate + " time: "
-                    + storageOfTime + " i: " + i);
+        //    System.out.println("date: " + storageOfDate + " sdate: "
+          //          + dates.get(i) + " time: " + storageOfTime + " i: " + i);
         }
     }
 
@@ -110,37 +145,45 @@ public class DateTimeNatty {
         List<Date> dates = null;
         for (DateGroup group : groups) {
             dates = (group.getDates());
-            int line = group.getLine();
-            int column = group.getPosition();
+
             String matchingValue = group.getText();
             String syntaxTree = group.getSyntaxTree().toStringTree();
-            Map<String, List<ParseLocation>> parseMap = group.getParseLocations();
+            Map<String, List<ParseLocation>> parseMap = group
+                    .getParseLocations();
+
+            int position = getPosition(userInput, matchingValue);
 
             assert userInputLeftAfterParsing.indexOf(matchingValue) != -1 : "Extra conjunction detected, thus no exact text "
                     + "detect in user input. User pls remove all conjuction before date and time";
 
             userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
                     matchingValue, "");
-            //userInputLeftAfterParsing = userInputLeftAfterParsing.trim();
 
-            System.out.println("parseDate: " + dates + " mv: " + matchingValue
-                    + " userInputLeftAfterParsing: "
-                    + userInputLeftAfterParsing + " line: " + line
-                    + " syntaxTree: " + syntaxTree + " column: " + column
-                    + " parseMap: " + parseMap);
+          //  System.out.println("parseDate: " + dates + " mv: " + matchingValue
+            //        + " userInputLeftAfterParsing: "
+              //      + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
+                //    + " parseMap: " + parseMap);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {
-                System.out.println("description: "+description);
+                System.out.println("description: " + description);
                 description = description.replaceFirst(matchingValue, "");
                 addMatchedDateTextInUserInput(matchingValue);
-                changeDateFormat(dates, parseMap);
+                changeDateFormat(dates, parseMap, matchingValue, position);
             }
 
-            // int indexMatch = userInput.indexOf(matchingValue);
-            setThePosition(column);
-
         }
+    }
+
+    /**
+     * get the position
+     * 
+     * @param userInput
+     * @param matchingValue
+     * @return
+     */
+    private int getPosition(String userInput, String matchingValue) {
+        return userInput.indexOf(matchingValue);
     }
 
     /**
@@ -149,19 +192,33 @@ public class DateTimeNatty {
      * @param indexMatch
      *            : index of the current one
      */
-    private void setThePosition(int indexMatch) {
+    private void setDatePosition(int indexMatch, String matchingValue) {
 
-        if (storageOfTime.size() == 2 && indexMatch < index) {
-            String tempForTime = storageOfTime.get(0);
-            storageOfTime.set(0, storageOfTime.get(1));
-            storageOfTime.set(1, tempForTime);
-        }
-        if (storageOfDate.size() == 2 && indexMatch < index) {
+        if (storageOfDate.size() == 2
+                && (indexMatch < indexDate || matchingValue.contains("now"))) {
             String tempForDate = storageOfDate.get(0);
             storageOfDate.set(0, storageOfDate.get(1));
             storageOfDate.set(1, tempForDate);
+            indexDate = indexMatch;
         }
-        index = indexMatch;
+
+    }
+
+    /**
+     * set the start and end time in the right position in arrayList
+     *
+     * @param indexMatch
+     *            : index of the current one
+     */
+    private void setTimePosition(int indexMatch, String matchingValue) {
+
+        if (storageOfTime.size() == 2 && indexMatch < indexTime) {
+            String tempForTime = storageOfTime.get(0);
+            storageOfTime.set(0, storageOfTime.get(1));
+            storageOfTime.set(1, tempForTime);
+            indexTime = indexMatch;
+
+        }
     }
 
     /**
@@ -171,7 +228,18 @@ public class DateTimeNatty {
      * @return
      */
     private boolean isNumeric(String matchingValue) {
-        return matchingValue.matches(NUMBERIC_KEYWORD);
+        boolean isNumeric = false;
+        matchingValue = matchingValue.replaceAll("\\s+", " ");
+        matchingValue = matchingValue.trim();
+        String[] partOfMatchingValue = matchingValue.split(" ");
+
+        Pattern numberDectector = Pattern.compile("\\d+");
+        Matcher matchedWithNumber = numberDectector
+                .matcher(partOfMatchingValue[0]);
+        if (matchedWithNumber.find() && partOfMatchingValue.length == 1) {
+            isNumeric = true;
+        }
+        return isNumeric;
     }
 
     /**
@@ -193,7 +261,6 @@ public class DateTimeNatty {
      * @return the Time in string format of <hh:mm>
      */
     private String getTime(Date dates) {
-        // DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         SimpleDateFormat newDateFormat = new SimpleDateFormat(
                 "EEE MMM dd HH:mm:ss z yyyy");
 
@@ -213,7 +280,6 @@ public class DateTimeNatty {
      * 
      */
     private String getDate(Date dates) {
-        // DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         SimpleDateFormat newDateFormat = new SimpleDateFormat(
                 "EEE MMM dd HH:mm:ss z yyyy");
 

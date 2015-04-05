@@ -10,7 +10,7 @@ public class TaskTypeParserTest {
 	/**
 	 * test time task, floating task, deadlines task
 	 */
-	public void test() {
+	public void test() throws Exception {
 		
 		// floating task
 		TaskTypeParser t2 = new TaskTypeParser("krej");
