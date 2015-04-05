@@ -52,13 +52,13 @@ public class DescriptionParserTest {
 	@Test
 	public void testWithoutHashTag() throws Exception{
 	    
-	  //extra testing
+	  
         DescriptionParser d11 = new DescriptionParser("add complete developer guide on 13/04 ");
-        
+      
 		//test for timed task
 		DescriptionParser d10 = new DescriptionParser("Superman from 2pm to 4pm");
 		assertEquals(d10.getDescription(), "Superman");	
-		
+	
 		//test for deadlines
 		DescriptionParser d8 = new DescriptionParser("CS2103T assignment at 20th April at 2pm");
 		assertEquals(d8.getDescription(), "CS2103T assignment at");
