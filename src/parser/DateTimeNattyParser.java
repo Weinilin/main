@@ -170,10 +170,10 @@ public class DateTimeNattyParser {
             userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
                     matchingValue, "");
 
-          //  System.out.println("parseDate: " + dates + " mv: " + matchingValue
-            //        + " userInputLeftAfterParsing: "
-              //      + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
-                //    + " parseMap: " + parseMap);
+            System.out.println("parseDate: " + dates + " mv: " + matchingValue
+                   + " userInputLeftAfterParsing: "
+                    + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
+                    + " parseMap: " + parseMap);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {

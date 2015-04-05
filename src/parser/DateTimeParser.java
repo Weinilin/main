@@ -68,6 +68,8 @@ public class DateTimeParser {
         storageOfDate = dateTimeNatty.getDateList();
         description = dateTimeNatty.getDescription();
         
+        System.out.println("storageOfTime: "+storageOfTime+" storageOfDate: "+storageOfDate);
+        
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
 

@@ -11,7 +11,7 @@ public class DateTimeParserTestTEMP {
     @Test
     public void test() throws Exception {
         DateTimeParser d1 = new DateTimeParser(
-                "1:30am-6:30 dhsgdga");
+                "sgsg 12am - 12");
      //   assertEquals(d1.getEndDate(), "-");
         assertEquals(d1.getEndTime(), "06:30");
      //   assertEquals(d1.getStartDate(), "-");
