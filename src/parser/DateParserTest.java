@@ -176,7 +176,7 @@ public class DateParserTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tomorrow
         dates.clear();
-        dates.add("02/04/2015");
+        dates.add("04/04/2015");
         assertEquals(dates, DateParser.extractDate("mds sale from tomorrow"));
 
         // test keyword 5: tmr
