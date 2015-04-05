@@ -79,7 +79,13 @@ public class LogicController {
         CommandHandler handler = handlerTable.get(inputToken[0]);
                 
         String parameter = userCommand.replaceFirst(Pattern.quote(inputToken[0]), "").trim();
-        return handler.execute(inputToken[0], parameter, taskList);
+        String feedback = "";
+        try {
+            feedback = handler.execute(inputToken[0], parameter, taskList);
+        } catch (Exception e) {
+            feedback = "Error executing command\n";
+        }
+        return feedback;
     }
 
 
@@ -113,7 +119,13 @@ public class LogicController {
 
 
     private String executeAddByDefault(String userCommand) {
-        return handlerTable.get("add").execute("add", userCommand, taskList);
+        String feedback = "Error executing task\n";
+        try {
+            feedback = handlerTable.get("add").execute("add", userCommand, taskList);
+        } catch (Exception e) {
+            
+        }
+        return feedback;
     }
 
     /**

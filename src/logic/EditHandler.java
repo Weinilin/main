@@ -38,7 +38,7 @@ class EditHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception {
         reset();
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmpty(parameter)) {
