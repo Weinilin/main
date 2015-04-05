@@ -61,10 +61,11 @@ public class LogicController {
         String[] inputToken = userCommand.trim().split(" ");
         
         if (isHelp(inputToken[0])) {
-            if (isHelpOnly(inputToken) && (isUnknownCommand(inputToken[1]))) {
-                String help = "";
-                help = prepareHelp(help);
-                return help;
+            if (isHelpOnly(inputToken)) {
+                return showAllHelps();
+            }
+            else if ((isUnknownCommand(inputToken[1]))) {
+                return showAllHelps();
             }
             else {
                 return handlerTable.get(inputToken[1]).getHelp();
@@ -82,6 +83,16 @@ public class LogicController {
     }
 
 
+    /**
+     * @return
+     */
+    private String showAllHelps() {
+        String help = "";
+        help = prepareHelp(help);
+        return help;
+    }
+
+
     private String prepareHelp(String help) {
         for (CommandHandler handler: handlers)
             help += handler.getHelp();
@@ -90,7 +101,7 @@ public class LogicController {
 
 
     private boolean isHelpOnly(String[] inputToken) {
-        return inputToken.length == 0;
+        return inputToken.length == 1;
     }
 
     private boolean isHelp(String command) {
