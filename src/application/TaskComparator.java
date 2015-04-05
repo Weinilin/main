@@ -25,17 +25,17 @@ public class TaskComparator implements Comparator<Task> {
 		String dateTime1;
 		String dateTime2;
 		
-//		if (isTimeTask(task1)) {
+		if (isTimeTask(task1)) {
 			dateTime1 = task1.getStartDateTime();
-//		} else {
-//			dateTime1 = task1.getEndDateTime();
-//		}
+		} else {
+			dateTime1 = task1.getEndDateTime();
+		}
 		
-//		if (isTimeTask(task2)) {
+		if (isTimeTask(task2)) {
 			dateTime2 = task2.getStartDateTime();
-//		} else {
-//			dateTime2 = task2.getEndDateTime();
-//		}
+		} else {
+			dateTime2 = task2.getEndDateTime();
+		}
 		
 		TimeAnalyser ta = new TimeAnalyser();
 		long dateTime1InMilliseconds = ta.getDateTimeInMilliseconds(dateTime1);

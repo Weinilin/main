@@ -74,11 +74,15 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         setText(renderer.getText()); 
         
         
-        String dateTime;
+       
         
-        dateTime = (String) table.getValueAt(row, 2);
         
-
+        
+        String dateTime = (String) table.getValueAt(row, 2);
+        
+        if (dateTime.equals("- -")) {
+        	dateTime = (String) table.getValueAt(row, 3);
+        }
 
         TimeAnalyser ta = new TimeAnalyser();
         
