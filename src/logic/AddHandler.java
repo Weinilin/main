@@ -24,7 +24,7 @@ class AddHandler extends UndoableCommandHandler {
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
     private static final Logger addLogger = Logger.getLogger(AddHandler.class.getName());
-    static Task newTask = null;
+    private Task newTask = null;
     
     @Override
     public ArrayList<String> getAliases() {

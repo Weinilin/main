@@ -64,6 +64,7 @@ class DeleteHandler extends UndoableCommandHandler {
             for (Task task: taskList) {
                 if (task.getDescription().contains(parameter)) {
                     removedTask.add(task);
+                    goodFeedback += task.getDescription();
                     break;                    
                 }                
             }

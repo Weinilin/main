@@ -119,11 +119,11 @@ public class LogicController {
 
 
     private String executeAddByDefault(String userCommand) {
-        String feedback = "Error executing task\n";
+        String feedback = "";
         try {
             feedback = handlerTable.get("add").execute("add", userCommand, taskList);
         } catch (Exception e) {
-            
+            feedback = "Error adding by default\n";
         }
         return feedback;
     }

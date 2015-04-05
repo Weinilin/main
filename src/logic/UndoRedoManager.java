@@ -37,6 +37,14 @@ class UndoRedoManager {
         return !undo.isEmpty();
     }
     
+    public int getUndoSize() {
+        return undo.size();
+    }
+    
+    public int getRedoSize() {
+        return redo.size();
+    }
+    
     public boolean canRedo() {
         return !redo.isEmpty();
     }
