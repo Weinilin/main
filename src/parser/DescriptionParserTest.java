@@ -16,7 +16,7 @@ public class DescriptionParserTest {
 	public void withHashTagTest() throws Exception {
 	    
 	    DescriptionParser d3 = new DescriptionParser("~CS2103T assignment~ at 2pm 23/4");
-
+	    assertEquals(d3.getDescription(), "CS2103T assignment");
         
 		//To test for deadlines task and with escaped character
 	    //~~ start of the statement

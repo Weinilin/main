@@ -4,11 +4,22 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * get the escaped test which enclose by ~
+ * @author WeiLin
+ *
+ */
 public class EscapedTextParser {
     private String textEscaped = "";
 
     public EscapedTextParser(String userInput) {
-        textEscaped = removeThoseHashTag(userInput);
+        ArrayList<String> hashTag = storeEscapedTexts(userInput);
+        
+        for (int i = 0; i < hashTag.size(); i++) {
+            textEscaped = textEscaped + " " + hashTag.get(i);
+        }
+      
+        textEscaped = removeThoseHashTag(textEscaped);
     }
 
     /**
@@ -21,13 +32,24 @@ public class EscapedTextParser {
     }
 
     /**
-     * indication of ~~ means that user want it to be in description ~~ means
-     * escaped char
+     * remove ~
      * 
      * @param userInput
-     * @return user input without ~
+     * @return escaped text without ~
      */
-    private String removeThoseHashTag(String userInput) {
+    private String removeThoseHashTag(String textEscaped) {
+       
+        textEscaped =  textEscaped.replaceAll("\\~", "");
+        textEscaped = textEscaped.trim();
+        return textEscaped;
+    }
+
+    /**
+     * store all of the escaped text into a arrayList
+     * @param userInput
+     * @return
+     */
+    private ArrayList<String> storeEscapedTexts(String userInput) {
         ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
         ArrayList<String> hashTag = new ArrayList<String>();
         Pattern hashTagDetector = Pattern.compile("\\~");
@@ -44,15 +66,6 @@ public class EscapedTextParser {
             }
 
         }
-
-        System.out.println("hashTag: " + hashTag);
-        for (int i = 0; i < hashTag.size(); i++) {
-            textEscaped = textEscaped + " " + hashTag.get(i);
-        }
-      
-        textEscaped =  textEscaped.replaceAll("\\~", "");
-        System.out.println("textEscaped: " + textEscaped);
-        textEscaped = textEscaped.trim();
-        return textEscaped;
+        return hashTag;
     }
 }

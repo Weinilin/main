@@ -9,6 +9,13 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+/**
+ * 1) dd/mm/yyyy 2) dd/mm 3) dd month in word/shortform month yyyy 4) dd month in word/shortform month 
+ * 5) _ day/week/month/year later 6) the following day/tmr/after today/after tomorrow/fortnight 
+ * 6) on/by/due/due on/from/to/next/this weekday
+ * @author WeiLin
+ *
+ */
 public class Date1Parser {
 
     private static final String DDMMYYYY_KEYWORD = "\\b\\d+([/.-]\\d+[/.-]\\d+|[/.-]\\d+\\b)\\b";
@@ -50,7 +57,7 @@ public class Date1Parser {
 
     public void extractDate(String userInput, String leftOverInput)  throws IllegalArgumentException{
         userInput = switchAllToLowerCase(userInput);
-        userInput = switchAllToLowerCase(leftOverInput);
+        leftOverInput = switchAllToLowerCase(leftOverInput);
         inputLeft = leftOverInput;
         goThroughDetectionMethod(userInput);
     }

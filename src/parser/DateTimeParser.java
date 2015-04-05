@@ -10,7 +10,32 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
-
+/**
+ * add in missing time:
+ * 1) user keyed: 2 dates (today, dates after today) : current time  23:59
+ * 2) user keyed: 2 dates (dates after today, dates after today) : 00:00 23:59
+ * 3) user keyed: 1 date (today) : current time
+ * 4) user Keyed: 1 date (dates after today) : 23:59
+ * 5) user keyed: 2 dates and 1 time : time detected 23:59
+ * 
+ * add in missing date:
+ * 1) user keyed: two times (past current time) : today today
+ * 2) user keyed: two times (before current time) : tomorrow tomorrow
+ * 3) user keyed: two times (1 before current time and 1 after) : today tomorrow
+ * 4) user keyed: two times (start time > end time) : current date, next current date
+ * 5) user keyed: two times (start time < end time) : current date, current date
+ * 6) user keyed: 2 times and 1 date (start time > end time) : date keyed, next day of date keyed
+ * 7) user keyed: 2 times and 1 date (start time < end time) : date keyed, date keyed
+ * 6) user keyed: 1 times (past current time) and 0 date : today
+ * 7) user keyed: 1 times (before current time) and 0 date : tomorrow
+ * 
+ * Exceptions:
+ * 1) overdue dates
+ * 2) remainder when start date or time is before current date or time
+ * 3) impossible combination of timed task with start time or date > end time or date
+ * @author WeiLin
+ *
+ */
 public class DateTimeParser {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String TIME_FORMAT = "HH:mm";
@@ -35,7 +60,7 @@ public class DateTimeParser {
         storageOfDate = dates.getDateList();
         int indexPrevDate = dates.getIndex();
 
-        DateTimeNatty dateTimeNatty = new DateTimeNatty();
+        DateTimeNattyParser dateTimeNatty = new DateTimeNattyParser();
         dateTimeNatty.extractDateTime(userInput, dates.getInputLeft(),
                 storageOfDate, storageOfTime, indexPrevTime, indexPrevDate);
 
@@ -43,10 +68,6 @@ public class DateTimeParser {
         storageOfDate = dateTimeNatty.getDateList();
         description = dateTimeNatty.getDescription();
         
-    //    System.out.println("Natty: " + dateTimeNatty.getTimeList() + " "
-      //          + dateTimeNatty.getDateList());
-
-      //  System.out.println("total: " + storageOfDate + " " + storageOfTime);
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
 
@@ -146,8 +167,9 @@ public class DateTimeParser {
             ArrayList<String> storageOfDate) throws ParseException {
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
-            checkSameDayStartTimeLater(storageOfTime, storageOfDate);
+            checkSameDayStartTimeLaterAndSameTime(storageOfTime, storageOfDate);
             checkStartDateLater(storageOfDate);
+           
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "processing error", e);
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -157,7 +179,8 @@ public class DateTimeParser {
     }
 
     /**
-     * check that on same day is start time is later than end if yes, throw
+     * check that on same day is start time is later than end 
+     * and same time and same date. if yes, throw
      * IllegalArgumentException
      * 
      * @param storageOfTime
@@ -165,7 +188,7 @@ public class DateTimeParser {
      * @throws ParseException
      *             and IllegalArgumentException
      */
-    private void checkSameDayStartTimeLater(ArrayList<String> storageOfTime,
+    private void checkSameDayStartTimeLaterAndSameTime(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) throws ParseException {
         if (storageOfTime.size() == 2 && storageOfDate.size() == 2) {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:MM");
@@ -707,98 +730,7 @@ public class DateTimeParser {
         return isStartTimeLaterThanEnd;
     }
 
-    /**
-     * add 1 hour to the time
-     * 
-     * @param time
-     * @return time in HH:MM
-     */
-    private String addOneHourToTime(String time) {
-
-        int hourTime = getHourTime(time); // take note if 2am -->String
-
-        hourTime = addTimeWithHours(1, hourTime);
-
-        String hourTimeInString = toString(hourTime);
-
-        String minTime = getMin(time);
-        String endTime = hourTimeInString + ":" + minTime;
-
-        return endTime;
-    }
-
-    /**
-     * add time with the number of hour
-     * 
-     * @param numberOfHours
-     * @param hhInTime
-     * @return HH in time
-     */
-    private int addTimeWithHours(int numberOfHours, int hhInTime) {
-
-        hhInTime = hhInTime + numberOfHours;
-
-        if (hhInTime > 23) {
-            hhInTime = hhInTime - 24;
-        }
-        return hhInTime;
-    }
-
-    /**
-     * convert the integer of HH to string
-     * 
-     * @param hhInTime
-     * @return HH in string
-     */
-    private String toString(int hhInTime) {
-        String hhTimeInString;
-        if (hhInTime < 10) {
-            hhTimeInString = "0" + hhInTime;
-        } else {
-            hhTimeInString = "" + hhInTime;
-        }
-        return hhTimeInString;
-    }
-
-    /**
-     * get the HH of the time in hour format(HH:MM)
-     * 
-     * @param pmTime1
-     * @return HH
-     */
-    private static int getHourTime(String pmTime1) {
-        int partOfString1;
-        int index = getIndex(pmTime1);
-        partOfString1 = Integer.parseInt(pmTime1.substring(0, index));
-        return partOfString1;
-    }
-
-    /**
-     * get the MM of the time in hour format(HH:MM)
-     * 
-     * @param pmTime1
-     * @return HH
-     */
-    private static String getMin(String pmTime1) {
-        int index = getIndex(pmTime1);
-        String partOfString2 = pmTime1.substring(index + 1);
-        return partOfString2;
-    }
-
-    /**
-     * get the index of the separation of the HH and MM which is either : or .
-     * 
-     * @param time
-     * @return the index of : or . depend which is detect
-     */
-    private static int getIndex(String time) {
-        int index = time.indexOf(".");
-        if (index == -1) {
-            index = time.indexOf(":");
-        }
-        return index;
-    }
-
+   
     /**
      * get the current date in DD/MM/YYYY
      * 
