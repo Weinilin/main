@@ -1,11 +1,16 @@
 package parser;
+
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * get the 1st digit for every user input
+ * @author WeiLin
+ *
+ */
 public class IndexParser {
 	private int index;
 	private String input;

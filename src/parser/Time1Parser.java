@@ -1,5 +1,10 @@
 package parser;
 
+/**
+ * 1) 10-11pm 2) 1am-10 3) start at HH/HH:MM for ___hours 4) before/past/after midnight/noon
+ * 5) HH/HH:MM/HH.MM/HH,MM 0'clock 6) 11.30pm/am 7) 11,30 am/pm 8) HH/HH:MM/HH.MM/HH,MM in the morning/in morn/
+ *in the afternoon/in the night/ at night/at afternoon/at morning/at morn/morning/afternoon/morn/night
+ */
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +30,7 @@ public class Time1Parser {
     // "\\b(@ |due on |on |at |from |to |by |due )\\d{2}(?!\\/:.,-( am)( pm)( jan))\\b";
     private static final String TO_BE_REMOVED_KEYWORD = "(before midnight|before noon|"
             + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|in the afternoon|in the night|in the (morning|morn)|at the afternoon|at the night|at the (morning|morn)|o'clock|past noon|past"
-            + "midnight|noon|midnight|\\s|afternoon|night|morn|morning|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due |o’clock))";
+            + "midnight|noon|midnight|after noon|after midnight|\\s|afternoon|night|morn|morning|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due |o’clock))";
     private int index;
     private static String userInputLeft;
     private ArrayList<String> storageOfTime = new ArrayList<String>();
@@ -763,10 +768,11 @@ public class Time1Parser {
      * @param pmTime1
      * @return HH
      */
-    private String getMinutes(String pmTime1) {
-        int index = getIndex(pmTime1);
-        String minutes = pmTime1.substring(index + 1);
-
+    private String getMinutes(String time) {
+        int index = getIndex(time);
+        assert index != -1;
+        String minutes = time.substring(index + 1);
+       
         return minutes;
     }
 
@@ -972,11 +978,11 @@ public class Time1Parser {
             time = changePuncToSemicolon(time);
         } else if (!time.contains(":") && time.length() <= 2) {
             time = time + ":00";
-        } else if (time.length() == 4) {
-            time = time.substring(0, 1) + ":" + time.substring(2);
-        } else if (time.length() == 5) {
-            time = time.substring(0, 2) + ":" + time.substring(3);
-        }
+        } else if (time.length() >= 4) {
+            int index = getIndex(time);
+            time = time.substring(0, index) + ":" + time.substring(index + 1);
+        } 
+       
 
         time = putOneZeroAtFront(time);
 
@@ -1070,9 +1076,9 @@ public class Time1Parser {
         if (time.contains(":") || time.contains(".") || time.contains(",")) {
             userHourTime = getHH(time);
             minTime = getMinutes(time);
+            
         } else {
             userHourTime = Integer.parseInt(time);
-
             minTime = "00";
         }
 
@@ -1090,6 +1096,7 @@ public class Time1Parser {
             timeNormal++;
         }
         time = time + ":" + minTime;
+    //    System.out.println("userHourTime: "+userHourTime+" minTime: "+ "time" +time);
         return time;
     }
 

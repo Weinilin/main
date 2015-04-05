@@ -2,6 +2,11 @@ package parser;
 
 import java.util.Calendar;
 
+/**
+ * get weekday for the date
+ * @author WeiLin
+ *
+ */
 public class WeekDayParser {
 
     public WeekDayParser() {

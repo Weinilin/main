@@ -12,7 +12,18 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.ParseLocation;
 import com.joestelmach.natty.Parser;
 
-public class DateTimeNatty {
+/**
+ * Extract date and time from a library known as natty.
+ * Time: 1) 24-hour format 2) _ hour/minute/second ago 3) in _ hour/minute/second
+ * 4) _ hour/minute/second from now 5) 0600h/06:00 hours/6pm/6am/5:40a.m./3a/4p
+ * 6) noon/afternoon/midnight
+ * Date: 1) three/3 weeks/month/day/year ago 2) three/3 weeks/month/day/year from now
+ * 3) next weeks/month/day/year 4) after three/3 weeks/month/day/year 5) three/3 weeks/month/day/year ago after
+ * 6) today/tomorrow/yesterday 7) _ or _ / _ or _ 8) day/weekday before 9) day/weekday after 10) word in month DD
+ * @author WeiLin
+ *
+ */
+public class DateTimeNattyParser {
     private ArrayList<String> storageOfDate = new ArrayList<String>();
     private ArrayList<String> storageOfTime = new ArrayList<String>();
     private ArrayList<String> dateTextInUserInput = new ArrayList<String>();
@@ -21,11 +32,11 @@ public class DateTimeNatty {
     private int indexTime;
     private int indexDate;
 
-    public DateTimeNatty() {
+    public DateTimeNattyParser() {
 
     }
 
-    public DateTimeNatty(String userInput) {
+    public DateTimeNattyParser(String userInput) {
         extractDateTime(userInput, userInput, storageOfDate, storageOfTime, 0,
                 0);
     }

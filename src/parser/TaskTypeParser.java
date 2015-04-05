@@ -1,5 +1,10 @@
 package parser;
 
+/**
+ * get the task type for the user input
+ * @author WeiLin
+ *
+ */
 public class TaskTypeParser {
 	private String taskType;
 
