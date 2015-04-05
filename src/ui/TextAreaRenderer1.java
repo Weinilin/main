@@ -78,6 +78,7 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         
         
         
+        
         String dateTime = (String) table.getValueAt(row, 2);
         
         if (dateTime.equals("- -")) {

@@ -44,7 +44,7 @@ public class Database {
     	if (!database.exists()) {
             try {
                 database.createNewFile();
-                updateConfigFile("Database/TaskManagerDatabase.txt");
+                updateConfigFile("TaskManagerDatabase.txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
