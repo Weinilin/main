@@ -281,7 +281,8 @@ public class GUI extends JPanel implements ActionListener{
                 int height = floatingTasksTable.getRowHeight()*(rows-1);
                 
                 JScrollBar bar = scrollPane2.getVerticalScrollBar();
-                bar.setValue( bar.getValue()+height );
+                bar.setValue
+                ( bar.getValue()+height );
             }
                 
                
