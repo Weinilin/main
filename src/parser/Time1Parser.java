@@ -24,7 +24,7 @@ public class Time1Parser {
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(before midnight|before noon)\\b)";
     private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(\\d+[.:,](\\d+)|\\d+)(\\s|)(o'clock|am|pm|)( (in (the |)|)(morning|morn)\\b| (in (the |)|)afternoon\\b| (in (the |)|)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
             + "| at (the |)morning\\b| at (the |)morn\\b))";
-    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[.,]\\d{2}\\b)";
+    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(past midnight|past noon|after noon|after midnight)\\b)";
     // private static final String CONJUNCTION_TWELVE_HOUR_KEYWORD =
     // "\\b(@ |due on |on |at |from |to |by |due )\\d{2}(?!\\/:.,-( am)( pm)( jan))\\b";
@@ -448,7 +448,6 @@ public class Time1Parser {
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
-            userInputLeft = userInputLeft.replaceAll(time, "");
             String[] timeList = time.split("-|to");
 
             boolean isBothContainsAmPm = ifBothContainsAmPm(timeList);
@@ -463,6 +462,7 @@ public class Time1Parser {
                 } else {
                     addTimeWithEndTimeMeridiem(timeList);
                 }
+                userInputLeft = userInputLeft.replaceAll(time, "");
             }
         }
     }
