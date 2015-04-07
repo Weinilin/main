@@ -28,12 +28,6 @@ public class DescriptionParser {
         setDescription(description);
     }
 
-    private String removeEscapedChar(String userInput) {
-
-        userInput = userInput.replaceAll("\\~", "");
-        return userInput;
-    }
-
     /**
      * get the escape text
      * 
@@ -88,11 +82,11 @@ public class DescriptionParser {
 
                 description = description + " " + eachWordUserInput[i];
 
-                System.out.println("eachWordUserInput[i]: "
-                        + eachWordLowerCaseInput[i]
-                        + " eachWordInDescription[indexEscapedText]: "
-                        + eachWordInDescription[indexDescription]
-                        + " description: " + description);
+            //    System.out.println("eachWordUserInput[i]: "
+              //          + eachWordLowerCaseInput[i]
+                //        + " eachWordInDescription[indexEscapedText]: "
+                  //      + eachWordInDescription[indexDescription]
+                    //    + " description: " + description);
                 indexDescription++;
 
             } else if (indexEscapedText < eachEscapedText.length
@@ -102,11 +96,11 @@ public class DescriptionParser {
                 eachWordUserInput[i] = eachWordUserInput[i].replaceAll("\\~",
                         "");
                 description = description + " " + eachWordUserInput[i];
-                System.out.println("eachWordUserInput[i]: "
-                        + eachWordUserInput[i]
-                        + " eachEscapedText[indexEscapedText]: "
-                        + eachEscapedText[indexEscapedText] + " description: "
-                        + description);
+            //    System.out.println("eachWordUserInput[i]: "
+               //         + eachWordUserInput[i]
+                 //       + " eachEscapedText[indexEscapedText]: "
+                   //     + eachEscapedText[indexEscapedText] + " description: "
+                     //   + description);
 
                 indexEscapedText++;
             } else if (indexEscapedText < eachEscapedText.length

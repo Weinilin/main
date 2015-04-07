@@ -66,8 +66,8 @@ public class DateTimeNattyParser {
         // detect but will be discarded)
         description = leftOverInput;
 
-        System.out
-                .println("groups: " + groups + " userInput: " + leftOverInput);
+      //  System.out
+        //        .println("groups: " + groups + " userInput: " + leftOverInput);
         
         while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
@@ -186,14 +186,13 @@ public class DateTimeNattyParser {
             userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
                     matchingValue, "");
 
-            System.out.println("parseDate: " + dates + " mv: " + matchingValue
-                   + " userInputLeftAfterParsing: "
-                    + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
-                    + " parseMap: " + parseMap);
+       //     System.out.println("parseDate: " + dates + " mv: " + matchingValue
+         //          + " userInputLeftAfterParsing: "
+           //         + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
+             //       + " parseMap: " + parseMap);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {
-                System.out.println("description: " + description);
                 description = description.replaceFirst(matchingValue, "");
                 addMatchedDateTextInUserInput(matchingValue);
                 changeDateFormat(dates, parseMap, matchingValue, position);
@@ -221,7 +220,6 @@ public class DateTimeNattyParser {
      */
     private void setDatePosition(int indexMatch, String matchingValue) {
 
-        System.out.println("indexDate: "+indexDate + " indexMatch: "+indexMatch);
         if (storageOfDate.size() == 2
                 && (indexMatch < indexDate || matchingValue.contains("now"))) {
             String tempForDate = storageOfDate.get(0);

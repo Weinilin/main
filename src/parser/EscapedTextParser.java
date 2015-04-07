@@ -19,9 +19,7 @@ public class EscapedTextParser {
         for (int i = 0; i < escapedTextList.size(); i++) {
             textEscaped = textEscaped + " " + escapedTextList.get(i);
         }
-      
-       // textEscaped = removeThoseHashTag(textEscaped);
-       
+  
     }
 
     /**
@@ -30,7 +28,6 @@ public class EscapedTextParser {
      * @return the input left after removing all the time detected
      */
     public String getEscapedText() {
-        System.out.println("ININescapedText: "+textEscaped);
         return textEscaped;
     }
 
