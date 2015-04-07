@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import application.Task;
-import parser.IndexParser;
+import parser.MainParser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,34 +30,34 @@ class MarkHandler extends UndoableCommandHandler {
 
     private String goodFeedback = "",
                    badFeedback = "";
-    int index;
+    Integer index;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
     }
 
     @Override
-    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception {
         reset();
-        markLogger.entering(getClass().getName(), "Entering marking");
 
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmpty(parameter)) {
             return getHelp();
         }
 
-        IndexParser ip = new IndexParser(parameter);
+        MainParser ip = new MainParser(parameter);
         try {
-            index = ip.getIndex() - 1;
+            index = Integer.parseInt(token[0]);
             markByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
-            for (Task task: taskList) {
-                if (task.getDescription().contains(parameter)) {
+            ArrayList<Task> searchList = memory.searchDescription(parameter);
+            markKeyword:
+            for (Task task: searchList) {
+                if (taskList.contains(task)) {
                     markedTask.add(task);
-                    index = taskList.indexOf(task);
-                    markedTaskIndex.add(index);
-                    goodFeedback += index + 1;
-                    break;                    
+                    markedTaskIndex.add(taskList.indexOf(task) + 1);
+                    goodFeedback += task.getDescription();
+                    break markKeyword;                     
                 }                
             }
         }              
@@ -78,12 +78,12 @@ class MarkHandler extends UndoableCommandHandler {
      * @param taskList
      * @param token
      */
-    private void markByIndex(ArrayList<Task> taskList, String[] token) {
-        IndexParser ip;
+    private void markByIndex(ArrayList<Task> taskList, String[] token) throws Exception{
+        MainParser parser;
         for (String t: token) {
-            ip = new IndexParser(t);
+            parser = new MainParser(t);
             try {
-                index = ip.getIndex() - 1;
+                index = parser.getIndex();
                 markedTask.add(taskList.get(index));
                 markedTaskIndex.add(index);
                 goodFeedback += t + " ";
@@ -104,7 +104,7 @@ class MarkHandler extends UndoableCommandHandler {
         markedTaskIndex.clear();
         goodFeedback = "";
         badFeedback = "";
-        index = -1;
+        index = null;
     }
 
     /**
@@ -134,10 +134,11 @@ class MarkHandler extends UndoableCommandHandler {
         UndoRedoRecorder markRecorder = new UndoRedoRecorder(taskList);
         for (int index: markedTaskIndex) {
             Task task = taskList.get(index);
-            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
-            task.setStatus("done");
-            taskList.remove(task);
             memory.markDone(task);
+            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
+        }
+        for (Task task: markedTask) {
+            taskList.remove(task);
         }
         if (!markRecorder.isEmpty()) {
             markRecorder.recordUpdatedList(taskList);

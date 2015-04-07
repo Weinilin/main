@@ -2,12 +2,14 @@ package logic;
 
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import storage.Memory;
 import application.Task;
+import application.TaskComparator;
 
 /**
  * The main component that takes charge of deciding which 
@@ -82,6 +84,7 @@ public class LogicController {
         String feedback = "";
         try {
             feedback = handler.execute(inputToken[0], parameter, taskList);
+            Collections.sort(taskList, new TaskComparator());
         } catch (Exception e) {
             feedback = "Error executing command\n";
         }
@@ -122,6 +125,7 @@ public class LogicController {
         String feedback = "";
         try {
             feedback = handlerTable.get("add").execute("add", userCommand, taskList);
+            Collections.sort(taskList, new TaskComparator());
         } catch (Exception e) {
             feedback = "Error adding by default\n";
         }
