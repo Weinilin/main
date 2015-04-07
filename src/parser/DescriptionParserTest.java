@@ -67,7 +67,7 @@ public class DescriptionParserTest {
         assertEquals(d10.getDescription(), "CS2103T assignment on 2nd december"); 
 
 		//test with !~ ~ as one word
-        MainParser m9 = new MainParser("CS2103T assignment on !!!~2nd december~");
+        MainParser m9 = new MainParser("CS2103T assignment on ~2nd december~!!!!");
          userInputLeftOver = m9.getUserLeft();
         DescriptionParser d11 = new DescriptionParser("CS2103T assignment on !!!~2nd december~", userInputLeftOver);
         assertEquals(d11.getDescription(), "CS2103T assignment on !!!2nd december"); 
