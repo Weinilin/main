@@ -94,11 +94,10 @@ public class Time1Parser {
 
         EscapedTextParser e1 = new EscapedTextParser(userInput);
         ArrayList<String> escapedTextList = e1.getListOfEscapedText();
-        System.out.println("escapedTextList: " + escapedTextList);
 
         for (int i = 0; i < escapedTextList.size(); i++) {
 
-            userInput = userInput.replaceAll(escapedTextList.get(i), "");
+            userInput = userInput.replaceAll(escapedTextList.get(i), " ");
 
         }
 
@@ -846,8 +845,7 @@ public class Time1Parser {
      */
     private void test12HourFormat(int timeInHour, int timeInMin)
             throws IllegalArgumentException {
-        System.out.println("timeInHour: " + timeInHour + " timeInMin: "
-                + timeInMin);
+       
         if (timeInHour > 12 || timeInHour < 0 || timeInMin < 0
                 || timeInMin > 59) {
             throw new IllegalArgumentException(

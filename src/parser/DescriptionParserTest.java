@@ -66,11 +66,23 @@ public class DescriptionParserTest {
         DescriptionParser d10 = new DescriptionParser("CS2103T assignment on ~ 2nd december ~", userInputLeftOver);
         assertEquals(d10.getDescription(), "CS2103T assignment on 2nd december"); 
 
-		//test with !~ ~ as one word
+		//test with having word join with ~ ~ as one word in the back
         MainParser m9 = new MainParser("CS2103T assignment on ~2nd december~!!!!");
          userInputLeftOver = m9.getUserLeft();
-        DescriptionParser d11 = new DescriptionParser("CS2103T assignment on !!!~2nd december~", userInputLeftOver);
-        assertEquals(d11.getDescription(), "CS2103T assignment on !!!2nd december"); 
+        DescriptionParser d11 = new DescriptionParser("CS2103T assignment on ~2nd december~!!!!", userInputLeftOver);
+        assertEquals(d11.getDescription(), "CS2103T assignment on 2nd december!!!!"); 
+        
+      //test with having word join with ~ ~ as one word in the front
+        MainParser m10 = new MainParser("CS2103T assignment on !!!~2nd december~");
+         userInputLeftOver = m10.getUserLeft();
+        DescriptionParser d12 = new DescriptionParser("CS2103T assignment on !!!~2nd december~", userInputLeftOver);
+        assertEquals(d12.getDescription(), "CS2103T assignment on !!!2nd december");
+        
+        //test with having word join with ~ ~ as one word in the front and back
+        MainParser m11 = new MainParser("CS2103T assignment on e~2nd december~!!!");
+         userInputLeftOver = m11.getUserLeft();
+        DescriptionParser d13 = new DescriptionParser("CS2103T assignment on e~2nd december~!!!", userInputLeftOver);
+        assertEquals(d13.getDescription(), "CS2103T assignment on e2nd december!!!"); 
 
 	}
 	

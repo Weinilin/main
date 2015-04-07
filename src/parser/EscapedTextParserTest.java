@@ -10,7 +10,7 @@ public class EscapedTextParserTest {
     public void test() {
         // test with two ~ escaped char
         EscapedTextParser et1 = new EscapedTextParser("~6am~ cafe");
-        assertEquals(et1.getEscapedText(), "6am");
+        assertEquals(et1.getEscapedText(), " ~6am~");
 
         // test 1 ~ escaped char
         EscapedTextParser et2 = new EscapedTextParser("~7pm jump");
@@ -21,8 +21,8 @@ public class EscapedTextParserTest {
         assertEquals(et3.getEscapedText(), "");
         
         //test multiple ~~ escaped char
-        EscapedTextParser et4 = new EscapedTextParser("mds hdshsa ~oooo~ dhhd ~bye bye~ dhsah ~cgcgcg~l");
-        assertEquals(et4.getEscapedText(), "oooo bye bye cgcgcg");
+        EscapedTextParser et4 = new EscapedTextParser("mds hdshsa ~oooo~ dhhd ~bye bye~ dhsah p~cgcgcg~l");
+        assertEquals(et4.getEscapedText(), " ~oooo~ ~bye bye~ ~cgcgcg~");
     }
 
 }
