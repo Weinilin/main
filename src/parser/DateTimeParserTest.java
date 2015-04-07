@@ -304,6 +304,21 @@ public class DateTimeParserTest {
         assertEquals("12:00", dt.getStartTime());
        
         assertEquals("00:01", dt.getEndTime());
+       
+        //date: 13:00 and apr 24 will detected 1st. 
+        // check that the position of time and date is 12:00 --> 13:00 24/04/2015 --> 25/04/2015
+        // even though 13:00 and apr 24 will be detected and stored 1st
+        DateTimeParser dt1 = new DateTimeParser("la ala la 1200h to 13:00  Apr 24 to 25/4 ");
+        
+        assertEquals("12:00", dt1.getStartTime());
+       
+        assertEquals("13:00", dt1.getEndTime());
+        assertEquals("Fri 24/04/2015", dt1.getStartDate());
+        
+        assertEquals("Sat 25/04/2015", dt1.getEndDate());
+        
+        
+        
     }
 
 }

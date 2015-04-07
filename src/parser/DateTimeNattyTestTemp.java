@@ -1,8 +1,7 @@
 package parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -12,12 +11,12 @@ public class DateTimeNattyTestTemp {
     public void test() throws Exception {
        // ArrayList<String> dates = new ArrayList<String>();
         ArrayList<String> dates = new ArrayList<String>();
-        DateTimeParser dt = new DateTimeParser("mds sale noon past midnight");
         dates.clear();
-        dates.add("00:01");
-        assertEquals("12:00", dt.getEndTime());
-        dates.clear();
-        dates.add("12:00");
-        assertEquals("00:01", dt.getStartTime());
+        dates.add("07/04/2015");
+        Date1Parser date = new Date1Parser("mds sale 1 tues after 4/4");
+        date.getDateList();
+        String input = date.getInputLeft();
+        DateTimeNattyParser dateTime4 = new DateTimeNattyParser(input );
+        assertEquals(dates, dateTime4.getDateList());
     }
 }

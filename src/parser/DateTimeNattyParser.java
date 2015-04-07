@@ -55,16 +55,20 @@ public class DateTimeNattyParser {
 
         indexTime = indexPrevTime;
         indexDate = indexPrevDate;
+        
         // userInputLeftAfterParsing : remove those detected --> prevent
         // infinite loop
         userInputLeftAfterParsing = leftOverInput;
+        userInputLeftAfterParsing = switchAllToLowerCase(userInputLeftAfterParsing);
+        userInput = switchAllToLowerCase(userInput);
 
         // description --> remove those that is detected and used.(like eve
         // detect but will be discarded)
         description = leftOverInput;
 
-      //  System.out
-        //        .println("groups: " + groups + " userInput: " + leftOverInput);
+        System.out
+                .println("groups: " + groups + " userInput: " + leftOverInput);
+        
         while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
          //   System.out.println(" userInputLeftAfterParsing: "
@@ -76,6 +80,18 @@ public class DateTimeNattyParser {
         }
     }
 
+    /**
+     * to prevent case sensitive, switch all to lower case
+     * 
+     * @param userInput
+     * @return the user input all in lower case.
+     */
+    private String switchAllToLowerCase(String userInput) {
+        userInput = userInput.replaceAll("\\s+", " ");
+        userInput = " " + userInput.toLowerCase() + " ";
+        return userInput;
+    }
+    
     /**
      * get the left over of user input after all detection of time and date
      * @return part of description
@@ -164,7 +180,7 @@ public class DateTimeNattyParser {
 
             int position = getPosition(userInput, matchingValue);
 
-            assert userInputLeftAfterParsing.indexOf(matchingValue) != -1 : "Extra conjunction detected, thus no exact text "
+            assert position != -1 : "Extra conjunction detected, thus no exact text "
                     + "detect in user input. User pls remove all conjuction before date and time";
 
             userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
@@ -195,8 +211,8 @@ public class DateTimeNattyParser {
      */
     private int getPosition(String userInput, String matchingValue) {
         return userInput.indexOf(matchingValue);
+       
     }
-
     /**
      * set the start and end date in the right position in arrayList
      *
@@ -205,6 +221,7 @@ public class DateTimeNattyParser {
      */
     private void setDatePosition(int indexMatch, String matchingValue) {
 
+        System.out.println("indexDate: "+indexDate + " indexMatch: "+indexMatch);
         if (storageOfDate.size() == 2
                 && (indexMatch < indexDate || matchingValue.contains("now"))) {
             String tempForDate = storageOfDate.get(0);
@@ -244,12 +261,16 @@ public class DateTimeNattyParser {
         matchingValue = matchingValue.trim();
         String[] partOfMatchingValue = matchingValue.split(" ");
 
-        Pattern numberDectector = Pattern.compile("\\d+");
+        Pattern numberDectector = Pattern.compile("\\b\\d+\\b");
         Matcher matchedWithNumber = numberDectector
                 .matcher(partOfMatchingValue[0]);
-        if (matchedWithNumber.find() && partOfMatchingValue.length == 1) {
+        
+        if (matchedWithNumber.find()) {
+            matchingValue = matchingValue.replaceAll(matchedWithNumber.group(), "");
+            if(matchingValue.length() == 0 && partOfMatchingValue.length == 1)
             isNumeric = true;
         }
+      
         return isNumeric;
     }
 

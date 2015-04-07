@@ -21,8 +21,8 @@ public class DateTimeNattyParserDateOnlyTest {
         ArrayList<String> dates = new ArrayList<String>();
         DateTimeNattyParser dateTime = new DateTimeNattyParser(
                 "add start reading ST2334 notes by today 8 am tomorrow 2330");
-        dates.add("04/04/2015");
-        dates.add("05/04/2015");
+        dates.add("07/04/2015");
+        dates.add("08/04/2015");
         assertEquals(dates, dateTime.getDateList());
 
     }
@@ -36,49 +36,49 @@ public class DateTimeNattyParserDateOnlyTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 4: after _ days
         dates.clear();
-        dates.add("07/04/2015");
+        dates.add("10/04/2015");
         DateTimeNattyParser dateTime = new DateTimeNattyParser(
                 "mds sale start in after 3 days");
         assertEquals(dates, dateTime.getDateList());
 
         // test keyword 4: 3 _ days ago
         dates.clear();
-        dates.add("01/04/2015");
+        dates.add("04/04/2015");
         DateTimeNattyParser dateTime12 = new DateTimeNattyParser("mds sale 3 days ago");
         assertEquals(dates, dateTime12.getDateList());
 
         // test keyword 4: next _ days
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("08/04/2015");
+        dates.add("07/04/2015");
+        dates.add("11/04/2015");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
                 "mds sale start in next 4 days");
         assertEquals(dates, dateTime1.getDateList());
 
         // test keyword 4: _ days from now
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("12/04/2015");
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
                 "mds sale start 5 day from now");
         assertEquals(dates, dateTime2.getDateList());
 
         // test keyword 4: in __day times
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("12/04/2015");
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser(
                 "mds sale start in 5 days time");
         assertEquals(dates, dateTime3.getDateList());
 
         // test keyword 4: _ days after
         dates.clear();
-        dates.add("07/04/2015");
+        dates.add("10/04/2015");
         DateTimeNattyParser dateTime4 = new DateTimeNattyParser(
                 "mds sale start in 3 days after");
         assertEquals(dates, dateTime4.getDateList());
 
         // test keyword 4: _ days after (in word form)
         dates.clear();
-        dates.add("07/04/2015");
+        dates.add("10/04/2015");
         DateTimeNattyParser dateTime5 = new DateTimeNattyParser(
                 "mds sale start in three days after");
         assertEquals(dates, dateTime5.getDateList());
@@ -95,13 +95,13 @@ public class DateTimeNattyParserDateOnlyTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tomorrow
         dates.clear();
-        dates.add("05/04/2015");
+        dates.add("08/04/2015");
         DateTimeNattyParser dateTime = new DateTimeNattyParser("mds sale from tomorrow");
         assertEquals(dates, dateTime.getDateList());
 
         // test keyword 5: the next day
         dates.clear();
-        dates.add("05/04/2015");
+        dates.add("08/04/2015");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser("mds sale the next day");
         assertEquals(dates, dateTime1.getDateList());
 
@@ -144,8 +144,8 @@ public class DateTimeNattyParserDateOnlyTest {
 
         // next wed or thru
         dates.clear();
-        dates.add("10/04/2015");
-        dates.add("05/04/2015");
+        dates.add("17/04/2015");
+        dates.add("12/04/2015");
 
         DateTimeNattyParser dateTime5 = new DateTimeNattyParser(
                 "mds sale next friday or sunday");
@@ -153,8 +153,8 @@ public class DateTimeNattyParserDateOnlyTest {
 
         // next wed and thru
         dates.clear();
-        dates.add("11/04/2015");
-        dates.add("05/04/2015");
+        dates.add("18/04/2015");
+        dates.add("12/04/2015");
 
         DateTimeNattyParser dateTime6 = new DateTimeNattyParser(
                 "mds sale next sat and sunday");
@@ -192,49 +192,49 @@ public class DateTimeNattyParserDateOnlyTest {
 
         // test keyword 6: next __month
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("04/05/2015");
+        dates.add("07/04/2015");
+        dates.add("07/05/2015");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
                 "mds sale start next 1 months ");
         assertEquals(dates, dateTime1.getDateList());
 
         // test keyword 6 : after __ weeks
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("14/04/2015");
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser("mds sale after 1 weeks");
         assertEquals(dates, dateTime2.getDateList());
 
         // test keyword 6 : in __ weeks times
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("14/04/2015");
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser("mds sale in 1 week time");
         assertEquals(dates, dateTime3.getDateList());
 
         // test keyword 6 : __ weeks from now on
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("11/04/2015");
+        dates.add("07/04/2015");
+        dates.add("14/04/2015");
         DateTimeNattyParser dateTime4 = new DateTimeNattyParser(
                 "mds sale in 1 week from now on");
         assertEquals(dates, dateTime4.getDateList());
 
         // test keyword 4: 3 _ weeks ago
         dates.clear();
-        dates.add("14/03/2015");
+        dates.add("17/03/2015");
         DateTimeNattyParser dateTime16 = new DateTimeNattyParser("mds sale 3 weeks ago");
         assertEquals(dates, dateTime16.getDateList());
 
         // test keyword 6: after __month
         dates.clear();
-        dates.add("04/05/2015");
+        dates.add("07/05/2015");
         DateTimeNattyParser dateTime5 = new DateTimeNattyParser(
                 "mds sale start after 1 month");
         assertEquals(dates, dateTime5.getDateList());
 
         // test keyword 6: in __month from now on
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("04/05/2015");
+        dates.add("07/04/2015");
+        dates.add("07/05/2015");
         DateTimeNattyParser dateTime6 = new DateTimeNattyParser(
                 "mds sale in 1 month from now on");
         assertEquals(dates, dateTime6.getDateList());
@@ -248,64 +248,64 @@ public class DateTimeNattyParserDateOnlyTest {
 
         // test keyword 6: in __month times
         dates.clear();
-        dates.add("04/05/2015");
+        dates.add("07/05/2015");
         DateTimeNattyParser dateTime15 = new DateTimeNattyParser(
                 "mds sale start in 1 month time");
         assertEquals(dates, dateTime15.getDateList());
 
         // test keyword 6: next __month
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("04/05/2015");
+        dates.add("07/04/2015");
+        dates.add("07/05/2015");
         DateTimeNattyParser dateTime8 = new DateTimeNattyParser(
                 "mds sale start next 1 month");
         assertEquals(dates, dateTime8.getDateList());
 
         // test keyword 4: 3 _ month ago
         dates.clear();
-        dates.add("04/01/2015");
+        dates.add("07/01/2015");
         DateTimeNattyParser dateTime18 = new DateTimeNattyParser("mds sale 3 month ago");
         assertEquals(dates, dateTime18.getDateList());
 
         // test the rest of aliases after __ year
         dates.clear();
-        dates.add("04/04/2018");
+        dates.add("07/04/2018");
         DateTimeNattyParser dateTime10 = new DateTimeNattyParser(
                 "mds sale start after 3 year");
         assertEquals(dates, dateTime10.getDateList());
 
         // test the rest of aliases in __ year times
         dates.clear();
-        dates.add("04/04/2018");
+        dates.add("07/04/2018");
         DateTimeNattyParser dateTime11 = new DateTimeNattyParser(
                 "mds sale start in 3 year times");
         assertEquals(dates, dateTime11.getDateList());
 
         // test the rest of aliases next __ year
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("04/04/2018");
+        dates.add("07/04/2015");
+        dates.add("07/04/2018");
         DateTimeNattyParser dateTime12 = new DateTimeNattyParser(
                 "mds sale start next 3 year");
         assertEquals(dates, dateTime12.getDateList());
 
         // test the rest of aliases __ year in .... from now on
         dates.clear();
-        dates.add("04/04/2015");
-        dates.add("04/04/2018");
+        dates.add("07/04/2015");
+        dates.add("07/04/2018");
         DateTimeNattyParser dateTime13 = new DateTimeNattyParser(
                 "mds sale in 3 year from now on");
         assertEquals(dates, dateTime13.getDateList());
 
         // test keyword 4: _ years ago
         dates.clear();
-        dates.add("04/04/2012");
+        dates.add("07/04/2012");
         DateTimeNattyParser dateTime17 = new DateTimeNattyParser("mds sale 3 year ago");
         assertEquals(dates, dateTime17.getDateList());
 
         // test the word format of number
         dates.clear();
-        dates.add("04/04/2018");
+        dates.add("07/04/2018");
         DateTimeNattyParser dateTime14 = new DateTimeNattyParser(
                 "mds sale start three year from now on");
         assertEquals(dates, dateTime14.getDateList());
@@ -365,8 +365,8 @@ public class DateTimeNattyParserDateOnlyTest {
         //Since the detection of next weekday is on the date1Parser and next sun or thrus 
         //could only detect on natty
         dates.clear();
-        dates.add("11/04/2015");
-        dates.add("08/04/2015");
+        dates.add("18/04/2015");
+        dates.add("15/04/2015");
         Date1Parser d1p = new Date1Parser("mds sale next sat and wed");
         String userInput = d1p.getInputLeft();
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser(

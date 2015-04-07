@@ -326,9 +326,9 @@ public class Time1ParserTest {
 
         Time1Parser t3 = new Time1Parser("mds sale 7:45 in night.");
         assertEquals(times, t3.getTimeList());
-        
-     // test in night with at
-      
+
+        // test in night with at
+
         times.clear();
         times.add("19:45");
 
@@ -390,7 +390,7 @@ public class Time1ParserTest {
         // test in night without semicolon
         times.clear();
         times.add("19:00");
-        
+
         times.clear();
         times.add("15:00");
 
@@ -416,14 +416,13 @@ public class Time1ParserTest {
 
         Time1Parser t9 = new Time1Parser("mds sale at 3 in morning.");
         assertEquals(times, t9.getTimeList());
-        
+
         // test in morning without semicolon
         times.clear();
         times.add("06:00");
 
         Time1Parser t21 = new Time1Parser("mds sale 6 at morning.");
         assertEquals(times, t21.getTimeList());
-
 
         // test in afternoon without semicolon
         times.clear();
@@ -509,6 +508,13 @@ public class Time1ParserTest {
 
         Time1Parser t2 = new Time1Parser(("mds sale 00,20"));
         assertEquals(times, t2.getTimeList());
+
+        // test with symbol ":"
+        times.clear();
+        times.add("11:20");
+        Time1Parser t3 = new Time1Parser("mds sale 11:20");
+        assertEquals(times, t3.getTimeList());
+
     }
 
     @Test

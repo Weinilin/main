@@ -8,9 +8,7 @@ package parser;
 public class TaskTypeParser {
 	private String taskType;
 
-	public TaskTypeParser(String userInput) throws Exception {
-		DateTimeParser dateTime = new DateTimeParser(userInput);
-		int numberOfTimeInput = dateTime.getNumberOfTime();
+	public TaskTypeParser(int numberOfTimeInput) throws Exception {
 		String taskType = null;
 
 		if (numberOfTimeInput == 2) {

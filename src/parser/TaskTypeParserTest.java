@@ -13,15 +13,15 @@ public class TaskTypeParserTest {
 	public void test() throws Exception {
 		
 		// floating task
-		TaskTypeParser t2 = new TaskTypeParser("krej");
+		TaskTypeParser t2 = new TaskTypeParser(0);
 		assertEquals("floating task", t2.getTaskType());
 
 		// deadlines task
-		TaskTypeParser t3 = new TaskTypeParser("add start reading ST2334 notes by this sat at 0930");
+		TaskTypeParser t3 = new TaskTypeParser(1);
 		assertEquals("deadline", t3.getTaskType());
 		
 		// time task
-        TaskTypeParser t1 = new TaskTypeParser("mds sale 12pm-12:20pm");
+        TaskTypeParser t1 = new TaskTypeParser(2);
         assertEquals("time task", t1.getTaskType());
 
 	}

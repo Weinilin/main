@@ -53,13 +53,15 @@ public class DateTimeParser {
         storageOfTime = times.getTimeList();
         feedback = times.getFeedBack();
         int indexPrevTime = times.getPosition();
+        System.out.println("afterTime1Parse : " + storageOfTime);
 
         Date1Parser dates = new Date1Parser();
         dates.extractDate(userInput, times.getInputLeft());
         feedback = dates.getFeedBack();
         storageOfDate = dates.getDateList();
         int indexPrevDate = dates.getIndex();
-
+        System.out.println("afterDate1Parser : " + storageOfDate);
+        
         DateTimeNattyParser dateTimeNatty = new DateTimeNattyParser();
         dateTimeNatty.extractDateTime(userInput, dates.getInputLeft(),
                 storageOfDate, storageOfTime, indexPrevTime, indexPrevDate);
@@ -68,7 +70,9 @@ public class DateTimeParser {
         storageOfDate = dateTimeNatty.getDateList();
         description = dateTimeNatty.getDescription();
         
-        System.out.println("storageOfTime: "+storageOfTime+" storageOfDate: "+storageOfDate);
+        System.out.println("InDTP: storageOfTime: "+storageOfTime+" storageOfDate: "+storageOfDate
+                + " dates.getInputLeft(): " + dates.getInputLeft()+" description: "+description +
+                " times.getInputLeft(): "+times.getInputLeft());
         
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
@@ -147,8 +151,8 @@ public class DateTimeParser {
     private void testForExceptionCases(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) throws Exception {
 
-        giveRemainderForOngoingTimeTask(storageOfDate, storageOfTime);
         checkOverdueDate(storageOfTime, storageOfDate);
+        giveRemainderForOngoingTimeTask(storageOfDate, storageOfTime);
         checkImpossibleTimedTask(storageOfTime, storageOfDate);
 
     }
@@ -201,8 +205,8 @@ public class DateTimeParser {
             Date date1 = dateFormat.parse(storageOfDate.get(0));
             Date date2 = dateFormat.parse(storageOfDate.get(1));
 
-            if ((time1.after(time2) || time1.equals(time2))
-                    && date1.equals(date2)) {
+            if ((time1.after(time2)  && date1.equals(date2)) || (time1.equals(time2)
+                    && date1.equals(date2))) {
                 throw new IllegalArgumentException(
                         "Impossible combination for timed task! End time must be later than start time on the same day");
             }
@@ -353,11 +357,13 @@ public class DateTimeParser {
             Calendar calendarOfCurrentTime = Calendar.getInstance();
             calendarOfCurrentTime.setTime(timeForNow);
 
+            System.out.println("time: "+time + " timeForNow: "+timeForNow +" currentTime: "+currentTime);
             if (calendarOfCurrentTime.getTime().after(calendar.getTime())) {
                 numberBeforeCurrentTime++;
             }
 
         }
+        System.out.println("111numberBeforeCurrentTime: "+numberBeforeCurrentTime);
         return numberBeforeCurrentTime;
     }
 
@@ -380,15 +386,19 @@ public class DateTimeParser {
                 JOptionPane.showMessageDialog(null,
                         "The meeting have started and is still ongoing.");
             }
+            
         }
 
         if (storageOfTime.size() > 0) {
             boolean isStartTimeBeforeCurrent = ifStartTimeBeforeCurrent(storageOfTime);
+            int numberBeforeCurrentTime = countNumberBeforeCurrentTime(storageOfTime);
 
             if ((storageOfDate.size() > 0 && isStartTimeBeforeCurrent && storageOfDate
-                    .get(0).equals(getCurrentDate()))) {
+                    .get(0).equals(getCurrentDate()) && numberBeforeCurrentTime == 1)) {
+                feedback = "The meeting have started and is still ongoing.";
                 JOptionPane.showMessageDialog(null,
-                        "The meeting have started and is still ongoing.");
+                        "The start date keyed have past the current date but end date have not.\n" + "Go For The Meeting!", "REMAINDER", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("count: ");
             }
         }
     }
@@ -685,9 +695,9 @@ public class DateTimeParser {
             storageOfDate.add(currentDate);
             storageOfDate.add(nextDayDate);
 
-        } else if (numberBeforeCurrentTime == 1 && isStartTimeBeforeCurrent
-                || numberBeforeCurrentTime == 2
-                && !ifStartTimeLaterThanEnd(storageOfTime)) {
+        } else if ((numberBeforeCurrentTime == 1 && isStartTimeBeforeCurrent)
+                || (numberBeforeCurrentTime == 2
+                && !ifStartTimeLaterThanEnd(storageOfTime))) {
             storageOfDate.add(nextDayDate);
             storageOfDate.add(nextDayDate);
 
@@ -701,6 +711,7 @@ public class DateTimeParser {
             storageOfDate.add(currentDate);
             storageOfDate.add(currentDate);
         }
+        System.out.println("numberBeforeCurrentTime: "+numberBeforeCurrentTime);
     }
 
     /**

@@ -1,21 +1,24 @@
 package parser;
 
 /**
- * get the decription for the user input
+ * get the description for the user input
+ * 
  * @author WeiLin
  *
  */
 public class DescriptionParser {
     private String description;
 
-    public DescriptionParser(String userInput) throws Exception {
+    public DescriptionParser(String userInput, String userInputLeft)
+            throws Exception {
         String partOfDescription;
-     
+
+        // userInput = removeEscapedChar(userInput);
         userInput = removeTheExtraSpace(userInput);
         String lowerCaseInput = switchAllToLowerCase(userInput);
 
-        partOfDescription = getPartOfDescription(userInput);
-        
+        partOfDescription = removeTheExtraSpace(userInputLeft);
+
         String escapedText = getEscapedText(userInput);
 
         String description = piecePartsOfDescription(escapedText,
@@ -25,34 +28,27 @@ public class DescriptionParser {
         setDescription(description);
     }
 
-    /**
-     * get the left over user input after extracting out time and date
-     * @param 
-     * @return left over user input after extracting out time and date
-     * @throws Exception 
-     */
-    private String getPartOfDescription(String userInput) throws Exception {
-        String partOfDescription;
-        DateTimeParser dateTimeParser = new DateTimeParser(userInput);
-        partOfDescription = dateTimeParser.getUserInputLeft();
-        partOfDescription = partOfDescription.trim();
-        partOfDescription = removeTheExtraSpace(partOfDescription);
-        return partOfDescription;
+    private String removeEscapedChar(String userInput) {
+
+        userInput = userInput.replaceAll("\\~", "");
+        return userInput;
     }
 
     /**
-     * get the escape text 
-     * @param userInput 
+     * get the escape text
+     * 
+     * @param userInput
      * @return escape text from ~~
      */
     private String getEscapedText(String userInput) {
         EscapedTextParser escapedTextParser = new EscapedTextParser(userInput);
         String escapedText = escapedTextParser.getEscapedText();
-        escapedText = escapedText.toLowerCase();
+        escapedText = removeTheExtraSpace(escapedText);
+        escapedText = switchAllToLowerCase(escapedText);
+        System.out.println("escapedText: " + escapedText);
         return escapedText;
     }
 
-    
     private String removeTheExtraSpace(String partOfDescription) {
         partOfDescription = partOfDescription.trim();
         partOfDescription = partOfDescription.replaceAll("\\s+", " ");
@@ -60,8 +56,10 @@ public class DescriptionParser {
     }
 
     /**
-     * piece the left over user input after extracting out time and date, the escape text together
-     * And remove the conjunction that is in front of time and date.
+     * piece the left over user input after extracting out time and date, the
+     * escape text together And remove the conjunction that is in front of time
+     * and date.
+     * 
      * @param escapedText
      * @param partOfDescription
      * @param lowerCaseInput
@@ -79,31 +77,67 @@ public class DescriptionParser {
         String[] eachWordUserInput = splitStringByWhitespace(userInput);
 
         for (int i = 0; i < eachWordLowerCaseInput.length; i++) {
-           
-            indexDescription = byPassConjunction(indexDescription, indexEscapedText, eachWordInDescription, eachEscapedText,
+
+            indexDescription = byPassConjunction(indexDescription,
+                    indexEscapedText, eachWordInDescription, eachEscapedText,
                     eachWordLowerCaseInput, i);
 
             if (indexDescription < eachWordInDescription.length
                     && eachWordLowerCaseInput[i]
                             .equals(eachWordInDescription[indexDescription])) {
-                
+
                 description = description + " " + eachWordUserInput[i];
-                
+
+                System.out.println("eachWordUserInput[i]: "
+                        + eachWordLowerCaseInput[i]
+                        + " eachWordInDescription[indexEscapedText]: "
+                        + eachWordInDescription[indexDescription]
+                        + " description: " + description);
                 indexDescription++;
 
             } else if (indexEscapedText < eachEscapedText.length
-                    && eachWordLowerCaseInput[i].equals(eachEscapedText[indexEscapedText])) {
-                
+                    && eachWordLowerCaseInput[i]
+                            .equals(eachEscapedText[indexEscapedText])) {
+
                 eachWordUserInput[i] = eachWordUserInput[i].replaceAll("\\~",
                         "");
                 description = description + " " + eachWordUserInput[i];
-                          
-                indexEscapedText++;              
-            }
-            
+                System.out.println("eachWordUserInput[i]: "
+                        + eachWordUserInput[i]
+                        + " eachEscapedText[indexEscapedText]: "
+                        + eachEscapedText[indexEscapedText] + " description: "
+                        + description);
 
+                indexEscapedText++;
+            } else if (indexEscapedText < eachEscapedText.length
+                    && indexDescription < eachWordInDescription.length) {
+
+                if (isEscTextDescripInOneWord(indexDescription,
+                        indexEscapedText, eachWordInDescription,
+                        eachEscapedText, eachWordLowerCaseInput, i)) {
+
+                    eachWordUserInput[i] = eachWordUserInput[i].replaceAll(
+                            "\\~", "");
+
+                    description = description + " " + eachWordUserInput[i];
+                    indexEscapedText++;
+                    indexDescription++;
+                }
+
+            }
         }
         return description;
+    }
+
+    private boolean isEscTextDescripInOneWord(int indexDescription,
+            int indexEscapedText, String[] eachWordInDescription,
+            String[] eachEscapedText, String[] eachWordLowerCaseInput, int i) {
+        return eachWordLowerCaseInput[i]
+                .equals(eachWordInDescription[indexDescription]
+                        + eachEscapedText[indexEscapedText])
+                || eachWordLowerCaseInput[i]
+                        .equals(eachEscapedText[indexEscapedText]
+                                + eachWordInDescription[indexDescription]);
     }
 
     private String[] splitStringByWhitespace(String partOfDescription) {
@@ -114,41 +148,51 @@ public class DescriptionParser {
     /**
      * by pass the conjunction if it is link with date or time
      * 
-     @param j
+     * @param indexDescription
      *            : index of eachWordInDescription
-     * @param k
+     * @param indexEscapedText
      *            : index of eachEscapedText
-      * @param eachWordInDescription
+     * @param eachWordInDescription
      *            : left over input after extracting time and date
      * @param eachEscapedText
      *            : escaped text detected
      * @param eachWordLowerCaseInput
      *            : user input in lower case
-      * @param i
+     * @param i
      *            : index of eachWordLowerCaseInput
      * @return
      */
-    private int byPassConjunction(int j, int k, String[] eachWordInDescription,
-            String[] eachEscapedText, String[] eachWordLowerCaseInput, int i) {
+    private int byPassConjunction(int indexDescription, int indexEscapedText,
+            String[] eachWordInDescription, String[] eachEscapedText,
+            String[] eachWordLowerCaseInput, int i) {
 
-        if (j < eachWordInDescription.length
+        if (indexDescription < eachWordInDescription.length
                 && isConjunction(eachWordLowerCaseInput[i])
-                && eachWordLowerCaseInput[i].equals(eachWordInDescription[j])) {
+                && eachWordLowerCaseInput[i]
+                        .equals(eachWordInDescription[indexDescription])) {
 
-            if (isTheNextWordDate(j, k, eachWordInDescription, eachEscapedText,
+            System.out.println("isthenextword: "
+                    + isTheNextWordDate(indexDescription, indexEscapedText,
+                            eachWordInDescription, eachEscapedText,
+                            eachWordLowerCaseInput, i));
+            if (isTheNextWordDate(indexDescription, indexEscapedText,
+                    eachWordInDescription, eachEscapedText,
                     eachWordLowerCaseInput, i)
-                    || isNextWordEmpty(j, k, eachWordInDescription,
-                            eachEscapedText, eachWordLowerCaseInput, i)) {
-                j++;
+                    || isNextWordEmpty(indexDescription, indexEscapedText,
+                            eachWordInDescription, eachEscapedText,
+                            eachWordLowerCaseInput, i)) {
+                indexDescription++;
             }
         }
-        return j;
+        return indexDescription;
     }
 
     /**
-     * check if the next word of the left over input empty and it is empty not because of escaped text
-     * but is because of the time and date extracted out.
-     @param indexOfDescription
+     * check if the next word of the left over input empty and it is empty not
+     * because of escaped text but is because of the time and date extracted
+     * out.
+     * 
+     * @param indexOfDescription
      *            : index of eachWordInDescription
      * @param indexEscapedText
      *            : index of eachEscapedText
@@ -162,14 +206,16 @@ public class DescriptionParser {
      *            : index of eachWordLowerCaseInput
      * @return true if the next word is empty otherwise false.
      */
-    private boolean isNextWordEmpty(int indexOfDescription, int indexEscapedText,
-            String[] eachWordInDescription, String[] eachEscapedText,
-            String[] eachWordLowerCaseInput, int indexUserInput) {
-        
+    private boolean isNextWordEmpty(int indexOfDescription,
+            int indexEscapedText, String[] eachWordInDescription,
+            String[] eachEscapedText, String[] eachWordLowerCaseInput,
+            int indexUserInput) {
+
         return indexOfDescription == eachWordInDescription.length - 1
-                && indexUserInput < eachWordLowerCaseInput.length && (indexEscapedText < eachEscapedText.length
-                && !eachWordLowerCaseInput[indexUserInput + 1]
-                        .equals(eachEscapedText[indexEscapedText]) || indexEscapedText == eachEscapedText.length);
+                && indexUserInput < eachWordLowerCaseInput.length
+                && (indexEscapedText < eachEscapedText.length
+                        && !eachWordLowerCaseInput[indexUserInput + 1]
+                                .equals(eachEscapedText[indexEscapedText]) || indexEscapedText == eachEscapedText.length);
     }
 
     /**
@@ -191,9 +237,10 @@ public class DescriptionParser {
      *            : index of eachWordLowerCaseInput
      * @return true if next word contain time and date otherwise false
      */
-    private boolean isTheNextWordDate(int indexOfDescription, int indexEscapedText,
-            String[] eachWordInDescription, String[] eachEscapedText,
-            String[] eachWordLowerCaseInput, int indexUserInput) {
+    private boolean isTheNextWordDate(int indexOfDescription,
+            int indexEscapedText, String[] eachWordInDescription,
+            String[] eachEscapedText, String[] eachWordLowerCaseInput,
+            int indexUserInput) {
 
         return indexOfDescription + 1 < eachWordInDescription.length
                 && indexUserInput + 1 < eachWordLowerCaseInput.length
@@ -201,7 +248,11 @@ public class DescriptionParser {
                         .equals(eachWordLowerCaseInput[indexUserInput + 1])
                 && (indexEscapedText < eachEscapedText.length
                         && !eachWordLowerCaseInput[indexUserInput + 1]
-                                .equals(eachEscapedText[indexEscapedText]) || indexEscapedText == eachEscapedText.length);
+                                .equals(eachEscapedText[indexEscapedText]) || indexEscapedText == eachEscapedText.length)
+                && !(eachWordInDescription[indexOfDescription + 1] + eachEscapedText[indexEscapedText])
+                        .equals(eachWordLowerCaseInput[indexUserInput + 1])
+                && !(eachEscapedText[indexEscapedText] + eachWordInDescription[indexOfDescription + 1])
+                        .equals(eachWordLowerCaseInput[indexUserInput + 1]);
     }
 
     /**
@@ -223,7 +274,7 @@ public class DescriptionParser {
      */
     private String switchAllToLowerCase(String userInput) {
         userInput = userInput.toLowerCase();
-        userInput = userInput.replaceAll("\\~", "");
+        // userInput = userInput.replaceAll("\\~", "");
         return userInput;
     }
 

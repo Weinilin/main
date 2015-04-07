@@ -11,26 +11,37 @@ import java.util.regex.Pattern;
  */
 public class EscapedTextParser {
     private String textEscaped = "";
+    private ArrayList<String> escapedTextList  = new ArrayList<String>();
 
     public EscapedTextParser(String userInput) {
-        ArrayList<String> hashTag = storeEscapedTexts(userInput);
+        escapedTextList = storeEscapedTexts(userInput);
         
-        for (int i = 0; i < hashTag.size(); i++) {
-            textEscaped = textEscaped + " " + hashTag.get(i);
+        for (int i = 0; i < escapedTextList.size(); i++) {
+            textEscaped = textEscaped + " " + escapedTextList.get(i);
         }
       
-        textEscaped = removeThoseHashTag(textEscaped);
+       // textEscaped = removeThoseHashTag(textEscaped);
+       
     }
 
     /**
-     * get the escaped text ~....~
+     * get the escaped text ~....~ + ~.....~ + etc
      * 
      * @return the input left after removing all the time detected
      */
     public String getEscapedText() {
+        System.out.println("ININescapedText: "+textEscaped);
         return textEscaped;
     }
 
+    /**
+     * get the ArrayList of escaped text 
+     * @return ArrayList of escaped text
+     */
+    public ArrayList<String> getListOfEscapedText(){
+        return escapedTextList; 
+        
+    }
     /**
      * remove ~
      * 

@@ -118,8 +118,8 @@ public class Date1Parser {
      */
     private void goThroughDetectionMethod(String userInput) throws IllegalArgumentException{
 
-        spotInputWithMMDDBEFOREAFTER(userInput);
-        spotInputCouldDetectOnlyNatty(userInput);
+        spotInputWithMMDDBEFOREAFTER();
+        spotInputCouldDetectOnlyNatty();
         spotDDMonthInWordYYYY(userInput, DD_MONNTHINWORD_YYYY_KEYWORD);
         spotDDMonthInWordYYYY(userInput, DD_SHORTFORMMONTHINWORD_YYYY_KEYWORD);
         spotDDMMYYYYKeyword(userInput);
@@ -134,12 +134,11 @@ public class Date1Parser {
     /**
      * to prevent the detection in this dateParser as only natty could read the keyword with the right
      * date
-     * @param inputLeft2
      */
-    private void spotInputCouldDetectOnlyNatty(String userInput) {
+    private void spotInputCouldDetectOnlyNatty() {
    
         Pattern detector = Pattern.compile(DETECT_ONLY_BY_NATTY_KEYWORD);
-        Matcher containComplicationWord = detector.matcher(userInput);
+        Matcher containComplicationWord = detector.matcher(inputLeft);
         
         while (containComplicationWord.find()) {
             inputLeft = inputLeft.replaceAll(DETECT_ONLY_BY_NATTY_KEYWORD, "");
@@ -152,28 +151,31 @@ public class Date1Parser {
      * format 
      * @param userInput
      */
-    private void spotInputWithMMDDBEFOREAFTER(String userInput) {
+    private void spotInputWithMMDDBEFOREAFTER() {
         String dateOfTheTask = "";
        
         Pattern detector = Pattern.compile(BEFORE_AFTER_MMDD_KEYWORD);
-        Matcher containComplicationWord = detector.matcher(userInput);
+        Matcher containComplicationWord = detector.matcher(inputLeft);
 
         while (containComplicationWord.find()) {
-            inputLeft = inputLeft.replaceAll(BEFORE_AFTER_MMDD_KEYWORD, "");
-         
             String word = "";
-            dateOfTheTask = spotDDMMYYYYKeyword(userInput);
+            dateOfTheTask = spotDDMMYYYYKeyword(inputLeft);
             storageOfDate.remove(dateOfTheTask);
+            
             String[] partOfDate = splitTheStringIntoPart(dateOfTheTask);
+            
+            assert partOfDate.length != 3 : "could not change the date format to dd/mm/yyyy";            
+            assert partOfDate[1] != null: "wrong detection of month";
+            
             String monthInWord = convertMonthToWord(partOfDate[1]);
 
             word = containComplicationWord.group();
             word = word.replaceAll(DDMMYYYY_KEYWORD, "");
 
-            assert partOfDate.length != 3 : "could not change the date format to dd/mm/yyyy";
-           
             inputThatDetectNatty = inputThatDetectNatty + word + " "
                     + partOfDate[0] + " " + monthInWord + " " + partOfDate[2];
+            inputLeft = inputLeft.replaceAll(BEFORE_AFTER_MMDD_KEYWORD, "");
+            
 
         }
 
@@ -627,7 +629,7 @@ public class Date1Parser {
         String dateOfTheTask = "";
 
         Pattern dateDetector = Pattern.compile(keyword);
-        Matcher containDate = dateDetector.matcher(userInput);
+        Matcher containDate = dateDetector.matcher(inputLeft);
         Matcher toGetIndex = dateDetector.matcher(userInput);
 
         while (containDate.find() && toGetIndex.find()) {
@@ -812,15 +814,16 @@ public class Date1Parser {
         String dateOfTheTask = "";
 
         Pattern dateDetector = Pattern.compile(DDMMYYYY_KEYWORD);
-        Matcher containDate = dateDetector.matcher(userInput);
+        Matcher containDate = dateDetector.matcher(inputLeft);
         Matcher toGetIndex = dateDetector.matcher(userInput);
 
         while (containDate.find() && toGetIndex.find()) {
             Calendar calendar = Calendar.getInstance();
             inputLeft = inputLeft.replaceAll(DDMMYYYY_KEYWORD, "");
+            
             dateOfTheTask = containDate.group();
 
-            dateOfTheTask = dateOfTheTask.replaceAll("on |from |at |to ", "");
+            dateOfTheTask = removeUnwantedParts(dateOfTheTask);
 
             // so we could detect both (YYYY/MM/DD) and (DD/MM/YYYY)
             String containYearAndDay = getYearAndDayInAString(dateOfTheTask);

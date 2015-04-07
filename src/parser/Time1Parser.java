@@ -24,7 +24,7 @@ public class Time1Parser {
     private static final String BEFORE_NOON_BEFORE_MIDNIGHT_KEYWORD = "(\\b(before midnight|before noon)\\b)";
     private static final String MORNING_AFTERNOON_NIGHT_KEYWORD = "(\\b(\\d+[.:,](\\d+)|\\d+)(\\s|)(o'clock|am|pm|)( (in (the |)|)(morning|morn)\\b| (in (the |)|)afternoon\\b| (in (the |)|)night\\b| at (the |)night\\b| at (the |)afternoon\\b"
             + "| at (the |)morning\\b| at (the |)morn\\b))";
-    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b)";
+    private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b) | (\\b\\d{4}\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(past midnight|past noon|after noon|after midnight)\\b)";
     // private static final String CONJUNCTION_TWELVE_HOUR_KEYWORD =
     // "\\b(@ |due on |on |at |from |to |by |due )\\d{2}(?!\\/:.,-( am)( pm)( jan))\\b";
@@ -70,6 +70,7 @@ public class Time1Parser {
      * @return the input left after removing all the time detected
      */
     public String getInputLeft() {
+
         return userInputLeft;
     }
 
@@ -91,29 +92,16 @@ public class Time1Parser {
      */
     private String removeThoseHashTag(String userInput) {
 
-        ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
-        ArrayList<String> hashTag = new ArrayList<String>();
-        Pattern hashTagDetector = Pattern.compile("\\~");
-        Matcher containHashTag = hashTagDetector.matcher(userInput);
+        EscapedTextParser e1 = new EscapedTextParser(userInput);
+        ArrayList<String> escapedTextList = e1.getListOfEscapedText();
+        System.out.println("escapedTextList: " + escapedTextList);
 
-        while (containHashTag.find()) {
+        for (int i = 0; i < escapedTextList.size(); i++) {
 
-            hashTagIndex.add(containHashTag.start());
-           
-            if (hashTagIndex.size() == 2) {
-                hashTag.add(userInput.substring(hashTagIndex.get(0),
-                        hashTagIndex.get(1) + 1));
-                hashTagIndex.clear();
-            }
+            userInput = userInput.replaceAll(escapedTextList.get(i), "");
 
         }
 
-        for (int i = 0; i < hashTag.size(); i++) {
-
-            userInput = userInput.replaceAll(hashTag.get(i), "");
-
-        }
-      
         return userInput;
     }
 
@@ -125,12 +113,12 @@ public class Time1Parser {
      */
     private void goThroughTimeFormat(String userInput) throws Exception {
 
-        spotTimeToTimeKeyword();
         spotHourApartKeyword();
         spotBeforeMidnightOrNoonKeyword(userInput);
         spotMorningAfternoonNightKeyword(userInput);
         spotPastMidnightOrNoonKeyword(userInput);
         spotHHOclockKeyword(userInput);
+        spotTimeToTimeKeyword();
         spotTwelveHourFormat(userInput);
         spotTwentyFourHHKeyword(userInput);
         // storageOfTime = spotConjunctionTwelveHourKeyword(storageOfTime,
@@ -451,10 +439,9 @@ public class Time1Parser {
             String[] timeList = time.split("-|to");
 
             boolean isBothContainsAmPm = ifBothContainsAmPm(timeList);
-            boolean isAtleastOneAMPM = isAtleastOneAMPM(timeList);
             boolean isStartTimeContainsAmPm = ifStartTimeContainsAmPm(timeList);
-
-            if (isAtleastOneAMPM) {
+            
+            if (isAtleastOneAMPM(timeList)) {
                 if (isBothContainsAmPm) {
                     addTimeWhenBothHaveMeridim(timeList);
                 } else if (isStartTimeContainsAmPm) {
@@ -462,7 +449,10 @@ public class Time1Parser {
                 } else {
                     addTimeWithEndTimeMeridiem(timeList);
                 }
-                userInputLeft = userInputLeft.replaceAll(time, "");
+
+                if (storageOfTime.size() == 2) {
+                    userInputLeft = userInputLeft.replaceAll(time, "");
+                }
             }
         }
     }
@@ -526,28 +516,36 @@ public class Time1Parser {
         testValidTime(timeWithMeridiem);
         timeWithMeridiem = changeToHourFormat(timeWithMeridiem);
 
-        String timeSetToAM = changeToHourFormat(timeWithoutMeridiem + "am");
+        if (timeWithoutMeridiem.contains(":")
+                || timeWithoutMeridiem.contains(".")
+                || timeWithoutMeridiem.contains(",")
+                || timeWithoutMeridiem.length() <= 2) {
+            String timeSetToAM = changeToHourFormat(timeWithoutMeridiem + "am");
 
-        String timeSetToPM = changeToHourFormat(timeWithoutMeridiem + "pm");
+            String timeSetToPM = changeToHourFormat(timeWithoutMeridiem + "pm");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
-        Calendar calendarOfMeridiemKeyed = getCalendar(timeWithMeridiem,
-                dateFormat);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            Calendar calendarOfMeridiemKeyed = getCalendar(timeWithMeridiem,
+                    dateFormat);
 
-        Calendar calendarMaunalSetToAm = getCalendar(timeSetToAM, dateFormat);
+            Calendar calendarMaunalSetToAm = getCalendar(timeSetToAM,
+                    dateFormat);
 
-        Calendar calendarMaunalSetToPm = getCalendar(timeSetToPM, dateFormat);
+            Calendar calendarMaunalSetToPm = getCalendar(timeSetToPM,
+                    dateFormat);
 
-        timeSelected = getSelectedStartTime(timeSetToAM, timeSetToPM,
-                calendarOfMeridiemKeyed, calendarMaunalSetToAm,
-                calendarMaunalSetToPm);
+            timeSelected = getSelectedStartTime(timeSetToAM, timeSetToPM,
+                    calendarOfMeridiemKeyed, calendarMaunalSetToAm,
+                    calendarMaunalSetToPm);
 
+            assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
+            assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
 
-        assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
-        assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
-
-        storageOfTime.add(timeSelected);
-        storageOfTime.add(timeWithMeridiem);
+            if (!timeSelected.equals("")) {
+                storageOfTime.add(timeSelected);
+                storageOfTime.add(timeWithMeridiem);
+            }
+        }
     }
 
     /**
@@ -568,26 +566,25 @@ public class Time1Parser {
             Calendar calendarOfMeridiemKeyed, Calendar calendarMaunalSetToAm,
             Calendar calendarMaunalSetToPm) {
         String timeSelected;
-        
-        
+
         if (calendarOfMeridiemKeyed.equals(calendarMaunalSetToPm)) {
             timeSelected = timeSetToAM;
-           
+
         } else if (calendarOfMeridiemKeyed.equals(calendarMaunalSetToAm)) {
             timeSelected = timeSetToPM;
-          
+
         } else if (calendarOfMeridiemKeyed.after(calendarMaunalSetToPm)
                 && calendarOfMeridiemKeyed.after(calendarMaunalSetToAm)) {
             timeSelected = getLaterTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
-            
+
         } else if (calendarOfMeridiemKeyed.before(calendarMaunalSetToPm)
                 && calendarOfMeridiemKeyed.before(calendarMaunalSetToAm)) {
-         
+
             timeSelected = getLaterTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
         } else {
-         
+
             timeSelected = getEarlierTime(calendarMaunalSetToAm,
                     calendarMaunalSetToPm, timeSetToAM, timeSetToPM);
         }
@@ -615,7 +612,6 @@ public class Time1Parser {
             timeSelected = timeSetToPM;
         }
 
-      
         return timeSelected;
     }
 
@@ -635,11 +631,11 @@ public class Time1Parser {
 
         if (calendarMaunalSetToAm.after(calendarMaunalSetToPm)) {
             timeSelected = timeSetToAM;
-        } else if (calendarMaunalSetToPm.after(calendarMaunalSetToAm) || timeSetToAM.equals("00:00")) {
+        } else if (calendarMaunalSetToPm.after(calendarMaunalSetToAm)
+                || timeSetToAM.equals("00:00")) {
             timeSelected = timeSetToPM;
-           
+
         }
-       
 
         return timeSelected;
     }
@@ -661,27 +657,35 @@ public class Time1Parser {
 
         timeWithoutMeridiem = changeToHourFormat(timeWithoutMeridiem);
 
-        String timeSetToAM = changeToHourFormat(timeWithoutMeridiem + "am");
-        String timeSetToPM = changeToHourFormat(timeWithoutMeridiem + "pm");
+        if (timeWithoutMeridiem.contains(":")
+                || timeWithoutMeridiem.contains(".")
+                || timeWithoutMeridiem.contains(",")
+                || timeWithoutMeridiem.length() <= 2) {
+            String timeSetToAM = changeToHourFormat(timeWithoutMeridiem + "am");
+            String timeSetToPM = changeToHourFormat(timeWithoutMeridiem + "pm");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
-        Calendar calendarOfMeridiemKeyed = getCalendar(timeWithMeridiem,
-                dateFormat);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            Calendar calendarOfMeridiemKeyed = getCalendar(timeWithMeridiem,
+                    dateFormat);
 
-        Calendar calendarMaunalSetToAm = getCalendar(timeSetToAM, dateFormat);
+            Calendar calendarMaunalSetToAm = getCalendar(timeSetToAM,
+                    dateFormat);
 
-        Calendar calendarMaunalSetToPm = getCalendar(timeSetToPM, dateFormat);
+            Calendar calendarMaunalSetToPm = getCalendar(timeSetToPM,
+                    dateFormat);
 
-        timeSelected = getSelectedEndTime(timeSetToAM, timeSetToPM,
-                calendarOfMeridiemKeyed, calendarMaunalSetToAm,
-                calendarMaunalSetToPm);
+            timeSelected = getSelectedEndTime(timeSetToAM, timeSetToPM,
+                    calendarOfMeridiemKeyed, calendarMaunalSetToAm,
+                    calendarMaunalSetToPm);
 
-        assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
-        assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
+            assert checkValid24HourTime(timeWithMeridiem) == true : "Wrong convertion of time";
+            assert checkValid24HourTime(timeSelected) == true : "Wromg convertion of time";
 
-        storageOfTime.add(timeWithMeridiem);
-        storageOfTime.add(timeSelected);
-
+            if (!timeSelected.equals("")) {
+                storageOfTime.add(timeWithMeridiem);
+                storageOfTime.add(timeSelected);
+            }
+        }
     }
 
     /**
@@ -778,7 +782,7 @@ public class Time1Parser {
         int index = getIndex(time);
         assert index != -1;
         String minutes = time.substring(index + 1);
-       
+
         return minutes;
     }
 
@@ -842,9 +846,12 @@ public class Time1Parser {
      */
     private void test12HourFormat(int timeInHour, int timeInMin)
             throws IllegalArgumentException {
+        System.out.println("timeInHour: " + timeInHour + " timeInMin: "
+                + timeInMin);
         if (timeInHour > 12 || timeInHour < 0 || timeInMin < 0
                 || timeInMin > 59) {
-            throw new IllegalArgumentException("Time entered is invalid!");
+            throw new IllegalArgumentException(
+                    "Time entered in 12-hour format is invalid!");
         }
     }
 
@@ -858,7 +865,7 @@ public class Time1Parser {
         boolean ifTwelveHour;
 
         if (time.contains("am") || time.contains("o'clock")
-                || time.contains("pm")) {
+                || time.contains("pm") || time.contains("o’clock")) {
             ifTwelveHour = true;
         } else {
             ifTwelveHour = false;
@@ -973,7 +980,7 @@ public class Time1Parser {
      * @return time in hour format (HH:MM)
      */
     private String changeToHourFormat(String time) {
-        
+
         if (time.contains("am")) {
             time = removePMOrAmOrOclock(time);
             time = switchToAmHour(time);
@@ -984,14 +991,12 @@ public class Time1Parser {
             time = changePuncToSemicolon(time);
         } else if (!time.contains(":") && time.length() <= 2) {
             time = time + ":00";
-        } else if (time.length() >= 4) {
-            int index = getIndex(time);
-            time = time.substring(0, index) + ":" + time.substring(index + 1);
-        } 
-       
+        } else if (!time.contains(":") && time.length() == 4) {
+            time = time.substring(0, 2) + ":" + time.substring(2);
+        }
 
         time = putOneZeroAtFront(time);
-        
+
         return time;
     }
 
@@ -1082,7 +1087,7 @@ public class Time1Parser {
         if (time.contains(":") || time.contains(".") || time.contains(",")) {
             userHourTime = getHH(time);
             minTime = getMinutes(time);
-            
+
         } else {
             userHourTime = Integer.parseInt(time);
             minTime = "00";
@@ -1102,7 +1107,8 @@ public class Time1Parser {
             timeNormal++;
         }
         time = time + ":" + minTime;
-    //   System.out.println("userHourTime: "+userHourTime+" minTime: "+ "time" +time);
+        // System.out.println("userHourTime: "+userHourTime+" minTime: "+ "time"
+        // +time);
         return time;
     }
 
