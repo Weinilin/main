@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import application.Task;
-import parser.MainParser;
+import parser.IndexParser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,18 +19,16 @@ import java.util.logging.Logger;
 class MarkHandler extends UndoableCommandHandler {
 
     private static final String HELP_MESSAGE = "mark [index]\n\t mark a task as done\n";
-    private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check yout input\n";
-    private static final String MARKED_MESSAGE = "Marked %1$s as done. It has been archieved\n";
+    private static final String INVALID_INDEX_MESSAGE = "Index %1$s is invalid! Please check your input\n";
+    private static final String MARKED_MESSAGE = "Marked %1$s as done and archieved\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("mark", "done", "m"));
     private static final Logger markLogger = 
             Logger.getLogger(MarkHandler.class.getName());
     private ArrayList<Task> markedTask = new ArrayList<Task>();
-    private ArrayList<Integer> markedTaskIndex = new ArrayList<Integer>();
 
     private String goodFeedback = "",
                    badFeedback = "";
-    Integer index;
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -45,9 +43,9 @@ class MarkHandler extends UndoableCommandHandler {
             return getHelp();
         }
 
-        MainParser ip = new MainParser(parameter);
         try {
-            index = Integer.parseInt(token[0]);
+            IndexParser ip = new IndexParser(parameter);
+            ip.getIndex();
             markByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
             ArrayList<Task> searchList = memory.searchDescription(parameter);
@@ -55,7 +53,6 @@ class MarkHandler extends UndoableCommandHandler {
             for (Task task: searchList) {
                 if (taskList.contains(task)) {
                     markedTask.add(task);
-                    markedTaskIndex.add(taskList.indexOf(task) + 1);
                     goodFeedback += task.getDescription();
                     break markKeyword;                     
                 }                
@@ -79,19 +76,17 @@ class MarkHandler extends UndoableCommandHandler {
      * @param token
      */
     private void markByIndex(ArrayList<Task> taskList, String[] token) throws Exception{
-        MainParser parser;
+        IndexParser parser;
         for (String t: token) {
-            parser = new MainParser(t);
+            parser = new IndexParser(t);
             try {
-                index = parser.getIndex();
+                int index = parser.getIndex() - 1;
                 markedTask.add(taskList.get(index));
-                markedTaskIndex.add(index);
                 goodFeedback += t + " ";
             } catch (NumberFormatException nfe) {
                 badFeedback += t + " ";
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback += t + " ";
-                markLogger.log(Level.WARNING, "Invalid index", iob);
             } 
         }
     }
@@ -101,10 +96,8 @@ class MarkHandler extends UndoableCommandHandler {
      */
     private void reset() {
         markedTask.clear();
-        markedTaskIndex.clear();
         goodFeedback = "";
         badFeedback = "";
-        index = null;
     }
 
     /**
@@ -132,13 +125,11 @@ class MarkHandler extends UndoableCommandHandler {
     
     void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder markRecorder = new UndoRedoRecorder(taskList);
-        for (int index: markedTaskIndex) {
-            Task task = taskList.get(index);
-            memory.markDone(task);
-            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
-        }
+        
         for (Task task: markedTask) {
             taskList.remove(task);
+            memory.markDone(task);
+            markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
         }
         if (!markRecorder.isEmpty()) {
             markRecorder.recordUpdatedList(taskList);
