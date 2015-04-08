@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import application.Task;
+import parser.MainParser;
 
 /**
  * Command handler for showing/searching tasks
@@ -22,6 +23,7 @@ class ShowHandler extends CommandHandler{
     private static final String HELP_MESSAGE = "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
     private static final String EMPTY_LIST_MESSAGE = "There is no %1$stask\n";
     private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
+    private static final String FOUND_MESSAGE = "Showing all tasks containing \"%1$s\"\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("show", "s", "display", "search"));
     private static final Logger showLogger =
@@ -33,7 +35,7 @@ class ShowHandler extends CommandHandler{
     }
 
     @Override
-    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception{
         
         String[] token = parameter.split(" ");
         if (isHelp(token)) {
@@ -43,20 +45,38 @@ class ShowHandler extends CommandHandler{
         if (isSearchStatus(parameter)) {
             return showStatus(parameter, taskList);
         }
+        
+        MainParser parser = new MainParser(parameter);
+        String searchType = parser.getTaskType();
+        if (isKeywordSearch(searchType)) {
+            String keyword = parser.getDescription();
+            return searchByKeyword(keyword, taskList);            
+        }    
+        else if (searchType.equals("deadline")) {
+            String date = parser.getEndDate();
+            return "";
+        }
         else {
-            ArrayList<Task> searchList = memory.searchDescription(parameter);
-            if (searchList.isEmpty()) {
-                showLogger.log(Level.FINE, "no results found containing " + parameter);
-                return String.format(NOT_FOUND_MESSAGE, parameter);
-            }
-            else {
-                updateTaskList(taskList, searchList);
-                showLogger.log(Level.FINE, "show all tasks containing keyword " + parameter);
-                return "";
-            }
-        }        	
+            return "";
+        }
     }
 
+    private boolean isKeywordSearch(String searchType) {
+        return searchType.equals("floating task");
+    }
+
+    private String searchByKeyword(String keyword, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = memory.searchDescription(keyword);
+        if (searchList.isEmpty()) {
+            showLogger.log(Level.FINE, "no results found containing " + keyword);
+            return String.format(NOT_FOUND_MESSAGE, keyword);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            showLogger.log(Level.FINE, "show all tasks containing keyword " + keyword);
+            return String.format(FOUND_MESSAGE, keyword);
+        }
+    }
     
     /**
      * check if the user is searching different status of tasks
