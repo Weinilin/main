@@ -43,7 +43,19 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.add("12:00");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser("noon run");
         assertEquals(times, dateTime1.getTimeList());
-
+        
+        //test afternoon 
+        times.clear();
+        times.add("12:00");
+        DateTimeNattyParser dateTime2 = new DateTimeNattyParser("afternoon run");
+        assertEquals(times, dateTime2.getTimeList());
+        
+        //test morning
+        times.clear();
+        times.add("08:00");
+        DateTimeNattyParser dateTime3 = new DateTimeNattyParser("morning run");
+        assertEquals(times, dateTime3.getTimeList());
+       
     }
 
     @Test
@@ -54,7 +66,6 @@ public class DateTimeNattyParserTimeOnlyTest {
 
         DateTimeNattyParser dateTime = new DateTimeNattyParser(
                 "mds sale for 2 hours");
-
         times.add("22:17");
         times.add("00:17");
         // assertEquals(times, dateTime.getTimeList());
@@ -63,69 +74,29 @@ public class DateTimeNattyParserTimeOnlyTest {
 
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
                 "mds sale for 2 hrs");
-
+        times.clear();
         times.add("22:17");
         times.add("00:17");
         // assertEquals(times, dateTime1.getTimeList());
-
-    }
-
-    @Test
-    /*
-     * test digit pm/am hour format am/pm
-     */
-    public void testTwelveHourTime() {
-        // test with semicolon format of am
-        ArrayList<String> times = new ArrayList<String>();
+        
+        // test with hr
+        DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
+                "mds sale for 1 hr");
         times.clear();
-        DateTimeNattyParser dateTime = new DateTimeNattyParser(
-                "mds sale 12:30 am ");
-        times.add("00:30");
-        assertEquals(times, dateTime.getTimeList());
-
-        // test with no semicolon of am
-        times.clear();
-        times.add("00:00");
-        DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
-                "mds sale 12 am ");
-        assertEquals(times, dateTime1.getTimeList());
-
-        // test for of pm without semicolon
-        times.clear();
-        times.add("18:00");
-        DateTimeNattyParser dateTime2 = new DateTimeNattyParser("6pm");
-        assertEquals(times, dateTime2.getTimeList());
-
-        // test for pm with semicolon
-        times.clear();
-        times.add("18:30");
+        times.add("22:17");
+        times.add("23:17");
+       //  assertEquals(times, dateTime2.getTimeList());
+        
+        //test with hour
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser(
-                "mds sale 6:30pm");
-        assertEquals(times, dateTime3.getTimeList());
-
-        // test pm with only p
+                "mds sale for 1 hour");
         times.clear();
-        times.add("19:30");
-        DateTimeNattyParser dateTime4 = new DateTimeNattyParser(
-                "mds sale 7:30p");
-        assertEquals(times, dateTime4.getTimeList());
-
-        // test pm with only p
-        times.clear();
-        times.add("07:30");
-        DateTimeNattyParser dateTime5 = new DateTimeNattyParser(
-                "mds sale 7:30a");
-        assertEquals(times, dateTime5.getTimeList());
-
-        // test am with . --> a.m.
-        times.clear();
-        times.add("05:30");
-        DateTimeNattyParser dateTime6 = new DateTimeNattyParser(
-                "mds sale 5:30a.m.");
-        assertEquals(times, dateTime6.getTimeList());
+        times.add("22:17");
+        times.add("23:17");
+       //  assertEquals(times, dateTime3.getTimeList());
 
     }
-
+    
     @Test
     /**
      * test twenty hour format(HH:MM) without the punctuation between
@@ -226,6 +197,13 @@ public class DateTimeNattyParserTimeOnlyTest {
         DateTimeNattyParser dateTime7 = new DateTimeNattyParser(
                 "runrun 4 hour from now");
         // assertEquals(times, dateTime7.getTimeList());
+        
+        // test in four hour from now
+        times.clear();
+        times.add("01:45");
+        DateTimeNattyParser dateTime8 = new DateTimeNattyParser(
+                "runrun four hour from now");
+        // assertEquals(times, dateTime8.getTimeList());
 
     }
 }

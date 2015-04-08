@@ -2,31 +2,37 @@ package parser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.ParseLocation;
 import com.joestelmach.natty.Parser;
 
 /**
- * Extract date and time from a library known as natty.
- * Time: 1) 24-hour format 2) _ hour/minute/second ago 3) in _ hour/minute/second
- * 4) _ hour/minute/second from now 5) 0600h/06:00 hours/6pm/6am/5:40a.m./3a/4p
- * 6) noon/afternoon/midnight
- * Date: 1) three/3 weeks/month/day/year ago 2) three/3 weeks/month/day/year from now
- * 3) next weeks/month/day/year 4) after three/3 weeks/month/day/year 5) three/3 weeks/month/day/year ago after
- * 6) today/tomorrow/yesterday 7) _ or _ / _ or _ 8) day/weekday before 9) day/weekday after 10) word in month DD
+ * Extract date and time from a library known as natty. Time: 1) _
+ * hour/minute/second ago 2) in _ hour/minute/second 3) _ hour/minute/second
+ * from now 5) 0600h/06:00 hours 5) noon/afternoon/midnight/morning Date: 1)
+ * three/3 weeks/month/day/year ago 2) three/3 weeks/month/day/year from now 3)
+ * next weeks/month/day/year 4) after three/3 weeks/month/day/year 5) three/3
+ * weeks/month/day/year ago after 6) today/tomorrow/yesterday 7) _ or _ / _ or _
+ * 8) day/weekday before 9) day/weekday after 10) word in month DD
+ * 
  * @author WeiLin
  *
  */
 public class DateTimeNattyParser {
+    private static final String MONNTHINWORD_DD_YYYY_KEYWORD = "\\b(january|febuary|march|april|may|june|july|august|september|octobor|november|december)"
+            + "|(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\\s|)(\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|)(\\d+|)\\b";
+    private static final String HOUR_FORMAT_KEYWORD = "\\b\\d+(\\s|)(hour|hr)(s|)\\b";
     private ArrayList<String> storageOfDate = new ArrayList<String>();
     private ArrayList<String> storageOfTime = new ArrayList<String>();
-    private ArrayList<String> dateTextInUserInput = new ArrayList<String>();
     private String userInputLeftAfterParsing;
     private String description;
     private int indexTime;
@@ -43,19 +49,20 @@ public class DateTimeNattyParser {
 
     public void extractDateTime(String userInput, String leftOverInput,
             ArrayList<String> dates, ArrayList<String> times,
-            int indexPrevTime, int indexPrevDate) {
+            int indexPrevTime, int indexPrevDate)
+            throws IllegalArgumentException {
         List<DateGroup> groups = new ArrayList<DateGroup>();
 
         storageOfDate.clear();
         storageOfTime.clear();
         storageOfDate.addAll(dates);
         storageOfTime.addAll(times);
-        
+
         Parser dateTimeParser = new Parser();
 
         indexTime = indexPrevTime;
         indexDate = indexPrevDate;
-        
+
         // userInputLeftAfterParsing : remove those detected --> prevent
         // infinite loop
         userInputLeftAfterParsing = leftOverInput;
@@ -66,17 +73,20 @@ public class DateTimeNattyParser {
         // detect but will be discarded)
         description = leftOverInput;
 
-      //  System.out
-        //        .println("groups: " + groups + " userInput: " + leftOverInput);
-        
+        // System.out
+        // .println("groups: " + groups + " userInput: " + leftOverInput);
+
+        testValidTime(userInputLeftAfterParsing);
+        testValidDate(userInputLeftAfterParsing);
+
         while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
-         //   System.out.println(" userInputLeftAfterParsing: "
-           //         + userInputLeftAfterParsing);
+            // System.out.println(" userInputLeftAfterParsing: "
+            // + userInputLeftAfterParsing);
             parseDateAndTime(groups, userInput);
 
-       //     System.out.println("dateTime: " + storageOfDate + " "
-         //           + storageOfTime);
+            // System.out.println("dateTime: " + storageOfDate + " "
+            // + storageOfTime);
         }
     }
 
@@ -91,9 +101,10 @@ public class DateTimeNattyParser {
         userInput = " " + userInput.toLowerCase() + " ";
         return userInput;
     }
-    
+
     /**
      * get the left over of user input after all detection of time and date
+     * 
      * @return part of description
      */
     public String getDescription() {
@@ -122,7 +133,7 @@ public class DateTimeNattyParser {
     /**
      * 1. change the date to String 2. change from<weekday> <month in word>
      * <day> <hh:mm:ss> <timezone> <year> to <weekday> <day/month/year> <hh:mm>
-     * 3. bypass those like eve that should be in description 
+     * 3. bypass those like eve that should be in description
      * 
      * @param dates
      *            : contains all of the date detected
@@ -133,7 +144,7 @@ public class DateTimeNattyParser {
     private void changeDateFormat(List<Date> dates,
             Map<String, List<ParseLocation>> parseMap, String matchingValue,
             int position) {
-      
+
         for (int i = 0; i < dates.size(); i++) {
             String time = getTime(dates.get(i));
             String date = getDate(dates.get(i));
@@ -153,8 +164,8 @@ public class DateTimeNattyParser {
                 setTimePosition(position, matchingValue);
             }
 
-        //    System.out.println("date: " + storageOfDate + " sdate: "
-          //          + dates.get(i) + " time: " + storageOfTime + " i: " + i);
+            // System.out.println("date: " + storageOfDate + " sdate: "
+            // + dates.get(i) + " time: " + storageOfTime + " i: " + i);
         }
     }
 
@@ -174,31 +185,167 @@ public class DateTimeNattyParser {
             dates = (group.getDates());
 
             String matchingValue = group.getText();
-            String syntaxTree = group.getSyntaxTree().toStringTree();
+         
+          //  String syntaxTree = group.getSyntaxTree().toStringTree();
             Map<String, List<ParseLocation>> parseMap = group
                     .getParseLocations();
 
             int position = getPosition(userInput, matchingValue);
 
-            assert position != -1 : "Extra conjunction detected, thus no exact text "
-                    + "detect in user input. User pls remove all conjuction before date and time";
+            assert position != -1 : " can't exact text "
+                    + "detect in user input.";
 
             userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
                     matchingValue, "");
 
-       //     System.out.println("parseDate: " + dates + " mv: " + matchingValue
-         //          + " userInputLeftAfterParsing: "
-           //         + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
-             //       + " parseMap: " + parseMap);
+          //  System.out.println("parseDate: " + dates + " mv: " + matchingValue
+            //        + " userInputLeftAfterParsing: "
+              //      + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
+                //    + " parseMap: " + parseMap);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {
                 description = description.replaceFirst(matchingValue, "");
-                addMatchedDateTextInUserInput(matchingValue);
                 changeDateFormat(dates, parseMap, matchingValue, position);
             }
 
         }
+    }
+
+    /**
+     * 1) test 24 hour format.(HHMM <hour, hours, hr, hrs)
+     * 
+     * @param userInputLeft
+     * @throws : IllegalArgumentException : hour exceed 23 and min exceed 59
+     */
+    private void testValidTime(String userInputLeft)
+            throws IllegalArgumentException {
+        try {
+            Pattern timeDetector = Pattern.compile(HOUR_FORMAT_KEYWORD);
+            Matcher containTime = timeDetector.matcher(userInputLeft);
+
+            while (containTime.find()) {
+                Parser dateTimeParser = new Parser();
+                if (dateTimeParser.parse(userInputLeft).isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "24-hour time is invalid!");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * test 1. day exceed max day of that month 2) month out of range
+     * 
+     * @param leftOverUserInput
+     * @throws IllegalArgumentException : month or day out of range
+     */
+    private void testValidDate(String leftOverUserInput)
+            throws IllegalArgumentException {
+
+        Pattern dateDetector = Pattern.compile(MONNTHINWORD_DD_YYYY_KEYWORD);
+        Matcher containDate = dateDetector.matcher(leftOverUserInput);
+
+        while (containDate.find()) {
+            String date = containDate.group();
+            System.out.println("date: "+date);
+            
+            testEmptyGroupAfterParse(date);
+            
+            int month = MonthParser.convertMonthToNumber(date);
+   
+                int day = DayParser.getNumberOfDay(date);
+
+                int year = YearParser.getYear(date);
+
+                testValidMonth(month);
+                testValidDay(day, year, month);
+
+            }
+        }
+    
+
+    /**
+     * if the group is empty after parse means that the date exceed the max day
+     * that mean or the month is out of range (1-12)
+     * 
+     * @param leftOverUserInput
+     * @throws IllegalArgumentException : month or max day exceeded
+     */
+    private void testEmptyGroupAfterParse(String leftOverUserInput)
+            throws IllegalArgumentException {
+        try {
+            Parser dateTimeParser = new Parser();
+            if (dateTimeParser.parse(leftOverUserInput).isEmpty()) {
+                throw new IllegalArgumentException("Date key is invalid!");
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * throws and catch exception of invalid month
+     * 
+     * @param month
+     * @throws IllegalArgumentException : month entered out of range
+     */
+    private void testValidMonth(int month) throws IllegalArgumentException {
+        try {
+            if (month == 0) {
+                throw new IllegalArgumentException("Invalid Month Keyed!");
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * check if the date is valid if the year and the month have this day For
+     * example feb only have max 29 days
+     * 
+     * @param day
+     * @throws IllegalArgumentException : when day keyed exceed the max day
+     */
+    private void testValidDay(int day, int year, int month)
+            throws IllegalArgumentException {
+        try {
+            Calendar calendar = Calendar.getInstance();
+
+            if (year != 0) {
+                calendar.set(Calendar.YEAR, year);
+            }
+            calendar.set(Calendar.MONTH, month - 1);
+
+            int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+            System.out.println("maxDays: " + maxDays + " day: " + day);
+            if (day == 0 || exceedMaxDaysOnThatMonth(day, maxDays)) {
+                throw new IllegalArgumentException(
+                        "Invalid Day Keyed! Exceed the maximum day in that month");
+            }
+
+        } catch (IllegalArgumentException e) {
+
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * check if the day detected is more than the max day in that month
+     * 
+     * @param day
+     * @param maxDays
+     * @return true if it exceed, false if it does not
+     */
+    private boolean exceedMaxDaysOnThatMonth(int day, int maxDays) {
+        return maxDays < day;
     }
 
     /**
@@ -210,8 +357,9 @@ public class DateTimeNattyParser {
      */
     private int getPosition(String userInput, String matchingValue) {
         return userInput.indexOf(matchingValue);
-       
+
     }
+
     /**
      * set the start and end date in the right position in arrayList
      *
@@ -247,12 +395,7 @@ public class DateTimeNattyParser {
         }
     }
 
-    /**
-     * check is it numeric
-     * 
-     * @param numberOfDaysFromNow
-     * @return
-     */
+   
     private boolean isNumeric(String matchingValue) {
         boolean isNumeric = false;
         matchingValue = matchingValue.replaceAll("\\s+", " ");
@@ -262,24 +405,15 @@ public class DateTimeNattyParser {
         Pattern numberDectector = Pattern.compile("\\b\\d+\\b");
         Matcher matchedWithNumber = numberDectector
                 .matcher(partOfMatchingValue[0]);
-        
-        if (matchedWithNumber.find()) {
-            matchingValue = matchingValue.replaceAll(matchedWithNumber.group(), "");
-            if(matchingValue.length() == 0 && partOfMatchingValue.length == 1)
-            isNumeric = true;
-        }
-      
-        return isNumeric;
-    }
 
-    /**
-     * add the matching date text detected in user input to the arraylist
-     * 
-     * @param matchingValue
-     *            : date text detected
-     */
-    private void addMatchedDateTextInUserInput(String matchingValue) {
-        dateTextInUserInput.add(matchingValue);
+        if (matchedWithNumber.find()) {
+            matchingValue = matchingValue.replaceAll(matchedWithNumber.group(),
+                    "");
+            if (matchingValue.length() == 0 && partOfMatchingValue.length == 1)
+                isNumeric = true;
+        }
+
+        return isNumeric;
     }
 
     /**
@@ -319,12 +453,4 @@ public class DateTimeNattyParser {
         return date;
     }
 
-    /**
-     * get the date text detected in the userInput
-     * 
-     * @return a list containing text detected
-     */
-    public ArrayList<String> getDateTextInUserInput() {
-        return dateTextInUserInput;
-    }
 }
