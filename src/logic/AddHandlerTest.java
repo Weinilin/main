@@ -14,12 +14,12 @@ public class AddHandlerTest {
 	AddHandler ah = new AddHandler();
 	ArrayList<Task> taskTest = new ArrayList<Task>();
 	ArrayList<Task> expected = new ArrayList<Task>();
-	
+	Task task1, task2, task3 = null;
 	@Before
 	public void setUp() throws Exception {
-		Task task1 = CommandHandler.createNewTask("dinner 6 to 7pm"),
-		     task2 = CommandHandler.createNewTask("read Harry Porter"),
-			 task3 = CommandHandler.createNewTask("Reflectoin by tomorrow 10pm");
+	    task1 = CommandHandler.createNewTask("help mom for dinner 6 to 7pm");
+	    task2 = CommandHandler.createNewTask("read Harry Porter");
+	    task3 = CommandHandler.createNewTask("Reflectoin by tomorrow 10pm");
 		
 		expected.clear();
 		taskTest.clear();
@@ -29,18 +29,39 @@ public class AddHandlerTest {
 	}
 
 	@Test
-	public void testExecute() {
+	public void testExecute1() {
 		try {
 			setUp();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		try {
 		ah.execute("+", " read Harry Porter ", taskTest);
 		ah.execute("add", "dinner 6-7", taskTest);
 		ah.execute("a", "Reflection by 22:00 tomorrow", taskTest);
-
-		assertEquals(ah.execute("+", "help", taskTest), ah.getHelp(), taskTest);
+		} catch (Exception e) {
+		    fail("Unable to access the file for storage");
+		}
 		assertEquals(taskTest, expected);
 	}
 
+	@Test
+	public void testExecute2() {
+	    // test for help function
+        assertEquals(ah.getHelp(), taskTest);
+	}
+	
+	@Test
+	public void testExecute3() {
+	    taskTest.clear();
+	    expected.add(task1);
+	    // test for adding task starting with keyword help
+	    try {
+	        ah.execute("add", "help mom for dinner 6pm to 7pm", taskTest);
+	    } catch (Exception e) {
+	        fail("Unable to access the file for storage");
+	    }
+        assertEquals(taskTest, expected);
+	    
+	}
 }

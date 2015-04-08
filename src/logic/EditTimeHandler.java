@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import parser.DateTimeParser;
+import parser.MainParser;
 import parser.IndexParser;
-import parser.TaskTypeParser;
 import application.Task;
 import application.TaskComparator;
 /**
@@ -20,10 +19,11 @@ import application.TaskComparator;
 class EditTimeHandler extends UndoableCommandHandler {
     private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
+    private static String CHANGE_MESSAGE = "Updated the time of %1$s to %2$s\n";
     private ArrayList<String> aliases = new ArrayList<String>(
                                             Arrays.asList("et"));
     Task oldTask, newTask = null;
-    
+    String feedback = "";
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -37,12 +37,11 @@ class EditTimeHandler extends UndoableCommandHandler {
 			return getHelp();
 		}
 		
-        DateTimeParser dtp = new DateTimeParser(parameter);
-        TaskTypeParser ttp = new TaskTypeParser(parameter);
-        IndexParser ip = new IndexParser(parameter);
+        MainParser parser = new MainParser(parameter);
+        IndexParser ip = new IndexParser(token[1]);
         int index = ip.getIndex() - 1;
-        String newStartDateTime = dtp.getStartDate() + " " + dtp.getStartTime(),
-               newEndDateTime = dtp.getEndDate() + " " + dtp.getEndTime();
+        String newStartDateTime = parser.getStartDate() + " " + parser.getStartTime(),
+               newEndDateTime = parser.getEndDate() + " " + parser.getEndTime();
         if (index < 0) {
             return INVALID_INDEX_MESSAGE;
         }
@@ -56,18 +55,30 @@ class EditTimeHandler extends UndoableCommandHandler {
 
         newTask.setEndDateTime(newEndDateTime);
         newTask.setStartDateTime(newStartDateTime);
-        newTask.setTaskType(ttp.getTaskType());
+        newTask.setTaskType(parser.getTaskType());
         
         performEdit(taskList);
         return "Task \"" + newTask.getDescription() + "\" has changed time\n";
     }
 
+    /**
+     * execute the changes in Memory and update the feedback
+     * @param taskList
+     */
     private void performEdit(ArrayList<Task> taskList) {
-        if ((newTask != oldTask) && (oldTask != null)) {
-            memory.removeTask(oldTask);
-            memory.addTask(newTask);
-            recordChanges(taskList);
-            Collections.sort(taskList, new TaskComparator());
+        if (newTask != oldTask && oldTask != null) {
+            if (memory.addTask(newTask) >= 0) {
+                memory.removeTask(oldTask);
+                recordChanges(taskList);            
+                Collections.sort(taskList, new TaskComparator());
+                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getEndDateTime());
+            }
+            else {
+                feedback = "New task is identical to some existing task\n";
+            }
+        }
+        else {
+            feedback = "Please check your input\n";
         }
     }
     
@@ -86,6 +97,7 @@ class EditTimeHandler extends UndoableCommandHandler {
     private void reset() {
         newTask = null;
         oldTask = null;
+        feedback = "";
     }
     
     private void updateTaskList(ArrayList<Task> taskList) {
