@@ -61,7 +61,7 @@ public class MainParserTest {
     //PS: it is current time sensitive. if 13:00 is before current time:
     //switch start and end to the next day
     public void testTime() throws Exception {
-        
+       
         // test timed
         MainParser m1 = new MainParser("go grandma house at 1300h to 6pm");
         assertEquals("go grandma house", m1.getDescription());
@@ -72,10 +72,10 @@ public class MainParserTest {
         assertEquals("time task", m1.getTaskType());
         
         // test timed with ~
-        MainParser m2 = new MainParser("~1300 to 6pm~ go go go ~hshdh ~ sisisi 07/04 13:00 to 18:00");
+        MainParser m2 = new MainParser("~1300 to 6pm~ go go go ~hshdh ~ sisisi from 07/04 13:00 to 18:00");
         assertEquals("1300 to 6pm go go go hshdh sisisi", m2.getDescription());
         assertEquals("Tues 07/04/2015", m2.getEndDate());
-        assertEquals("Wed 08/04/2015", m2.getStartDate());
+        assertEquals("Tues 07/04/2015", m2.getStartDate());
         assertEquals("13:00", m2.getStartTime());
         assertEquals("18:00", m2.getEndTime());
         assertEquals("time task", m2.getTaskType());

@@ -10,18 +10,14 @@ public class TimeParserTEMPTEST {
 
     @Test
     public void test() throws Exception {
-        ArrayList<String> times = new ArrayList<String>();
-     // test with both pm
-DateTimeParser dt1 = new DateTimeParser("la ala la 1200h to 13:00 24/4 to Apr 25");
-        
-        assertEquals("12:00", dt1.getStartTime());
-       
-        assertEquals("13:00", dt1.getEndTime());
-        assertEquals("Fri 24/04/2015", dt1.getStartDate());
-        
-        assertEquals("Sat 25/04/2015", dt1.getEndDate());
-    }     
-    
+        ArrayList<String> times1 = new ArrayList<String>();
+        // test symbol of p.m.
+        times1.clear();
+        times1.add("23:30");
+        times1.add("01:30");
+        Time1Parser t11 = new Time1Parser("mds sale start at 11.30p for 2 hour");
+        assertEquals(times1, t11.getTimeList());
+    }  
 }
 
 
