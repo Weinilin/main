@@ -164,7 +164,7 @@ public class TimeParser {
 
         while (containTime.find()) {
             String time = containTime.group();
-System.out.println("time: "+time);
+
             testValidTime(time);
             userInputLeft = userInputLeft.replaceAll(time, "");
 

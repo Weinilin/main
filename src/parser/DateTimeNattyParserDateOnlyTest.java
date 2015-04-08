@@ -21,9 +21,36 @@ public class DateTimeNattyParserDateOnlyTest {
         ArrayList<String> dates = new ArrayList<String>();
         DateTimeNattyParser dateTime = new DateTimeNattyParser(
                 "add start reading ST2334 notes by today 8 am tomorrow 2330");
-        dates.add("07/04/2015");
         dates.add("08/04/2015");
+        dates.add("09/04/2015");
         assertEquals(dates, dateTime.getDateList());
+
+    }
+
+    
+    @Test
+    public void testMMDDYYYY() {
+
+        // mmdd
+        ArrayList<String> dates = new ArrayList<String>();
+        DateTimeNattyParser dateTime = new DateTimeNattyParser(
+                "jan 24");
+        dates.add("24/01/2015");
+        assertEquals(dates, dateTime.getDateList());
+        
+        // mmddyyy
+        DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
+                "jan 24 2017");
+        dates.clear();
+        dates.add("24/01/2017");
+        assertEquals(dates, dateTime1.getDateList());
+        
+     // mm/dd/yyy
+        DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
+                "2/24/2017");
+        dates.clear();
+        dates.add("24/02/2017");
+        assertEquals(dates, dateTime2.getDateList());
 
     }
 
@@ -95,21 +122,21 @@ public class DateTimeNattyParserDateOnlyTest {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tomorrow
         dates.clear();
-        dates.add("08/04/2015");
+        dates.add("09/04/2015");
         DateTimeNattyParser dateTime = new DateTimeNattyParser("mds sale from tomorrow");
         assertEquals(dates, dateTime.getDateList());
 
         // test keyword 5: the next day
         dates.clear();
-        dates.add("08/04/2015");
+        dates.add("09/04/2015");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser("mds sale the next day");
         assertEquals(dates, dateTime1.getDateList());
 
         // the day before
         dates.clear();
-        dates.add("05/01/2015");
+        dates.add("14/03/2016");
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
-                "mds sale six day before 11 Jan");
+                "mds sale six day before   03/20/2016  mds sale  ");
         assertEquals(dates, dateTime2.getDateList());
 
         // the monday before
@@ -122,11 +149,8 @@ public class DateTimeNattyParserDateOnlyTest {
         // the tues after
         dates.clear();
         dates.add("07/04/2015");
-        Date1Parser date = new Date1Parser("mds sale 1 tues after 4/4");
-        date.getDateList();
-        String input = date.getInputLeft();
-        DateTimeNattyParser dateTime4 = new DateTimeNattyParser(input );
-        assertEquals(dates, dateTime4.getDateList());
+        DateTimeNattyParser dateTime4 = new DateTimeNattyParser("mds sale 1 tues after 4/4");
+       assertEquals(dates, dateTime4.getDateList());
 
         // the day after
         dates.clear();
@@ -167,16 +191,16 @@ public class DateTimeNattyParserDateOnlyTest {
         dates.add("25/01/2015");
 
         DateTimeNattyParser dateTime7 = new DateTimeNattyParser(
-                "mds sale 24 jan and 25 jan");
+                "mds sale jan 24 and jan 25");
         assertEquals(dates, dateTime7.getDateList());
         
         //  date or date
         dates.clear();
-        dates.add("24/01/2015");
+        dates.add("10/01/2015");
         dates.add("14/01/2015");
 
         DateTimeNattyParser dateTime8 = new DateTimeNattyParser(
-                "mds sale 24 jan or 14 jan");
+                "mds sale jan 10 or jan 14");
         assertEquals(dates, dateTime8.getDateList());
 
     }
@@ -314,14 +338,7 @@ public class DateTimeNattyParserDateOnlyTest {
     
     public void MonthInWordDDTest(){
         ArrayList<String> dates = new ArrayList<String>();
-
-        // test 4th of April in the year of 2015 in sentence
-        dates.clear();
-        dates.add("04/04/2015");
-        DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
-                "mummy is nagging 4th of April in the year of 2015");
-        assertEquals(dates, dateTime1.getDateList());
-        
+       
         // test without year
         dates.clear();
         dates.add("10/04/2015");
@@ -353,26 +370,6 @@ public class DateTimeNattyParserDateOnlyTest {
                 "is it april fool day,  may 20 2015");
         assertEquals(dates, dateTime5.getDateList());
       
-    }
-    
-    @Test
-    /*
-     * test complication of sync with Date1Parser and DateTimeNattyParser
-     */
-    public void testComplication(){
-        ArrayList<String> dates = new ArrayList<String>();
-        //test the complication of next  wed and sat
-        //Since the detection of next weekday is on the date1Parser and next sun or thrus 
-        //could only detect on natty
-        dates.clear();
-        dates.add("18/04/2015");
-        dates.add("15/04/2015");
-        Date1Parser d1p = new Date1Parser("mds sale next sat and wed");
-        String userInput = d1p.getInputLeft();
-        DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
-                userInput);
-        assertEquals(dates, dateTime1.getDateList());
-        
     }
 
 
