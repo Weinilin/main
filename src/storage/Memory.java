@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 /**
  * Memory acts as a facade between LogicController and Database.
  * LogicController makes changes to the taskList stored in Memory.
@@ -255,7 +257,7 @@ public class Memory {
 	 * search the list by a keyword
 	 * 
 	 * @param keyword
-	 * @return result arraylist containing the index that contains the keyword
+	 * @return result arraylist containing the tasks that contains the keyword
 	 */
 	public ArrayList<Task> searchDescription(String keyword) {
 		memoryLogger.entering(getClass().getName(), "searching task containing keyword");
@@ -272,6 +274,7 @@ public class Memory {
 
 		return searchList;
 	}
+	
 	
 	public ArrayList<Task> searchStatus(String status) {
 		memoryLogger.entering(getClass().getName(), "searching task of the specified status");

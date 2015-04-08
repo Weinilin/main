@@ -67,7 +67,7 @@ public class LogicController {
                 return showAllHelps();
             }
             else if ((isUnknownCommand(inputToken[1]))) {
-                return showAllHelps();
+                return executeAddByDefault(userCommand);
             }
             else {
                 return handlerTable.get(inputToken[1]).getHelp();

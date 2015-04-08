@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
+import parser.MainParser;
 
 /**
  * CommandHandler for "delete" function
@@ -56,27 +57,12 @@ class DeleteHandler extends UndoableCommandHandler {
             return clrHandler.execute(token[0], "", taskList);
         }
 
-        IndexParser parser = new IndexParser(parameter);
+        IndexParser ip = new IndexParser(parameter);
         try {
-            index = parser.getIndex() - 1;
+            index = ip.getIndex() - 1;
             deleteByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
-            ArrayList<Task> searchList = memory.searchDescription(parameter);
-            removeKeyword:
-            for (Task task: searchList) {
-                if (taskList.contains(task)) {
-                    removedTask.add(task);
-                    goodFeedback += task.getDescription();
-                    break removeKeyword;
-                }
-            }
-//            for (Task task: taskList) {
-//                if (task.getDescription().contains(parameter)) {
-//                    removedTask.add(task);
-//                    goodFeedback += task.getDescription();
-//                    break;                    
-//                }                
-//            }
+            deleteByKeyword(parameter, taskList);
         }
         
         recordChanges(taskList);
@@ -89,6 +75,33 @@ class DeleteHandler extends UndoableCommandHandler {
         }
         
         return feedback;
+    }
+
+    /**
+     * remove the first occurence of the task containing the keyword
+     * @param parameter - the keyword that user intend to delete
+     * @param taskList - tasklist shown to user
+     * @throws Exception
+     */
+    private void deleteByKeyword(String parameter, ArrayList<Task> taskList)
+            throws Exception {
+        MainParser parser = new MainParser(parameter);
+        ArrayList<Task> searchList = memory.searchDescription(parser.getDescription());
+        removeKeyword:
+        for (Task task: searchList) {
+            if (taskList.contains(task)) {
+                removedTask.add(task);
+                goodFeedback += task.getDescription();
+                break removeKeyword;
+            }
+        }
+//            for (Task task: taskList) {
+//                if (task.getDescription().contains(parameter)) {
+//                    removedTask.add(task);
+//                    goodFeedback += task.getDescription();
+//                    break;                    
+//                }                
+//            }
     }
 
     /**
