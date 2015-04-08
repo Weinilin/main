@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import application.Task;
 import parser.IndexParser;
+import parser.MainParser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +49,8 @@ class MarkHandler extends UndoableCommandHandler {
             ip.getIndex();
             markByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
-            ArrayList<Task> searchList = memory.searchDescription(parameter);
+            MainParser parser = new MainParser(parameter);
+            ArrayList<Task> searchList = memory.searchDescription(parser.getDescription());
             markKeyword:
             for (Task task: searchList) {
                 if (taskList.contains(task)) {
