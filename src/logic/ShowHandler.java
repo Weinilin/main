@@ -61,6 +61,9 @@ class ShowHandler extends CommandHandler{
             String endDate = parser.getEndDate().split(" ")[1];
             return searchDate(startDate, endDate, taskList);
         }
+        else {
+            return "";
+        }
     }
 
     private boolean isKeywordSearch(String searchType) {
