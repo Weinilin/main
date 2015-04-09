@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
+import java.text.ParseException;
 import application.Task;
 import parser.MainParser;
 
@@ -43,7 +43,7 @@ class ShowHandler extends CommandHandler{
         }
 
         if (isSearchStatus(parameter)) {
-            return showStatus(parameter, taskList);
+            return searchByStatus(parameter, taskList);
         }
         
         MainParser parser = new MainParser(parameter);
@@ -53,8 +53,13 @@ class ShowHandler extends CommandHandler{
             return searchByKeyword(keyword, taskList);            
         }    
         else if (searchType.equals("deadline")) {
-            String date = parser.getEndDate();
-            return "";
+            String date = parser.getEndDate().split(" ")[1];
+            return searchDate(date, taskList);
+        }
+        else if (searchType.equals("time task")) {
+            String startDate = parser.getStartDate().split(" ")[1];
+            String endDate = parser.getEndDate().split(" ")[1];
+            return searchDate(startDate, endDate, taskList);
         }
         else {
             return "";
@@ -65,6 +70,12 @@ class ShowHandler extends CommandHandler{
         return searchType.equals("floating task");
     }
 
+    /**
+     * search the memory by the keyword if the task contains the keyword
+     * @param keyword keyword to be searched
+     * @param taskList - tasklist to be shown to user
+     * @return feedback of search result
+     */
     private String searchByKeyword(String keyword, ArrayList<Task> taskList) {
         ArrayList<Task> searchList = memory.searchDescription(keyword);
         if (searchList.isEmpty()) {
@@ -75,6 +86,55 @@ class ShowHandler extends CommandHandler{
             updateTaskList(taskList, searchList);
             showLogger.log(Level.FINE, "show all tasks containing keyword " + keyword);
             return String.format(FOUND_MESSAGE, keyword);
+        }
+    }
+    
+    /**
+     * search the memory for tasks that occurs on the date specified.
+     * Deadline task with same date of the intended date will be added to taskList.
+     * Timetask that occurs on the day will be added to taskList
+     * @param date intended date to be searched
+     * @param taskList taskList to be shown to user
+     * @return feedback string
+     */
+    private String searchDate(String date, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = new ArrayList<Task>();
+        try {
+            searchList = memory.searchDate(date);
+        } catch (ParseException pe) {
+            return "Error parsing date\n";
+        }
+        if (searchList.isEmpty()) {
+            showLogger.log(Level.FINE, "no results found on " + date);
+            return String.format(NOT_FOUND_MESSAGE, date);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            showLogger.log(Level.FINE, "show all tasks on " + date);
+            return String.format(FOUND_MESSAGE, date);
+        }
+    }
+    /**
+     * search the memory for tasks that occurs on the date specified.
+     * Deadline task with same date of the intended date will be added to taskList.
+     * Timetask that occurs on the day will be added to taskList
+     * @param date intended date to be searched
+     * @param taskList taskList to be shown to user
+     * @return feedback string
+     */
+    private String searchDate(String startDate, String endDate, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = new ArrayList<Task>();
+        try {
+            searchList = memory.searchDate(startDate, endDate);
+        } catch (ParseException pe) {
+            return "Error parsing date\n";
+        }
+        if (searchList.isEmpty()) {
+            return String.format(NOT_FOUND_MESSAGE, startDate);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            return String.format(FOUND_MESSAGE, startDate);
         }
     }
     
@@ -95,7 +155,7 @@ class ShowHandler extends CommandHandler{
      * @param taskList taskList to be displayed
      * @return feedback string
      */
-    private String showStatus(String parameter, ArrayList<Task> taskList) {
+    private String searchByStatus(String parameter, ArrayList<Task> taskList) {
         String feedback = new String();
         if (isEmpty(parameter) || isUndone(parameter)) {
             showUndoneTasks(taskList);

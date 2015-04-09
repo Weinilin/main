@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import application.Task;
+import application.TaskCreator;
 
 /**
  * CommandHandler for "add" function.

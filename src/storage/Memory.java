@@ -9,9 +9,12 @@ import application.TaskComparator;
 import application.TimeAnalyser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 /**
@@ -24,6 +27,7 @@ import java.text.SimpleDateFormat;
  */
 public class Memory {
 	
+    private static final long timeOffset = 86400000;
 	private final String DONE = "done";
 	private final String UNDONE = "undone";
 
@@ -275,7 +279,160 @@ public class Memory {
 		return searchList;
 	}
 	
-	
+//	/**
+//	 * search the list that the task that is occurring on this day
+//	 * @param date date that the task is occurring
+//     * @return result arraylist containing the tasks occurs on the day
+//     * @author A0114463M
+//	 */
+//	 public ArrayList<Task> searchDate(String date) {
+//	     assert isValidKeyword(date);
+//	     ArrayList<Task> searchList = new ArrayList<Task>();     
+//	     for (Task task: taskList) {
+//	            if (task.getTaskType().equals("deadline")) {
+//	                if (task.getEndDate().equals(date)) {
+//	                    searchList.add(task);
+//	                }
+//	            }
+//	            else if (task.getTaskType().equals("time task")) {
+//	                String suspectStartDate = task.getStartDate(),
+//	                       suspectEndDate = task.getEndDateTime();
+//	                if ((suspectStartDate >= date) && (suspectEndDate <= date)) {
+//	                    searchList.add(task);
+//	                }
+//	            }
+//	        }
+//	        return searchList;
+//	     return null;
+//	 }
+	 
+	/**
+     * search the list that the task that is occurring on this particular time
+     * for time task, this point of time shall be in the lapse of the task;
+     * for deadline task, search for deadlines that occurs within one hour of the 
+     * specified time
+     * @param dateTime - time that the task is occurring
+     * @return result arraylist containing the tasks occurs on the day
+     * @author A0114463M
+     */
+    public ArrayList<Task> searchDate(String date) throws ParseException{
+        assert isValidKeyword(date);
+        ArrayList<Task> searchList = new ArrayList<Task>();        
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar targetDate = Calendar.getInstance();
+        targetDate.setTime(sdf.parse(date));
+        for (Task task: taskList) {
+            if (task.getTaskType().equals("deadline")) {
+                Calendar suspectDate = Calendar.getInstance();
+                String endDate = task.getEndDate();
+                suspectDate.setTime(sdf.parse(endDate));               
+                if (isSameDate(targetDate, suspectDate)) {
+                    searchList.add(task);
+                }
+            }
+            else if (task.getTaskType().equals("time task")) {
+                 Calendar suspectStartDate = Calendar.getInstance(),
+                          suspectEndDate = Calendar.getInstance();
+                 suspectStartDate.setTime(sdf.parse(task.getStartDate()));
+                 suspectEndDate.setTime(sdf.parse(task.getEndDate()));
+                if (isWithinDate(targetDate, suspectStartDate, suspectEndDate)) {
+                    searchList.add(task);
+                }
+            }
+        }        
+        return searchList;
+    }
+    
+    /**
+     * search the list that the task that is occurring within the range specified
+     * for time task, the task will be added if anyday of the task falls within the 
+     * range
+     * for deadline task, the task will be added to search listif deadline of the 
+     * task falls within the range  
+     * @param startDate - the start of the date
+     * @param endDate - the start of the time
+     * @return result arraylist containing the tasks occurs on the day
+     * @author A0114463M
+     */
+    public ArrayList<Task> searchDate(String startDate, String endDate) throws ParseException{
+        assert isValidKeyword(startDate);
+        assert isValidKeyword(endDate);
+        ArrayList<Task> searchList = new ArrayList<Task>();        
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar targetStartDate = Calendar.getInstance(),
+                 targetEndDate = Calendar.getInstance();
+        targetStartDate.setTime(sdf.parse(startDate));
+        targetEndDate.setTime(sdf.parse(endDate));
+        
+        for (Task task: taskList) {
+            if (task.getTaskType().equals("deadline")) {
+                Calendar suspectDate = Calendar.getInstance();
+                suspectDate.setTime(sdf.parse(task.getEndDate()));               
+                if (isWithinDate(suspectDate, targetStartDate, targetEndDate)) {
+                    searchList.add(task);
+                }
+            }
+            else if (task.getTaskType().equals("time task")) {
+                 Calendar suspectStartDate = Calendar.getInstance(),
+                          suspectEndDate = Calendar.getInstance();
+                 suspectStartDate.setTime(sdf.parse(task.getStartDate()));
+                 suspectEndDate.setTime(sdf.parse(task.getEndDate()));
+                if (isWithinDate(targetStartDate, targetEndDate, suspectStartDate, suspectEndDate)) {
+                    searchList.add(task);
+                }
+            }
+        }        
+        return searchList;
+    }
+
+    /**
+     * This method checks whether a timed task falls into one range of start date and end date,
+     * or it covers the entire range to be checked
+     * @param targetStartDate
+     * @param targetEndDate
+     * @param suspectStartDate
+     * @param suspectEndDate
+     * @return
+     */
+    private boolean isWithinDate(Calendar targetStartDate,
+            Calendar targetEndDate, Calendar suspectStartDate,
+            Calendar suspectEndDate) {
+        return isWithinDate(suspectStartDate, targetStartDate, targetEndDate) ||
+            isWithinDate(suspectEndDate, targetStartDate, targetEndDate) ||
+            isWithinDate(targetStartDate, suspectStartDate, suspectEndDate);
+    }
+
+    /**
+     * check whether the target date is within the range of the suspect date
+     * @param targetDate
+     * @param suspectStartDate
+     * @param suspectEndDate
+     * @return true if target date is within (inclusive) the suspect start and end
+     * @author A0114463M
+     */
+    private boolean isWithinDate(Calendar targetDate, Calendar suspectStartDate,
+            Calendar suspectEndDate) {
+        return targetDate.get(Calendar.YEAR) >= suspectStartDate.get(Calendar.YEAR) &&
+                targetDate.get(Calendar.YEAR) <= suspectEndDate.get(Calendar.YEAR) &&
+                targetDate.get(Calendar.DAY_OF_YEAR) >= suspectStartDate.get(Calendar.DAY_OF_YEAR) &&
+                targetDate.get(Calendar.DAY_OF_YEAR) <= suspectEndDate.get(Calendar.DAY_OF_YEAR);
+    }
+    
+    /**
+     * check whether the target date is same as suspect date
+     * @param targetDate
+     * @param suspectate
+     * @return true if target date is same as the suspect 
+     * @author A0114463M
+     */
+    private boolean isSameDate(Calendar targetDate, Calendar suspectDate) {
+        return targetDate.get(Calendar.DAY_OF_YEAR) == suspectDate.get(Calendar.DAY_OF_YEAR) &&
+                targetDate.get(Calendar.YEAR) == suspectDate.get(Calendar.YEAR);
+    }
+
+    
 	public ArrayList<Task> searchStatus(String status) {
 		memoryLogger.entering(getClass().getName(), "searching task of the specified status");
 		assert isValidStatus(status);

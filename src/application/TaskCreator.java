@@ -1,10 +1,9 @@
 /**
- * 
+ * @author A0114463M
  */
-package logic;
+package application;
 
 import parser.MainParser;
-import application.Task;
 /**
  * A constructor for task objects, returns feedback when constructing the new 
  * object to its caller
@@ -37,6 +36,10 @@ public class TaskCreator {
  
         Task newTask = new Task(taskType, description, startDateTime, endDateTime, "undone");
         return newTask;
+    }
+    
+    public void setNewString(String newInformation) {
+        taskInformation = newInformation;
     }
     
     public String getFeedback() {
