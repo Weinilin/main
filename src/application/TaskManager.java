@@ -3,7 +3,7 @@ package application;
 import java.util.Scanner;
 
 import ui.CommandLineInterface;
-import ui.GUI;
+import ui.TaskManagerGUI;
 import ui.TaskListUI;
 
 class TaskManager	{
@@ -15,7 +15,7 @@ class TaskManager	{
 		CommandLineInterface cli = new CommandLineInterface();
 		Scanner scanner = new Scanner(System.in);
 
-		GUI std = new GUI();
+		TaskManagerGUI std = new TaskManagerGUI();
         std.run();
         
         TaskListUI taskListUI = new TaskListUI();

@@ -28,7 +28,7 @@ import java.util.Map;
  * @see JTextArea 
  */ 
  
-public class TextAreaRenderer extends JTextArea implements TableCellRenderer { 
+public class FloatingTasksTableRenderer extends JTextArea implements TableCellRenderer { 
     private final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); 
  
     // Column heights are placed in this Map 
@@ -37,7 +37,7 @@ public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
     /** 
      * Creates a text area renderer. 
      */ 
-    public TextAreaRenderer() { 
+    public FloatingTasksTableRenderer() { 
         setLineWrap(true); 
         setWrapStyleWord(true); 
     } 
@@ -143,8 +143,8 @@ public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
         while (columns.hasMoreElements()) { 
             TableColumn tc = columns.nextElement(); 
             TableCellRenderer cellRenderer = tc.getCellRenderer(); 
-            if (cellRenderer instanceof TextAreaRenderer) { 
-                TextAreaRenderer tar = (TextAreaRenderer) cellRenderer; 
+            if (cellRenderer instanceof FloatingTasksTableRenderer) { 
+                FloatingTasksTableRenderer tar = (FloatingTasksTableRenderer) cellRenderer; 
                 maximum_height = Math.max(maximum_height, 
                         tar.findMaximumRowSize(table, row)); 
             } 

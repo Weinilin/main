@@ -30,7 +30,7 @@ import java.util.Map;
  * @see JTextArea 
  */ 
  
-public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer { 
+public class DeadlinesAndTimeTasksTableRenderer extends JTextArea implements TableCellRenderer { 
     private final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); 
  
     // Column heights are placed in this Map 
@@ -39,7 +39,7 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
     /** 
      * Creates a text area renderer. 
      */ 
-    public TextAreaRenderer1() { 
+    public DeadlinesAndTimeTasksTableRenderer() { 
         setLineWrap(true); 
         setWrapStyleWord(true); 
     } 
@@ -156,8 +156,8 @@ public class TextAreaRenderer1 extends JTextArea implements TableCellRenderer {
         while (columns.hasMoreElements()) { 
             TableColumn tc = columns.nextElement(); 
             TableCellRenderer cellRenderer = tc.getCellRenderer(); 
-            if (cellRenderer instanceof TextAreaRenderer1) { 
-                TextAreaRenderer1 tar = (TextAreaRenderer1) cellRenderer; 
+            if (cellRenderer instanceof DeadlinesAndTimeTasksTableRenderer) { 
+                DeadlinesAndTimeTasksTableRenderer tar = (DeadlinesAndTimeTasksTableRenderer) cellRenderer; 
                 maximum_height = Math.max(maximum_height, 
                         tar.findMaximumRowSize(table, row)); 
             } 

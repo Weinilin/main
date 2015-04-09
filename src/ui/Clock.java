@@ -12,9 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-
-
-
 class Clock extends JLabel implements ActionListener {
 
 	public Clock() {
