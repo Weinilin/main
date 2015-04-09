@@ -6,20 +6,21 @@ import java.util.regex.Pattern;
 
 /**
  * get the escaped test which enclose by ~
- * @author WeiLin
+ * 
+ * @author A0112823R
  *
  */
 public class EscapedTextParser {
     private String textEscaped = "";
-    private ArrayList<String> escapedTextList  = new ArrayList<String>();
+    private ArrayList<String> escapedTextList = new ArrayList<String>();
 
     public EscapedTextParser(String userInput) {
         escapedTextList = storeEscapedTexts(userInput);
-        
+
         for (int i = 0; i < escapedTextList.size(); i++) {
             textEscaped = textEscaped + " " + escapedTextList.get(i);
         }
-  
+
     }
 
     /**
@@ -32,48 +33,38 @@ public class EscapedTextParser {
     }
 
     /**
-     * get the ArrayList of escaped text 
+     * get the ArrayList of escaped text
+     * 
      * @return ArrayList of escaped text
      */
-    public ArrayList<String> getListOfEscapedText(){
-        return escapedTextList; 
-        
-    }
-    /**
-     * remove ~
-     * 
-     * @param userInput
-     * @return escaped text without ~
-     */
-    private String removeThoseHashTag(String textEscaped) {
-       
-        textEscaped =  textEscaped.replaceAll("\\~", "");
-        textEscaped = textEscaped.trim();
-        return textEscaped;
+    public ArrayList<String> getListOfEscapedText() {
+        return escapedTextList;
+
     }
 
     /**
      * store all of the escaped text into a arrayList
+     * 
      * @param userInput
-     * @return
+     * @return arraylist of escaped text
      */
     private ArrayList<String> storeEscapedTexts(String userInput) {
-        ArrayList<Integer> hashTagIndex = new ArrayList<Integer>();
-        ArrayList<String> hashTag = new ArrayList<String>();
-        Pattern hashTagDetector = Pattern.compile("\\~");
-        Matcher containHashTag = hashTagDetector.matcher(userInput);
+        ArrayList<Integer> tildeIndex = new ArrayList<Integer>();
+        ArrayList<String> tildeEscapedText = new ArrayList<String>();
+        Pattern tildeDetector = Pattern.compile("\\~");
+        Matcher containTilde = tildeDetector.matcher(userInput);
 
-        while (containHashTag.find()) {
+        while (containTilde.find()) {
 
-            hashTagIndex.add(containHashTag.start());
-            
-            if (hashTagIndex.size() == 2) {
-                hashTag.add(userInput.substring(hashTagIndex.get(0),
-                        hashTagIndex.get(1) + 1));
-                hashTagIndex.clear();
+            tildeIndex.add(containTilde.start());
+
+            if (tildeIndex.size() == 2) {
+                tildeEscapedText.add(userInput.substring(tildeIndex.get(0),
+                        tildeIndex.get(1) + 1));
+                tildeIndex.clear();
             }
 
         }
-        return hashTag;
+        return tildeEscapedText;
     }
 }

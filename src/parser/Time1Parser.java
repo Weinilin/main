@@ -1,20 +1,22 @@
 package parser;
 
-/**
- * 1) 10-11pm 2) 1am-10 3) HH/HH:MM for ___hours/hr/hrs/hour 4) before/past/after midnight/noon
- * 5) HH/HH:MM/HH.MM/HH,MM 0'clock 6) HH[:.,]MM pm/am/a/p/a.m./p.m. 7) HH/HH:MM/HH.MM/HH,MM in the morning/in morn/
- *in the afternoon/in the night/ at night/at afternoon/at morning/at morn/morning/afternoon/morn/night 8) hhmm
- */
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
-
+/**
+ * 1) 10-11pm 2) 1am-10 3) HH/HH:MM for ___hours/hr/hrs/hour 4) before/past/after midnight/noon
+ * 5) HH/HH:MM/HH.MM/HH,MM 0'clock 6) HH[:.,]MM pm/am/a/p/a.m./p.m. 7) HH/HH:MM/HH.MM/HH,MM in the morning/in morn/
+ *in the afternoon/in the night/ at night/at afternoon/at morning/at morn/morning/afternoon/morn/night 8) hhmm
+ *@author A0112823R
+ */
 public class Time1Parser {
 
     private static final String TIME_TO_TIME_KEYWORD = "\\b(((\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|a.m.|p.m.|a|p|)(\\s|)(to|-)(\\s|)(\\d+[.:,](\\d+)|\\d+)(\\s|)(am|pm|a.m.|p.m.|a|p|)))\\b";
@@ -26,15 +28,12 @@ public class Time1Parser {
             + "| at (the |)morning\\b| at (the |)morn\\b))";
     private static final String TWENTY_FOUR_HH_KEYWORD = "(\\b\\d{1,2}[:.,]\\d{2}\\b) | (\\b\\d{4}\\b)";
     private static final String PAST_NOON_PAST_MIDNIGHT_KEYWORD = "(\\b(past midnight|past noon|after noon|after midnight)\\b)";
-    // private static final String CONJUNCTION_TWELVE_HOUR_KEYWORD =
-    // "\\b(@ |due on |on |at |from |to |by |due )\\d{2}(?!\\/:.,-( am)( pm)( jan))\\b";
     private static final String TO_BE_REMOVED_KEYWORD = "(before midnight|before noon|"
             + "in afternoon|in night|in (morning|morn)|at afternoon|at night|at (morning|morn)|in the afternoon|in the night|in the (morning|morn)|at the afternoon|at the night|at the (morning|morn)|o'clock|past noon|past"
             + "midnight|after noon|after midnight|noon|midnight|\\s|afternoon|night|morning|morn|-|to|at|from|hours|hour|hrs|hr|(@ |due on |on |at |from |to |by |due |o’clock))";
     private int index;
     private static String userInputLeft;
     private ArrayList<String> storageOfTime = new ArrayList<String>();
-  //  private String feedback;
 
     public Time1Parser(String userInput) throws Exception {
         extractTime(userInput, userInput);
@@ -42,10 +41,13 @@ public class Time1Parser {
 
     public void extractTime(String userInput, String leftOverUserInput)
             throws Exception {
+        
         userInput = removeThoseHashTag(userInput);
         userInput = switchAllToLowerCase(userInput);
+        
         leftOverUserInput = removeThoseHashTag(leftOverUserInput);
         leftOverUserInput = switchAllToLowerCase(leftOverUserInput);
+        
         userInputLeft = leftOverUserInput;
 
         goThroughTimeFormat(userInput);
@@ -55,15 +57,7 @@ public class Time1Parser {
         return index;
     }
 
-    /**
-     * return feedback(exception) to user.
-     * 
-     * @return
-     */
-   // public String getFeedBack() {
-     //   return feedback;
-    //}
-
+    
     /**
      * get the input left
      * 
@@ -92,8 +86,8 @@ public class Time1Parser {
      */
     private String removeThoseHashTag(String userInput) {
 
-        EscapedTextParser e1 = new EscapedTextParser(userInput);
-        ArrayList<String> escapedTextList = e1.getListOfEscapedText();
+        EscapedTextParser escapedTextParser = new EscapedTextParser(userInput);
+        ArrayList<String> escapedTextList = escapedTextParser.getListOfEscapedText();
 
         for (int i = 0; i < escapedTextList.size(); i++) {
 
@@ -108,7 +102,8 @@ public class Time1Parser {
      * go through the list of time format
      * 
      * @param userInput
-     * @throws Exception
+     * @throws Exception : fail to parse time and IllegalArgumentException 
+     * : key in invalid 12 and 24 hour format
      */
     private void goThroughTimeFormat(String userInput) throws Exception {
 
@@ -120,8 +115,6 @@ public class Time1Parser {
         spotTimeToTimeKeyword();
         spotTwelveHourFormat(userInput);
         spotTwentyFourHHKeyword(userInput);
-        // storageOfTime = spotConjunctionTwelveHourKeyword(storageOfTime,
-        // userInput);
 
     }
 
@@ -129,17 +122,19 @@ public class Time1Parser {
      * detect HH:MM/HH with pm and am behind.
      * 
      * @param storageOfTime
+     * @throws IllegalArgumentException : invalid 12 hour format > 12
      * @return storage of time containing the time detected.
      */
     private void spotTwelveHourFormat(String userInput)
             throws IllegalArgumentException {
+      
         Pattern timeDetector = Pattern.compile(TWELVE_HOUR_KEYWORD);
         Matcher matchedWithTime = timeDetector.matcher(userInputLeft);
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
-            // System.out.println("time: " + time);
+         
             testValidTime(time);
 
             userInputLeft = userInputLeft.replaceAll(time, "");
@@ -160,32 +155,6 @@ public class Time1Parser {
     }
 
     /**
-     * spot <conjunction> <digit> digit represent time + am.
-     * 
-     * @param storageOfTime
-     * @param userInput
-     * @return time in HH:MM
-     */
-    /*
-     * private ArrayList<String> spotConjunctionTwelveHourKeyword(
-     * ArrayList<String> storageOfTime, String userInput) { Pattern timeDetector
-     * = Pattern.compile(CONJUNCTION_TWELVE_HOUR_KEYWORD); Matcher
-     * matchedWithTime = timeDetector.matcher(userInputLeft); Matcher
-     * matchedForIndex = timeDetector.matcher(userInput);
-     * 
-     * while (matchedWithTime.find()) { String time = matchedWithTime.group();
-     * testValidTime(time); userInputLeft = userInputLeft.replaceAll(
-     * CONJUNCTION_TWELVE_HOUR_KEYWORD, "");
-     * 
-     * if (matchedForIndex.find()) { int indexNext = matchedForIndex.start();
-     * time = removeUnwantedParts(time); time = changeToHourFormat(time);
-     * 
-     * assert checkValid24HourTime(time) == true : "Wrong convention of time";
-     * 
-     * storageOfTime.add(time); setThePositionForTime(storageOfTime, indexNext);
-     * } } return storageOfTime; }
-     */
-    /**
      * spot time with past midnight, past noon,
      * 
      * @param userInput
@@ -196,17 +165,20 @@ public class Time1Parser {
         Matcher matchedForIndex = timeDetector.matcher(userInput);
 
         while (matchedWithTime.find()) {
+           
             userInputLeft = userInputLeft.replaceAll(
                     PAST_NOON_PAST_MIDNIGHT_KEYWORD, "");
             String time = matchedWithTime.group();
 
             if (matchedForIndex.find()) {
                 int indexNext = matchedForIndex.start();
+                
                 if (time.contains("noon")) {
                     storageOfTime.add("12:01");
                 } else if (time.contains("midnight")) {
                     storageOfTime.add("00:01");
                 }
+                
                 index = indexNext;
                 setThePositionForTime(indexNext);
             }
@@ -217,6 +189,7 @@ public class Time1Parser {
      * get 24 hour format time HH.MM/HH,MM
      * 
      * @param userInput
+     * @throws IllegalArgumentException : invalid 24 hour > 23
      */
     private void spotTwentyFourHHKeyword(String userInput)
             throws IllegalArgumentException {
@@ -230,6 +203,7 @@ public class Time1Parser {
             userInputLeft = userInputLeft.replaceAll(time, "");
 
             if (toGetIndex.find()) {
+               
                 int indexNext = toGetIndex.start();
                 time = removeUnwantedParts(time);
                 time = changeToHourFormat(time);
@@ -259,6 +233,7 @@ public class Time1Parser {
             userInputLeft = userInputLeft.replaceAll(time, "");
 
             if (toGetIndex.find()) {
+              
                 int indexNext = toGetIndex.start();
                 time = removeUnwantedParts(time);
                 time = changeToHourFormat(time);
@@ -304,7 +279,6 @@ public class Time1Parser {
             String numberOfHour = detectNumberOfHour(time);
             int numberOfHours = Integer.parseInt(numberOfHour);
 
-          //  System.out.println("numberOfHour "+numberOfHour+" hhInTime: "+hhInTime);
             hhInTime = addTimeWithHours(numberOfHours, hhInTime);
             String hhTimeInString = toString(hhInTime);
             String minTime = getMinutes(startTime);
@@ -327,11 +301,13 @@ public class Time1Parser {
      */
     private String toString(int hhInTime) {
         String hhTimeInString;
+       
         if (hhInTime < 10) {
             hhTimeInString = "0" + hhInTime;
         } else {
             hhTimeInString = "" + hhInTime;
         }
+      
         return hhTimeInString;
     }
 
@@ -401,13 +377,16 @@ public class Time1Parser {
         while (matchedWithTime.find()) {
             String time = matchedWithTime.group();
             userInputLeft = userInputLeft.replaceAll(time, "");
+           
             if (matchedForIndex.find()) {
                 int indexNext = matchedForIndex.start();
 
                 if (time.contains("morning") || time.contains("morn")) {
+                  
                     time = removeUnwantedParts(time);
                     testValidTime(time);
                     time = changeToHourFormat(time + "am");
+               
                 } else if (time.contains("afternoon") || time.contains("night")) {
                     time = removeUnwantedParts(time);
                     testValidTime(time);
@@ -458,7 +437,9 @@ public class Time1Parser {
     }
 
     private boolean isAtleastOneAMPM(String[] timeList) {
+        
         boolean isAtleastOneAMPM = false;
+      
         if ((timeList[0].contains("a") || timeList[0].contains("p"))
                 || (timeList[1].contains("a") || timeList[1].contains("p"))) {
             isAtleastOneAMPM = true;
@@ -590,60 +571,10 @@ public class Time1Parser {
     }
 
     /**
-     * get the earlier time compare between 2
-     * 
-     * @param calendarMaunalSetToAm
-     * @param calendarMaunalSetToPm
-     * @param timeSetToAM
-     * @param timeSetToPM
-     * @return the earlier time between 2
-     */
-    private String getEarlierTime(Calendar calendarMaunalSetToAm,
-            Calendar calendarMaunalSetToPm, String timeSetToAM,
-            String timeSetToPM) {
-        String timeSelected = "";
-
-        // if (calendarMaunalSetToAm.before(calendarMaunalSetToPm)) {
-
-        timeSelected = timeSetToAM;
-        // } else if (calendarMaunalSetToPm.before(calendarMaunalSetToAm)) {
-        // timeSelected = timeSetToPM;
-        // }
-
-        return timeSelected;
-    }
-
-    /**
-     * get the latest time compare between 2
-     * 
-     * @param calendarMaunalSetToAm
-     * @param calendarMaunalSetToPm
-     * @param timeSetToAM
-     * @param timeSetToPM
-     * @return time which is the latest between 2
-     */
-    private String getLaterTime(Calendar calendarMaunalSetToAm,
-            Calendar calendarMaunalSetToPm, String timeSetToAM,
-            String timeSetToPM) {
-        String timeSelected = "";
-        timeSelected = timeSetToPM;
-
-        /*
-         * if (calendarMaunalSetToAm.after(calendarMaunalSetToPm)) {
-         * timeSelected = timeSetToAM; } else if
-         * (calendarMaunalSetToPm.after(calendarMaunalSetToAm) ||
-         * timeSetToAM.equals("00:00")) { timeSelected = timeSetToPM;
-         * 
-         * }
-         */
-        return timeSelected;
-    }
-
-    /**
      * add the appropriate end time when only start contain am/pm
      * 
      * @param timeList
-     * @throws ParseException
+     * @throws ParseException : fail to parse
      */
     private void addTimeWhenStartTimeMeridiem(String[] timeList)
             throws ParseException {
@@ -736,10 +667,11 @@ public class Time1Parser {
      * @param timeWithMeridiem
      * @param dateFormat
      * @return
-     * @throws ParseException
+     * @throws ParseException : fail to parse time
      */
     private Calendar getCalendar(String timeWithMeridiem,
             SimpleDateFormat dateFormat) throws ParseException {
+      
         Date timeContainMeridiem = dateFormat.parse(timeWithMeridiem);
         Calendar calendarOfMeridiemKeyed = Calendar.getInstance();
         calendarOfMeridiemKeyed.setTime(timeContainMeridiem);
@@ -755,9 +687,9 @@ public class Time1Parser {
      */
     private boolean ifStartTimeContainsAmPm(String[] timeList) {
         boolean ifStartTimeContainsAmPm = false;
+      
         if (timeList[0].contains("a") || timeList[0].contains("p")) {
             ifStartTimeContainsAmPm = true;
-            // timeWithoutAmOrPm = timeList[1];
         } 
 
         return ifStartTimeContainsAmPm;
@@ -799,30 +731,40 @@ public class Time1Parser {
     private void testValidTime(String time) throws IllegalArgumentException {
         int timeInHour, timeInMin;
         boolean ifTwelveHour;
-
+        
+        Logger logger = Logger.getLogger("TimeParser");
         try {
+            logger.log(Level.INFO, "going to start processing for test valid time");
+            
             time = removeUnwantedParts(time);
             ifTwelveHour = checkTwelveOrTwentyFourFormat(time);
             time = removePMOrAmOrOclock(time);
 
             if (time.contains(":") || time.contains(".") || time.contains(",")) {
+             
                 timeInHour = getHH(time);
                 timeInMin = Integer.parseInt(getMinutes(time));
+          
             } else if (time.length() <= 2) {
+                
                 timeInHour = Integer.parseInt(time);
                 timeInMin = 0;
+           
             }else if(time.length() == 4){
+                
                 timeInHour = Integer.parseInt(time.substring(0, 2));
                 timeInMin = Integer.parseInt(time.substring(2));
+           
             } else {
+                
                 timeInHour = 0;
                 timeInMin = 0;
             }
 
             getExceptionForInvalidTime(timeInHour, timeInMin, ifTwelveHour);
         } catch (IllegalArgumentException e) {
+            logger.log(Level.FINER, "Invalid of time!");
             JOptionPane.showMessageDialog(null, e.getMessage());
-   //         feedback = e.getMessage();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -833,7 +775,8 @@ public class Time1Parser {
      * @param timeInHour
      * @param timeInMin
      * @param ifTwelveHour
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException : invalid 12 (>12) or 24(>23) hour format
+     * 
      */
     private void getExceptionForInvalidTime(int timeInHour, int timeInMin,
             boolean ifTwelveHour) throws IllegalArgumentException {
@@ -849,7 +792,8 @@ public class Time1Parser {
      * 
      * @param timeInHour
      * @param timeInMin
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException : beyond 12 for hour or beyond 60 for 
+     * min
      */
     private void test12HourFormat(int timeInHour, int timeInMin)
             throws IllegalArgumentException {
@@ -885,7 +829,8 @@ public class Time1Parser {
      * 
      * @param timeInHour
      * @param timeInMin
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException : beyond 23 for hour or beyond 
+     * 60 for min
      */
     private void test24HourFormat(int timeInHour, int timeInMin)
             throws IllegalArgumentException {
@@ -942,13 +887,13 @@ public class Time1Parser {
      *            : the index in the user input
      */
     private void setThePositionForTime(int indexNext) {
+    
         if (storageOfTime.size() == 2 && indexNext < index) {
             String temp = storageOfTime.get(0);
             storageOfTime.set(0, storageOfTime.get(1));
             storageOfTime.set(1, temp);
         }
         index = indexNext;
-        // System.out.println("index: "+index);
     }
 
     /**

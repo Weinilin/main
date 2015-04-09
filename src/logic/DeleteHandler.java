@@ -42,7 +42,7 @@ class DeleteHandler extends UndoableCommandHandler {
     }
 
     @Override
-    protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+    protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception{
         deleteLogger.entering(getClass().getName(), "preparing for delete");
 
         reset();
@@ -56,18 +56,27 @@ class DeleteHandler extends UndoableCommandHandler {
             return clrHandler.execute(token[0], "", taskList);
         }
 
-        IndexParser parameterParser = new IndexParser(parameter);
+        IndexParser parser = new IndexParser(parameter);
         try {
-            index = parameterParser.getIndex() - 1;
+            index = parser.getIndex() - 1;
             deleteByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
-            for (Task task: taskList) {
-                if (task.getDescription().contains(parameter)) {
+            ArrayList<Task> searchList = memory.searchDescription(parameter);
+            removeKeyword:
+            for (Task task: searchList) {
+                if (taskList.contains(task)) {
                     removedTask.add(task);
                     goodFeedback += task.getDescription();
-                    break;                    
-                }                
+                    break removeKeyword;
+                }
             }
+//            for (Task task: taskList) {
+//                if (task.getDescription().contains(parameter)) {
+//                    removedTask.add(task);
+//                    goodFeedback += task.getDescription();
+//                    break;                    
+//                }                
+//            }
         }
         
         recordChanges(taskList);
@@ -86,7 +95,7 @@ class DeleteHandler extends UndoableCommandHandler {
      * @param taskList
      * @param token
      */
-    private void deleteByIndex(ArrayList<Task> taskList, String[] token) {
+    private void deleteByIndex(ArrayList<Task> taskList, String[] token) throws Exception{
         for (String t: token) {
             IndexParser ip = new IndexParser(t);
             try {

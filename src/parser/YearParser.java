@@ -2,7 +2,11 @@ package parser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * 
+ * @author A0112823R
+ *
+ */
 public class YearParser {
 
     public YearParser() {
@@ -11,6 +15,7 @@ public class YearParser {
 
     public static int getYear(String dateOfTheTask) {
         int year = 0;
+       
         Pattern numberPattern = Pattern.compile("\\d+");
         Matcher containYear = numberPattern.matcher(dateOfTheTask);
         String numberText;
