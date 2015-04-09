@@ -3,7 +3,11 @@ package parser;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+/**
+ * 
+ * @author A0112823R
+ *
+ */
 public class EscapedTextParserTest {
 
     @Test
@@ -23,6 +27,18 @@ public class EscapedTextParserTest {
         //test multiple ~~ escaped char
         EscapedTextParser et4 = new EscapedTextParser("mds hdshsa ~oooo~ dhhd ~bye bye~ dhsah p~cgcgcg~l");
         assertEquals(et4.getEscapedText(), " ~oooo~ ~bye bye~ ~cgcgcg~");
+        
+        //test multiple ~~ escaped char with word at front and back
+        EscapedTextParser et5 = new EscapedTextParser("mds hdshsa~oooo~dhhd ~bye bye~ dhsah p~cgcgcg~l");
+        assertEquals(et5.getEscapedText(), " ~oooo~ ~bye bye~ ~cgcgcg~");
+        
+      //test multiple ~~ escaped char with word at front 
+        EscapedTextParser et6 = new EscapedTextParser("mds hdshsa~oooo~ dhhd ~bye bye~ dhsah p~cgcgcg~l");
+        assertEquals(et6.getEscapedText(), " ~oooo~ ~bye bye~ ~cgcgcg~");
+        
+        //test multiple ~~ escaped char with word at back 
+        EscapedTextParser et7 = new EscapedTextParser("mds hdshsa ~oooo~dhhd ~bye bye~dhsah p~cgcgcg~l");
+        assertEquals(et7.getEscapedText(), " ~oooo~ ~bye bye~ ~cgcgcg~");
     }
 
 }

@@ -2,7 +2,7 @@ package parser;
 
 /**
  * get the task type for the user input
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class TaskTypeParser {
@@ -20,6 +20,7 @@ public class TaskTypeParser {
 		}
 		
 		assert taskType != null :"error in detection detect too many time! or user key more than 2 times";
+		
 		setTaskType(taskType);
 	}
 
