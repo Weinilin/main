@@ -56,8 +56,10 @@ class ShowHandler extends CommandHandler{
             String date = parser.getEndDate().split(" ")[1];
             return searchDate(date, taskList);
         }
-        else {
-            return "";
+        else if (searchType.equals("time task")) {
+            String startDate = parser.getStartDate().split(" ")[1];
+            String endDate = parser.getEndDate().split(" ")[1];
+            return searchDate(startDate, endDate, taskList);
         }
     }
 
@@ -100,13 +102,36 @@ class ShowHandler extends CommandHandler{
             return "Error parsing date\n";
         }
         if (searchList.isEmpty()) {
-            showLogger.log(Level.FINE, "no results found containing " + date);
+            showLogger.log(Level.FINE, "no results found on " + date);
             return String.format(NOT_FOUND_MESSAGE, date);
         }
         else {
             updateTaskList(taskList, searchList);
-            showLogger.log(Level.FINE, "show all tasks containing keyword " + date);
+            showLogger.log(Level.FINE, "show all tasks on " + date);
             return String.format(FOUND_MESSAGE, date);
+        }
+    }
+    /**
+     * search the memory for tasks that occurs on the date specified.
+     * Deadline task with same date of the intended date will be added to taskList.
+     * Timetask that occurs on the day will be added to taskList
+     * @param date intended date to be searched
+     * @param taskList taskList to be shown to user
+     * @return feedback string
+     */
+    private String searchDate(String startDate, String endDate, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = new ArrayList<Task>();
+        try {
+            searchList = memory.searchDate(startDate, endDate);
+        } catch (ParseException pe) {
+            return "Error parsing date\n";
+        }
+        if (searchList.isEmpty()) {
+            return String.format(NOT_FOUND_MESSAGE, startDate);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            return String.format(FOUND_MESSAGE, startDate);
         }
     }
     
