@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 /**
  * get weekday for the date
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class WeekDayParser {
@@ -21,18 +21,22 @@ public class WeekDayParser {
      * @param storageOfDate
      */
     public static String getWeekDay(String date) throws IllegalArgumentException {
- 
-       
+        
         Calendar calendar = Calendar.getInstance();
 
         int day = DayParser.getNumberOfDay(date);
         int year = YearParser.getYear(date);
         int month = MonthParser.getMonth(date);
+       
         setDateIntoCalendar(day, month - 1, year, calendar);
+        
         testValidDay(day, year, month);
         testValidMonth(month);
+        
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        
         String weekdayInWord = convertToWord(dayOfWeek);
+        
         return weekdayInWord;
     }
 
@@ -55,6 +59,7 @@ public class WeekDayParser {
         } else if (userInput.contains("sun")) {
             dayOfWeek = 7;
         }
+        
         return dayOfWeek;
     }
 
@@ -63,46 +68,40 @@ public class WeekDayParser {
      * example feb only have max 29 days
      * 
      * @param day
+     * @throws IllegalArgumentException : when the day of month exceeded
      */
     private static void testValidDay(int day, int year, int month)
             throws IllegalArgumentException {
+       
         try {
+        
             Calendar calendar = Calendar.getInstance();
 
             if (year != 0) {
                 calendar.set(Calendar.YEAR, year);
             }
+           
             calendar.set(Calendar.MONTH, month - 1);
 
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            if (day == 0 || exceedMaxDaysOnThatMonth(day, maxDays)) {
+            if (day == 0 || maxDays < day) {
                 throw new IllegalArgumentException(
                         "Invalid Day Keyed! Exceed the maximum day in that month");
             }
 
+      
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         }
     }
-    
-    /**
-     * check if the day detected is more than the max day in that month
-     * 
-     * @param day
-     * @param maxDays
-     * @return true if it exceed, false if it does not
-     */
-    private static boolean exceedMaxDaysOnThatMonth(int day, int maxDays) {
-        return maxDays < day;
-    }
-
-    
+  
     /**
      * throws and catch exception of invalid month
      * 
      * @param month
+     * @throws IllegalArgumentException : month > 12 or month <= 0
      */
     private static void testValidMonth(int month) throws IllegalArgumentException {
         try {

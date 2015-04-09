@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * take note of the current date 
  * test case like today and tomorrow based on the current date
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class Date1ParserTest {
@@ -285,6 +285,42 @@ public class Date1ParserTest {
         dates.add("30/04/2015");
         Date1Parser d9 = new Date1Parser(("mds sale twenty-two day later"));
         assertEquals(dates, d9.getDateList());
+        
+        // test keyword 5: after _ day 
+        dates.clear();
+        dates.add("29/04/2015");
+        Date1Parser d10 = new Date1Parser(("mds sale after twenty-one day"));
+        assertEquals(dates, d10.getDateList());
+        
+     // test keyword 5: after _ day 
+        dates.clear();
+        dates.add("09/04/2015");
+        Date1Parser d11 = new Date1Parser(("mds sale after one day"));
+        assertEquals(dates, d11.getDateList());
+        
+     // test keyword 5: after _ day 
+        dates.clear();
+        dates.add("18/04/2015");
+        Date1Parser d12 = new Date1Parser(("mds sale after 10 day"));
+        assertEquals(dates, d12.getDateList());
+
+        // test keyword 5:  _ day after
+        dates.clear();
+        dates.add("29/04/2015");
+        Date1Parser d13 = new Date1Parser(("mds sale twenty-one day after"));
+        assertEquals(dates, d13.getDateList());
+        
+     // test keyword 5:  _ day  after
+        dates.clear();
+        dates.add("09/04/2015");
+        Date1Parser d14 = new Date1Parser(("mds sale one day after"));
+        assertEquals(dates, d14.getDateList());
+        
+     // test keyword 5:  _ day after
+        dates.clear();
+        dates.add("18/04/2015");
+        Date1Parser d15 = new Date1Parser(("mds sale 10 day after"));
+        assertEquals(dates, d15.getDateList());
     }
 
     @Test
@@ -357,6 +393,115 @@ public class Date1ParserTest {
 
         Date1Parser d7 = new Date1Parser("mds sale start twelve yr later");
         assertEquals(dates, d7.getDateList());
+        
+     // test keyword 5: after _ year 
+        dates.clear();
+        dates.add("09/04/2016");
+        Date1Parser d12 = new Date1Parser(("mds sale after 1 yr"));
+        assertEquals(dates, d12.getDateList());
+        
+     // test keyword 5: after _ year 
+        dates.clear();
+        dates.add("09/04/2027");
+        Date1Parser d19 = new Date1Parser(("mds sale after twelve yr"));
+        assertEquals(dates, d19.getDateList());
+        
+     // test keyword 5: after _ year 
+        dates.clear();
+        dates.add("09/04/2037");
+        Date1Parser d20 = new Date1Parser(("mds sale after twenty-two year"));
+        assertEquals(dates, d20.getDateList());
+
+        // test keyword 5: __ year after
+        dates.clear();
+        dates.add("09/04/2036");
+        Date1Parser d13 = new Date1Parser(("mds sale twenty-one year after"));
+        assertEquals(dates, d13.getDateList());
+        
+     // test keyword 5:  _ year after
+        dates.clear();
+        dates.add("09/04/2016");
+        Date1Parser d14 = new Date1Parser(("mds sale one year after"));
+        assertEquals(dates, d14.getDateList());
+        
+     // test keyword 5:  _ year after 
+        dates.clear();
+        dates.add("09/04/2025");
+        Date1Parser d15 = new Date1Parser(("mds sale 10 year after"));
+        assertEquals(dates, d15.getDateList());
+        
+     // test keyword 5: after _ week 
+        dates.clear();
+        dates.add("16/04/2015");
+        Date1Parser d16 = new Date1Parser(("mds sale after 1 wk"));
+        assertEquals(dates, d16.getDateList());
+        
+     // test keyword 5: after _ week 
+        dates.clear();
+        dates.add("02/07/2015");
+        Date1Parser d17 = new Date1Parser(("mds sale after twelve wk"));
+        assertEquals(dates, d17.getDateList());
+        
+     // test keyword 5: after _ week 
+        dates.clear();
+        dates.add("10/09/2015");
+        Date1Parser d18 = new Date1Parser(("mds sale after twenty-two week"));
+        assertEquals(dates, d18.getDateList());
+
+        // test keyword 5: __ week after
+        dates.clear();
+        dates.add("03/09/2015");
+        Date1Parser d21 = new Date1Parser(("mds sale twenty-one week after"));
+        assertEquals(dates, d21.getDateList());
+        
+     // test keyword 5:  _ week after
+        dates.clear();
+        dates.add("16/04/2015");
+        Date1Parser d22 = new Date1Parser(("mds sale one week after"));
+        assertEquals(dates, d22.getDateList());
+        
+     // test keyword 5:  _ week after 
+        dates.clear();
+        dates.add("18/06/2015");
+        Date1Parser d23 = new Date1Parser(("mds sale 10 week after"));
+        assertEquals(dates, d23.getDateList());
+        
+        
+        // test keyword 5: after _ month 
+        dates.clear();
+        dates.add("09/05/2015");
+        Date1Parser d24 = new Date1Parser(("mds sale after 1 mth"));
+        assertEquals(dates, d24.getDateList());
+        
+     // test keyword 5: after _ month 
+        dates.clear();
+        dates.add("09/04/2016");
+        Date1Parser d25 = new Date1Parser(("mds sale after twelve mth"));
+        assertEquals(dates, d25.getDateList());
+        
+     // test keyword 5: after _ month 
+        dates.clear();
+        dates.add("09/02/2017");
+        Date1Parser d26 = new Date1Parser(("mds sale after twenty-two month"));
+        assertEquals(dates, d26.getDateList());
+
+        // test keyword 5: __ month after
+        dates.clear();
+        dates.add("09/01/2017");
+        Date1Parser d27 = new Date1Parser(("mds sale twenty-one month after"));
+        assertEquals(dates, d27.getDateList());
+        
+     // test keyword 5:  _ month after
+        dates.clear();
+        dates.add("09/05/2015");
+        Date1Parser d28 = new Date1Parser(("mds sale one month after"));
+        assertEquals(dates, d28.getDateList());
+        
+     // test keyword 5:  _ month after 
+        dates.clear();
+        dates.add("09/02/2016");
+        Date1Parser d29 = new Date1Parser(("mds sale 10 month after"));
+        assertEquals(dates, d29.getDateList());
     }
     
     @Test

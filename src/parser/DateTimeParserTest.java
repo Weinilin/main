@@ -2,8 +2,6 @@ package parser;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
 
 /**
@@ -11,7 +9,7 @@ import org.junit.Test;
  * current time Pls set them according to your laptop's time and date For
  * example, usage of today and adding of current time when 1 today is detected.
  * 
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class DateTimeParserTest {
@@ -110,6 +108,7 @@ public class DateTimeParserTest {
     // to current date
     // When testing, do change the expected result's date to current date.
     // and if the time pass the current time, it will the next day
+    // PS: current date : 05/04 current time : 3pm
     public void testWhenDateNotKeyed() throws Exception {
         // deadline task without date added and past current time : 3pm
         DateTimeParser d1 = new DateTimeParser("CS2103T assignments due 10pm");

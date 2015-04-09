@@ -10,21 +10,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
-
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.ParseLocation;
 import com.joestelmach.natty.Parser;
+
 
 /**
  * Extract date and time from a library known as natty. Time: 1) _
  * hour/minute/second ago 2) in _ hour/minute/second 3) _ hour/minute/second
  * from now 5) 0600h/06:00 hours 5) noon/afternoon/midnight/morning Date: 1)
  * three/3 weeks/month/day/year ago 2) three/3 weeks/month/day/year from now 3)
- * next weeks/month/day/year 4) after three/3 weeks/month/day/year 5) three/3
- * weeks/month/day/year ago after 6) today/tomorrow/yesterday 7) _ or _ / _ or _
+ * next weeks/month/day/year 6) today/tomorrow/yesterday 7) _ or _ / _ or _
  * 8) day/weekday before 9) day/weekday after 10) word in month DD
  * 
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class DateTimeNattyParser {
@@ -73,20 +72,14 @@ public class DateTimeNattyParser {
         // detect but will be discarded)
         description = leftOverInput;
 
-        // System.out
-        // .println("groups: " + groups + " userInput: " + leftOverInput);
-
         testValidTime(userInputLeftAfterParsing);
         testValidDate(userInputLeftAfterParsing);
 
-        while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
+       while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
-            // System.out.println(" userInputLeftAfterParsing: "
-            // + userInputLeftAfterParsing);
+             
             parseDateAndTime(groups, userInput);
 
-            // System.out.println("dateTime: " + storageOfDate + " "
-            // + storageOfTime);
         }
     }
 
@@ -163,9 +156,6 @@ public class DateTimeNattyParser {
                 storageOfTime.add(time);
                 setTimePosition(position, matchingValue);
             }
-
-            // System.out.println("date: " + storageOfDate + " sdate: "
-            // + dates.get(i) + " time: " + storageOfTime + " i: " + i);
         }
     }
 
@@ -185,8 +175,8 @@ public class DateTimeNattyParser {
             dates = (group.getDates());
 
             String matchingValue = group.getText();
-         
-          //  String syntaxTree = group.getSyntaxTree().toStringTree();
+
+            // String syntaxTree = group.getSyntaxTree().toStringTree();
             Map<String, List<ParseLocation>> parseMap = group
                     .getParseLocations();
 
@@ -195,21 +185,27 @@ public class DateTimeNattyParser {
             assert position != -1 : " can't exact text "
                     + "detect in user input.";
 
-            userInputLeftAfterParsing = userInputLeftAfterParsing.replaceFirst(
-                    matchingValue, "");
-
-          //  System.out.println("parseDate: " + dates + " mv: " + matchingValue
-            //        + " userInputLeftAfterParsing: "
-              //      + userInputLeftAfterParsing + " syntaxTree: " + syntaxTree
-                //    + " parseMap: " + parseMap);
+            userInputLeftAfterParsing = remove(matchingValue, userInputLeftAfterParsing);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {
-                description = description.replaceFirst(matchingValue, "");
+                description = remove(matchingValue, description);
+
                 changeDateFormat(dates, parseMap, matchingValue, position);
             }
 
         }
+    }
+
+    private String remove(String matchingValue, String text) {
+        text = text.trim();
+        matchingValue = matchingValue.replaceAll("\\s+", " ");
+        String[] partOfMatchingValue = matchingValue.split(" ");
+
+        for (int i = 0; i < partOfMatchingValue.length; i++) {
+            text = text.replaceFirst(partOfMatchingValue[i], "");
+        }
+ return text;
     }
 
     /**
@@ -241,7 +237,8 @@ public class DateTimeNattyParser {
      * test 1. day exceed max day of that month 2) month out of range
      * 
      * @param leftOverUserInput
-     * @throws IllegalArgumentException : month or day out of range
+     * @throws IllegalArgumentException
+     *             : month or day out of range
      */
     private void testValidDate(String leftOverUserInput)
             throws IllegalArgumentException {
@@ -251,29 +248,28 @@ public class DateTimeNattyParser {
 
         while (containDate.find()) {
             String date = containDate.group();
-            System.out.println("date: "+date);
-            
+        
             testEmptyGroupAfterParse(date);
-            
+
             int month = MonthParser.convertMonthToNumber(date);
-   
-                int day = DayParser.getNumberOfDay(date);
 
-                int year = YearParser.getYear(date);
+            int day = DayParser.getNumberOfDay(date);
 
-                testValidMonth(month);
-                testValidDay(day, year, month);
+            int year = YearParser.getYear(date);
 
-            }
+            testValidMonth(month);
+            testValidDay(day, year, month);
+
         }
-    
+    }
 
     /**
      * if the group is empty after parse means that the date exceed the max day
      * that mean or the month is out of range (1-12)
      * 
      * @param leftOverUserInput
-     * @throws IllegalArgumentException : month or max day exceeded
+     * @throws IllegalArgumentException
+     *             : month or max day exceeded
      */
     private void testEmptyGroupAfterParse(String leftOverUserInput)
             throws IllegalArgumentException {
@@ -292,7 +288,8 @@ public class DateTimeNattyParser {
      * throws and catch exception of invalid month
      * 
      * @param month
-     * @throws IllegalArgumentException : month entered out of range
+     * @throws IllegalArgumentException
+     *             : month entered out of range
      */
     private void testValidMonth(int month) throws IllegalArgumentException {
         try {
@@ -300,6 +297,7 @@ public class DateTimeNattyParser {
                 throw new IllegalArgumentException("Invalid Month Keyed!");
             }
         } catch (IllegalArgumentException e) {
+
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -310,7 +308,8 @@ public class DateTimeNattyParser {
      * example feb only have max 29 days
      * 
      * @param day
-     * @throws IllegalArgumentException : when day keyed exceed the max day
+     * @throws IllegalArgumentException
+     *             : when day keyed exceed the max day
      */
     private void testValidDay(int day, int year, int month)
             throws IllegalArgumentException {
@@ -324,7 +323,6 @@ public class DateTimeNattyParser {
 
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            System.out.println("maxDays: " + maxDays + " day: " + day);
             if (day == 0 || exceedMaxDaysOnThatMonth(day, maxDays)) {
                 throw new IllegalArgumentException(
                         "Invalid Day Keyed! Exceed the maximum day in that month");
@@ -356,7 +354,11 @@ public class DateTimeNattyParser {
      * @return
      */
     private int getPosition(String userInput, String matchingValue) {
-        return userInput.indexOf(matchingValue);
+        matchingValue = matchingValue.replaceAll("\\s+", " ");
+        matchingValue = matchingValue.trim();
+        String[] partOfMatchingValue = matchingValue.split(" ");
+
+        return userInput.indexOf(partOfMatchingValue[0]);
 
     }
 
@@ -395,7 +397,6 @@ public class DateTimeNattyParser {
         }
     }
 
-   
     private boolean isNumeric(String matchingValue) {
         boolean isNumeric = false;
         matchingValue = matchingValue.replaceAll("\\s+", " ");
@@ -409,8 +410,17 @@ public class DateTimeNattyParser {
         if (matchedWithNumber.find()) {
             matchingValue = matchingValue.replaceAll(matchedWithNumber.group(),
                     "");
-            if (matchingValue.length() == 0 && partOfMatchingValue.length == 1)
+            if ((matchingValue.length() == 0 && partOfMatchingValue.length == 1)
+                    ||
+                    (partOfMatchingValue.length == 2 && (partOfMatchingValue[1]
+                            .equals("a") || partOfMatchingValue[1]
+                            .equals("p") || partOfMatchingValue[1]
+                                    .equals("am") || partOfMatchingValue[1]
+                                            .equals("pm") || partOfMatchingValue[1]
+                                                    .equals("a.m.") || partOfMatchingValue[1]
+                                                            .equals("p.m.")))) {
                 isNumeric = true;
+            }
         }
 
         return isNumeric;

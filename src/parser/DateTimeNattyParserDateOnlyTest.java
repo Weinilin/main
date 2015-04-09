@@ -10,7 +10,7 @@ import org.junit.Test;
  * take note some test case is sensitive to the current time and date
  * ensure the time and date are set to current time and date according
  * For example: after 3 days .....
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class DateTimeNattyParserDateOnlyTest {
@@ -371,7 +371,22 @@ public class DateTimeNattyParserDateOnlyTest {
         assertEquals(dates, dateTime5.getDateList());
       
     }
+@Test
 
+public void testComplication(){
+    ArrayList<String> dates = new ArrayList<String>();
+    //natty detect this as 11 a
+    DateTimeNattyParser dateTime5 = new DateTimeNattyParser("Tutorial 11 preparation by");
+    assertEquals(dates, dateTime5.getTimeList());
+    
+  //natty detect this as 11 p
+    DateTimeNattyParser dateTime6 = new DateTimeNattyParser("Tutorial 11 p by");
+    assertEquals(dates, dateTime6.getTimeList());
+    
+  //natty detect this as 11 p
+    DateTimeNattyParser dateTime7 = new DateTimeNattyParser("run 11 round by");
+    assertEquals(dates, dateTime7.getTimeList());
+}
 
 }
 

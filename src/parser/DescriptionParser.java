@@ -3,7 +3,7 @@ package parser;
 /**
  * get the description for the user input
  * 
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class DescriptionParser {
@@ -11,15 +11,12 @@ public class DescriptionParser {
 
     public DescriptionParser(String userInput, String userInputLeft)
             throws Exception {
-        String partOfDescription;
-
-        userInput = removeTheExtraSpace(userInput);
-
+        
         // to match with partOfDescription since all is set to lowercase during
         // detection of time and date to prevent case sensitive
         String lowerCaseInput = switchAllToLowerCase(userInput);
 
-        partOfDescription = removeTheExtraSpace(userInputLeft);
+        String partOfDescription = userInputLeft;
 
         String escapedText = getEscapedText(userInput);
 
@@ -38,10 +35,11 @@ public class DescriptionParser {
      */
     private String getEscapedText(String userInput) {
         EscapedTextParser escapedTextParser = new EscapedTextParser(userInput);
+
         String escapedText = escapedTextParser.getEscapedText();
-        escapedText = removeTheExtraSpace(escapedText);
+
         escapedText = switchAllToLowerCase(escapedText);
-        // System.out.println("escapedText: " + escapedText);
+
         return escapedText;
     }
 
@@ -71,15 +69,14 @@ public class DescriptionParser {
             String partOfDescription, String lowerCaseInput, String userInput) {
         String description = "";
         int indexLeftOverInput = 0, indexEscapedText = 0;
-
+        
         String[] eachWordInLeftOverInput = splitStringByWhitespace(partOfDescription);
         String[] eachEscapedText = splitStringByWhitespace(escapedText);
         String[] eachWordLowerCaseInput = splitStringByWhitespace(lowerCaseInput);
         String[] eachWordUserInput = splitStringByWhitespace(userInput);
 
         for (int i = 0; i < eachWordLowerCaseInput.length; i++) {
-            // System.out.println("eachWordUserInput[i]: "
-            // + eachWordLowerCaseInput[i]);
+
             boolean isByPassConjunction = isByPassConjunction(
                     indexLeftOverInput, indexEscapedText,
                     eachWordInLeftOverInput, eachEscapedText,
@@ -95,76 +92,31 @@ public class DescriptionParser {
                             .equals(eachWordInLeftOverInput[indexLeftOverInput])) {
 
                 description = description + " " + eachWordUserInput[i];
-
-                // System.out.println("eachWordUserInput[i]: "
-                // + eachWordLowerCaseInput[i]
-                // + " eachWordInDescription[indexEscapedText]: "
-                // + eachWordInLeftOverInput[indexLeftOverInput]
-                // + " description: " + description);
                 indexLeftOverInput++;
 
             } else if (indexEscapedText < eachEscapedText.length
                     && eachWordLowerCaseInput[i]
                             .equals(eachEscapedText[indexEscapedText])) {
 
-                eachWordUserInput[i] = eachWordUserInput[i].replaceAll("\\~",
-                        "");
                 description = description + " " + eachWordUserInput[i];
-                // System.out.println("eachWordUserInput[i]: "
-                // + eachWordUserInput[i]
-                // + " eachEscapedText[indexEscapedText]: "
-                // + eachEscapedText[indexEscapedText] + " description: "
-                // + description);
-
                 indexEscapedText++;
-            } else if (indexEscapedText < eachEscapedText.length
-                    && indexLeftOverInput < eachWordInLeftOverInput.length) {
-
-                if (isEscTextDescripInOneWord(indexLeftOverInput,
-                        indexEscapedText, eachWordInLeftOverInput,
-                        eachEscapedText, eachWordLowerCaseInput, i)) {
-
-                    eachWordUserInput[i] = eachWordUserInput[i].replaceAll(
-                            "\\~", "");
-
-                    description = description + " " + eachWordUserInput[i];
-                    indexEscapedText++;
-                    indexLeftOverInput++;
-                }
-
             }
+            
         }
         return description;
     }
 
     /**
-     * user could type !!!~12 dec~ or ~12dec~!!!! help to ensure that even for
-     * this scenario, the it could still detect as a description.
-     * 
-     * @param indexLeftOverInput
-     * @param indexEscapedText
-     * @param eachWordInLeftOverInput
-     * @param eachEscapedText
-     * @param eachWordLowerCaseInput
-     * @param i
-     *            : index for each word in user input
-     * @return true if it contain in !!!!~12 dec~ or ~12 dec~!!!! otherwise
-     *         false
+     * 1) change ~ to white space then split all by white space
+     * @param text
+     * @return array of each word in text
      */
-    private boolean isEscTextDescripInOneWord(int indexLeftOverInput,
-            int indexEscapedText, String[] eachWordInLeftOverInput,
-            String[] eachEscapedText, String[] eachWordLowerCaseInput, int i) {
-
-        return eachWordLowerCaseInput[i]
-                .equals(eachWordInLeftOverInput[indexLeftOverInput]
-                        + eachEscapedText[indexEscapedText])
-                || eachWordLowerCaseInput[i]
-                        .equals(eachEscapedText[indexEscapedText]
-                                + eachWordInLeftOverInput[indexLeftOverInput]);
-    }
-
-    private String[] splitStringByWhitespace(String partOfDescription) {
-        String[] eachWordInDescription = partOfDescription.split("\\s+");
+    private String[] splitStringByWhitespace(String text) {
+        text = text.replaceAll("\\~", " ");
+       
+        text = removeTheExtraSpace(text);
+     
+        String[] eachWordInDescription = text.split("\\s+|~");
         return eachWordInDescription;
     }
 
@@ -203,10 +155,7 @@ public class DescriptionParser {
                             eachWordLowerCaseInput, i)) {
                 isByPassConjunction = true;
             }
-            // System.out.println("isTheNextWordDate: "+isTheNextWordDate(indexLeftOverInput,
-            // indexEscapedText,
-            // eachWordInLeftOverInput, eachEscapedText,
-            // eachWordLowerCaseInput, i));
+            
         }
         return isByPassConjunction;
     }
@@ -274,13 +223,8 @@ public class DescriptionParser {
                         .equals(eachWordLowerCaseInput[indexUserInput + 1])
 
                 && (indexEscapedText == eachEscapedText.length || (indexEscapedText < eachEscapedText.length && !eachWordLowerCaseInput[indexUserInput + 1]
-                        .equals(eachEscapedText[indexEscapedText]))
+                        .equals(eachEscapedText[indexEscapedText])));
 
-                        && !(eachWordInLeftOverInput[indexLeftOverInput + 1] + eachEscapedText[indexEscapedText])
-                                .equals(eachWordLowerCaseInput[indexUserInput + 1])
-
-                        && !(eachEscapedText[indexEscapedText] + eachWordInLeftOverInput[indexLeftOverInput + 1])
-                                .equals(eachWordLowerCaseInput[indexUserInput + 1]));
     }
 
     /**

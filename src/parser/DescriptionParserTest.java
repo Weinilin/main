@@ -7,7 +7,7 @@ import org.junit.Test;
  * take note that this test case is current date and current time and weekday sensitive
  * eg: today and this weekday that pass the current weekday we are in (today: fri, key in this mon will have 
  * error)
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class DescriptionParserTest {
@@ -19,7 +19,6 @@ public class DescriptionParserTest {
 	    String userInputLeftOver = m1.getUserInputLeft();
 	    DescriptionParser d3 = new DescriptionParser("~CS2103T assignment~ at 2pm 23/4", userInputLeftOver);
 	    assertEquals(d3.getDescription(), "CS2103T assignment");
-	
 	    
 		//To test for deadlines task and with escaped character
 	    //~~ start of the statement
@@ -70,22 +69,35 @@ public class DescriptionParserTest {
         MainParser m9 = new MainParser("CS2103T assignment on ~2nd december~!!!!");
          userInputLeftOver = m9.getUserInputLeft();
         DescriptionParser d11 = new DescriptionParser("CS2103T assignment on ~2nd december~!!!!", userInputLeftOver);
-        assertEquals(d11.getDescription(), "CS2103T assignment on 2nd december!!!!"); 
+        assertEquals(d11.getDescription(), "CS2103T assignment on 2nd december !!!!"); 
         
       //test with having word join with ~ ~ as one word in the front
         MainParser m10 = new MainParser("CS2103T assignment on !!!~2nd december~");
          userInputLeftOver = m10.getUserInputLeft();
         DescriptionParser d12 = new DescriptionParser("CS2103T assignment on !!!~2nd december~", userInputLeftOver);
-        assertEquals(d12.getDescription(), "CS2103T assignment on !!!2nd december");
+        assertEquals(d12.getDescription(), "CS2103T assignment on !!! 2nd december");
         
         //test with having word join with ~ ~ as one word in the front and back
-        MainParser m11 = new MainParser("CS2103T assignment on e~2nd december~!!!");
+        MainParser m11 = new MainParser("e~2nd december~!!!  CS2103T assignment on");
          userInputLeftOver = m11.getUserInputLeft();
-        DescriptionParser d13 = new DescriptionParser("CS2103T assignment on e~2nd december~!!!", userInputLeftOver);
-        assertEquals(d13.getDescription(), "CS2103T assignment on e2nd december!!!"); 
+        DescriptionParser d13 = new DescriptionParser("e~2nd december~!!! CS2103T assignment on", userInputLeftOver);
+        assertEquals(d13.getDescription(), "e 2nd december !!! CS2103T assignment on"); 
+        
+        //test with having word join with ~ ~ as one word in the front and back
+        MainParser m12 = new MainParser("!~task~!");
+         userInputLeftOver = m12.getUserInputLeft();
+        DescriptionParser d14 = new DescriptionParser("!~task~!", userInputLeftOver);
+        assertEquals(d14.getDescription(), "! task !");
+       
+        //test with having word join with ~ ~ as one word in the front and back with time
+        MainParser m13 = new MainParser("dggdg~hhhh2pm~3pm24/03");
+        userInputLeftOver = m13.getUserInputLeft();
+        DescriptionParser d15 = new DescriptionParser("dggdg~hhhh2pm~3pm on 24/3", userInputLeftOver);
+        assertEquals(d15.getDescription(), "dggdg hhhh2pm"); 
+        System.out.println("m13: "+m13.getEndDate());
 
 	}
-	
+
 	@Test
 	public void testWithoutHashTag() throws Exception{
 	    

@@ -3,7 +3,11 @@ package parser;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
+/**
+ * 
+ * @author A0112823R
+ *
+ */
 public class IndexParserTest {
 
 	@Test
@@ -24,14 +28,5 @@ public class IndexParserTest {
 		assertEquals(1, i1.getIndex());
 	}
 
-	@Test
-	/**
-	 * test the boundary values when no digit is entered.
-	 * this will fail and send an exception message and exit the program
-	 */
-	public void testWhenNoDigit() {
-		IndexParser i1 = new IndexParser("delete");
-		assertEquals(1, i1.getIndex());
-	}
-
+	
 }

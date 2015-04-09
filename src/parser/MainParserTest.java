@@ -9,7 +9,7 @@ import org.junit.Test;
  * 2) deadlines
  * 3) floating
  * 4) escaped text
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class MainParserTest {
@@ -32,7 +32,7 @@ public class MainParserTest {
         assertEquals("-", m2.getStartDate());
         assertEquals("-", m2.getStartTime());
         assertEquals("14:00", m2.getEndTime());
-        assertEquals("deadline", m2.getTaskType());      
+        assertEquals("deadline", m2.getTaskType()); 
     }
 
     @Test
@@ -49,7 +49,7 @@ public class MainParserTest {
        
         // floating with ~~
         MainParser m2 = new MainParser("!~12/4~ dhdh ~2 jan 2014~ hdhdh ");
-        assertEquals("!12/4 dhdh 2 jan 2014 hdhdh", m2.getDescription());
+        assertEquals("! 12/4 dhdh 2 jan 2014 hdhdh", m2.getDescription());
         assertEquals("-", m2.getEndDate());
         assertEquals("-", m2.getStartDate());
         assertEquals("-", m2.getStartTime());

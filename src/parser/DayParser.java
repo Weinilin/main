@@ -3,6 +3,11 @@ package parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 
+ * @author A0112823R
+ *
+ */
 public class DayParser {
     private static String[] wordOfNumDays = { "one", "two", "three", "four",
             "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
@@ -63,7 +68,9 @@ public class DayParser {
      * @return number of day in integer.
      */
     private static int determineIntDaysFromWords(String numberOfDaysFromNow) {
+       
         int numberOfDays = 1;
+        
         for (int i = 0; i < wordOfNumDays.length; i++) {
             if (numberOfDaysFromNow.equals(wordOfNumDays[i])) {
                 break;

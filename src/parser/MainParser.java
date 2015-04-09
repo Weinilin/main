@@ -3,7 +3,7 @@ package parser;
  * get number of times detected, get task type, get start and end time and date, get 
  * user input left after extracting all time and date, get description and get feedback on
  * tasks before current date and many other.
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class MainParser {
