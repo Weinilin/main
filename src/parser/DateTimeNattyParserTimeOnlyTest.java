@@ -64,6 +64,7 @@ public class DateTimeNattyParserTimeOnlyTest {
 
     @Test
     // take note of current time, change the result according
+    //current time : 22:17
     public void testHoursApart() {
         // test current time + 2 hours
         ArrayList<String> times = new ArrayList<String>();
@@ -72,7 +73,7 @@ public class DateTimeNattyParserTimeOnlyTest {
                 "mds sale for 2 hours");
         times.add("22:17");
         times.add("00:17");
-        // assertEquals(times, dateTime.getTimeList());
+        assertEquals(times, dateTime.getTimeList());
 
         // test current time + 2 hours
 
@@ -81,7 +82,7 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.clear();
         times.add("22:17");
         times.add("00:17");
-        // assertEquals(times, dateTime1.getTimeList());
+        assertEquals(times, dateTime1.getTimeList());
         
         // test with hr
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
@@ -89,7 +90,7 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.clear();
         times.add("22:17");
         times.add("23:17");
-       //  assertEquals(times, dateTime2.getTimeList());
+       assertEquals(times, dateTime2.getTimeList());
         
         //test with hour
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser(
@@ -97,7 +98,7 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.clear();
         times.add("22:17");
         times.add("23:17");
-       //  assertEquals(times, dateTime3.getTimeList());
+        assertEquals(times, dateTime3.getTimeList());
 
     }
     
@@ -151,63 +152,63 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.add("21:43");
         DateTimeNattyParser dateTime = new DateTimeNattyParser(
                 "10 seconds ago, gigi bark!");
-        // assertEquals(times, dateTime.getTimeList());
+        assertEquals(times, dateTime.getTimeList());
 
         // test _ minutes ago
         times.clear();
         times.add("21:13");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser(
                 "30 min ago, gigi bark!");
-        // assertEquals(times, dateTime1.getTimeList());
+        assertEquals(times, dateTime1.getTimeList());
 
         // test _ hours ago
         times.clear();
         times.add("20:44");
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
                 "One hour ago, gigi bark!");
-        // assertEquals(times, dateTime2.getTimeList());
+        assertEquals(times, dateTime2.getTimeList());
 
         // test in 5 minutes
         times.clear();
         times.add("21:49");
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser(
                 "gigi sleep in 5 minutes");
-        // assertEquals(times, dateTime3.getTimeList());
+        assertEquals(times, dateTime3.getTimeList());
 
         // test in 5 hours
         times.clear();
         times.add("00:44");
         DateTimeNattyParser dateTime4 = new DateTimeNattyParser(
                 "gigi sleep in 3 hours");
-        // assertEquals(times, dateTime4.getTimeList());
+        assertEquals(times, dateTime4.getTimeList());
 
         // test in 5 second
         times.clear();
         times.add("21:44");
         DateTimeNattyParser dateTime5 = new DateTimeNattyParser(
                 "gigi sleep in 1 second");
-        // assertEquals(times, dateTime5.getTimeList());
+        assertEquals(times, dateTime5.getTimeList());
 
         // test in 4 minutes from now
         times.clear();
         times.add("21:50");
         DateTimeNattyParser dateTime6 = new DateTimeNattyParser(
                 "runrun 4 minutes from now");
-        // assertEquals(times, dateTime6.getTimeList());
+         assertEquals(times, dateTime6.getTimeList());
 
         // test in 4 hour from now
         times.clear();
         times.add("01:45");
         DateTimeNattyParser dateTime7 = new DateTimeNattyParser(
                 "runrun 4 hour from now");
-        // assertEquals(times, dateTime7.getTimeList());
+         assertEquals(times, dateTime7.getTimeList());
         
         // test in four hour from now
         times.clear();
         times.add("01:45");
         DateTimeNattyParser dateTime8 = new DateTimeNattyParser(
                 "runrun four hour from now");
-        // assertEquals(times, dateTime8.getTimeList());
+         assertEquals(times, dateTime8.getTimeList());
 
     }
 }

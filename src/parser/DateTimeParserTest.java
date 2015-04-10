@@ -337,7 +337,7 @@ public class DateTimeParserTest {
 
         // the tues after
 
-        DateTimeParser dateTime6 = new DateTimeParser("two tuesday after 24/5 ");
+        DateTimeParser dateTime6 = new DateTimeParser("two tuesday after 24 May ");
         assertEquals("Tues 02/06/2015", dateTime6.getEndDate());
         assertEquals("-", dateTime6.getStartDate());
         assertEquals("-", dateTime6.getStartTime());

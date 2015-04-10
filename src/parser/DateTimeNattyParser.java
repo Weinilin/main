@@ -14,22 +14,21 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.ParseLocation;
 import com.joestelmach.natty.Parser;
 
-
 /**
  * Extract date and time from a library known as natty. Time: 1) _
  * hour/minute/second ago 2) in _ hour/minute/second 3) _ hour/minute/second
  * from now 5) 0600h/06:00 hours 5) noon/afternoon/midnight/morning Date: 1)
  * three/3 weeks/month/day/year ago 2) three/3 weeks/month/day/year from now 3)
- * next weeks/month/day/year 6) today/tomorrow/yesterday 7) _ or _ / _ or _
- * 8) day/weekday before 9) day/weekday after 10) word in month DD
+ * next weeks/month/day/year 6) today/tomorrow/yesterday 7) _ or _ / _ or _ 8)
+ * day/weekday before 9) day/weekday after 10) word in month DD
  * 
  * @author A0112823R
  *
  */
 public class DateTimeNattyParser {
-    private static final String MONNTHINWORD_DD_YYYY_KEYWORD = "\\b(january|febuary|march|april|may|june|july|august|september|octobor|november|december)"
+    private final String MONNTHINWORD_DD_YYYY_KEYWORD = "\\b(january|febuary|march|april|may|june|july|august|september|octobor|november|december)"
             + "|(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\\s|)(\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|)(\\d+|)\\b";
-    private static final String HOUR_FORMAT_KEYWORD = "\\b\\d+(\\s|)(hour|hr)(s|)\\b";
+    private final String HOUR_FORMAT_KEYWORD = "\\b\\d+(\\s|)(hour|hr)(s|)\\b";
     private ArrayList<String> storageOfDate = new ArrayList<String>();
     private ArrayList<String> storageOfTime = new ArrayList<String>();
     private String userInputLeftAfterParsing;
@@ -57,8 +56,6 @@ public class DateTimeNattyParser {
         storageOfDate.addAll(dates);
         storageOfTime.addAll(times);
 
-        Parser dateTimeParser = new Parser();
-
         indexTime = indexPrevTime;
         indexDate = indexPrevDate;
 
@@ -75,11 +72,11 @@ public class DateTimeNattyParser {
         testValidTime(userInputLeftAfterParsing);
         testValidDate(userInputLeftAfterParsing);
 
-       while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
-            groups = dateTimeParser.parse(userInputLeftAfterParsing);
-             
-            parseDateAndTime(groups, userInput);
+        Parser dateTimeParser = new Parser();
+        while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
 
+            groups = dateTimeParser.parse(userInputLeftAfterParsing);
+            parseDateAndTime(groups, userInput);
         }
     }
 
@@ -125,7 +122,7 @@ public class DateTimeNattyParser {
 
     /**
      * 1. change the date to String 2. change from<weekday> <month in word>
-     * <day> <hh:mm:ss> <timezone> <year> to <weekday> <day/month/year> <hh:mm>
+     * <day> <HH:mm:ss> <timezone> <year> to <weekday> <day/month/year> <hh:mm>
      * 3. bypass those like eve that should be in description
      * 
      * @param dates
@@ -164,7 +161,7 @@ public class DateTimeNattyParser {
      * 
      * @param groups
      *            : contains the date and time in format : <weekday> <month in
-     *            word> <day> <hh:mm:ss> <timezone> <year>
+     *            word> <day> <HH:mm:ss> <timezone> <year>
      * @param userInput
      *            : contain the user input
      * @return dates: store all of the detected date and time in it
@@ -185,7 +182,8 @@ public class DateTimeNattyParser {
             assert position != -1 : " can't exact text "
                     + "detect in user input.";
 
-            userInputLeftAfterParsing = remove(matchingValue, userInputLeftAfterParsing);
+            userInputLeftAfterParsing = remove(matchingValue,
+                    userInputLeftAfterParsing);
 
             // so as not to detect the 10 in run 10 rounds
             if (!isNumeric(matchingValue) && !matchingValue.equals("eve")) {
@@ -205,7 +203,7 @@ public class DateTimeNattyParser {
         for (int i = 0; i < partOfMatchingValue.length; i++) {
             text = text.replaceFirst(partOfMatchingValue[i], "");
         }
- return text;
+        return text;
     }
 
     /**
@@ -248,12 +246,12 @@ public class DateTimeNattyParser {
 
         while (containDate.find()) {
             String date = containDate.group();
-        
+
             testEmptyGroupAfterParse(date);
 
             int month = MonthParser.convertMonthToNumber(date);
 
-            int day = DayParser.getNumberOfDay(date);
+            int day = NumberParser.getNumber(date);
 
             int year = YearParser.getYear(date);
 
@@ -323,7 +321,7 @@ public class DateTimeNattyParser {
 
             int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            if (day == 0 || exceedMaxDaysOnThatMonth(day, maxDays)) {
+            if (day == 0 || maxDays < day) {
                 throw new IllegalArgumentException(
                         "Invalid Day Keyed! Exceed the maximum day in that month");
             }
@@ -333,17 +331,6 @@ public class DateTimeNattyParser {
             JOptionPane.showMessageDialog(null, e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    /**
-     * check if the day detected is more than the max day in that month
-     * 
-     * @param day
-     * @param maxDays
-     * @return true if it exceed, false if it does not
-     */
-    private boolean exceedMaxDaysOnThatMonth(int day, int maxDays) {
-        return maxDays < day;
     }
 
     /**
@@ -411,19 +398,28 @@ public class DateTimeNattyParser {
             matchingValue = matchingValue.replaceAll(matchedWithNumber.group(),
                     "");
             if ((matchingValue.length() == 0 && partOfMatchingValue.length == 1)
-                    ||
-                    (partOfMatchingValue.length == 2 && (partOfMatchingValue[1]
-                            .equals("a") || partOfMatchingValue[1]
-                            .equals("p") || partOfMatchingValue[1]
-                                    .equals("am") || partOfMatchingValue[1]
-                                            .equals("pm") || partOfMatchingValue[1]
-                                                    .equals("a.m.") || partOfMatchingValue[1]
-                                                            .equals("p.m.")))) {
+                    || (partOfMatchingValue.length == 2 && isEqualToMeridiem(partOfMatchingValue))) {
                 isNumeric = true;
             }
         }
 
         return isNumeric;
+    }
+
+    /**
+     * natty could detect <digit> a from "tutorial 11 preparation today"
+     * thus must bypass it
+     * @param partOfMatchingValue
+     * @return
+     */
+    private boolean isEqualToMeridiem(String[] partOfMatchingValue) {
+        return partOfMatchingValue[1]
+                .equals("a")
+                || partOfMatchingValue[1].equals("p")
+                || partOfMatchingValue[1].equals("am")
+                || partOfMatchingValue[1].equals("pm")
+                || partOfMatchingValue[1].equals("a.m.") || partOfMatchingValue[1]
+                    .equals("p.m.");
     }
 
     /**
