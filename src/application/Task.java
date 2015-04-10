@@ -2,6 +2,13 @@ package application;
 
 import java.util.ArrayList;
 
+/**
+ * Task is a class that is used to store all the information of a task to be stored in TaskManager
+ * 
+ * @author A0113966Y
+ *
+ */
+
 public class Task {
 	
 	private static final String[] dataField = {
@@ -12,7 +19,6 @@ public class Task {
 		"Status"
 	};
 	
-	/****Attribute****/
 	private String taskType;
 	private String description;
 	private String startDateTime;
@@ -49,10 +55,6 @@ public class Task {
 	public void setEndDateTime(String newEndDateTime) {
 		endDateTime = newEndDateTime;
 	}
-	
-//	public void setDeadline(String newDeadline) {
-//		deadline = newDeadline;
-//	}
 
 	public void setStatus(String newStatus) {
 		status = newStatus;
@@ -78,10 +80,6 @@ public class Task {
 		return endDateTime;
 	}
 	
-//	public String getDeadline() {
-//		return deadline;
-//	}
-	
 	public String getStartDate() {
 		return startDateTime.substring(4).substring(0, 10);
 	}
@@ -97,14 +95,6 @@ public class Task {
 	public String getEndTime(){
 		return endDateTime.substring(4).substring(11, 16);
 	}
-	
-//	public String getDeadlineDate() {
-//		return deadline.substring(0, 10);
-//	}
-	
-//	public String getDeadlineTime() {
-//		return deadline.substring(11, 16);
-//	}
 	
 	public String getStatus(){
 		return status;
@@ -127,7 +117,6 @@ public class Task {
 			return false;
 		}
 	}
-	
 	
 	public String toString() {
 		String str = "";

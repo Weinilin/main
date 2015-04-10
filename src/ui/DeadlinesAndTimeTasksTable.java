@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -21,41 +19,50 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 import application.Task;
 import logic.LogicController;
 
+/**
+ * DeadlinesAndTimeTasksTable is used to create a table that stores deadlines and time tasks.
+ * 
+ * @author A0113966Y
+ *
+ */
 public class DeadlinesAndTimeTasksTable extends JPanel {
+	
 	/**
 	 * generated
 	 */
-	private static final long serialVersionUID = 2209413154219474687L;
+	private static final long serialVersionUID = 7618108371680630851L;
 	
 	private static final String NAME_LABEL = "Deadlines and Time Tasks";
+	private static final String[] NAMES_COLUMN = {"No.", "Description", "Start Time", "End Time", "Status"};
+	
+	private static final Font FONT_ARIAL = new Font("Arial", Font.PLAIN, 12);
+	
+	private static final String KEY_EVENT_SCROLL_UP = "scroll up";
+	private static final String KEY_EVENT_SCROLL_DOWN = "scroll up";
+
 	private static final int ROWS = 11;
 	private static final int COLUMN_SIZE = 5;
-
-	private static final String[] NAMES_COLUMN = {"No.",
-		                                   "Description",
-		                                   "Start Time",
-		                                   "End Time",
-	                                       "Status"};
-	private static final Font FONT_ARIAL = new Font("Arial", Font.PLAIN, 12);
 
 	
 	private static JLabel label;
 	private static JTable table; 
-	private static DefaultTableModel model ;
-//	= new DefaultTableModel(NAMES_COLUMN, 0)
-//	{
-//		
-//		//This causes all cells to be not editable
-//		public boolean isCellEditable(int row, int column)
-//		{
-//			return false;
-//		}
-//	};
+	private static DefaultTableModel model = new DefaultTableModel(NAMES_COLUMN, 0)
+	{
+		/**
+		 * generated
+		 */
+		private static final long serialVersionUID = 55623221195634318L;
+
+		//This causes all cells to be not editable
+		public boolean isCellEditable(int row, int column)
+		{
+			return false;
+		}
+	};
 	private static JScrollPane scrollPane;
 	
 	private static DeadlinesAndTimeTasksTable deadlinesAndTimeTasksTable;
@@ -68,18 +75,9 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 
 		initializeTableLabel();
 		add(label, BorderLayout.NORTH);
-		model = new DefaultTableModel(NAMES_COLUMN, 0)
-		{
-			
-			//This causes all cells to be not editable
-			public boolean isCellEditable(int row, int column)
-			{
-				return false;
-			}
-		};
 		table = new JTable(model);
 		scrollPane = new JScrollPane(table);
-		add(table, BorderLayout.CENTER);
+		add(scrollPane, BorderLayout.CENTER);
 
 		initializeTable();
 		setUpColumnWidth();
@@ -122,8 +120,13 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 	}
 	
 	private void addScrollUpCommand() {
-		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), "scroll down");
-		table.getActionMap().put("scroll down", new AbstractAction() {        
+		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), KEY_EVENT_SCROLL_DOWN);
+		table.getActionMap().put(KEY_EVENT_SCROLL_DOWN, new AbstractAction() {        
+			/**
+			 * generated 
+			 */
+			private static final long serialVersionUID = 2464218770554059695L;
+
 			public void actionPerformed(ActionEvent ae) {
 				int height = table.getRowHeight() * (ROWS - 1);
 				JScrollBar bar = scrollPane.getVerticalScrollBar();
@@ -133,8 +136,13 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 	}
 	
 	private void addScrollDownCommand() {
-		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, 0), "scroll up");
-		table.getActionMap().put("scroll up", new AbstractAction() {     
+		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, 0), KEY_EVENT_SCROLL_UP);
+		table.getActionMap().put(KEY_EVENT_SCROLL_UP, new AbstractAction() {     
+			/**
+			 * generated
+			 */
+			private static final long serialVersionUID = -1827429458697486133L;
+
 			public void actionPerformed(ActionEvent ae) {
 				int height = table.getRowHeight() * (ROWS - 1);
 				JScrollBar bar = scrollPane.getVerticalScrollBar();
@@ -143,7 +151,7 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		});
 	}
 	
-	public static int updateTable() {
+	public int updateTable() {
 		model.setRowCount(0);
 
 		ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks(logicController.getTaskList());
@@ -165,14 +173,13 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		return taskNumber;
 	}
 
-	private static ArrayList<Task> getDeadlinesAndTimeTasks(ArrayList<Task> taskList) {
+	private ArrayList<Task> getDeadlinesAndTimeTasks(ArrayList<Task> taskList) {
 		ArrayList<Task> deadlinesAndTimeTasks = new ArrayList<Task> ();
 
 		for (int i = 0; i < taskList.size(); i++) {
 			Task currentTask = taskList.get(i);
-			String taskType = currentTask.getTaskType();
 
-			if (taskType.equals("deadline") || taskType.equals("time task") ) {
+			if (isDeadline(currentTask) || isTimeTask(currentTask)) {
 				deadlinesAndTimeTasks.add(currentTask);
 			}
 		}
@@ -183,7 +190,6 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 	private void setUpColumnWidth() {
 		final int colNo = table.getColumnCount();
 
-		//_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 		Runnable runColWidthSetup = setAllColumns(colNo);
@@ -234,14 +240,14 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		return deadlinesAndTimeTasksTable;
 	}
 	
-	public static void main(String[] args) {
-		DeadlinesAndTimeTasksTable table = new DeadlinesAndTimeTasksTable();
-		table.setSize(new Dimension(700, 500));
-		 JFrame frame = new JFrame("xxx");
-		 frame.add(table, BorderLayout.CENTER);
-		 updateTable();
-		 frame.setLocation(200, 200);
-	    	frame.pack();
-	    	frame.setVisible(true);
+	private boolean isDeadline(Task task) {
+		String taskType = task.getTaskType(); 
+		return taskType.equals("deadline");
+
+	}
+	
+	private boolean isTimeTask(Task task) {
+		String taskType = task.getTaskType(); 
+		return taskType.equals("time task");
 	}
 }

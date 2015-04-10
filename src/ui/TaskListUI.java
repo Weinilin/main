@@ -6,23 +6,24 @@ import logic.LogicController;
 import application.Task;
 import application.TaskPrinter;
 
+/**
+ * TaskListUI is used to create a formatted table that displays all the tasks stored in TaskManager in Command Line Interface.
+ * 
+ * @author A0113966Y
+ *
+ */
 public class TaskListUI {
 	
-	
-	public TaskListUI() {
-		
-	}
+	public TaskListUI() {}
 	
 	public void showTask() {
         LogicController lc = LogicController.getInstance();
         ArrayList<Task> taskList = lc.getTaskList();
 		TaskPrinter tp = new TaskPrinter();
-
 		
 		ArrayList<ArrayList<String>> taskListMatrix1 = new ArrayList<ArrayList<String>>();
 		ArrayList<ArrayList<String>> taskListMatrix2 = new ArrayList<ArrayList<String>>();
 
-		
 		ArrayList<String> dataFields1 = new ArrayList<String>();
 		ArrayList<String> dataFields2 = new ArrayList<String>();
 
@@ -77,9 +78,6 @@ public class TaskListUI {
 		
 	}
 	
-//	public ArrayList<Task> getTaskList() {
-//	    return taskList;
-//	}
 	
 	
 }

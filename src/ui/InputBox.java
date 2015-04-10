@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import logic.LogicController;
+
 public class InputBox extends JTextField implements ActionListener{
 	/**
 	 * generated
@@ -15,17 +17,24 @@ public class InputBox extends JTextField implements ActionListener{
 	
 	private static final Font FONT_ARIAL = new Font("Arial", Font.PLAIN, 12);
 	private static final String TITLE_HELP_POP_UP = "Help Message";
-	private static final String COMMAND_HELP = "HELP";
-	
-	
-	private static TaskManagerGUI taskManagerGUI;
-	private static FeedbackBox feedbackBox;
+	private static final String COMMAND_HELP = "help";
+
+	private static FeedbackFrame feedbackFrame;
 	private static InputBox inputBox;
+	private static DeadlinesAndTimeTasksTable deadlinesAndTimeTasksTable;
+	private static FloatingTasksTable floatingTasksTable;
 	
+	private static LogicController logicController;
+	
+
 	private InputBox() {
 		super();
-		taskManagerGUI = TaskManagerGUI.getInstance();
-		feedbackBox = FeedbackBox.getInstance();
+		feedbackFrame = FeedbackFrame.getInstance();
+		feedbackFrame = FeedbackFrame.getInstance();
+		deadlinesAndTimeTasksTable = DeadlinesAndTimeTasksTable.getInstance();
+		floatingTasksTable = FloatingTasksTable.getInstance();
+		logicController = LogicController.getInstance();
+
 		initializeInputFrame();
 	}
 
@@ -38,10 +47,15 @@ public class InputBox extends JTextField implements ActionListener{
 		String input = getUserInput();
 		highlightUserInput();
 		String feedback = processUserInput(input);
+
 		if (isHelpCommand(input)) {
 			popUpHelpWindow(feedback);
 		} else {
-			displayFeedback(feedback);
+			if (isExitCommand(feedback)) {
+				System.exit(0);
+			} else {
+				displayFeedback(feedback);
+			}
 		}
 
 		ensureProperDisplayOfFeedback();    
@@ -52,7 +66,7 @@ public class InputBox extends JTextField implements ActionListener{
 	 * Make sure new text is visible, even if there was a selection in the feedbackBox
 	 */
 	private void ensureProperDisplayOfFeedback() {
-		feedbackBox.setCaretPosition(feedbackBox.getDocument().getLength());
+		feedbackFrame.ensureProperDisplayOfFeedback();
     }
     
     private void popUpHelpWindow(String message) {
@@ -61,11 +75,11 @@ public class InputBox extends JTextField implements ActionListener{
     }
     
     private boolean isHelpCommand(String input) {
-    	return input.equals(COMMAND_HELP);
+    	return input.toLowerCase().equals(COMMAND_HELP);
     }
     
     private void displayFeedback(String feedback) {
-    	feedbackBox.setText(feedback);
+    	feedbackFrame.displayText(feedback);
     }
     
     private String getUserInput() {
@@ -76,12 +90,9 @@ public class InputBox extends JTextField implements ActionListener{
     	selectAll();
     }
     
-    private String processUserInput(String input) {
-    	return TaskManagerGUI.processUserInput(input);
-    }
-    
     private void updateTable() {
-    	taskManagerGUI.updateTable();
+    	int taskNumber = deadlinesAndTimeTasksTable.updateTable();
+    	floatingTasksTable.updateTable(taskNumber);
     }
     
     public static InputBox getInstance() {
@@ -91,4 +102,17 @@ public class InputBox extends JTextField implements ActionListener{
     	
     	return inputBox;
     }
+    
+    private boolean isExitCommand(String feedback) {
+    	return feedback == null;
+    }
+    
+    /**
+	 * Scan user input and execute the command.
+	 */
+    public String processUserInput(String userInput){
+	    String message;
+	    message = logicController.executeCommand(userInput);
+	    return message;
+	}
 }

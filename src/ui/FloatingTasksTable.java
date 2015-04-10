@@ -23,20 +23,35 @@ import javax.swing.table.TableColumn;
 import logic.LogicController;
 import application.Task;
 
+/**
+ * FloatingTasksTable is used to create a table that stores floating tasks.
+ * 
+ * @author A0113966Y
+ *
+ */
 public class FloatingTasksTable extends JPanel {
+	/**
+	 * generated
+	 */
+	private static final long serialVersionUID = 1640202558535486039L;
+	
 	private static final String NAME_LABEL = "Floating Tasks";
 	private static final int ROWS = 11;
-
+	private static final int COLUMN_SIZE = 3;
 	
-	private static final String[] NAMES_COLUMN = {"No.",
-                                           "Description",
-	                                       "Status"};
+	private static final String[] NAMES_COLUMN = {"No.", "Description", "Status"};
+	
 	private static final Font FONT_ARIAL = new Font("Arial", Font.PLAIN, 12);
 
 	private static JLabel label;
 	private static JTable table;
 	private static DefaultTableModel model = new DefaultTableModel(NAMES_COLUMN, 0)
 	{
+		/**
+		 * generated
+		 */
+		private static final long serialVersionUID = 1729950971541446403L;
+
 		//This causes all cells to be not editable
 		public boolean isCellEditable(int row, int column)
 		{
@@ -57,8 +72,7 @@ public class FloatingTasksTable extends JPanel {
 		add(label, BorderLayout.NORTH);
 		table = new JTable(model);
 		scrollPane = new JScrollPane(table);
-		add(table, BorderLayout.CENTER);
-
+		add(scrollPane, BorderLayout.CENTER);
 		initializeTable();
 		setUpColumnWidth();
 	}
@@ -103,6 +117,11 @@ public class FloatingTasksTable extends JPanel {
 	private void addScrollUpCommand() {
 		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), "scroll down");
 		table.getActionMap().put("scroll down", new AbstractAction() {        
+			/**
+			 * generated
+			 */
+			private static final long serialVersionUID = -5456434991999269675L;
+
 			public void actionPerformed(ActionEvent ae) {
 				int height = table.getRowHeight() * (ROWS - 1);
 				JScrollBar bar = scrollPane.getVerticalScrollBar();
@@ -114,6 +133,11 @@ public class FloatingTasksTable extends JPanel {
 	private void addScrollDownCommand() {
 		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, 0), "scroll up");
 		table.getActionMap().put("scroll up", new AbstractAction() {     
+			/**
+			 * generated
+			 */
+			private static final long serialVersionUID = -6151241733122082378L;
+
 			public void actionPerformed(ActionEvent ae) {
 				int height = table.getRowHeight() * (ROWS - 1);
 				JScrollBar bar = scrollPane.getVerticalScrollBar();
@@ -127,14 +151,14 @@ public class FloatingTasksTable extends JPanel {
 
 		ArrayList<Task> floatingTasks = getFloatingTasks(logicController.getTaskList());
 
-		Object[][] data2 = new Object[floatingTasks.size()][3];
+		Object[][] data = new Object[floatingTasks.size()][COLUMN_SIZE];
 
 		for (int i = 0; i < floatingTasks.size(); i++) {
-		    data2[i][0] = taskNumber;
+		    data[i][0] = taskNumber;
 		    taskNumber += 1;
-		    data2[i][1] = floatingTasks.get(i).getDescription();
-		    data2[i][2] = floatingTasks.get(i).getStatus();
-		    model.addRow(data2[i]);
+		    data[i][1] = floatingTasks.get(i).getDescription();
+		    data[i][2] = floatingTasks.get(i).getStatus();
+		    model.addRow(data[i]);
 		}
 	}
 	
@@ -198,8 +222,6 @@ public class FloatingTasksTable extends JPanel {
 		
 		return floatingTasksTable;
 	}
-
-
 }
 
 
