@@ -24,7 +24,7 @@ public class WeekDayParser {
         
         Calendar calendar = Calendar.getInstance();
 
-        int day = DayParser.getNumberOfDay(date);
+        int day = NumberParser.getNumber(date);
         int year = YearParser.getYear(date);
         int month = MonthParser.getMonth(date);
        

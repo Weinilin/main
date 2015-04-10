@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  * @author A0112823R
  *
  */
-public class DayParser {
+public class NumberParser {
     private static String[] wordOfNumDays = { "one", "two", "three", "four",
             "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
             "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
@@ -18,41 +18,41 @@ public class DayParser {
     private static final String MONTH_IN_WORD_KEYWORD = "(january|febuary|march|april|may|june|july|august|september|octobor|november|december)"
             + "|(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)";
 
-    public DayParser() {
+    public NumberParser() {
 
     }
 
     /**
-     * get the day from the date
+     * get the 1st number in word or digit before week, month, year
      * 
      * @param dateOfTheTask
-     * @return day
+     * @return number
      */
-    public static int getNumberOfDay(String dateOfTheTask) {
+    public static int getNumber(String dateOfTheTask) {
 
-        int day = 0;
+        int number = 0;
         dateOfTheTask = dateOfTheTask.replaceAll(MONTH_IN_WORD_KEYWORD, "");
         Pattern numberPattern = Pattern.compile(DAY_KEYWORD);
-        Matcher containDay = numberPattern.matcher(dateOfTheTask);
+        Matcher containNumber = numberPattern.matcher(dateOfTheTask);
 
         String text;
 
-        if (containDay.find()) {
-            text = containDay.group();
+        if (containNumber.find()) {
+            text = containNumber.group();
 
             if (isNumeric(text)) {
-                day = Integer.parseInt(text);
+                number = Integer.parseInt(text);
             } else if (text.equals("twenty")) {
                 text = dateOfTheTask.replaceAll(text, "");
-                day = 20 + getNextWord(text);
+                number = 20 + getNextWord(text);
             } else if (text.equals("thirty")) {
                 text = dateOfTheTask.replaceAll(text, "");
-                day = 30 + getNextWord(text);
+                number = 30 + getNextWord(text);
             } else {
-                day = determineIntDaysFromWords(text);
+                number = determineIntFromWords(text);
             }
         }
-        return day;
+        return number;
     }
 
     
@@ -64,26 +64,26 @@ public class DayParser {
      * when the number of day is in word format change from word format to
      * integer format
      * 
-     * @param numberOfDaysFromNow
+     * @param numberInWord
      * @return number of day in integer.
      */
-    private static int determineIntDaysFromWords(String numberOfDaysFromNow) {
+    private static int determineIntFromWords(String numberInWord) {
        
-        int numberOfDays = 1;
+        int number = 1;
         
         for (int i = 0; i < wordOfNumDays.length; i++) {
-            if (numberOfDaysFromNow.equals(wordOfNumDays[i])) {
+            if (numberInWord.equals(wordOfNumDays[i])) {
                 break;
             }
-            numberOfDays++;
+            number++;
         }
 
         // 20 means nothing from array(wordOfNumDays) is equal, no number of day
         // detect
-        if (numberOfDays == 20) {
-            numberOfDays = 0;
+        if (number == 20) {
+            number = 0;
         }
-        return numberOfDays;
+        return number;
     }
 
     /**
@@ -95,11 +95,11 @@ public class DayParser {
     private static int getNextWord(String text) {
         int day = 0;
         Pattern numberPattern = Pattern.compile("\\w+");
-        Matcher containDay = numberPattern.matcher(text);
+        Matcher containNumber = numberPattern.matcher(text);
        
-        if (containDay.find()) {
-            text = containDay.group();
-            day = determineIntDaysFromWords(text);
+        if (containNumber.find()) {
+            text = containNumber.group();
+            day = determineIntFromWords(text);
         }
         return day;
     }
