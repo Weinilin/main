@@ -33,11 +33,11 @@ public class TaskManagerGUI extends JPanel{
     private FloatingTasksTable floatingTasksTable;
     private static JLabel slogan;
 
-
-
     private static LogicController logicController;
 
     private static JFrame frame;
+    private static JScrollPane scrollPane1;
+    private static JScrollPane scrollPane2;
     
 
     
@@ -170,6 +170,13 @@ public class TaskManagerGUI extends JPanel{
 	    return message;
 	}
     
+    public static JScrollPane getScrollPane1() {
+    	return scrollPane1;
+    }
+    
+    public static JScrollPane getScrollPane2() {
+    	return scrollPane2;
+    }
     public static TaskManagerGUI getInstance() {
     	return taskManagerGUI;
     }

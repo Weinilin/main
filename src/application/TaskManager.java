@@ -21,7 +21,6 @@ class TaskManager	{
         TaskListUI taskListUI = new TaskListUI();
         taskListUI.showTask();
 
-		
 	    printMessageToUser(String.format(WELCOME_MESSAGE));
         printMessageToUser(String.format(COMMAND_MESSAGE));
 
@@ -31,7 +30,6 @@ class TaskManager	{
 	        printMessageToUser(feedback);
 	        taskListUI.showTask();
 	        printMessageToUser(String.format(COMMAND_MESSAGE));
-
 		}
 	}
 	

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -45,19 +46,19 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 	
 	private static JLabel label;
 	private static JTable table; 
-	private static DefaultTableModel model = new DefaultTableModel(NAMES_COLUMN, 0)
-	{
-		
-		//This causes all cells to be not editable
-		public boolean isCellEditable(int row, int column)
-		{
-			return false;
-		}
-	};
+	private static DefaultTableModel model ;
+//	= new DefaultTableModel(NAMES_COLUMN, 0)
+//	{
+//		
+//		//This causes all cells to be not editable
+//		public boolean isCellEditable(int row, int column)
+//		{
+//			return false;
+//		}
+//	};
 	private static JScrollPane scrollPane;
 	
 	private static DeadlinesAndTimeTasksTable deadlinesAndTimeTasksTable;
-	private static TaskManagerGUI taskManagerGUI;
 	private static LogicController logicController;
 
 	private DeadlinesAndTimeTasksTable() {
@@ -65,9 +66,17 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		
 		logicController = LogicController.getInstance();
 
-
 		initializeTableLabel();
 		add(label, BorderLayout.NORTH);
+		model = new DefaultTableModel(NAMES_COLUMN, 0)
+		{
+			
+			//This causes all cells to be not editable
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		table = new JTable(model);
 		scrollPane = new JScrollPane(table);
 		add(table, BorderLayout.CENTER);
@@ -93,7 +102,6 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 	private void setSize() {
 		table.setPreferredScrollableViewportSize(new Dimension(680, 160));
 		table.setFillsViewportHeight(true);
-
 	}
 
 	private void setFontAndColor() {
@@ -135,7 +143,7 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		});
 	}
 	
-	public int updateTable() {
+	public static int updateTable() {
 		model.setRowCount(0);
 
 		ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks(logicController.getTaskList());
@@ -157,7 +165,7 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 		return taskNumber;
 	}
 
-	private ArrayList<Task> getDeadlinesAndTimeTasks(ArrayList<Task> taskList) {
+	private static ArrayList<Task> getDeadlinesAndTimeTasks(ArrayList<Task> taskList) {
 		ArrayList<Task> deadlinesAndTimeTasks = new ArrayList<Task> ();
 
 		for (int i = 0; i < taskList.size(); i++) {
@@ -224,5 +232,16 @@ public class DeadlinesAndTimeTasksTable extends JPanel {
 			deadlinesAndTimeTasksTable = new DeadlinesAndTimeTasksTable();
 		}
 		return deadlinesAndTimeTasksTable;
+	}
+	
+	public static void main(String[] args) {
+		DeadlinesAndTimeTasksTable table = new DeadlinesAndTimeTasksTable();
+		table.setSize(new Dimension(700, 500));
+		 JFrame frame = new JFrame("xxx");
+		 frame.add(table, BorderLayout.CENTER);
+		 updateTable();
+		 frame.setLocation(200, 200);
+	    	frame.pack();
+	    	frame.setVisible(true);
 	}
 }
