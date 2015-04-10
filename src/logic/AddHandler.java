@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import application.Task;
+import application.TaskCreator;
 
 /**
  * CommandHandler for "add" function.
@@ -20,6 +21,7 @@ import application.Task;
  */
 class AddHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "add <task information>\n\t add a new task to TaskManager\n";
+    private static final String CLASHING_TASK_MESSAGE = "But there are %1$s tasks clashing with it\n";
 //  private static final String FATAL_ERROR_MESSAGE = "Fatal error! Unable to add Task";
     private static final String SUCCESS_ADD_MESSAGE = "Task \"%1$s\" is added\n";
     private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("add", "a", "new", "+"));
@@ -42,26 +44,34 @@ class AddHandler extends UndoableCommandHandler {
         }
 
         addLogger.entering(getClass().getName(), "Add non empty task");
-        newTask = CommandHandler.createNewTask(parameter);
+        try {
+            TaskCreator taskCreator = new TaskCreator(parameter);
+            newTask = taskCreator.createNewTask();         
+            feedback = taskCreator.getFeedback();   
+        } catch (Exception e) {
+            return feedback;
+        }
+        
         if (isEmpty(newTask.getDescription())) {
             return "No description for new task\n";
         }
         // a non empty task is created
         assert (newTask != null);
         
-        int addStatus = memory.addTask(newTask); 
-        switch (addStatus) {
-            case 1:
-                recordChanges(taskList);       
-                addLogger.log(Level.FINE, "Add sucess");
-                feedback = String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
-                break;
-            case 2:
-                feedback = "Task already exists\n";
-                break;
-            case 3:
-                feedback = "Existing task clasing with new task\n";
-                break;
+        int addStatus;
+        try {
+            addStatus= memory.addTask(newTask); 
+            recordChanges(taskList);       
+        } catch (Exception e) {
+            return "Error when accessing file\n";
+        }
+        
+        if (addStatus == 1) {
+            feedback = String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+        }
+        else {
+            feedback = String.format(SUCCESS_ADD_MESSAGE, newTask.getDescription());
+            feedback += String.format(CLASHING_TASK_MESSAGE, Integer.toString(addStatus));
         }
         return feedback;
     }
@@ -95,7 +105,7 @@ class AddHandler extends UndoableCommandHandler {
 
     /**
      * chech if user is looking for help
-     * @param token
+     * @param token the string tokens extracted from user input
      * @return
      */
     private boolean isHelpOnly(String[] token) {

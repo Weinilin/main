@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import application.Task;
+import application.TaskCreator;
 import parser.IndexParser;
 import application.TaskComparator;
 
@@ -27,11 +28,13 @@ class EditHandler extends UndoableCommandHandler {
     private static final String HELP_MESSAGE = "edit <index> <new task>\n\t edit the task by specifying the index\n"
             + "edit description <index> <new description>\n\t update the task description only\n"
             + "edit time <index> <time>\n\t update the time of task \n";
+    private static String CHANGE_MESSAGE = "Updated %1$s to %2$s\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("edit", "e", "update"));
     private static final Logger editLogger =
             Logger.getLogger(DeleteHandler.class.getName());
     Task oldTask, newTask = null;
+    String feedback = "";
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
@@ -40,6 +43,7 @@ class EditHandler extends UndoableCommandHandler {
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception {
         reset();
+        String feedback = "";
         String[] token = parameter.split(" ");
         if (isHelp(token) || isEmpty(parameter)) {
             return getHelp();
@@ -71,8 +75,14 @@ class EditHandler extends UndoableCommandHandler {
                 } catch (NumberFormatException nfe) {
                     editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
-                }                
-                newTask = CommandHandler.createNewTask(parameter.replaceFirst(token[0], "").trim());                
+                }  
+                try {
+                    TaskCreator taskCreator = new TaskCreator(parameter.replaceFirst(token[0], ""));
+                    newTask = taskCreator.createNewTask();         
+                    feedback = taskCreator.getFeedback();   
+                } catch (Exception e) {
+                    return feedback;
+                }        
                 if (isEmptyDescription(newTask)) {
                     return "No description for new task\n";
                 }
@@ -85,7 +95,7 @@ class EditHandler extends UndoableCommandHandler {
         }
 
         performEdit(taskList);
-        return "";
+        return feedback;
     }
 
     /**
@@ -94,18 +104,27 @@ class EditHandler extends UndoableCommandHandler {
     private void reset() {
         newTask = null;
         oldTask = null;
+        feedback = "";
     }
     
     /**
-     * execute the changes in Memory
+     * execute the changes in Memory and update the feedback
      * @param taskList
      */
     private void performEdit(ArrayList<Task> taskList) {
         if (newTask != oldTask && oldTask != null) {
-            memory.removeTask(oldTask);
-            memory.addTask(newTask);
-            recordChanges(taskList);            
-            Collections.sort(taskList, new TaskComparator());
+            if (memory.addTask(newTask) >= 0) {
+                memory.removeTask(oldTask);
+                recordChanges(taskList);            
+                Collections.sort(taskList, new TaskComparator());
+                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
+            }
+            else {
+                feedback = "New task is identical to some existing task\n";
+            }
+        }
+        else {
+            feedback = "Please check your input\n";
         }
     }
     

@@ -2,15 +2,13 @@ package parser;
 
 /**
  * get the task type for the user input
- * @author WeiLin
+ * @author A0112823R
  *
  */
 public class TaskTypeParser {
 	private String taskType;
 
-	public TaskTypeParser(String userInput) throws Exception {
-		DateTimeParser dateTime = new DateTimeParser(userInput);
-		int numberOfTimeInput = dateTime.getNumberOfTime();
+	public TaskTypeParser(int numberOfTimeInput) throws Exception {
 		String taskType = null;
 
 		if (numberOfTimeInput == 2) {
@@ -22,6 +20,7 @@ public class TaskTypeParser {
 		}
 		
 		assert taskType != null :"error in detection detect too many time! or user key more than 2 times";
+		
 		setTaskType(taskType);
 	}
 

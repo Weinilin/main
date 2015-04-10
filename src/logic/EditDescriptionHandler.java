@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import parser.MainParser;
 import parser.IndexParser;
-import parser.DescriptionParser;
 import application.Task;
 import application.TaskComparator;
 /**
@@ -19,10 +19,11 @@ import application.TaskComparator;
 class EditDescriptionHandler extends UndoableCommandHandler {
     private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
 	private static final String HELP_MESSAGE = "edit description <index> <new description>\n\t update the task description only\n";
+	private static String CHANGE_MESSAGE = "Changed %1$s to %2$s \n";
 	private ArrayList<String> aliases = new ArrayList<String>(
 	                                        Arrays.asList("ed"));
 	Task oldTask, newTask = null;
-	
+	String feedback = "";
 	@Override
 	protected ArrayList<String> getAliases() {
 		return aliases;
@@ -37,13 +38,13 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 			return getHelp();
 		}
 		
-	    DescriptionParser dp = new DescriptionParser(parameter.replaceFirst(token[0], ""));
-	    IndexParser ip = new IndexParser(parameter);
+	    MainParser parser = new MainParser(parameter.replaceFirst(token[0], ""));
+	    IndexParser ip = new IndexParser(token[1]);
 	    int index = ip.getIndex() - 1;
 	    if (index < 0) {
             return INVALID_INDEX_MESSAGE;
 	    }
-	    if (isEmpty(dp.getDescription())) {
+	    if (isEmpty(parser.getDescription())) {
             return "No description for new task\n";
 	    }
 	    
@@ -54,11 +55,10 @@ class EditDescriptionHandler extends UndoableCommandHandler {
             return INVALID_INDEX_MESSAGE;
 	    }
 	    
-        newTask.setDescription(dp.getDescription());
+        newTask.setDescription(parser.getDescription());
         
 	    performEdit(taskList);
-	    return "Changed " + oldTask.getDescription() + " to " +
-	    		newTask.getDescription() + "\n";
+	    return feedback;
 	}
 	
 	/**
@@ -67,22 +67,32 @@ class EditDescriptionHandler extends UndoableCommandHandler {
     private void reset() {
         newTask = null;
         oldTask = null;
+        feedback = "";
     }
 
     private boolean isEmpty(String string) {
         return string.trim().equals("");
     }
+    
     /**
-     * Perform the edit in Memory
+     * Perform the edit in Memory and update the feedback
      * @param taskList taskList shown to user
      */
     private void performEdit(ArrayList<Task> taskList) {
         if ((newTask != oldTask) && (oldTask != null)) {
-	        memory.removeTask(oldTask);
-	        memory.addTask(newTask);
-            recordChanges(taskList);
-            Collections.sort(taskList, new TaskComparator());
-	    }
+            if (memory.addTask(newTask) >= 0) {
+                memory.addTask(newTask);
+                recordChanges(taskList);
+                Collections.sort(taskList, new TaskComparator());
+                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
+            }
+            else {
+                feedback = "New task is identical to some existing task\n";
+            }  
+        }
+        else {
+            feedback = "Please check your input\n";
+        }
     }
     
     @Override

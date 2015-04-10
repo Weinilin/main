@@ -81,19 +81,19 @@ public class Task {
 	}
 	
 	public String getStartDate() {
-		return startDateTime.substring(4).substring(0, 10);
+		return startDateTime.split(" ")[1];
 	}
 	
 	public String getStartTime() {
-		return startDateTime.substring(4).substring(11, 16);
+		return startDateTime.split(" ")[2];
 	}
 	
 	public String getEndDate(){
-		return endDateTime.substring(4).substring(0, 10);
+		return endDateTime.split(" ")[1];
 	}
 	
 	public String getEndTime(){
-		return endDateTime.substring(4).substring(11, 16);
+		return endDateTime.split(" ")[2];
 	}
 	
 	public String getStatus(){
