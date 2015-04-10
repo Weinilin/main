@@ -233,92 +233,93 @@ public class Date1ParserTest {
      * do take note that I use current date extract from laptop Thus, the date
      * result from date parser is the current date + number of days Interpret by
      * the vocab
+     * current date of mine : 10/4/2015
      */
     public void testDaysApartVocabKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tmr
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
         Date1Parser d1 = new Date1Parser(("mds sale from tmr"));
         assertEquals(dates, d1.getDateList());
-
+        
         // test keyword 5: the following day
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
 
         Date1Parser d2 = new Date1Parser(("mds sale the following day"));
         assertEquals(dates, d2.getDateList());
 
         // test keyword 5: after tomorrow
         dates.clear();
-        dates.add("10/04/2015");
+        dates.add("12/04/2015");
         Date1Parser d4 = new Date1Parser(("mds sale after tomorrow"));
         assertEquals(dates, d4.getDateList());
 
         // test keyword 5: after tmr
         dates.clear();
-        dates.add("10/04/2015");
+        dates.add("12/04/2015");
 
         Date1Parser d5 = new Date1Parser(("mds sale after tmr"));
         assertEquals(dates, d5.getDateList());
 
         // test keyword 5: after today
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
         Date1Parser d6 = new Date1Parser(("mds sale after today"));
         assertEquals(dates, d6.getDateList());
         
      // test keyword 5: _ day later
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
         Date1Parser d7 = new Date1Parser(("mds sale one day later"));
         assertEquals(dates, d7.getDateList());
         
      // test keyword 5: _ day later in 4
         dates.clear();
-        dates.add("12/04/2015");
+        dates.add("14/04/2015");
         Date1Parser d8 = new Date1Parser(("mds sale 4 day later"));
         assertEquals(dates, d8.getDateList());
         
         // test keyword 5: _ day later in 4
         dates.clear();
-        dates.add("30/04/2015");
+        dates.add("02/05/2015");
         Date1Parser d9 = new Date1Parser(("mds sale twenty-two day later"));
         assertEquals(dates, d9.getDateList());
         
         // test keyword 5: after _ day 
         dates.clear();
-        dates.add("29/04/2015");
+        dates.add("01/05/2015");
         Date1Parser d10 = new Date1Parser(("mds sale after twenty-one day"));
         assertEquals(dates, d10.getDateList());
         
      // test keyword 5: after _ day 
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
         Date1Parser d11 = new Date1Parser(("mds sale after one day"));
         assertEquals(dates, d11.getDateList());
         
      // test keyword 5: after _ day 
         dates.clear();
-        dates.add("18/04/2015");
+        dates.add("20/04/2015");
         Date1Parser d12 = new Date1Parser(("mds sale after 10 day"));
         assertEquals(dates, d12.getDateList());
 
         // test keyword 5:  _ day after
         dates.clear();
-        dates.add("29/04/2015");
+        dates.add("01/05/2015");
         Date1Parser d13 = new Date1Parser(("mds sale twenty-one day after"));
         assertEquals(dates, d13.getDateList());
         
      // test keyword 5:  _ day  after
         dates.clear();
-        dates.add("09/04/2015");
+        dates.add("11/04/2015");
         Date1Parser d14 = new Date1Parser(("mds sale one day after"));
         assertEquals(dates, d14.getDateList());
         
      // test keyword 5:  _ day after
         dates.clear();
-        dates.add("18/04/2015");
+        dates.add("20/04/2015");
         Date1Parser d15 = new Date1Parser(("mds sale 10 day after"));
         assertEquals(dates, d15.getDateList());
     }
@@ -328,123 +329,124 @@ public class Date1ParserTest {
      * do take note that I use current date extract from laptop Thus, the date
      * result from date parser is the current date + number of week/month/year
      * Interpret by the vocab
+     * Current date : 10/04/2015
      */
     public void testWeekMonthYearApartKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 6 : weeks later
         dates.clear();
-        dates.add("15/04/2015");
+        dates.add("17/04/2015");
 
         Date1Parser d1 = new Date1Parser("mds sale start 1 week later");
         assertEquals(dates, d1.getDateList());
 
         // test keyword 6 : wk later
         dates.clear();
-        dates.add("15/04/2015");
+        dates.add("17/04/2015");
 
         Date1Parser d3 = new Date1Parser("mds sale start 1 wk later");
         assertEquals(dates, d3.getDateList());
         
         // test keyword 6 : wk later
         dates.clear();
-        dates.add("29/04/2015");
+        dates.add("01/05/2015");
 
         Date1Parser d9 = new Date1Parser("mds sale start three wk later");
         assertEquals(dates, d9.getDateList());
 
         // test keyword 6 : month later
         dates.clear();
-        dates.add("08/05/2015");
+        dates.add("10/05/2015");
 
         Date1Parser d2 = new Date1Parser("mds sale start 1 month later");
         assertEquals(dates, d2.getDateList());
 
         // test keyword 6 : month later
         dates.clear();
-        dates.add("08/05/2015");
+        dates.add("10/05/2015");
 
         Date1Parser d4 = new Date1Parser("mds sale start 1 mth later");
         assertEquals(dates, d4.getDateList());
 
      // test keyword 6 : month later
         dates.clear();
-        dates.add("08/06/2015");
+        dates.add("10/06/2015");
 
         Date1Parser d8 = new Date1Parser("mds sale start two mth later");
         assertEquals(dates, d8.getDateList());
 
         // test keyword 6 : year later
         dates.clear();
-        dates.add("08/04/2016");
+        dates.add("10/04/2016");
 
         Date1Parser d5 = new Date1Parser("mds sale start 1 year later");
         assertEquals(dates, d5.getDateList());
 
         // test keyword 6 : yr later
         dates.clear();
-        dates.add("08/04/2016");
+        dates.add("10/04/2016");
 
         Date1Parser d6 = new Date1Parser("mds sale start 1 yr later");
         assertEquals(dates, d6.getDateList());
         
      // test keyword 6 : yr later in word
         dates.clear();
-        dates.add("08/04/2027");
+        dates.add("10/04/2027");
 
         Date1Parser d7 = new Date1Parser("mds sale start twelve yr later");
         assertEquals(dates, d7.getDateList());
         
      // test keyword 5: after _ year 
         dates.clear();
-        dates.add("09/04/2016");
+        dates.add("10/04/2016");
         Date1Parser d12 = new Date1Parser(("mds sale after 1 yr"));
         assertEquals(dates, d12.getDateList());
         
      // test keyword 5: after _ year 
         dates.clear();
-        dates.add("09/04/2027");
+        dates.add("10/04/2027");
         Date1Parser d19 = new Date1Parser(("mds sale after twelve yr"));
         assertEquals(dates, d19.getDateList());
         
      // test keyword 5: after _ year 
         dates.clear();
-        dates.add("09/04/2037");
+        dates.add("10/04/2037");
         Date1Parser d20 = new Date1Parser(("mds sale after twenty-two year"));
         assertEquals(dates, d20.getDateList());
 
         // test keyword 5: __ year after
         dates.clear();
-        dates.add("09/04/2036");
+        dates.add("10/04/2036");
         Date1Parser d13 = new Date1Parser(("mds sale twenty-one year after"));
         assertEquals(dates, d13.getDateList());
         
      // test keyword 5:  _ year after
         dates.clear();
-        dates.add("09/04/2016");
+        dates.add("10/04/2016");
         Date1Parser d14 = new Date1Parser(("mds sale one year after"));
         assertEquals(dates, d14.getDateList());
         
      // test keyword 5:  _ year after 
         dates.clear();
-        dates.add("09/04/2025");
+        dates.add("10/04/2025");
         Date1Parser d15 = new Date1Parser(("mds sale 10 year after"));
         assertEquals(dates, d15.getDateList());
         
      // test keyword 5: after _ week 
         dates.clear();
-        dates.add("16/04/2015");
+        dates.add("17/04/2015");
         Date1Parser d16 = new Date1Parser(("mds sale after 1 wk"));
         assertEquals(dates, d16.getDateList());
         
      // test keyword 5: after _ week 
         dates.clear();
-        dates.add("02/07/2015");
+        dates.add("03/07/2015");
         Date1Parser d17 = new Date1Parser(("mds sale after twelve wk"));
         assertEquals(dates, d17.getDateList());
         
      // test keyword 5: after _ week 
         dates.clear();
-        dates.add("10/09/2015");
+        dates.add("11/09/2015");
         Date1Parser d18 = new Date1Parser(("mds sale after twenty-two week"));
         assertEquals(dates, d18.getDateList());
 
@@ -456,13 +458,13 @@ public class Date1ParserTest {
         
      // test keyword 5:  _ week after
         dates.clear();
-        dates.add("16/04/2015");
+        dates.add("17/04/2015");
         Date1Parser d22 = new Date1Parser(("mds sale one week after"));
         assertEquals(dates, d22.getDateList());
         
      // test keyword 5:  _ week after 
         dates.clear();
-        dates.add("18/06/2015");
+        dates.add("19/06/2015");
         Date1Parser d23 = new Date1Parser(("mds sale 10 week after"));
         assertEquals(dates, d23.getDateList());
         
@@ -509,6 +511,7 @@ public class Date1ParserTest {
      * do take note that I use current date extract from laptop Thus, the date
      * result from date parser is the current date to this mon/tues.../fri
      * And if today weekday pass the this weekday you keyed --> error
+     * Current date : 06/04/2015 MON
      */
     public void testThisWeekdayKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
@@ -524,59 +527,59 @@ public class Date1ParserTest {
         assertEquals(dates, d2.getDateList());
         
         dates.clear();
-        dates.add("13/04/2015");
+        dates.add("06/04/2015");
         Date1Parser d3 = new Date1Parser("mds sale this mon");
         assertEquals(dates, d3.getDateList());
         
         // test full form of weekday and change to by
         dates.clear();
-        dates.add("13/04/2015");
+        dates.add("06/04/2015");
         Date1Parser d5 = new Date1Parser("mds sale by monday");
         assertEquals(dates, d5.getDateList());
         
         dates.clear();
-        dates.add("14/04/2015");
+        dates.add("07/04/2015");
         Date1Parser d4 = new Date1Parser("mds sale this tues");
         assertEquals(dates, d4.getDateList());
         
         // test full form of weekday and change to due on
         dates.clear();
-        dates.add("14/04/2015");
+        dates.add("07/04/2015");
         Date1Parser d6 = new Date1Parser("mds sale due on tuesday");
         assertEquals(dates, d6.getDateList());
         
         dates.clear();
-        dates.add("15/04/2015");
+        dates.add("08/04/2015");
         Date1Parser d7 = new Date1Parser("mds sale this wed");
         assertEquals(dates, d7.getDateList());
         
         // test full form of weekday and change to on
         dates.clear();
-        dates.add("15/04/2015");
+        dates.add("08/04/2015");
         Date1Parser d9 = new Date1Parser("mds sale due wednesday");
         assertEquals(dates, d9.getDateList());
         
         dates.clear();
-        dates.add("16/04/2015");
-        Date1Parser d8 = new Date1Parser("mds sale this thrus");
+        dates.add("09/04/2015");
+        Date1Parser d8 = new Date1Parser("mds sale this thurs");
         assertEquals(dates, d8.getDateList());
         
         // test full form of weekday and change to at
         dates.clear();
-        dates.add("16/04/2015");
+        dates.add("09/04/2015");
         Date1Parser d12 = new Date1Parser("mds sale at thursday");
         assertEquals(dates, d12.getDateList());
         
         //change to from
         dates.clear();
-        dates.add("17/04/2015");
+        dates.add("10/04/2015");
         Date1Parser d10 = new Date1Parser("mds sale from fri");
         assertEquals(dates, d10.getDateList());
         
         // test full form of weekday and change to 
         dates.clear();
-        dates.add("17/04/2015");
-        Date1Parser d11 = new Date1Parser("mds sale to friday");
+        dates.add("10/04/2015");
+        Date1Parser d11 = new Date1Parser("mds sale to fri");
         assertEquals(dates, d11.getDateList());
 
     }
@@ -585,18 +588,18 @@ public class Date1ParserTest {
     /*
     * do take note that I use current date extract from laptop Thus, the date
     * result from date parser is the current date to next mon/tues.../fri
-    * 
+    * current date : 10/4/2015
     */
     public void testWeekDayApartKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
 
-        dates.add("12/04/2015");
+        dates.add("19/04/2015");
         Date1Parser d1 = new Date1Parser("mds sale next sun");
         assertEquals(dates, d1.getDateList());
         
         // test full form of weekday and change to on
         dates.clear();
-        dates.add("12/04/2015");
+        dates.add("19/04/2015");
         Date1Parser d2 = new Date1Parser("mds sale on next sunday");
         assertEquals(dates, d2.getDateList());
         
@@ -635,7 +638,7 @@ public class Date1ParserTest {
         
         dates.clear();
         dates.add("16/04/2015");
-        Date1Parser d8 = new Date1Parser("mds sale next thrus");
+        Date1Parser d8 = new Date1Parser("mds sale next thurs");
         assertEquals(dates, d8.getDateList());
         
         // test full form of weekday and change to at
@@ -688,5 +691,80 @@ public class Date1ParserTest {
                d1.getDateList());
     }
 
+    @Test
+    //PS current date : 10/4/2015 make changes based on ur current date
+    public void testThisWeekMonthYear(){
+        ArrayList<String> dates = new ArrayList<String>();
+
+        dates.add("31/12/2015");
+        Date1Parser d1 = new Date1Parser(("mds sale this year"));
+        assertEquals(dates,
+               d1.getDateList());
+        
+        //change to yr
+        dates.clear();
+        dates.add("31/12/2015");
+        Date1Parser d2 = new Date1Parser(("mds sale this yr"));
+        assertEquals(dates,
+               d2.getDateList());
+        
+      //change to yr with s
+        dates.clear();
+        dates.add("31/12/2015");
+        Date1Parser d3 = new Date1Parser(("mds sale this yrs"));
+        assertEquals(dates,
+               d3.getDateList());
+        
+      //change to month
+        dates.clear();
+        dates.add("30/04/2015");
+        Date1Parser d4 = new Date1Parser(("mds sale this month"));
+        assertEquals(dates,
+               d4.getDateList());
+        
+      //change to mth
+        dates.clear();
+        dates.add("30/04/2015");
+        Date1Parser d5 = new Date1Parser(("mds sale this mth"));
+        assertEquals(dates,
+               d5.getDateList());
+        
+      //change to mth with s
+        dates.clear();
+        dates.add("30/04/2015");
+        Date1Parser d6 = new Date1Parser(("mds sale this mths"));
+        assertEquals(dates,
+               d6.getDateList());
+        
+        //change to week with s
+        dates.clear();
+        dates.add("12/04/2015");
+        Date1Parser d7 = new Date1Parser(("mds sale this weeks"));
+        assertEquals(dates,
+               d7.getDateList());
+        
+      //change to week
+        dates.clear();
+        dates.add("12/04/2015");
+        Date1Parser d8 = new Date1Parser(("mds sale this week"));
+        assertEquals(dates,
+               d8.getDateList());
+        
+        //change to wk
+        dates.clear();
+        dates.add("12/04/2015");
+        Date1Parser d9 = new Date1Parser(("mds sale this wk"));
+        assertEquals(dates,
+               d9.getDateList());
+        
+        
+      //when there is both wk and month
+        dates.clear();
+        dates.add("12/04/2015");
+        dates.add("30/04/2015");
+        Date1Parser d10 = new Date1Parser(("mds sale this wk and this month"));
+        assertEquals(dates,
+               d10.getDateList());
+    }
 
 }
