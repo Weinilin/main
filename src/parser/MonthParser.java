@@ -83,7 +83,7 @@ public class MonthParser {
      */
     public static String[] splitTheStringIntoPart(String dateOfTheTask) {
         String[] ddmmyyyy = null;
-        
+
         if (dateOfTheTask.contains("/")) {
             ddmmyyyy = dateOfTheTask.split("(/)");
         } else if (dateOfTheTask.contains(".")) {

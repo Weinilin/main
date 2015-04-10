@@ -7,7 +7,7 @@ package parser;
  *
  */
 public class DescriptionParser {
-    private String description;
+    private String description = "";
 
     public DescriptionParser(String userInput, String userInputLeft)
             throws Exception {
@@ -20,7 +20,7 @@ public class DescriptionParser {
 
         String escapedText = getEscapedText(userInput);
 
-        String description = piecePartsOfDescription(escapedText,
+        description = piecePartsOfDescription(escapedText,
                 partOfDescription, lowerCaseInput, userInput);
 
         description = removeTheExtraSpace(description);
@@ -67,7 +67,7 @@ public class DescriptionParser {
      */
     private String piecePartsOfDescription(String escapedText,
             String partOfDescription, String lowerCaseInput, String userInput) {
-        String description = "";
+        
         int indexLeftOverInput = 0, indexEscapedText = 0;
         
         String[] eachWordInLeftOverInput = splitStringByWhitespace(partOfDescription);
@@ -76,7 +76,6 @@ public class DescriptionParser {
         String[] eachWordUserInput = splitStringByWhitespace(userInput);
 
         for (int i = 0; i < eachWordLowerCaseInput.length; i++) {
-
             boolean isByPassConjunction = isByPassConjunction(
                     indexLeftOverInput, indexEscapedText,
                     eachWordInLeftOverInput, eachEscapedText,
@@ -86,24 +85,43 @@ public class DescriptionParser {
                 indexLeftOverInput++;
                 i++;
             }
-
-            if (indexLeftOverInput < eachWordInLeftOverInput.length
-                    && eachWordLowerCaseInput[i]
-                            .equals(eachWordInLeftOverInput[indexLeftOverInput])) {
-
-                description = description + " " + eachWordUserInput[i];
-                indexLeftOverInput++;
-
-            } else if (indexEscapedText < eachEscapedText.length
-                    && eachWordLowerCaseInput[i]
-                            .equals(eachEscapedText[indexEscapedText])) {
-
-                description = description + " " + eachWordUserInput[i];
-                indexEscapedText++;
-            }
             
+            if (isWordEqualToUserInput(indexLeftOverInput,
+                    eachWordInLeftOverInput, eachWordLowerCaseInput, i)) {
+
+                indexLeftOverInput = addWordToDescription(indexLeftOverInput,
+                        eachWordUserInput, i);
+            } else if (isWordEqualToUserInput(indexEscapedText,
+                    eachEscapedText, eachWordLowerCaseInput, i)) {
+
+                indexEscapedText = addWordToDescription(indexEscapedText,
+                        eachWordUserInput, i);
+            }            
         }
         return description;
+    }
+
+    /**
+     * if escaped text or left over input match with the user input,
+     * add it to the description
+     * @param index
+     * @param eachWordUserInput
+     * @param i
+     * @return the next index for continue detection of description
+     */
+    private int addWordToDescription(int index,
+            String[] eachWordUserInput, int i) {
+        description = description + " " + eachWordUserInput[i];
+        index++;
+        return index;
+    }
+
+    private boolean isWordEqualToUserInput(int index,
+            String[] wordLeftOverInput, String[] eachWordLowerCaseInput,
+            int i) {
+        return index < wordLeftOverInput.length
+                && eachWordLowerCaseInput[i]
+                        .equals(wordLeftOverInput[index]);
     }
 
     /**

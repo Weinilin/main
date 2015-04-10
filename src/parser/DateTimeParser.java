@@ -43,44 +43,34 @@ public class DateTimeParser {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String TIME_FORMAT = "HH:mm";
     private int numberOfTime;
-    private static String fullUserInput;
+    private String fullUserInput;
     private String description;
     private String feedback;
-    private static String startTime = "-", endTime = "-", startDate = "-",
+    private String startTime = "-", endTime = "-", startDate = "-",
             endDate = "-";
-    private static final String BEFORE_AFTER_MMDD_KEYWORD = "\\b(\\w+(\\s|)(day(s|)|the day(s|)"
+    private final String BEFORE_AFTER_MMDD_KEYWORD = "\\b(\\w+(\\s|)(day(s|)|the day(s|)"
             + "|(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|))"
             + "( before| after)) ((\\d+([/.]\\d+[/.-]\\d+|[/.-]\\d+)\\b)|((\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|\\S)(of |)(january|febuary|march|april|may|june|july|august"
             + "|september|octobor|november|december)(\\s|)((in (the|) (year|yr)(s|))|)(\\s|)(\\d+|))|(\\w+|)(-|)\\w+(th|nd|rd|st|)(\\s|\\S)(of |)(jan|feb|mar|apr|may|jun|jul|aug"
             + "|sep|oct|nov|dec)(\\s|\\S)((in (the|) (year|yr)(s|))|)(\\s|)(\\d+|))";
-    private static final String NEXT_WEEKDAY_AND_OR = "(\\b(next|this|at|by|due on|on|due) (mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|) (or|and) "
+    private final String NEXT_WEEKDAY_AND_OR = "(\\b(next|this|at|by|due on|on|due) (mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|) (or|and) "
             + "(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)\\b)";
+    private ArrayList<String> storageOfTime = new ArrayList<String>();
+    private ArrayList<String> storageOfDate = new ArrayList<String>();
+    
 
     public DateTimeParser(String userInput) throws Exception {
-        ArrayList<String> storageOfTime = new ArrayList<String>();
-        ArrayList<String> storageOfDate = new ArrayList<String>();
-
         fullUserInput = userInput;
-        Time1Parser times = new Time1Parser(fullUserInput);
-        storageOfTime = times.getTimeList();
+        TimeParser times = extractFromTimeParser();
         int indexPrevTime = times.getPosition();
 
-        Date1Parser dates = new Date1Parser();
-        String leftOverInput = removeComplication(times.getInputLeft());
-        dates.extractDate(fullUserInput, leftOverInput);
-        storageOfDate = dates.getDateList();
+        String leftOverInput;
+        DateParser dates = extractFromDateParser(times);
         int indexPrevDate = dates.getIndex();
 
-        leftOverInput = convertDDMMToMMDD(dates.getInputLeft());
-        leftOverInput = getRemovedKeyword(leftOverInput);
-      
-        DateTimeNattyParser dateTimeNatty = new DateTimeNattyParser();
-        dateTimeNatty.extractDateTime(fullUserInput, leftOverInput,
-                storageOfDate, storageOfTime, indexPrevTime, indexPrevDate);
+        leftOverInput = getLeftOverInput(dates);
 
-        storageOfTime = dateTimeNatty.getTimeList();
-        storageOfDate = dateTimeNatty.getDateList();
-        description = dateTimeNatty.getDescription();
+        extractFromNattyParser(indexPrevTime, leftOverInput, indexPrevDate);
 
         assert storageOfDate.size() <= 2 : "key in more than 2 dates!";
         assert storageOfTime.size() <= 2 : "key in more than 2 times!";
@@ -92,9 +82,62 @@ public class DateTimeParser {
 
         addWeekDayToDate(storageOfDate);
         setNumberOfTime(storageOfTime);
-        setAllParametersToDash();
-
         setAllParameters(storageOfTime, storageOfDate);
+    }
+
+    private void extractFromNattyParser(int indexPrevTime,
+            String leftOverInput, int indexPrevDate) {
+        
+        DateTimeNattyParser dateTimeNatty = new DateTimeNattyParser();
+        dateTimeNatty.extractDateTime(fullUserInput, leftOverInput,
+                storageOfDate, storageOfTime, indexPrevTime, indexPrevDate);
+
+        storageOfTime = dateTimeNatty.getTimeList();
+        storageOfDate = dateTimeNatty.getDateList();
+        description = dateTimeNatty.getDescription();
+    }
+
+    private TimeParser extractFromTimeParser() throws Exception {
+       
+        TimeParser times = new TimeParser(fullUserInput);
+        storageOfTime = times.getTimeList();
+        
+        return times;
+    }
+
+    private DateParser extractFromDateParser(TimeParser times) {
+        DateParser dates = new DateParser();
+        String leftOverInput = removeComplication(times.getInputLeft());
+        dates.extractDate(fullUserInput, leftOverInput);
+        storageOfDate = dates.getDateList();
+       
+        return dates;
+    }
+
+    /**
+     * to prevent case sensitive, switch all to lower case
+     * 
+     * @param userInput
+     * @return the user input all in lower case.
+     */
+    private String switchAllToLowerCase(String userInput) {
+        userInput = userInput.replaceAll("\\s+", " ");
+        userInput = " " + userInput.toLowerCase() + " ";
+        return userInput;
+    }
+    
+    /**
+     * make changes to the userInput, so that it will bypass detection
+     * from dateParser and detect by natty which could only detect 
+     * correctly by natty
+     * @param dates
+     * @return userInput
+     */
+    private String getLeftOverInput(DateParser dates) {
+        fullUserInput = switchAllToLowerCase(fullUserInput);
+        String leftOverInput = convertDDMMToMMDD(dates.getInputLeft());
+        leftOverInput = getRemovedKeyword(leftOverInput);
+        return leftOverInput;
     }
 
     /**
@@ -130,9 +173,9 @@ public class DateTimeParser {
         Matcher containComplicationWord = detector.matcher(fullUserInput);
 
         while (containComplicationWord.find()) {
-          
+
             String word = containComplicationWord.group();
-            Date1Parser dateParser = new Date1Parser(word);
+            DateParser dateParser = new DateParser(word);
             ArrayList<String> date = dateParser.getDateList();
 
             assert date.size() == 1 : "only should have one date detected!";
@@ -142,11 +185,11 @@ public class DateTimeParser {
             assert partOfDate.length == 3 : "Detected date should be in a format of dd/mm/yyyy";
 
             String wordWithoutDate = dateParser.getInputLeft();
-           
+
             fullUserInput = fullUserInput.replaceAll(word, wordWithoutDate
                     + " " + partOfDate[1] + "/" + partOfDate[0] + "/"
                     + partOfDate[2]);
-           
+
             inputLeft = inputLeft + wordWithoutDate + " " + partOfDate[1] + "/"
                     + partOfDate[0] + "/" + partOfDate[2];
         }
@@ -246,28 +289,29 @@ public class DateTimeParser {
     private void setAllParameters(ArrayList<String> storageOfTime,
             ArrayList<String> storageOfDate) {
 
+        setAllParametersToDash();
         if (storageOfTime.size() == 1) {
-            
+
             setStartTime("-");
             setEndTime(storageOfTime.get(0));
-            
+
             setStartDate("-");
             setEndDate(storageOfDate.get(0));
-       
+
         } else if (storageOfTime.size() == 2) {
-            
+
             setStartTime(storageOfTime.get(0));
             setEndTime(storageOfTime.get(1));
-            
+
             setStartDate(storageOfDate.get(0));
             setEndDate(storageOfDate.get(1));
         }
     }
 
     /**
-     * 1) Key in same times and same dates --> don't allow user to add 2) Key in time before current time on
-     * current date 3) Key in date later than current date --> remind the user
-     * meeting have pass. 4) key in start time
+     * 1) Key in same times and same dates --> don't allow user to add 2) Key in
+     * time before current time on current date 3) Key in date later than
+     * current date --> remind the user meeting have pass. 4) key in start time
      * before current time but end time after current time --> remind the user
      * meeting is ongoing.
      * 
@@ -301,7 +345,8 @@ public class DateTimeParser {
             ArrayList<String> storageOfDate) throws ParseException {
         Logger logger = Logger.getLogger("DateTimeParser");
         try {
-            logger.log(Level.INFO, "going to start processing for impossible time task keyed");
+            logger.log(Level.INFO,
+                    "going to start processing for impossible time task keyed");
             checkStartDateLaterWhenBothKeyed(storageOfTime, storageOfDate);
             checkStartDateLaterWhenTimeNotKeyed(storageOfDate);
 
@@ -328,12 +373,15 @@ public class DateTimeParser {
             ArrayList<String> storageOfTime, ArrayList<String> storageOfDate)
             throws ParseException {
         if (storageOfTime.size() == 2 && storageOfDate.size() == 2) {
-         
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm");
-            Date startDate = dateFormat.parse(storageOfDate.get(0) + " " + storageOfTime.get(0));
-            Date endDate = dateFormat.parse(storageOfDate.get(1) + " " + storageOfTime.get(1));
-          
-            if(startDate.after(endDate) || startDate.equals(endDate)){
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "dd/MM/YYYY HH:mm");
+            Date startDate = dateFormat.parse(storageOfDate.get(0) + " "
+                    + storageOfTime.get(0));
+            Date endDate = dateFormat.parse(storageOfDate.get(1) + " "
+                    + storageOfTime.get(1));
+
+            if (startDate.after(endDate) || startDate.equals(endDate)) {
                 throw new IllegalArgumentException(
                         "Impossible combination for timed task! End time must be later than start time on the same day");
             }
@@ -350,8 +398,8 @@ public class DateTimeParser {
      * @throws IllegalArgumentException
      *             : type in start date later than end date
      */
-    private void checkStartDateLaterWhenTimeNotKeyed(ArrayList<String> storageOfDate)
-            throws ParseException {
+    private void checkStartDateLaterWhenTimeNotKeyed(
+            ArrayList<String> storageOfDate) throws ParseException {
         if (storageOfDate.size() == 2) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             Date date1 = dateFormat.parse(storageOfDate.get(0));
@@ -366,6 +414,7 @@ public class DateTimeParser {
 
     /**
      * check 1) user key in overdue time that before current time
+     * 2) user key in date before current date
      * 
      * @param storageOfTime
      *            : contains time detected
@@ -447,7 +496,7 @@ public class DateTimeParser {
      * @throws ParseException
      *             : fail to parse date
      */
-    private boolean ifStartTimeBeforeCurrent(ArrayList<String> storageOfTime)
+    private boolean isStartTimeBeforeCurrent(ArrayList<String> storageOfTime)
             throws ParseException {
         boolean isStartTimeBeforeCurrent = false;
         if (storageOfTime.size() >= 1) {
@@ -506,7 +555,7 @@ public class DateTimeParser {
             }
 
         }
-      
+
         return numberBeforeCurrentTime;
     }
 
@@ -527,41 +576,42 @@ public class DateTimeParser {
         checkOngoingDueToTime(storageOfDate, storageOfTime);
     }
 
-    
     private void checkOngoingDueToTime(ArrayList<String> storageOfDate,
             ArrayList<String> storageOfTime) throws ParseException {
-        
-        boolean isStartTimeBeforeCurrent = ifStartTimeBeforeCurrent(storageOfTime);
-        
-        if (storageOfTime.size() == 2  && storageOfDate.size() > 0 && isStartTimeBeforeCurrent
+
+        boolean isStartTimeBeforeCurrent = isStartTimeBeforeCurrent(storageOfTime);
+
+        if (storageOfTime.size() == 2 && storageOfDate.size() > 0
+                && isStartTimeBeforeCurrent
                 && storageOfDate.get(0).equals(getCurrentDate())) {
-      
-                feedback = "The start date keyed have past the current date but end date have not.\nGo For The Meeting!";
-     
-                JOptionPane.showMessageDialog(null,
-                        "The start date keyed have past the current date but end date have not.\n"
-                                + "Go For The Meeting!", "REMAINDER",
-                        JOptionPane.INFORMATION_MESSAGE);
 
-            }
+            feedback = "The start date keyed have past the current date but end date have not.\nGo For The Meeting!";
+
+            JOptionPane.showMessageDialog(null,
+                    "The start date keyed have past the current date but end date have not.\n"
+                            + "Go For The Meeting!", "REMAINDER",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         }
+    }
 
-    private void checkOngoingDueToDate(ArrayList<String> storageOfDate, ArrayList<String> storageOfTime)
-            throws ParseException {
+    private void checkOngoingDueToDate(ArrayList<String> storageOfDate,
+            ArrayList<String> storageOfTime) throws ParseException {
         int numberBeforeCurrentDate = countNumberBeforeCurrentDate(storageOfDate);
-        
-        if ((storageOfDate.size() == 2 || storageOfTime.size() == 2) && numberBeforeCurrentDate == 1) {
 
-                feedback = "The start date keyed have past the current date but end date have not.\nGo For The Meeting!";
-               
-                JOptionPane.showMessageDialog(null,
-                        "The start date keyed have past the current date but end date have not.\n"
-                                + "Go For The Meeting!", "REMAINDER",
-                        JOptionPane.INFORMATION_MESSAGE);
+        if ((storageOfDate.size() == 2 || storageOfTime.size() == 2)
+                && numberBeforeCurrentDate == 1) {
 
-            }
+            feedback = "The start date keyed have past the current date but end date have not.\nGo For The Meeting!";
+
+            JOptionPane.showMessageDialog(null,
+                    "The start date keyed have past the current date but end date have not.\n"
+                            + "Go For The Meeting!", "REMAINDER",
+                    JOptionPane.INFORMATION_MESSAGE);
 
         }
+
+    }
 
     /**
      * calculate the number of date keyed past the current date
@@ -577,7 +627,7 @@ public class DateTimeParser {
     private int countNumberBeforeCurrentDate(ArrayList<String> storageOfDate)
             throws ParseException {
         int numberBeforeCurrentDate = 0;
-        
+
         for (int i = 0; i < storageOfDate.size(); i++) {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -763,7 +813,7 @@ public class DateTimeParser {
             ArrayList<String> storageOfDate) throws ParseException {
 
         int numberBeforeCurrentTime = countNumberBeforeCurrentTime(storageOfTime);
-        boolean isStartTimeBeforeCurrent = ifStartTimeBeforeCurrent(storageOfTime);
+        boolean isStartTimeBeforeCurrent = isStartTimeBeforeCurrent(storageOfTime);
 
         String currentDate = getCurrentDate();
         String nextDayDate = addDateToNumberOfDay(1, currentDate);
@@ -836,7 +886,7 @@ public class DateTimeParser {
             String currentDate, String nextDayDate) throws ParseException {
 
         if (storageOfTime.get(0).equals(storageOfTime.get(1))
-                || ifStartTimeLaterThanEnd(storageOfTime)) {
+                || isStartTimeLaterThanEnd(storageOfTime)) {
 
             storageOfDate.add(addDateToNumberOfDay(1, storageOfDate.get(0)));
 
@@ -845,7 +895,7 @@ public class DateTimeParser {
 
             storageOfDate.add(nextDayDate);
 
-        } else if (!ifStartTimeLaterThanEnd(storageOfTime)) {
+        } else if (!isStartTimeLaterThanEnd(storageOfTime)) {
 
             storageOfDate.add(storageOfDate.get(0));
         }
@@ -876,25 +926,25 @@ public class DateTimeParser {
 
         if (storageOfTime.get(0).equals(storageOfTime.get(1))
                 || (!isStartTimeBeforeCurrent && numberBeforeCurrentTime == 1)
-                || (numberBeforeCurrentTime == 0 && ifStartTimeLaterThanEnd(storageOfTime))) {
+                || (numberBeforeCurrentTime == 0 && isStartTimeLaterThanEnd(storageOfTime))) {
 
             storageOfDate.add(currentDate);
             storageOfDate.add(nextDayDate);
 
         } else if ((numberBeforeCurrentTime == 1 && isStartTimeBeforeCurrent)
-                || (numberBeforeCurrentTime == 2 && !ifStartTimeLaterThanEnd(storageOfTime))) {
+                || (numberBeforeCurrentTime == 2 && !isStartTimeLaterThanEnd(storageOfTime))) {
 
             storageOfDate.add(nextDayDate);
             storageOfDate.add(nextDayDate);
 
         } else if (numberBeforeCurrentTime == 2
-                && ifStartTimeLaterThanEnd(storageOfTime)) {
+                && isStartTimeLaterThanEnd(storageOfTime)) {
 
             storageOfDate.add(nextDayDate);
             storageOfDate.add(afterTwoDaysDate);
 
         } else if (numberBeforeCurrentTime == 0
-                && !ifStartTimeLaterThanEnd(storageOfTime)) {
+                && !isStartTimeLaterThanEnd(storageOfTime)) {
 
             storageOfDate.add(currentDate);
             storageOfDate.add(currentDate);
@@ -909,7 +959,7 @@ public class DateTimeParser {
      * @return true if start time later than end time otherwise false
      * @throws ParseException
      */
-    private boolean ifStartTimeLaterThanEnd(ArrayList<String> storageOfTime)
+    private boolean isStartTimeLaterThanEnd(ArrayList<String> storageOfTime)
             throws ParseException {
 
         boolean isStartTimeLaterThanEnd = false;
