@@ -46,11 +46,11 @@ public class WeekDayParser {
 
         if (userInput.contains("mon")) {
             dayOfWeek = 1;
-        } else if (userInput.contains("tues")) {
+        } else if (userInput.contains("tue")) {
             dayOfWeek = 2;
         } else if (userInput.contains("wed")) {
             dayOfWeek = 3;
-        } else if (userInput.contains("thurs")) {
+        } else if (userInput.contains("thur")) {
             dayOfWeek = 4;
         } else if (userInput.contains("fri")) {
             dayOfWeek = 5;
