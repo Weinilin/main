@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
  */
 public class Memory {
 	
-    private static final long timeOffset = 86400000;
 	private final String DONE = "done";
 	private final String UNDONE = "undone";
 
@@ -262,6 +261,7 @@ public class Memory {
 	 * 
 	 * @param keyword
 	 * @return result arraylist containing the tasks that contains the keyword
+	 * @author A0114463M
 	 */
 	public ArrayList<Task> searchDescription(String keyword) {
 		memoryLogger.entering(getClass().getName(), "searching task containing keyword");
@@ -395,6 +395,7 @@ public class Memory {
      * @param suspectStartDate
      * @param suspectEndDate
      * @return
+     * @author A0114463M
      */
     private boolean isWithinDate(Calendar targetStartDate,
             Calendar targetEndDate, Calendar suspectStartDate,

@@ -22,6 +22,10 @@ class ShowHandler extends CommandHandler{
 
     private static final String HELP_MESSAGE = "show\n\t show all tasks in TaskManager\nshow [keyword]\n\t show all tasks containing the keyword\n";
     private static final String EMPTY_LIST_MESSAGE = "There is no %1$stask\n";
+    private static final String FOUND_DATE_MESSAGE = "Showing tasks on %1$s\n";
+    private static final String NOT_FOUND_DATE_MESSAGE = "No tasks on %1$s\n";
+    private static final String FOUND_DATE_BEWTWEEN_MESSAGE = "Showing tasks from %1$s to %2$s\n";
+    private static final String NOT_FOUND_DATE_BETWEEN_MESSAGE = "There are no task from %1$s to %2$s\n";
     private static final String NOT_FOUND_MESSAGE = "No task containing %1$s\n";
     private static final String FOUND_MESSAGE = "Showing all tasks containing \"%1$s\"\n";
     private ArrayList<String> aliases = new ArrayList<String>(
@@ -106,12 +110,12 @@ class ShowHandler extends CommandHandler{
         }
         if (searchList.isEmpty()) {
             showLogger.log(Level.FINE, "no results found on " + date);
-            return String.format(NOT_FOUND_MESSAGE, date);
+            return String.format(NOT_FOUND_DATE_MESSAGE, date);
         }
         else {
             updateTaskList(taskList, searchList);
             showLogger.log(Level.FINE, "show all tasks on " + date);
-            return String.format(FOUND_MESSAGE, date);
+            return String.format(FOUND_DATE_MESSAGE, date);
         }
     }
     /**
@@ -130,11 +134,11 @@ class ShowHandler extends CommandHandler{
             return "Error parsing date\n";
         }
         if (searchList.isEmpty()) {
-            return String.format(NOT_FOUND_MESSAGE, startDate);
+            return String.format(NOT_FOUND_DATE_BETWEEN_MESSAGE, startDate, endDate);
         }
         else {
             updateTaskList(taskList, searchList);
-            return String.format(FOUND_MESSAGE, startDate);
+            return String.format(FOUND_DATE_BEWTWEEN_MESSAGE, startDate, endDate);
         }
     }
     
