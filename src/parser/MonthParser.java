@@ -20,39 +20,29 @@ public class MonthParser {
     public static int convertMonthToNumber(String dateOfTheTask) {
         int month = 0;
 
-        if (dateOfTheTask.contains("jan") || dateOfTheTask.contains("january")) {
+        if (dateOfTheTask.contains("jan")) {
             month = 1;
-        } else if (dateOfTheTask.contains("feb")
-                || dateOfTheTask.contains("february")) {
+        } else if (dateOfTheTask.contains("feb")) {
             month = 2;
-        } else if (dateOfTheTask.contains("mar")
-                || dateOfTheTask.contains("march")) {
+        } else if (dateOfTheTask.contains("mar")) {
             month = 3;
-        } else if (dateOfTheTask.contains("apr")
-                || dateOfTheTask.contains("april")) {
+        } else if (dateOfTheTask.contains("apr")) {
             month = 4;
         } else if (dateOfTheTask.contains("may")) {
             month = 5;
-        } else if (dateOfTheTask.contains("jun")
-                || dateOfTheTask.contains("june")) {
+        } else if (dateOfTheTask.contains("jun")) {
             month = 6;
-        } else if (dateOfTheTask.contains("jul")
-                || dateOfTheTask.contains("july")) {
+        } else if (dateOfTheTask.contains("jul")) {
             month = 7;
-        } else if (dateOfTheTask.contains("aug")
-                || dateOfTheTask.contains("august")) {
+        } else if (dateOfTheTask.contains("aug")) {
             month = 8;
-        } else if (dateOfTheTask.contains("sep")
-                || dateOfTheTask.contains("september")) {
+        } else if (dateOfTheTask.contains("sep")) {
             month = 9;
-        } else if (dateOfTheTask.contains("oct")
-                || dateOfTheTask.contains("october")) {
+        } else if (dateOfTheTask.contains("oct")) {
             month = 10;
-        } else if (dateOfTheTask.contains("nov")
-                || dateOfTheTask.contains("november")) {
+        } else if (dateOfTheTask.contains("nov")) {
             month = 11;
-        } else if (dateOfTheTask.contains("dec")
-                || dateOfTheTask.contains("december")) {
+        } else if (dateOfTheTask.contains("dec")) {
             month = 12;
         }
 

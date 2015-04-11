@@ -243,7 +243,7 @@ public class DateParser {
      * @param userInput
      */
     private void spotWeekMonthYearApartKeyword(String userInput) {
-        String dateOfTheTask = "", uniqueKeyword = "";
+        String dateOfTheTask = "";
         int numberOfDays = 0, numberOfMonths = 0, numberOfYears = 0;
 
         Pattern dateDetector = Pattern
@@ -252,7 +252,7 @@ public class DateParser {
         Matcher matchWithIndex = dateDetector.matcher(userInput);
 
         while (containDate.find() && matchWithIndex.find()) {
-            uniqueKeyword = containDate.group();
+            String uniqueKeyword = containDate.group();
             inputLeft = inputLeft.replaceAll(uniqueKeyword, "");
 
             if (uniqueKeyword.contains("week") || uniqueKeyword.contains("wk")) {
@@ -326,20 +326,21 @@ public class DateParser {
     private String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek)
             throws IllegalArgumentException {
         String dateOfTheTask = "";
-        Logger logger = Logger.getLogger("DateParser");
-        try {
-            logger.log(Level.INFO, "going to start processing");
-            if (todayDayOfWeek <= dayOfTheWeek) {
-                dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek
-                        - todayDayOfWeek);
-            } else {
-                throw new IllegalArgumentException(
-                        "This weekday entered has pass!");
-            }
-        } catch (IllegalArgumentException e) {
-            logger.log(Level.FINER, "Weekday entered have passed.");
-            JOptionPane.showMessageDialog(null, e.getMessage());
-            throw new IllegalArgumentException(e.getMessage());
+        // Logger logger = Logger.getLogger("DateParser");
+        // try {
+        // logger.log(Level.INFO, "going to start processing");
+        // if (todayDayOfWeek <= dayOfTheWeek) {
+        dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek - todayDayOfWeek);
+        // } else {
+        // throw new IllegalArgumentException(
+        // "This weekday entered has pass!");
+        // }
+        // } catch (IllegalArgumentException e) {
+        // logger.log(Level.FINER, "Weekday entered have passed.");
+        if (todayDayOfWeek > dayOfTheWeek) {
+            JOptionPane.showMessageDialog(null,
+                    "Take note: Weekday entered have passed.");
+            // throw new IllegalArgumentException(e.getMessage());
         }
 
         return dateOfTheTask;

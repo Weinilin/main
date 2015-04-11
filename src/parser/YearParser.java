@@ -16,7 +16,6 @@ public class YearParser {
 
     public static int getYear(String dateOfTheTask) {
         int year = 0;
-
         Pattern numberPattern = Pattern.compile("\\d+");
         Matcher containYear = numberPattern.matcher(dateOfTheTask);
         String numberText;
