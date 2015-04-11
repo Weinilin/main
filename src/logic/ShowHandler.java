@@ -74,7 +74,7 @@ class ShowHandler extends CommandHandler{
             }
             else {
                 String startTime = parser.getStartDate().split(" ")[1] + " " + parser.getStartTime(),
-                       endTime = parser.getEndDate().split(" ")[1] + " " + parser.getEndTime();
+                        endTime = parser.getEndDate().split(" ")[1] + " " + parser.getEndTime();
                 return searchTime(startTime, endTime, taskList);
             }
         }
