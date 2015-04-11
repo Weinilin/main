@@ -113,19 +113,14 @@ class EditHandler extends UndoableCommandHandler {
      */
     private void performEdit(ArrayList<Task> taskList) {
         if (newTask != oldTask && oldTask != null) {
-            if (memory.addTask(newTask) >= 0) {
-                memory.removeTask(oldTask);
-                recordChanges(taskList);            
-                Collections.sort(taskList, new TaskComparator());
-                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
-            }
-            else {
-                feedback = "New task is identical to some existing task\n";
-            }
+            memory.removeTask(oldTask);
+            recordChanges(taskList);            
+            Collections.sort(taskList, new TaskComparator());
+            feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
         }
         else {
-            feedback = "Please check your input\n";
-        }
+            feedback = "New task is identical to some existing task\n";
+        }             
     }
     
     
