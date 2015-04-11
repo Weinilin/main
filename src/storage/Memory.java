@@ -1,6 +1,4 @@
-/*
- * @author A0113966Y
- */
+//@author A0113966Y
 
 package storage;
 
@@ -13,8 +11,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -25,18 +21,18 @@ import java.time.LocalDateTime;
  * LogicController makes changes to the taskList stored in Memory.
  * Memory writes these changes to the Database.
  * 
- * @author A0113966
+ * @author A0113966Y
  *
  */
 public class Memory {
 	
-	private final String DONE = "done";
-	private final String UNDONE = "undone";
+	private static final String DONE = "done";
+	private static final String UNDONE = "undone";
+	private static final int FEEDBACK_CLASHING_TASK = 3;
+	private static final int FEEDBACK_NON_CLASHING_TASK = 1;
 
-	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
 	
-
 	private static Memory memory;
 	
 	private static final Logger memoryLogger = Logger.getLogger(Memory.class.getName());
@@ -63,28 +59,23 @@ public class Memory {
 	public int addTask(Task newTask) {
 		memoryLogger.entering(getClass().getName(), "adding a new task to taskList");
 		assert isValidTask(newTask);
-
-	
-	
-		String taskType = newTask.getTaskType();
-
 		
-		
-		if (taskType.equals("time task")) { 
-		    if (exactTimeSlotExists(newTask)) {
-		        return 3;
+		int feedback = FEEDBACK_NON_CLASHING_TASK;
+
+		if (isTimeTask(newTask)) { 
+		    if (hasExactSameTimeIntervalAsOtherTask(newTask)) {
+			    memoryLogger.log(Level.FINE, "Clashing Task");
+		        feedback = FEEDBACK_CLASHING_TASK;
 		    }
 		    
-		    if (hasTasksWithinInterval(newTask)) {
-		    	return 3;
+		    if (hasOtherTasksWithinIntervalOfAddedTask(newTask)) {
+			    memoryLogger.log(Level.FINE, "Clashing Task");
+		    	feedback = FEEDBACK_CLASHING_TASK;
 		    }
-		    
-//		    if (isWithinInterval(newTask)) {
-//		    	return 3;
-//		    }
-//		    
-		    if (isOverlap(newTask)) {
-		    	return 3;
+		    		    
+		    if (isOverlappingWithOtherTasks(newTask)) {
+			    memoryLogger.log(Level.FINE, "Clashing Task");
+		    	feedback = FEEDBACK_CLASHING_TASK;
 		    }
 		}
 
@@ -97,10 +88,16 @@ public class Memory {
 		sortTaskList();
 		writeToDatabase();
 		memoryLogger.exiting(getClass().getName(), "adding a new task to taskList");
-		return 1;
+		
+		return feedback;
 	}
 
-	private boolean isOverlap(Task task) {
+	private boolean isTimeTask(Task task) {
+		String taskType = task.getTaskType();
+		return taskType.equals("time task");
+	}
+	
+	private boolean isOverlappingWithOtherTasks(Task task) {
 		ArrayList<Task> timeTasks = getTimeTasks();
 		TimeAnalyser ta = new TimeAnalyser();
 
@@ -129,7 +126,8 @@ public class Memory {
 		return false;
 		
 	}
-	private boolean isWithinInterval(Task task) {
+	
+	private boolean isEntirelyWithinIntervalOfOtherTasks(Task task) {
 		ArrayList<Task> timeTasks = getTimeTasks();
 		TimeAnalyser ta = new TimeAnalyser();
 
@@ -158,7 +156,7 @@ public class Memory {
 		return false;
 	}
 
-	private boolean hasTasksWithinInterval(Task task) {
+	private boolean hasOtherTasksWithinIntervalOfAddedTask(Task task) {
 		ArrayList<Task> timeTasks = getTimeTasks();
 
 		TimeAnalyser ta = new TimeAnalyser();
@@ -178,8 +176,7 @@ public class Memory {
 			String endTime2 = currentTask.getEndDateTime();
 			long endTime2InMillis = ta.getDateTimeInMilliseconds(endTime2);
 
-			
-			if (endTime2InMillis < endTimeInMillis && endTime2InMillis > startTimeInMillis ||
+			if (endTime2InMillis < endTimeInMillis && endTime2InMillis > startTimeInMillis &&
 					startTime2InMillis > startTimeInMillis && startTime2InMillis < endTimeInMillis) {
 				return true;
 			} 
@@ -188,14 +185,7 @@ public class Memory {
 		return false;
 	}
 	
-		
-		
-		
-	
-	
-	
-	
-	private boolean exactTimeSlotExists(Task task) {
+	private boolean hasExactSameTimeIntervalAsOtherTask(Task task) {
 		ArrayList<Task> timeTasks = getTimeTasks();
 
 		String startTime = task.getStartDateTime();
@@ -213,9 +203,6 @@ public class Memory {
 		
 		return false;
 	}
-	
-
-	
 	
 	private void writeToDatabase() {
 		memoryLogger.entering(getClass().getName(), "writing new task to database");
@@ -272,7 +259,7 @@ public class Memory {
 		ArrayList<Task> searchList = new ArrayList<Task>();
 		for (int i = 0; i < taskList.size(); i++) {
 			Task task = taskList.get(i);
-			if (task.getDescription().contains(keyword)) {
+			if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
 				searchList.add(task);
 			}
 		}
@@ -536,18 +523,6 @@ public class Memory {
 		return searchList;
 	}
 	
-//	public void editDeadline(int index, String newDeadline) {
-//		memoryLogger.entering(getClass().getName(), "editing deadline");
-//		assert isValidIndex(index);
-//		Task task = taskList.get(index - 1);
-//		task.setDeadline(newDeadline);
-//		sortTaskList();
-//		writeToDatabase();
-//		memoryLogger.log(Level.FINE, "edit success");
-//		memoryLogger.exiting(getClass().getName(), "editing deadline");
-//
-//	}
-	
 	public void editTime(int index, String newStartDateTime, String newEndDateTime) {
 		memoryLogger.entering(getClass().getName(), "editing time");
 		assert isValidIndex(index);
@@ -740,7 +715,6 @@ public class Memory {
 	    ArrayList<Task> searchList = new ArrayList<Task>();
 	    TimeAnalyser ta = new TimeAnalyser();
 	   
-	    
 	    ArrayList<Task> deadlinesAndTimeTasks = getDeadlinesAndTimeTasks();
 	    
 	    for (int i = 0; i < deadlinesAndTimeTasks.size(); i++) {
@@ -769,20 +743,6 @@ public class Memory {
 	    }
 	    
 	    return false;
-	}
-	
-	private boolean isTimeTask(Task task) {
-        String status = task.getStatus();
-        
-        if (status.equals("time task")) {
-            return true;
-        }
-        
-        return false;
-    }
-	
-	private void sortTasksBasedOnEndTime(ArrayList<Task> timeTasks) {
-		Collections.sort(timeTasks, new TimeTasksSorter());
 	}
 
 }

@@ -1031,7 +1031,6 @@ public class TimeParser {
             time = time.substring(0, index) + ":" + time.substring(index + 1);
 
         }
-
         return time;
     }
 

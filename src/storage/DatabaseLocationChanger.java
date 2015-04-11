@@ -1,9 +1,14 @@
+//@author A0113966Y
+
 package storage;
 
-import java.util.ArrayList;
-
-import application.Task;
-
+/**
+ * DatabaseLocationChanger is used to change the location of a database. It acts as a facade between
+ * LogicController and Database
+ * 
+ * @author A0113966Y
+ *
+ */
 public class DatabaseLocationChanger {
 	private static Database database;
 	
