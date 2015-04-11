@@ -1,116 +1,72 @@
+//@author A0113966Y
+
 package storage;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.junit.Test;
 
 import application.Task;
+import application.TaskComparator;
+
+/**
+ * Unit testing for Memory
+ * 
+ * @author A0113966Y
+ *
+ */
 
 public class MemoryTest {
+	final int FEEDBACK_CLASHING_TASK = 3;
+	final int FEEDBACK_NON_CLASHING_TASK = 1;
+	
+	Memory memory = Memory.getInstance();
 
 	@Test
 	public void test() {
-		Memory memory = Memory.getInstance();
 		
 		/*
 		 * Test for remove all
 		 */
 		memory.removeAll();
 		assertEquals(memory.getTaskList().size(), 0);
-		
-		String taskType;
-		String description;
-		String startDateTime;
-		String endDateTime;
-		String deadline;
-		String status;
 
 		/*
 		 * Test for adding task
 		 */
-		ArrayList<String> task1 = new ArrayList<String>();
-		taskType = "time task";
-		task1.add(taskType);
-		description = "task 1";
-		task1.add(description);
-		startDateTime = "01/02/2015 17:00";
-		task1.add(startDateTime);
-		endDateTime = "01/02/2015 18:00";
-		task1.add(endDateTime);
-		deadline = "-";
-		task1.add(deadline);
-		status = "not done";
-		task1.add(status);
-		Task newTask1 = new Task(task1);
-		memory.addTask(newTask1);
-		assertEquals(memory.contains(newTask1), true);
+		Task task1 = new Task("deadline", "task 1", "- -", "Sat 28/03/2015 21:00", "undone");
+		memory.addTask(task1);
+		assertEquals(memory.contains(task1), true);
 		
-		ArrayList<String> task2 = new ArrayList<String>();
-		taskType = "deadline";
-		task2.add(taskType);
-		description = "task 2";
-		task2.add(description);
-		startDateTime = "-";
-		task2.add(startDateTime);
-		endDateTime = "-";
-		task2.add(endDateTime);
-		deadline = "03/04/2015 14:00";
-		task2.add(deadline);
-		status = "not done";
-		task2.add(status);
-		Task newTask2 = new Task(task2);
-		memory.addTask(newTask2);
-		assertEquals(memory.contains(newTask2), true);
+		Task task2 = new Task("floating task", "task 2", "- -", "- -", "done");
+		memory.addTask(task2);
+		assertEquals(memory.contains(task2), true);
 
-		ArrayList<String> task3 = new ArrayList<String>();
-		taskType = "floating task";
-		task3.add(taskType);
-		description = "task 3";
-		task3.add(description);
-		startDateTime = "-";
-		task3.add(startDateTime);
-		endDateTime = "-";
-		task3.add(endDateTime);
-		deadline = "-";
-		task3.add(deadline);
-		status = "not done";
-		task3.add(status);
-		Task newTask3 = new Task(task3);
-		memory.addTask(newTask3);
-		assertEquals(memory.contains(newTask3), true);
+		Task task3 = new Task("time task", "task 3", "Sun 01/02/2015 01:00", "Mon 02/02/2015 02:00", "undone");
+		memory.addTask(task3);
+		assertEquals(memory.contains(task3), true);
 		
-		ArrayList<String> dummy = new ArrayList<String>();
-		taskType = "-";
-		dummy.add(taskType);
-		description = "dummy";
-		dummy.add(description);
-		startDateTime = "-";
-		dummy.add(startDateTime);
-		endDateTime = "-";
-		dummy.add(endDateTime);
-		deadline = "-";
-		dummy.add(deadline);
-		status = "not done";
-		dummy.add(status);
-		Task newTask4 = new Task(dummy);
-		memory.addTask(newTask4);
-		assertEquals(memory.contains(newTask4), true);
+		Task task4 = new Task("floating task", "dummy", "-", "-", "undone");
+		memory.addTask(task4);
+		assertEquals(memory.contains(task4), true);
 
 		/*
 		 * Test for remove
 		 */
-		Task removedTask = memory.removeTask(newTask2);
-		assertEquals(removedTask, newTask2);
+		Task removedTask = memory.removeTask(task2);
+		assertEquals(removedTask, task2);
 
 		/*
 		 * Test for search description
 		 */
 		ArrayList<Task> searchList = memory.searchDescription("task");
 		ArrayList<Task> correctSearchList = new ArrayList<Task>();
-		correctSearchList.add(newTask1);
-		correctSearchList.add(newTask3);
+		correctSearchList.add(task3);
+		correctSearchList.add(task1);
+		Collections.sort(correctSearchList, new TaskComparator());
 		assertEquals(correctSearchList, searchList);
 
 		/*
@@ -122,14 +78,66 @@ public class MemoryTest {
 		/*
 		 * Test for search status
 		 */
-		searchList = memory.searchStatus("not done");
+		searchList = memory.searchStatus("undone");
 		correctSearchList = new ArrayList<Task>();
-		correctSearchList.add(newTask3);
-		correctSearchList.add(newTask4);
+		correctSearchList.add(task1);
+		correctSearchList.add(task4);
+		Collections.sort(correctSearchList, new TaskComparator());
 		assertEquals(correctSearchList, searchList);
+				
+		/*
+		 * Test for addTask() method using Equivalence Partition
+		 * The partition are overlapping tasks, non-overlapping tasks, tasks contained within the interval of other tasks,
+		 * tasks with interval enclosing the interval of other tasks, tasks with exactly the same time interval as other
+		 * tasks
+		 * 
+		 */
+		int feedback;
 		
-
+		//Testing for overlapping tasks
+		resetMemory();
+		Task clashingTask1 = new Task("time task", "clashingTask1", "Sat 28/03/2015 19:59", "Sat 28/03/2015 20:01", "undone");
+		feedback = memory.addTask(clashingTask1);
+		assertEquals(feedback, FEEDBACK_CLASHING_TASK);
+		
+		resetMemory();
+		Task clashingTask2 = new Task("time task", "clashingTask2", "Sat 28/03/2015 20:59", "Sat 28/03/2015 21:01", "undone");
+		feedback = memory.addTask(clashingTask2);
+		assertEquals(feedback, FEEDBACK_CLASHING_TASK);
+		
+		//Testing for non-overlapping tasks
+		resetMemory();
+		Task nonOverlappingTask1 = new Task("time task", "nonOverlappingTask1", "Sat 28/03/2015 21:00", "Sat 28/03/2015 22:00", "undone");
+		feedback = memory.addTask(nonOverlappingTask1);
+		assertEquals(feedback, FEEDBACK_NON_CLASHING_TASK);
+		
+		resetMemory();
+		Task nonOverlappingTask2 = new Task("time task", "nonOverlappingTask2", "Sat 28/03/2015 19:00", "Sat 28/03/2015 20:00", "undone");
+		feedback = memory.addTask(nonOverlappingTask2);
+		assertEquals(feedback, FEEDBACK_NON_CLASHING_TASK);
+		
+		//Testing for adding tasks with interval contained within the interval of existing tasks
+		resetMemory();
+		clashingTask1 = new Task("time task", "clashingTask1", "Sat 28/03/2015 20:01", "Sat 28/03/2015 20:59", "undone");
+		feedback = memory.addTask(clashingTask1);
+		assertEquals(feedback, FEEDBACK_CLASHING_TASK);
+				
+		//Testing for adding tasks with exactly the same time interval as existing task
+		resetMemory();
+		clashingTask1 = new Task("time task", "clashingTask1", "Sat 28/03/2015 20:00", "Sat 28/03/2015 21:00", "undone");
+		feedback = memory.addTask(clashingTask1);
+		assertEquals(feedback, FEEDBACK_CLASHING_TASK);
+		
+		//Testing for adding tasks with interval enclosing the interval of existing tasks
+		resetMemory();
+		clashingTask1 = new Task("time task", "clashingTask1", "Sat 28/03/2015 19:00", "Sat 28/03/2015 22:00", "undone");
+		feedback = memory.addTask(clashingTask1);
+		assertEquals(feedback, FEEDBACK_CLASHING_TASK);
 	}
-
-
+	
+	public void resetMemory() {
+		memory.removeAll();
+		Task task = new Task("time task", "task", "Sat 28/03/2015 20:00", "Sat 28/03/2015 21:00", "undone");
+		memory.addTask(task);
+	}
 }

@@ -1,3 +1,5 @@
+//@author A0113966Y
+
 package application;
 
 import java.text.ParseException;
@@ -6,6 +8,12 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 
+/**
+ * TimeAnalyser is used to compare time for sorting purpose and checking for clashing tasks
+ * 
+ * @author A0113966Y
+ *
+ */
 public class TimeAnalyser {
     
     private int year;
@@ -16,16 +24,11 @@ public class TimeAnalyser {
     
     
     public TimeAnalyser() {}
-    // need another constructor for parsing unformatted string
     private void processFormattedString(String dateTime) {
-//        System.out.println(dateTime);
-
         String processedDateTime = dateTime.replaceAll("[:/]", " ");
 
         String[] token = processedDateTime.split("\\s+");
    
-//        System.out.println(processedDateTime);
-
         day = Integer.parseInt(token[1]);
         month = Integer.parseInt(token[2]);
         year = Integer.parseInt(token[3]);
