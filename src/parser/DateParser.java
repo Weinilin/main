@@ -283,11 +283,8 @@ public class DateParser {
      * monday-sunday
      * 
      * @param userInput
-     * @throws IllegalArgumentException
-     *             : weekday pass the current weekday.
      */
-    private void spotThisWeekdayApartKeyWord(String userInput)
-            throws IllegalArgumentException {
+    private void spotThisWeekdayApartKeyWord(String userInput) {
         String dateOfTheTask = "", thisWeekdayInput = "";
 
         Pattern dateDetector = Pattern.compile(THIS_WEEKDAY_APART_KEYWORD);
@@ -319,28 +316,16 @@ public class DateParser {
      * @param dateOfTheTask
      * @param dayOfTheWeek
      * @param todayDayOfWeek
-     * @throws IllegalArgumentException
-     *             : weekday pass the current weekday.
      * @return DD/MM/YYYY
      */
-    private String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek)
-            throws IllegalArgumentException {
+    private String getThisWeekayDate(int dayOfTheWeek, int todayDayOfWeek) {
         String dateOfTheTask = "";
-        // Logger logger = Logger.getLogger("DateParser");
-        // try {
-        // logger.log(Level.INFO, "going to start processing");
-        // if (todayDayOfWeek <= dayOfTheWeek) {
+
         dateOfTheTask = addToTheCurrentDateByDays(dayOfTheWeek - todayDayOfWeek);
-        // } else {
-        // throw new IllegalArgumentException(
-        // "This weekday entered has pass!");
-        // }
-        // } catch (IllegalArgumentException e) {
-        // logger.log(Level.FINER, "Weekday entered have passed.");
+
         if (todayDayOfWeek > dayOfTheWeek) {
             JOptionPane.showMessageDialog(null,
                     "Take note: Weekday entered have passed.");
-            // throw new IllegalArgumentException(e.getMessage());
         }
 
         return dateOfTheTask;
