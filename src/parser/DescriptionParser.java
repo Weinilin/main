@@ -11,7 +11,7 @@ public class DescriptionParser {
 
     public DescriptionParser(String userInput, String userInputLeft)
             throws Exception {
-        
+
         // to match with partOfDescription since all is set to lowercase during
         // detection of time and date to prevent case sensitive
         String lowerCaseInput = switchAllToLowerCase(userInput);
@@ -20,8 +20,8 @@ public class DescriptionParser {
 
         String escapedText = getEscapedText(userInput);
 
-        description = piecePartsOfDescription(escapedText,
-                partOfDescription, lowerCaseInput, userInput);
+        description = piecePartsOfDescription(escapedText, partOfDescription,
+                lowerCaseInput, userInput);
 
         description = removeTheExtraSpace(description);
         setDescription(description);
@@ -67,9 +67,9 @@ public class DescriptionParser {
      */
     private String piecePartsOfDescription(String escapedText,
             String partOfDescription, String lowerCaseInput, String userInput) {
-        
+
         int indexLeftOverInput = 0, indexEscapedText = 0;
-        
+
         String[] eachWordInLeftOverInput = splitStringByWhitespace(partOfDescription);
         String[] eachEscapedText = splitStringByWhitespace(escapedText);
         String[] eachWordLowerCaseInput = splitStringByWhitespace(lowerCaseInput);
@@ -85,7 +85,7 @@ public class DescriptionParser {
                 indexLeftOverInput++;
                 i++;
             }
-            
+
             if (isWordEqualToUserInput(indexLeftOverInput,
                     eachWordInLeftOverInput, eachWordLowerCaseInput, i)) {
 
@@ -96,44 +96,44 @@ public class DescriptionParser {
 
                 indexEscapedText = addWordToDescription(indexEscapedText,
                         eachWordUserInput, i);
-            }            
+            }
         }
         return description;
     }
 
     /**
-     * if escaped text or left over input match with the user input,
-     * add it to the description
+     * if escaped text or left over input match with the user input, add it to
+     * the description
+     * 
      * @param index
      * @param eachWordUserInput
      * @param i
      * @return the next index for continue detection of description
      */
-    private int addWordToDescription(int index,
-            String[] eachWordUserInput, int i) {
+    private int addWordToDescription(int index, String[] eachWordUserInput,
+            int i) {
         description = description + " " + eachWordUserInput[i];
         index++;
         return index;
     }
 
     private boolean isWordEqualToUserInput(int index,
-            String[] wordLeftOverInput, String[] eachWordLowerCaseInput,
-            int i) {
+            String[] wordLeftOverInput, String[] eachWordLowerCaseInput, int i) {
         return index < wordLeftOverInput.length
-                && eachWordLowerCaseInput[i]
-                        .equals(wordLeftOverInput[index]);
+                && eachWordLowerCaseInput[i].equals(wordLeftOverInput[index]);
     }
 
     /**
      * 1) change ~ to white space then split all by white space
+     * 
      * @param text
      * @return array of each word in text
      */
     private String[] splitStringByWhitespace(String text) {
         text = text.replaceAll("\\~", " ");
-       
+
         text = removeTheExtraSpace(text);
-     
+
         String[] eachWordInDescription = text.split("\\s+|~");
         return eachWordInDescription;
     }
@@ -173,7 +173,7 @@ public class DescriptionParser {
                             eachWordLowerCaseInput, i)) {
                 isByPassConjunction = true;
             }
-            
+
         }
         return isByPassConjunction;
     }

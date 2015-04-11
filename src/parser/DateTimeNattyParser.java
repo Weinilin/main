@@ -407,19 +407,19 @@ public class DateTimeNattyParser {
     }
 
     /**
-     * natty could detect <digit> a from "tutorial 11 preparation today"
-     * thus must bypass it
+     * natty could detect <digit> a from "tutorial 11 preparation today" thus
+     * must bypass it
+     * 
      * @param partOfMatchingValue
      * @return
      */
     private boolean isEqualToMeridiem(String[] partOfMatchingValue) {
-        return partOfMatchingValue[1]
-                .equals("a")
+        return partOfMatchingValue[1].equals("a")
                 || partOfMatchingValue[1].equals("p")
                 || partOfMatchingValue[1].equals("am")
                 || partOfMatchingValue[1].equals("pm")
-                || partOfMatchingValue[1].equals("a.m.") || partOfMatchingValue[1]
-                    .equals("p.m.");
+                || partOfMatchingValue[1].equals("a.m.")
+                || partOfMatchingValue[1].equals("p.m.");
     }
 
     /**

@@ -57,7 +57,6 @@ public class DateTimeParser {
             + "(mon|tues|wed|thurs|fri|sat|sun)(day|nesday|urday|)(s|)\\b)";
     private ArrayList<String> storageOfTime = new ArrayList<String>();
     private ArrayList<String> storageOfDate = new ArrayList<String>();
-    
 
     public DateTimeParser(String userInput) throws Exception {
         fullUserInput = userInput;
@@ -87,7 +86,7 @@ public class DateTimeParser {
 
     private void extractFromNattyParser(int indexPrevTime,
             String leftOverInput, int indexPrevDate) {
-        
+
         DateTimeNattyParser dateTimeNatty = new DateTimeNattyParser();
         dateTimeNatty.extractDateTime(fullUserInput, leftOverInput,
                 storageOfDate, storageOfTime, indexPrevTime, indexPrevDate);
@@ -98,10 +97,10 @@ public class DateTimeParser {
     }
 
     private TimeParser extractFromTimeParser() throws Exception {
-       
+
         TimeParser times = new TimeParser(fullUserInput);
         storageOfTime = times.getTimeList();
-        
+
         return times;
     }
 
@@ -110,7 +109,7 @@ public class DateTimeParser {
         String leftOverInput = removeComplication(times.getInputLeft());
         dates.extractDate(fullUserInput, leftOverInput);
         storageOfDate = dates.getDateList();
-       
+
         return dates;
     }
 
@@ -125,11 +124,11 @@ public class DateTimeParser {
         userInput = " " + userInput.toLowerCase() + " ";
         return userInput;
     }
-    
+
     /**
-     * make changes to the userInput, so that it will bypass detection
-     * from dateParser and detect by natty which could only detect 
-     * correctly by natty
+     * make changes to the userInput, so that it will bypass detection from
+     * dateParser and detect by natty which could only detect correctly by natty
+     * 
      * @param dates
      * @return userInput
      */
@@ -413,8 +412,8 @@ public class DateTimeParser {
     }
 
     /**
-     * check 1) user key in overdue time that before current time
-     * 2) user key in date before current date
+     * check 1) user key in overdue time that before current time 2) user key in
+     * date before current date
      * 
      * @param storageOfTime
      *            : contains time detected
