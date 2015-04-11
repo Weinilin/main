@@ -1,8 +1,10 @@
 package parser;
+
 /**
- * get number of times detected, get task type, get start and end time and date, get 
- * user input left after extracting all time and date, get description and get feedback on
- * tasks before current date and many other.
+ * get number of times detected, get task type, get start and end time and date,
+ * get user input left after extracting all time and date, get description and
+ * get feedback on tasks before current date and many other.
+ * 
  * @author A0112823R
  *
  */
@@ -28,32 +30,32 @@ public class MainParser {
         numberOfTime = dateTimeParser.getNumberOfTime();
         userInputLeft = dateTimeParser.getUserInputLeft();
 
-        DescriptionParser descriptionParser = new DescriptionParser(
-                userInput, userInputLeft);
+        DescriptionParser descriptionParser = new DescriptionParser(userInput,
+                userInputLeft);
         description = descriptionParser.getDescription();
 
         TaskTypeParser taskTypeParser = new TaskTypeParser(numberOfTime);
         taskType = taskTypeParser.getTaskType();
     }
-   
+
     /**
      * get the number of time detected
+     * 
      * @return number of time detected
      */
-    public int getNumberOfTime(){
+    public int getNumberOfTime() {
         return numberOfTime;
     }
-    
+
     /**
-     * get user input left after extracting all time and date 
-     * detected
-     * @return user input left 
+     * get user input left after extracting all time and date detected
+     * 
+     * @return user input left
      */
     public String getUserInputLeft() {
         return userInputLeft;
     }
-    
-    
+
     public String getEndDate() {
         return endDate;
     }
@@ -77,10 +79,11 @@ public class MainParser {
     public String getDescription() {
         return description;
     }
-    
+
     /**
-     * get feedback like user keyed in tasks before current date and 
-     * the start time or date before current date
+     * get feedback like user keyed in tasks before current date and the start
+     * time or date before current date
+     * 
      * @return feedback message
      */
     public String getFeedback() {

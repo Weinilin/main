@@ -1,50 +1,27 @@
 package ui;
 
-import java.util.Scanner;
-
 import logic.LogicController;
 
+/**
+ * CommandLineInterface is used to create a Command Line Interface for TaskManager
+ * 
+ * @author A0113966Y
+ *
+ */
+
 public class CommandLineInterface {
-
-	private static final String COMMAND_MESSAGE = new String("Command: ");
-	private static final String WELCOME_MESSAGE = new String( "Welcome to TaskManager!\n");
-	private static final String GOODBYE_MESSAGE = new String("GoodBye!\n");
-	
-
 
 	public CommandLineInterface(){
 	} 	
 
 	/**
-	 * Scan the user input and execute the command.
+	 * Scan user input and execute the command.
 	 */
 	public String processUserInput(String userInput){
 		String message;
 		LogicController commandHandler = LogicController.getInstance();
-		
-       
-
-		
-
 	    message = commandHandler.executeCommand(userInput);
-						
-		
 		return message;
-	}
-
-
-	public String processUserInputFromGUI(String userInput){
-	    String message;
-	    LogicController commandHandler = LogicController.getInstance();
-
-
-
-	    message = commandHandler.executeCommand(userInput);
-	            
-	    
-	  
-	    return message;
-
 	}
 
 	/**
@@ -54,8 +31,5 @@ public class CommandLineInterface {
 	
 	public static void printMessageToUser(String message){
         System.out.println(message);
-    }
-
-	
-	
+    }	
 }
