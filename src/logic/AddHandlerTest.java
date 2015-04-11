@@ -1,3 +1,6 @@
+/*
+ *@author A0114463M
+ */
 package logic;
 
 import static org.junit.Assert.*;
