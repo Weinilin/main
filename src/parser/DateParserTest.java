@@ -230,93 +230,93 @@ public class DateParserTest {
     /*
      * do take note that I use current date extract from laptop Thus, the date
      * result from date parser is the current date + number of days Interpret by
-     * the vocab current date of mine : 10/4/2015
+     * the vocab current date of mine : 11/4/2015
      */
     public void testDaysApartVocabKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 5: tmr
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
         DateParser d1 = new DateParser(("mds sale from tmr"));
         assertEquals(dates, d1.getDateList());
 
         // test keyword 5: the following day
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
 
         DateParser d2 = new DateParser(("mds sale the following day"));
         assertEquals(dates, d2.getDateList());
 
         // test keyword 5: after tomorrow
         dates.clear();
-        dates.add("12/04/2015");
+        dates.add("13/04/2015");
         DateParser d4 = new DateParser(("mds sale after tomorrow"));
         assertEquals(dates, d4.getDateList());
 
         // test keyword 5: after tmr
         dates.clear();
-        dates.add("12/04/2015");
+        dates.add("13/04/2015");
 
         DateParser d5 = new DateParser(("mds sale after tmr"));
         assertEquals(dates, d5.getDateList());
 
         // test keyword 5: after today
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
         DateParser d6 = new DateParser(("mds sale after today"));
         assertEquals(dates, d6.getDateList());
 
         // test keyword 5: _ day later
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
         DateParser d7 = new DateParser(("mds sale one day later"));
         assertEquals(dates, d7.getDateList());
 
         // test keyword 5: _ day later in 4
         dates.clear();
-        dates.add("14/04/2015");
+        dates.add("15/04/2015");
         DateParser d8 = new DateParser(("mds sale 4 day later"));
         assertEquals(dates, d8.getDateList());
 
         // test keyword 5: _ day later in 4
         dates.clear();
-        dates.add("02/05/2015");
+        dates.add("03/05/2015");
         DateParser d9 = new DateParser(("mds sale twenty-two day later"));
         assertEquals(dates, d9.getDateList());
 
         // test keyword 5: after _ day
         dates.clear();
-        dates.add("01/05/2015");
+        dates.add("02/05/2015");
         DateParser d10 = new DateParser(("mds sale after twenty-one day"));
         assertEquals(dates, d10.getDateList());
 
         // test keyword 5: after _ day
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
         DateParser d11 = new DateParser(("mds sale after one day"));
         assertEquals(dates, d11.getDateList());
 
         // test keyword 5: after _ day
         dates.clear();
-        dates.add("20/04/2015");
+        dates.add("21/04/2015");
         DateParser d12 = new DateParser(("mds sale after 10 day"));
         assertEquals(dates, d12.getDateList());
 
         // test keyword 5: _ day after
         dates.clear();
-        dates.add("01/05/2015");
+        dates.add("02/05/2015");
         DateParser d13 = new DateParser(("mds sale twenty-one day after"));
         assertEquals(dates, d13.getDateList());
 
         // test keyword 5: _ day after
         dates.clear();
-        dates.add("11/04/2015");
+        dates.add("12/04/2015");
         DateParser d14 = new DateParser(("mds sale one day after"));
         assertEquals(dates, d14.getDateList());
 
         // test keyword 5: _ day after
         dates.clear();
-        dates.add("20/04/2015");
+        dates.add("21/04/2015");
         DateParser d15 = new DateParser(("mds sale 10 day after"));
         assertEquals(dates, d15.getDateList());
     }
@@ -325,178 +325,178 @@ public class DateParserTest {
     /*
      * do take note that I use current date extract from laptop Thus, the date
      * result from date parser is the current date + number of week/month/year
-     * Interpret by the vocab Current date : 10/04/2015
+     * Interpret by the vocab Current date : 11/04/2015
      */
     public void testWeekMonthYearApartKeyword() {
         ArrayList<String> dates = new ArrayList<String>();
         // test keyword 6 : weeks later
         dates.clear();
-        dates.add("17/04/2015");
+        dates.add("18/04/2015");
 
         DateParser d1 = new DateParser("mds sale start 1 week later");
         assertEquals(dates, d1.getDateList());
 
         // test keyword 6 : wk later
         dates.clear();
-        dates.add("17/04/2015");
+        dates.add("18/04/2015");
 
         DateParser d3 = new DateParser("mds sale start 1 wk later");
         assertEquals(dates, d3.getDateList());
 
         // test keyword 6 : wk later
         dates.clear();
-        dates.add("01/05/2015");
+        dates.add("02/05/2015");
 
         DateParser d9 = new DateParser("mds sale start three wk later");
         assertEquals(dates, d9.getDateList());
 
         // test keyword 6 : month later
         dates.clear();
-        dates.add("10/05/2015");
+        dates.add("11/05/2015");
 
         DateParser d2 = new DateParser("mds sale start 1 month later");
         assertEquals(dates, d2.getDateList());
 
         // test keyword 6 : month later
         dates.clear();
-        dates.add("10/05/2015");
+        dates.add("11/05/2015");
 
         DateParser d4 = new DateParser("mds sale start 1 mth later");
         assertEquals(dates, d4.getDateList());
 
         // test keyword 6 : month later
         dates.clear();
-        dates.add("10/06/2015");
+        dates.add("11/06/2015");
 
         DateParser d8 = new DateParser("mds sale start two mth later");
         assertEquals(dates, d8.getDateList());
 
         // test keyword 6 : year later
         dates.clear();
-        dates.add("10/04/2016");
+        dates.add("11/04/2016");
 
         DateParser d5 = new DateParser("mds sale start 1 year later");
         assertEquals(dates, d5.getDateList());
 
         // test keyword 6 : yr later
         dates.clear();
-        dates.add("10/04/2016");
+        dates.add("11/04/2016");
 
         DateParser d6 = new DateParser("mds sale start 1 yr later");
         assertEquals(dates, d6.getDateList());
 
         // test keyword 6 : yr later in word
         dates.clear();
-        dates.add("10/04/2027");
+        dates.add("11/04/2027");
 
         DateParser d7 = new DateParser("mds sale start twelve yr later");
         assertEquals(dates, d7.getDateList());
 
         // test keyword 5: after _ year
         dates.clear();
-        dates.add("10/04/2016");
+        dates.add("11/04/2016");
         DateParser d12 = new DateParser(("mds sale after 1 yr"));
         assertEquals(dates, d12.getDateList());
 
         // test keyword 5: after _ year
         dates.clear();
-        dates.add("10/04/2027");
+        dates.add("11/04/2027");
         DateParser d19 = new DateParser(("mds sale after twelve yr"));
         assertEquals(dates, d19.getDateList());
 
         // test keyword 5: after _ year
         dates.clear();
-        dates.add("10/04/2037");
+        dates.add("11/04/2037");
         DateParser d20 = new DateParser(("mds sale after twenty-two year"));
         assertEquals(dates, d20.getDateList());
 
         // test keyword 5: __ year after
         dates.clear();
-        dates.add("10/04/2036");
+        dates.add("11/04/2036");
         DateParser d13 = new DateParser(("mds sale twenty-one year after"));
         assertEquals(dates, d13.getDateList());
 
         // test keyword 5: _ year after
         dates.clear();
-        dates.add("10/04/2016");
+        dates.add("11/04/2016");
         DateParser d14 = new DateParser(("mds sale one year after"));
         assertEquals(dates, d14.getDateList());
 
         // test keyword 5: _ year after
         dates.clear();
-        dates.add("10/04/2025");
+        dates.add("11/04/2025");
         DateParser d15 = new DateParser(("mds sale 10 year after"));
         assertEquals(dates, d15.getDateList());
 
         // test keyword 5: after _ week
         dates.clear();
-        dates.add("17/04/2015");
+        dates.add("18/04/2015");
         DateParser d16 = new DateParser(("mds sale after 1 wk"));
         assertEquals(dates, d16.getDateList());
 
         // test keyword 5: after _ week
         dates.clear();
-        dates.add("03/07/2015");
+        dates.add("04/07/2015");
         DateParser d17 = new DateParser(("mds sale after twelve wk"));
         assertEquals(dates, d17.getDateList());
 
         // test keyword 5: after _ week
         dates.clear();
-        dates.add("11/09/2015");
+        dates.add("12/09/2015");
         DateParser d18 = new DateParser(("mds sale after twenty-two week"));
         assertEquals(dates, d18.getDateList());
 
         // test keyword 5: __ week after
         dates.clear();
-        dates.add("04/09/2015");
+        dates.add("05/09/2015");
         DateParser d21 = new DateParser(("mds sale twenty-one week after"));
         assertEquals(dates, d21.getDateList());
 
         // test keyword 5: _ week after
         dates.clear();
-        dates.add("17/04/2015");
+        dates.add("18/04/2015");
         DateParser d22 = new DateParser(("mds sale one week after"));
         assertEquals(dates, d22.getDateList());
 
         // test keyword 5: _ week after
         dates.clear();
-        dates.add("19/06/2015");
+        dates.add("20/06/2015");
         DateParser d23 = new DateParser(("mds sale 10 week after"));
         assertEquals(dates, d23.getDateList());
 
         // test keyword 5: after _ month
         dates.clear();
-        dates.add("10/05/2015");
+        dates.add("11/05/2015");
         DateParser d24 = new DateParser(("mds sale after 1 mth"));
         assertEquals(dates, d24.getDateList());
 
         // test keyword 5: after _ month
         dates.clear();
-        dates.add("10/04/2016");
+        dates.add("11/04/2016");
         DateParser d25 = new DateParser(("mds sale after twelve mth"));
         assertEquals(dates, d25.getDateList());
 
         // test keyword 5: after _ month
         dates.clear();
-        dates.add("10/02/2017");
+        dates.add("11/02/2017");
         DateParser d26 = new DateParser(("mds sale after twenty-two month"));
         assertEquals(dates, d26.getDateList());
 
         // test keyword 5: __ month after
         dates.clear();
-        dates.add("10/01/2017");
+        dates.add("11/01/2017");
         DateParser d27 = new DateParser(("mds sale twenty-one month after"));
         assertEquals(dates, d27.getDateList());
 
         // test keyword 5: _ month after
         dates.clear();
-        dates.add("10/05/2015");
+        dates.add("11/05/2015");
         DateParser d28 = new DateParser(("mds sale one month after"));
         assertEquals(dates, d28.getDateList());
 
         // test keyword 5: _ month after
         dates.clear();
-        dates.add("10/02/2016");
+        dates.add("11/02/2016");
         DateParser d29 = new DateParser(("mds sale 10 month after"));
         assertEquals(dates, d29.getDateList());
     }
