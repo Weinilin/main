@@ -1,6 +1,4 @@
-/*
- * author A0113966Y
- */
+//@author A0113966Y
 
 package application;
 
@@ -10,7 +8,8 @@ import java.util.ArrayList;
 
 /**
  * Task Printer is used to print taskList in a table format
- * @author yxchng
+ * 
+ * @author A0113966Y
  *
  */
 public final class TaskPrinter {
