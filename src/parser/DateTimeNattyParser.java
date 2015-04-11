@@ -49,7 +49,6 @@ public class DateTimeNattyParser {
             ArrayList<String> dates, ArrayList<String> times,
             int indexPrevTime, int indexPrevDate)
             throws IllegalArgumentException {
-        List<DateGroup> groups = new ArrayList<DateGroup>();
 
         storageOfDate.clear();
         storageOfTime.clear();
@@ -72,9 +71,14 @@ public class DateTimeNattyParser {
         testValidTime(userInputLeftAfterParsing);
         testValidDate(userInputLeftAfterParsing);
 
+        extractDateAndTime(userInput);
+    }
+
+    private void extractDateAndTime(String userInput) {
+        List<DateGroup> groups = new ArrayList<DateGroup>();
+        
         Parser dateTimeParser = new Parser();
         while (!dateTimeParser.parse(userInputLeftAfterParsing).isEmpty()) {
-
             groups = dateTimeParser.parse(userInputLeftAfterParsing);
             parseDateAndTime(groups, userInput);
         }
@@ -191,7 +195,6 @@ public class DateTimeNattyParser {
 
                 changeDateFormat(dates, parseMap, matchingValue, position);
             }
-
         }
     }
 
@@ -359,9 +362,11 @@ public class DateTimeNattyParser {
 
         if (storageOfDate.size() == 2
                 && (indexMatch < indexDate || matchingValue.contains("now"))) {
-            String tempForDate = storageOfDate.get(0);
+           
+            String tempForDate = storageOfDate.get(0);          
             storageOfDate.set(0, storageOfDate.get(1));
             storageOfDate.set(1, tempForDate);
+            
             indexDate = indexMatch;
         }
 
@@ -376,9 +381,11 @@ public class DateTimeNattyParser {
     private void setTimePosition(int indexMatch, String matchingValue) {
 
         if (storageOfTime.size() == 2 && indexMatch < indexTime) {
+           
             String tempForTime = storageOfTime.get(0);
             storageOfTime.set(0, storageOfTime.get(1));
             storageOfTime.set(1, tempForTime);
+            
             indexTime = indexMatch;
 
         }

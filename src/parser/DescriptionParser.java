@@ -20,8 +20,13 @@ public class DescriptionParser {
 
         String escapedText = getEscapedText(userInput);
 
-        description = piecePartsOfDescription(escapedText, partOfDescription,
-                lowerCaseInput, userInput);
+        String[] eachWordInLeftOverInput = splitStringByWhitespace(partOfDescription);
+        String[] eachEscapedText = splitStringByWhitespace(escapedText);
+        String[] eachWordLowerCaseInput = splitStringByWhitespace(lowerCaseInput);
+        String[] eachWordUserInput = splitStringByWhitespace(userInput);
+
+        description = piecePartsOfDescription(eachWordInLeftOverInput, eachEscapedText,
+                eachWordLowerCaseInput, eachWordUserInput);
 
         description = removeTheExtraSpace(description);
         setDescription(description);
@@ -65,15 +70,10 @@ public class DescriptionParser {
      *            user typed
      * @return description
      */
-    private String piecePartsOfDescription(String escapedText,
-            String partOfDescription, String lowerCaseInput, String userInput) {
+    private String piecePartsOfDescription(String[] eachWordInLeftOverInput,
+            String[] eachEscapedText, String[] eachWordLowerCaseInput, String[] eachWordUserInput) {
 
         int indexLeftOverInput = 0, indexEscapedText = 0;
-
-        String[] eachWordInLeftOverInput = splitStringByWhitespace(partOfDescription);
-        String[] eachEscapedText = splitStringByWhitespace(escapedText);
-        String[] eachWordLowerCaseInput = splitStringByWhitespace(lowerCaseInput);
-        String[] eachWordUserInput = splitStringByWhitespace(userInput);
 
         for (int i = 0; i < eachWordLowerCaseInput.length; i++) {
             boolean isByPassConjunction = isByPassConjunction(
