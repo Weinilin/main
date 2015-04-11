@@ -55,7 +55,6 @@ public class NumberParser {
         return number;
     }
 
-    
     private static boolean isNumeric(String text) {
         return text.matches(NUMBERIC_KEYWORD);
     }
@@ -68,9 +67,9 @@ public class NumberParser {
      * @return number of day in integer.
      */
     private static int determineIntFromWords(String numberInWord) {
-       
+
         int number = 1;
-        
+
         for (int i = 0; i < wordOfNumDays.length; i++) {
             if (numberInWord.equals(wordOfNumDays[i])) {
                 break;
@@ -87,8 +86,8 @@ public class NumberParser {
     }
 
     /**
-     * get next word for case like twenty-two
-     * two would be return
+     * get next word for case like twenty-two two would be return
+     * 
      * @param text
      * @return next word
      */
@@ -96,7 +95,7 @@ public class NumberParser {
         int day = 0;
         Pattern numberPattern = Pattern.compile("\\w+");
         Matcher containNumber = numberPattern.matcher(text);
-       
+
         if (containNumber.find()) {
             text = containNumber.group();
             day = determineIntFromWords(text);
@@ -104,6 +103,4 @@ public class NumberParser {
         return day;
     }
 
-    
-  
 }

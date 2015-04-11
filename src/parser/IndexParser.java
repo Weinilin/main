@@ -42,19 +42,20 @@ public class IndexParser {
     public int getIndex() throws NumberFormatException {
         int detectedIndex = 0;
         Logger logger = Logger.getLogger("IndexParser");
-       
+
         try {
-            logger.log(Level.INFO, "going to start processing for detecting of index");
+            logger.log(Level.INFO,
+                    "going to start processing for detecting of index");
             String number = getNumber(input);
             detectedIndex = Integer.parseInt(number);
-        
+
         } catch (NumberFormatException e) {
             logger.log(Level.WARNING, "No digit of input detected!");
             throw new NumberFormatException(input + " is not a number!\n");
         }
-        
+
         setIndex(detectedIndex);
-        
+
         return index;
     }
 
@@ -69,17 +70,17 @@ public class IndexParser {
      *             and the command could not be execute without the index.
      */
     private String getNumber(String userInput) throws NumberFormatException {
-       
+
         String number = "";
         Pattern indexDetector = Pattern.compile("\\d+");
         Matcher indexMatch = indexDetector.matcher(userInput);
-        
+
         if (indexMatch.find()) {
             number = indexMatch.group();
         } else {
             throw new NumberFormatException("Index is not entered!!!");
         }
-        
+
         return number;
     }
 }

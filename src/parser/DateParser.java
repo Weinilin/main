@@ -115,7 +115,8 @@ public class DateParser {
     }
 
     /**
-     * spot this week, month, year
+     * spot this week, month, year means date of end of this week, end of this
+     * month and end of this year
      * 
      * @param userInput
      */
@@ -134,29 +135,43 @@ public class DateParser {
             int year = calendar.get(Calendar.YEAR);
 
             if (date.contains("week") || date.contains("wk")) {
-                int todayDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-                dateOfTheTask = getThisWeekayDate(7, todayDayOfWeek);
+                dateOfTheTask = getDateForThisWeek(calendar);
 
             } else if (date.contains("month") || date.contains("mth")) {
-
-                int maxDaysOfAMonth = calendar
-                        .getActualMaximum(Calendar.DAY_OF_MONTH);
-                dateOfTheTask = getDateFromCalendar(calendar, year,
-                        maxDaysOfAMonth, month);
+                dateOfTheTask = getDateForThisMonth(calendar, month, year);
 
             } else if (date.contains("year") || date.contains("yr")) {
-                // set the month to dec (11 is dec month num)
-                calendar.set(Calendar.MONTH, 11);
-                int maxDaysOfDec = calendar
-                        .getActualMaximum(Calendar.DAY_OF_MONTH);
-                dateOfTheTask = getDateFromCalendar(calendar, year,
-                        maxDaysOfDec, 12);
+                dateOfTheTask = getDateForThisYear(calendar, year);
             }
 
             storageOfDate.add(dateOfTheTask);
             int indexMatched = toGetIndex.start();
             setThePosition(indexMatched);
         }
+    }
+
+    private String getDateForThisWeek(Calendar calendar) {
+        String dateOfTheTask;
+        int todayDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        dateOfTheTask = getThisWeekayDate(7, todayDayOfWeek);
+        return dateOfTheTask;
+    }
+
+    private String getDateForThisYear(Calendar calendar, int year) {
+        String dateOfTheTask;
+        // set the month to dec (11 is dec month num)
+        calendar.set(Calendar.MONTH, 11);
+        int maxDaysOfDec = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        dateOfTheTask = getDateFromCalendar(calendar, year, maxDaysOfDec, 12);
+        return dateOfTheTask;
+    }
+
+    private String getDateForThisMonth(Calendar calendar, int month, int year) {
+        String dateOfTheTask;
+        int maxDaysOfAMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        dateOfTheTask = getDateFromCalendar(calendar, year, maxDaysOfAMonth,
+                month);
+        return dateOfTheTask;
     }
 
     private String getDateFromCalendar(Calendar calendar, int year, int day,
@@ -261,7 +276,6 @@ public class DateParser {
             int indexMatched = matchWithIndex.start();
             setThePosition(indexMatched);
         }
-
     }
 
     /**
@@ -533,7 +547,6 @@ public class DateParser {
 
             int indexOfDatePosition = toGetIndex.start();
             setThePosition(indexOfDatePosition);
-
         }
     }
 
@@ -588,7 +601,6 @@ public class DateParser {
             setThePosition(indexPositionOfThisDate);
 
         }
-
     }
 
     /**

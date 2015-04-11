@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.junit.Test;
+
 /**
  * 
  * @author A0112823R
@@ -47,24 +48,24 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.add("12:00");
         DateTimeNattyParser dateTime1 = new DateTimeNattyParser("noon run");
         assertEquals(times, dateTime1.getTimeList());
-        
-        //test afternoon 
+
+        // test afternoon
         times.clear();
         times.add("12:00");
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser("afternoon run");
         assertEquals(times, dateTime2.getTimeList());
-        
-        //test morning
+
+        // test morning
         times.clear();
         times.add("08:00");
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser("morning run");
         assertEquals(times, dateTime3.getTimeList());
-       
+
     }
 
     @Test
     // take note of current time, change the result according
-    //current time : 22:17
+    // current time : 22:17
     public void testHoursApart() {
         // test current time + 2 hours
         ArrayList<String> times = new ArrayList<String>();
@@ -83,16 +84,16 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.add("22:17");
         times.add("00:17");
         assertEquals(times, dateTime1.getTimeList());
-        
+
         // test with hr
         DateTimeNattyParser dateTime2 = new DateTimeNattyParser(
                 "mds sale for 1 hr");
         times.clear();
         times.add("22:17");
         times.add("23:17");
-       assertEquals(times, dateTime2.getTimeList());
-        
-        //test with hour
+        assertEquals(times, dateTime2.getTimeList());
+
+        // test with hour
         DateTimeNattyParser dateTime3 = new DateTimeNattyParser(
                 "mds sale for 1 hour");
         times.clear();
@@ -101,7 +102,7 @@ public class DateTimeNattyParserTimeOnlyTest {
         assertEquals(times, dateTime3.getTimeList());
 
     }
-    
+
     @Test
     /**
      * test twenty hour format(HH:MM) without the punctuation between
@@ -194,21 +195,21 @@ public class DateTimeNattyParserTimeOnlyTest {
         times.add("21:50");
         DateTimeNattyParser dateTime6 = new DateTimeNattyParser(
                 "runrun 4 minutes from now");
-         assertEquals(times, dateTime6.getTimeList());
+        assertEquals(times, dateTime6.getTimeList());
 
         // test in 4 hour from now
         times.clear();
         times.add("01:45");
         DateTimeNattyParser dateTime7 = new DateTimeNattyParser(
                 "runrun 4 hour from now");
-         assertEquals(times, dateTime7.getTimeList());
-        
+        assertEquals(times, dateTime7.getTimeList());
+
         // test in four hour from now
         times.clear();
         times.add("01:45");
         DateTimeNattyParser dateTime8 = new DateTimeNattyParser(
                 "runrun four hour from now");
-         assertEquals(times, dateTime8.getTimeList());
+        assertEquals(times, dateTime8.getTimeList());
 
     }
 }
