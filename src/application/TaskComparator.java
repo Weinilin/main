@@ -2,6 +2,14 @@ package application;
 
 import java.util.Comparator;
 
+/**
+ * TaskComparator is used to sort tasks stored in Memory
+ * Time tasks and deadlines are sorted into chronological order before floating task
+ * Starting time of time task and ending time of deadline are used for comparison
+ * 
+ * @author A0113966Y
+ *
+ */
 
 public class TaskComparator implements Comparator<Task> {
 	
@@ -94,14 +102,11 @@ public class TaskComparator implements Comparator<Task> {
 	}
 	
 	private boolean isEqualPrecedence(Task task1, Task task2) {
-	
-		
 		if (getPrecedence(task1) == getPrecedence(task2)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
 	
 }
