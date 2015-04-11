@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 /**
  * Memory acts as a facade between LogicController and Database.
  * LogicController makes changes to the taskList stored in Memory.
@@ -279,32 +282,38 @@ public class Memory {
 		return searchList;
 	}
 	
-//	/**
-//	 * search the list that the task that is occurring on this day
-//	 * @param date date that the task is occurring
-//     * @return result arraylist containing the tasks occurs on the day
-//     * @author A0114463M
-//	 */
-//	 public ArrayList<Task> searchDate(String date) {
-//	     assert isValidKeyword(date);
-//	     ArrayList<Task> searchList = new ArrayList<Task>();     
-//	     for (Task task: taskList) {
-//	            if (task.getTaskType().equals("deadline")) {
-//	                if (task.getEndDate().equals(date)) {
-//	                    searchList.add(task);
-//	                }
-//	            }
-//	            else if (task.getTaskType().equals("time task")) {
-//	                String suspectStartDate = task.getStartDate(),
-//	                       suspectEndDate = task.getEndDateTime();
-//	                if ((suspectStartDate >= date) && (suspectEndDate <= date)) {
-//	                    searchList.add(task);
-//	                }
-//	            }
-//	        }
-//	        return searchList;
-//	     return null;
-//	 }
+	/**
+	 * search the list that the task that is occurring on this time
+	 * @param time time that the task is occurring
+     * @return result arraylist containing the tasks occurs on the time
+     * @author A0114463M
+	 */
+	 public ArrayList<Task> searchTime(String time) throws ParseException {
+	     assert isValidKeyword(time);
+	     ArrayList<Task> searchList = new ArrayList<Task>();    
+	     
+	     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	     LocalDateTime target = LocalDateTime.parse(time, formatter);
+	     for (Task task: taskList) {
+	         if (task.getTaskType().equals("deadline")) {
+	             String suspectDeadline = task.getEndDate() + " " + task.getEndTime();
+	             LocalDateTime suspectStart, suspectEnd = LocalDateTime.parse(suspectDeadline, formatter);
+	             if (suspectStart.minusHours(1).isBefore(target) || suspectEnd.plusHours(1).isAfter(target)) {
+	                 searchList.add(task);
+	             }
+	         }
+	         else if (task.getTaskType().equals("time task")) {
+	             String suspectStart = task.getStartDate() + " " + task.getStartTime(),
+	                     suspectEnd = task.getEndDate() + " " + task.getEndTime();
+	             LocalDateTime start = LocalDateTime.parse(suspectStart, formatter),
+	                     end = LocalDateTime.parse(suspectEnd, formatter);
+	             if (start.isBefore(target) && end.isAfter(target)) {
+	                 searchList.add(task);
+	             }
+	         }
+	     }
+	     return searchList;
+	 }
 	 
 	/**
      * search the list that the task that is occurring on this particular time

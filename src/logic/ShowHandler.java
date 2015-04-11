@@ -57,8 +57,14 @@ class ShowHandler extends CommandHandler{
             return searchByKeyword(keyword, taskList);            
         }    
         else if (searchType.equals("deadline")) {
-            String date = parser.getEndDate().split(" ")[1];
-            return searchDate(date, taskList);
+            if (parser.getEndTime().equals("23:59")) {
+                String date = parser.getEndDate().split(" ")[1];
+                return searchDate(date, taskList);
+            } 
+            else {
+                String time = parser.getEndDate().split(" ")[1] + " " + parser.getEndTime();
+                return searchTime(time, taskList);
+            }
         }
         else if (searchType.equals("time task")) {
             String startDate = parser.getStartDate().split(" ")[1];
@@ -96,7 +102,7 @@ class ShowHandler extends CommandHandler{
     /**
      * search the memory for tasks that occurs on the date specified.
      * Deadline task with same date of the intended date will be added to taskList.
-     * Timetask that occurs on the day will be added to taskList
+     * Time task that occurs on the day will be added to taskList
      * @param date intended date to be searched
      * @param taskList taskList to be shown to user
      * @return feedback string
@@ -118,6 +124,32 @@ class ShowHandler extends CommandHandler{
             return String.format(FOUND_DATE_MESSAGE, date);
         }
     }
+    /**
+     * search the memory for tasks that occurs on the time specified.
+     * Deadline task with time of one hour difference will be added to taskList.
+     * Time task that occurs on the time will be added to taskList
+     * @param date intended date to be searched
+     * @param taskList taskList to be shown to user
+     * @return feedback string
+     */
+    private String searchTime(String time, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = new ArrayList<Task>();
+        try {
+            searchList = memory.searchTime(time);
+        } catch (ParseException pe) {
+            return "Error parsing time\n";
+        }
+        if (searchList.isEmpty()) {
+            showLogger.log(Level.FINE, "no results found around " + time);
+            return String.format(NOT_FOUND_DATE_MESSAGE, time);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            showLogger.log(Level.FINE, "show all tasks on " + time);
+            return String.format(FOUND_DATE_MESSAGE, time);
+        }
+    }
+    
     /**
      * search the memory for tasks that occurs on the date specified.
      * Deadline task with same date of the intended date will be added to taskList.
