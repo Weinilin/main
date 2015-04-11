@@ -67,9 +67,16 @@ class ShowHandler extends CommandHandler{
             }
         }
         else if (searchType.equals("time task")) {
-            String startDate = parser.getStartDate().split(" ")[1];
-            String endDate = parser.getEndDate().split(" ")[1];
-            return searchDate(startDate, endDate, taskList);
+            if (parser.getEndTime().equals("23:59") && parser.getStartTime().equals("23:59")) {
+                String startDate = parser.getStartDate().split(" ")[1];
+                String endDate = parser.getEndDate().split(" ")[1];
+                return searchDate(startDate, endDate, taskList);
+            }
+            else {
+                String startTime = parser.getStartDate().split(" ")[1] + " " + parser.getStartTime(),
+                       endTime = parser.getEndDate().split(" ")[1] + " " + parser.getEndTime();
+                return searchTime(startTime, endTime, taskList);
+            }
         }
         else {
             return "";
@@ -89,12 +96,10 @@ class ShowHandler extends CommandHandler{
     private String searchByKeyword(String keyword, ArrayList<Task> taskList) {
         ArrayList<Task> searchList = memory.searchDescription(keyword);
         if (searchList.isEmpty()) {
-            showLogger.log(Level.FINE, "no results found containing " + keyword);
             return String.format(NOT_FOUND_MESSAGE, keyword);
         }
         else {
             updateTaskList(taskList, searchList);
-            showLogger.log(Level.FINE, "show all tasks containing keyword " + keyword);
             return String.format(FOUND_MESSAGE, keyword);
         }
     }
@@ -115,15 +120,14 @@ class ShowHandler extends CommandHandler{
             return "Error parsing date\n";
         }
         if (searchList.isEmpty()) {
-            showLogger.log(Level.FINE, "no results found on " + date);
             return String.format(NOT_FOUND_DATE_MESSAGE, date);
         }
         else {
             updateTaskList(taskList, searchList);
-            showLogger.log(Level.FINE, "show all tasks on " + date);
             return String.format(FOUND_DATE_MESSAGE, date);
         }
     }
+    
     /**
      * search the memory for tasks that occurs on the time specified.
      * Deadline task with time of one hour difference will be added to taskList.
@@ -140,16 +144,37 @@ class ShowHandler extends CommandHandler{
             return "Error parsing time\n";
         }
         if (searchList.isEmpty()) {
-            showLogger.log(Level.FINE, "no results found around " + time);
             return String.format(NOT_FOUND_DATE_MESSAGE, time);
         }
         else {
             updateTaskList(taskList, searchList);
-            showLogger.log(Level.FINE, "show all tasks on " + time);
             return String.format(FOUND_DATE_MESSAGE, time);
         }
     }
     
+    /**
+     * search the memory for tasks that occurs on the time specified.
+     * Deadline task with time of one hour difference will be added to taskList.
+     * Time task that occurs on the time will be added to taskList
+     * @param date intended date to be searched
+     * @param taskList taskList to be shown to user
+     * @return feedback string
+     */
+    private String searchTime(String startTime, String endTime, ArrayList<Task> taskList) {
+        ArrayList<Task> searchList = new ArrayList<Task>();
+        try {
+            searchList = memory.searchTime(startTime, endTime);
+        } catch (ParseException pe) {
+            return "Error parsing time\n";
+        }
+        if (searchList.isEmpty()) {
+            return String.format(NOT_FOUND_DATE_BETWEEN_MESSAGE, startTime, endTime);
+        }
+        else {
+            updateTaskList(taskList, searchList);
+            return String.format(FOUND_DATE_BEWTWEEN_MESSAGE, startTime, endTime);
+        }
+    }
     /**
      * search the memory for tasks that occurs on the date specified.
      * Deadline task with same date of the intended date will be added to taskList.

@@ -297,8 +297,9 @@ public class Memory {
 	     for (Task task: taskList) {
 	         if (task.getTaskType().equals("deadline")) {
 	             String suspectDeadline = task.getEndDate() + " " + task.getEndTime();
-	             LocalDateTime suspectStart, suspectEnd = LocalDateTime.parse(suspectDeadline, formatter);
-	             if (suspectStart.minusHours(1).isBefore(target) || suspectEnd.plusHours(1).isAfter(target)) {
+	             LocalDateTime suspectStart = LocalDateTime.parse(suspectDeadline, formatter), 
+	                           suspectEnd = LocalDateTime.parse(suspectDeadline, formatter);
+	             if (isWithinOneHour(target, suspectStart, suspectEnd)) {
 	                 searchList.add(task);
 	             }
 	         }
@@ -307,13 +308,90 @@ public class Memory {
 	                     suspectEnd = task.getEndDate() + " " + task.getEndTime();
 	             LocalDateTime start = LocalDateTime.parse(suspectStart, formatter),
 	                     end = LocalDateTime.parse(suspectEnd, formatter);
-	             if (start.isBefore(target) && end.isAfter(target)) {
+	             if (isBetweenTime(start, end, target)) {
 	                 searchList.add(task);
 	             }
 	         }
 	     }
 	     return searchList;
 	 }
+
+	 /**
+	  * check if the target time is within one hour of the time given
+	  * @param target
+	  * @param suspectStart
+	  * @param suspectEnd
+	  * @return true if the target is within before or after one hour of the time given
+	  * @author A0114463M
+	  */
+    private boolean isWithinOneHour(LocalDateTime target,
+            LocalDateTime suspectStart, LocalDateTime suspectEnd) {
+        return !suspectStart.minusHours(1).isAfter(target) && !suspectEnd.plusHours(1).isBefore(target);
+    }
+
+	 /**
+	  * search the list that the task that is occurring between the time given this time
+	  * @param time time that the task is occurring
+	  * @return result arraylist containing the tasks occurs on the time
+	  * @author A0114463M
+	  */
+	 public ArrayList<Task> searchTime(String start, String end) throws ParseException {
+	     assert isValidKeyword(start);
+	     assert isValidKeyword(end);
+	     ArrayList<Task> searchList = new ArrayList<Task>();    
+
+	     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	     LocalDateTime targetStart = LocalDateTime.parse(start, formatter),
+	                   targetEnd = LocalDateTime.parse(end, formatter);
+	     for (Task task: taskList) {
+	         if (task.getTaskType().equals("deadline")) {
+	             String suspectDeadline = task.getEndDate() + " " + task.getEndTime();
+	             LocalDateTime suspect = LocalDateTime.parse(suspectDeadline, formatter);
+	             if (isBetweenTime(targetStart, targetEnd, suspect)) {
+	                 searchList.add(task);
+	             }
+	         }
+	         else if (task.getTaskType().equals("time task")) {
+	             String suspectStartString = task.getStartDate() + " " + task.getStartTime(),
+	                     suspectEndString = task.getEndDate() + " " + task.getEndTime();
+	             LocalDateTime suspectStart = LocalDateTime.parse(suspectStartString, formatter),
+	                             suspectEnd = LocalDateTime.parse(suspectEndString, formatter);
+	             if (isBetweenTime(targetStart, targetEnd, suspectStart, suspectEnd)) {
+	                 searchList.add(task);
+	             }
+	         }
+	     }
+	     return searchList;
+	 }
+
+	 
+	 /**
+	  * check if there is any overlapping of the two time periods
+	  * @param targetStart
+	  * @param targetEnd
+	  * @param suspectStart
+	  * @param suspectEnd
+	  * @return true if there is any overlapping
+	  */
+    private boolean isBetweenTime(LocalDateTime targetStart,
+            LocalDateTime targetEnd, LocalDateTime suspectStart,
+            LocalDateTime suspectEnd) {
+        return (!suspectStart.isAfter(targetEnd) && !suspectStart.isBefore(targetStart)) || 
+             (!suspectEnd.isBefore(targetStart) && (!suspectStart.isAfter(targetEnd)));
+    }
+
+	 /**
+	  * check if a time given is between the two time given
+	  * @param targetStart the target of start of the time
+	  * @param targetEnd the target of end of the time
+	  * @param suspect the time that is been checked
+	  * @return true if suspect falls within the range given (inclusively)
+	  * @author A0114463M
+	  */
+    private boolean isBetweenTime(LocalDateTime targetStart,
+            LocalDateTime targetEnd, LocalDateTime suspect) {
+        return !suspect.isAfter(targetEnd) && !suspect.isBefore(targetStart);
+    }
 	 
 	/**
      * search the list that the task that is occurring on this particular time
