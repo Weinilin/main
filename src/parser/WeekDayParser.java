@@ -19,7 +19,7 @@ public class WeekDayParser {
     /**
      * add the weekday to the date
      * 
-     * @param storageOfDate
+     * @param date : in dd/mm/yyyy format
      */
     public static String getWeekDay(String date)
             throws IllegalArgumentException {
