@@ -1,7 +1,5 @@
-/*
- * @author A0113966Y
- */
-
+//@author A0113966Y
+ 
 package storage;
 
 import java.io.BufferedReader;
@@ -25,7 +23,7 @@ import application.Task;
 public class Database {
 	private static String databaseLocation;
 	private static String configFile = "Configuration.txt";
-	private static final ArrayList<Task> EMPTY_TASKLIST = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_TASK_LIST = new ArrayList<Task>();
 	
 	
 	private static Database database;
@@ -66,7 +64,6 @@ public class Database {
 	}
 	
 	
-	
 	/**
 	 * returns the instance of database in this Database
 	 * @return database
@@ -80,8 +77,8 @@ public class Database {
 	}
 	
 	/**
-	 * Change the location of "TaskManagerDatabase.txt" to a newDatabaseLocation
-	 * @param newDatabaseLocation
+	 * Move "TaskManagerDatabase.txt" to a location
+	 * @param newDatabaseFolder
 	 * @return true if location of "TaskManagerDatabase.txt" has been successfully changed or false if 
 	 * location of "TaskManager.txt" cannot be changed
 	 */
@@ -99,6 +96,10 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Change the database location of TaskManager. Old database is not copied to the new database location
+	 * @param newDatabaseLocation
+	 */
 	public void changeDatabaseLocation(String newDatabaseLocation) {
 	    databaseLocation = newDatabaseLocation;
 	    
@@ -157,7 +158,6 @@ public class Database {
 	 */
 	
 	public ArrayList<Task> readDatabase() {
-		
 		return readDatabase(databaseLocation);
 	}
 	
@@ -182,10 +182,10 @@ public class Database {
             }
         } catch (IOException e) {
             //e.printStackTrace();
-            return EMPTY_TASKLIST;
+            return EMPTY_TASK_LIST;
         } catch (IndexOutOfBoundsException iob) {
             //e.printStackTrace();
-            return EMPTY_TASKLIST;
+            return EMPTY_TASK_LIST;
         } finally {
             closeReader(reader);
         }

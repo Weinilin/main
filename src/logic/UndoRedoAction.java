@@ -1,8 +1,10 @@
+/*
+ *@author A0114463M
+ */
 package logic;
 
 import application.Task;
 import storage.Memory;
-import storage.DatabaseLocationChanger;
 /**
  * This class serves as a record for all UndoableCommandHandlers
  * when they perform a single change to memory class. There are two methods
@@ -13,7 +15,7 @@ import storage.DatabaseLocationChanger;
  */
 class UndoRedoAction {
     public static enum ActionType {
-        ADD, DELETE, EDIT, MARK, SETLOCATION
+        ADD, DELETE, EDIT, MARK
     };
     Memory memory = Memory.getInstance();
     private ActionType action;
@@ -70,16 +72,12 @@ class UndoRedoAction {
             case ADD:
                 return (memory.removeTask(newTask) != null);
             case DELETE:
-                return (memory.addTask(oldTask) == 1);
-                
+                return (memory.addTask(oldTask) == 1);                
             case EDIT:
                 return ((memory.addTask(oldTask) == 1 && (memory.removeTask(newTask) != null)));
             case MARK:
-                 memory.markUndone(oldTask);
-                 return true;
-            case SETLOCATION:
-                 DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-                 return dlc.setDatabaseLocation(oldPath);
+                memory.markUndone(oldTask);
+                return true;
             default:
                 return false;
         }
@@ -93,11 +91,9 @@ class UndoRedoAction {
                 return (memory.removeTask(oldTask) != null);
             case EDIT:
                 return ((memory.addTask(newTask) == 1 && (memory.removeTask(oldTask) != null)));
-                //case MARK:
-                //	return (memory.)
-            case SETLOCATION:
-                DatabaseLocationChanger dlc = new DatabaseLocationChanger();
-                return dlc.setDatabaseLocation(newPath);
+            case MARK:
+                memory.markDone(newTask);
+                return true;
             default:
                 return false;
         }

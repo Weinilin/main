@@ -1,3 +1,6 @@
+/*
+ *@author A0114463M
+ */
 
 package logic;
 
@@ -10,7 +13,7 @@ import application.Task;
  * Multiple actions completed in a single line of command (such as deleting multiple
  * tasks) are recorded in one recorder.
  * 
- * @author Mr.Emosdnah
+ * @author A0114463M
  *
  */
 public class UndoRedoRecorder {

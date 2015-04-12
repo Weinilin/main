@@ -1,3 +1,5 @@
+//@author A0113966Y
+
 package ui;
 
 import java.awt.Font;
@@ -12,7 +14,7 @@ import javax.swing.Timer;
 /**
  * Clock class is used to create a clock for Task Manager's GUI
  * 
- * @author @A0113966Y
+ * @author A0113966Y
  *
  */
 

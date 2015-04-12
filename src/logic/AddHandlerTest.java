@@ -1,3 +1,6 @@
+/*
+ *@author A0114463M
+ */
 package logic;
 
 import static org.junit.Assert.*;
@@ -8,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import application.Task;
-
+import application.TaskCreator;
 public class AddHandlerTest {
 
 	AddHandler ah = new AddHandler();
@@ -17,9 +20,12 @@ public class AddHandlerTest {
 	Task task1, task2, task3 = null;
 	@Before
 	public void setUp() throws Exception {
-	    task1 = CommandHandler.createNewTask("help mom for dinner 6 to 7pm");
-	    task2 = CommandHandler.createNewTask("read Harry Porter");
-	    task3 = CommandHandler.createNewTask("Reflectoin by tomorrow 10pm");
+	    TaskCreator tc = new TaskCreator("help mom for dinner 6 to 7pm");
+	    task1 = tc.createNewTask();
+	    tc.setNewString("read Harry Porter");
+	    task2 = tc.createNewTask();
+	    tc.setNewString("Reflectoin by tomorrow 10pm");
+	    task3 = tc.createNewTask();
 		
 		expected.clear();
 		taskTest.clear();

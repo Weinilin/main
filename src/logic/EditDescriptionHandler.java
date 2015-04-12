@@ -1,3 +1,7 @@
+/*
+ *@author A0114463M
+ */
+
 package logic;
 
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ class EditDescriptionHandler extends UndoableCommandHandler {
 		}
 		
 	    MainParser parser = new MainParser(parameter.replaceFirst(token[0], ""));
-	    IndexParser ip = new IndexParser(token[1]);
+	    IndexParser ip = new IndexParser(token[0]);
 	    int index = ip.getIndex() - 1;
 	    if (index < 0) {
             return INVALID_INDEX_MESSAGE;
@@ -79,20 +83,16 @@ class EditDescriptionHandler extends UndoableCommandHandler {
      * @param taskList taskList shown to user
      */
     private void performEdit(ArrayList<Task> taskList) {
-        if ((newTask != oldTask) && (oldTask != null)) {
-            if (memory.addTask(newTask) >= 0) {
-                memory.addTask(newTask);
-                recordChanges(taskList);
-                Collections.sort(taskList, new TaskComparator());
-                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
-            }
-            else {
-                feedback = "New task is identical to some existing task\n";
-            }  
+        if ((newTask != oldTask) && (oldTask != null)) {           
+            memory.addTask(newTask);
+            recordChanges(taskList);
+            Collections.sort(taskList, new TaskComparator());
+            feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getDescription());
         }
         else {
-            feedback = "Please check your input\n";
-        }
+            feedback = "New task is identical to some existing task\n";
+        }  
+
     }
     
     @Override

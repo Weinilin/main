@@ -1,0 +1,10 @@
+Task Type           : time task
+Description         : task 3
+Start Time 
+
+Task Type           : deadline
+Description         : task 1
+Start Time          : - -
+End Time
+Status              : done
+

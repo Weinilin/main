@@ -1,3 +1,7 @@
+/*
+ *@author A0114463M
+ */
+
 package logic;
 
 import java.util.ArrayList;
@@ -38,7 +42,7 @@ class EditTimeHandler extends UndoableCommandHandler {
 		}
 		
         MainParser parser = new MainParser(parameter);
-        IndexParser ip = new IndexParser(token[1]);
+        IndexParser ip = new IndexParser(token[0]);
         int index = ip.getIndex() - 1;
         String newStartDateTime = parser.getStartDate() + " " + parser.getStartTime(),
                newEndDateTime = parser.getEndDate() + " " + parser.getEndTime();
@@ -67,21 +71,16 @@ class EditTimeHandler extends UndoableCommandHandler {
      */
     private void performEdit(ArrayList<Task> taskList) {
         if (newTask != oldTask && oldTask != null) {
-            if (memory.addTask(newTask) >= 0) {
-                memory.removeTask(oldTask);
-                recordChanges(taskList);            
-                Collections.sort(taskList, new TaskComparator());
-                feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getEndDateTime());
-            }
-            else {
-                feedback = "New task is identical to some existing task\n";
-            }
+            memory.removeTask(oldTask);
+            recordChanges(taskList);            
+            Collections.sort(taskList, new TaskComparator());
+            feedback = String.format(CHANGE_MESSAGE, oldTask.getDescription(), newTask.getEndDateTime());
         }
         else {
-            feedback = "Please check your input\n";
+            feedback = "New task is identical to some existing task\n";
         }
     }
-    
+
     @Override
     void recordChanges(ArrayList<Task> taskList) {
         UndoRedoRecorder editTimeRecorder = new UndoRedoRecorder(taskList);
