@@ -68,16 +68,16 @@ class UndoRedoAction {
     boolean undo() {
         switch (action) {
             case ADD:
-                return (memory.removeTask(newTask) != null);
+                return (memory.removeTask(getNewTask()) != null);
             case DELETE:
-                return (memory.addTask(oldTask) == 1);                
+                return (memory.addTask(getOldTask()) >= 0);                
             case EDIT:
-                return ((memory.addTask(oldTask) == 1 && (memory.removeTask(newTask) != null)));
+                return ((memory.addTask(getOldTask()) == 1 && (memory.removeTask(getNewTask()) != null)));
             case MARK:
-                memory.markUndone(oldTask);
+                memory.markUndone(getOldTask());
                 return true;
             case UNMARK:
-                memory.markDone(oldTask);
+                memory.markDone(getOldTask());
             default:
                 return false;
         }
@@ -86,16 +86,16 @@ class UndoRedoAction {
     boolean redo() {
         switch (action) {
             case ADD:
-                return (memory.addTask(newTask) == 1);
+                return (memory.addTask(getNewTask()) >= 0);
             case DELETE:
-                return (memory.removeTask(oldTask) != null);
+                return (memory.removeTask(getOldTask()) != null);
             case EDIT:
-                return ((memory.addTask(newTask) == 1 && (memory.removeTask(oldTask) != null)));
+                return ((memory.addTask(getNewTask()) == 1 && (memory.removeTask(getOldTask()) != null)));
             case MARK:
-                memory.markDone(newTask);
+                memory.markDone(getNewTask());
                 return true;
             case UNMARK:
-                memory.markUndone(newTask);
+                memory.markUndone(getNewTask());
                 return true;
             default:
                 return false;

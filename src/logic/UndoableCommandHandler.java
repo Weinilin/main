@@ -24,10 +24,10 @@ abstract class UndoableCommandHandler extends CommandHandler {
     abstract void reset();
     
     @Override
-    abstract protected ArrayList<String> getAliases();
+    abstract ArrayList<String> getAliases();
 
     @Override
-    abstract protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception;
+    abstract String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception;
 
     @Override
     abstract public String getHelp();
