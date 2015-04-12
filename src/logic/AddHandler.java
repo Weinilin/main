@@ -97,8 +97,8 @@ class AddHandler extends UndoableCommandHandler {
 
     /**
      * check if the argument user typed is empty
-     * @param parameter
-     * @return
+     * @param string
+     * @return true if the string given is empty
      */
     private boolean isEmpty(String string) {
         return string.trim().equals("");
@@ -107,7 +107,7 @@ class AddHandler extends UndoableCommandHandler {
     /**
      * chech if user is looking for help
      * @param token the string tokens extracted from user input
-     * @return
+     * @return true if the string contains the word help only
      */
     private boolean isHelpOnly(String[] token) {
         return ((token.length == 1) && (token[0].toLowerCase().trim().equals("help")));

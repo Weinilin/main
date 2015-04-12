@@ -65,15 +65,7 @@ public class LogicController {
         String[] inputToken = userCommand.trim().split(" ");
         
         if (isHelp(inputToken[0])) {
-            if (isHelpOnly(inputToken)) {
-                return showAllHelps();
-            }
-            else if ((isUnknownCommand(inputToken[1]))) {
-                return executeAddByDefault(userCommand);
-            }
-            else {
-                return handlerTable.get(inputToken[1]).getHelp();
-            }
+            return executeHelp(userCommand, inputToken);
         }
         
         if (isUnknownCommand(inputToken[0])) {
@@ -95,7 +87,27 @@ public class LogicController {
 
 
     /**
-     * @return
+     * execute help if a valid help inquiry is entered
+     * @param userCommand
+     * @param inputToken
+     * @return help message if a valid help inquiry, otherwise return the result
+     * of executing add
+     */
+    private String executeHelp(String userCommand, String[] inputToken) {
+        if (isHelpOnly(inputToken)) {
+            return showAllHelps();
+        }
+        else if ((isUnknownCommand(inputToken[1]))) {
+            return executeAddByDefault(userCommand);
+        }
+        else {
+            return handlerTable.get(inputToken[1]).getHelp();
+        }
+    }
+
+
+    /**
+     * @return help messages for all handlers
      */
     private String showAllHelps() {
         String help = "";
@@ -155,7 +167,7 @@ public class LogicController {
 
     /**
      * return the taskList in LogicController
-     * @return 
+     * @return taskList stored in LogicController
      */
     public ArrayList<Task> getTaskList() {
         return taskList;

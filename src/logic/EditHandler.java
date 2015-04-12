@@ -151,7 +151,7 @@ class EditHandler extends UndoableCommandHandler {
     /**
      * check if user the user is looking for help
      * @param token
-     * @return
+     * @return true if the parameter given is help
      */
     private boolean isHelp(String[] token) {
         return token[0].toLowerCase().trim().equals("help");

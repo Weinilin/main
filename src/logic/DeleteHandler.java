@@ -144,7 +144,7 @@ class DeleteHandler extends UndoableCommandHandler {
     }
     /**
      * append the indexes for valid deletion or invalid input
-     * @param goodFeedback
+     * @param feedback
      * @param index
      * @return - feedback string
      */
@@ -157,7 +157,7 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * decide whether is delete all
      * @param token
-     * @return
+     * @return true if the world given is all
      */
     private boolean isDeleteAll(String[] token) {
         return token[0].toLowerCase().trim().equals("all");
@@ -167,7 +167,7 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * check if the argument user typed is empty
      * @param parameter
-     * @return
+     * @return true if the parameter given is empty
      */
     private boolean isEmptyParameter(String parameter) {
         return parameter.trim().equals("");
@@ -177,10 +177,10 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * check if user is looking for help
      * @param token
-     * @return
+     * @return true if the parameter given is help only
      */
     private boolean isHelp(String[] token) {
-        return token[0].toLowerCase().trim().equals("help");
+        return token.length == 1 && token[0].toLowerCase().trim().equals("help");
     }
 
     @Override
