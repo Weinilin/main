@@ -45,7 +45,9 @@ class ShowHandler extends CommandHandler{
             return searchStatus(parameter, taskList);
         }
         
-        MainParser parser = new MainParser(parameter.replaceFirst(" week", " Monday to Friday"));
+        parameter = extractWeek(parameter);    
+        
+        MainParser parser = new MainParser(parameter);
         String searchType = parser.getTaskType();
         if (isKeywordSearch(searchType)) {
             String keyword = parser.getDescription();
@@ -76,6 +78,12 @@ class ShowHandler extends CommandHandler{
         else {
             return "";
         }
+    }
+
+    private String extractWeek(String parameter) {
+        parameter = parameter.replaceFirst("this week", "this Monday to Friday");
+        parameter = parameter.replaceFirst("next week", "next Monday to next Friday");
+        return parameter;
     }
 
     private boolean isKeywordSearch(String searchType) {

@@ -136,7 +136,7 @@ class MarkHandler extends UndoableCommandHandler {
         UndoRedoRecorder markRecorder = new UndoRedoRecorder(taskList);
         
         for (Task task: markedTask) {
-            taskList.remove(task);
+            taskList.get(taskList.indexOf(task)).setStatus("done");
             memory.markDone(task);
             markRecorder.appendAction(new UndoRedoAction(UndoRedoAction.ActionType.MARK, task, task));
         }

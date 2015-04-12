@@ -95,7 +95,7 @@ class UndoRedoAction {
                 memory.markDone(newTask);
                 return true;
             case UNMARK:
-                memory.markDone(newTask);
+                memory.markUndone(newTask);
                 return true;
             default:
                 return false;
