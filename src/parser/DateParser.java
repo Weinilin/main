@@ -82,7 +82,6 @@ public class DateParser {
 
     /**
      * 
-     * @param userInput
      * @return String in the format of dd/mm/yyyy and return the current date if
      *         nothing is detected
      */
@@ -93,7 +92,7 @@ public class DateParser {
     /**
      * get the last index of the position of date detected in user input
      * 
-     * @return
+     * @return last index
      */
     public int getIndex() {
         return index;
