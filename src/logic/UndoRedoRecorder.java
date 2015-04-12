@@ -1,7 +1,4 @@
-/*
- *@author A0114463M
- */
-
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
@@ -13,16 +10,14 @@ import application.Task;
  * Multiple actions completed in a single line of command (such as deleting multiple
  * tasks) are recorded in one recorder.
  * 
- * @author A0114463M
- *
  */
 public class UndoRedoRecorder {
 
-    private Stack<UndoRedoAction> actionList = new Stack<UndoRedoAction>();
+    private Stack<UndoRedoAction> actions = new Stack<UndoRedoAction>();
     private ArrayList<Task> currentTaskList = new ArrayList<Task>();
     private ArrayList<Task> changedTaskList = new ArrayList<Task>();
     
-    public UndoRedoRecorder(ArrayList<Task> taskList) {
+    UndoRedoRecorder(ArrayList<Task> taskList) {
         currentTaskList.clear();
         currentTaskList.addAll(taskList);
     }
@@ -31,31 +26,31 @@ public class UndoRedoRecorder {
         changedTaskList.clear();
         changedTaskList.addAll(updatedList);
     }
-    public void appendAction(UndoRedoAction newAction) {
-        actionList.push(newAction);
+    void appendAction(UndoRedoAction newAction) {
+        actions.push(newAction);
     }
     
-    public ArrayList<Task> getCurrentTaskList() {
+    ArrayList<Task> getCurrentTaskList() {
         return currentTaskList;
     }
     
-    public ArrayList<Task> getChangedTaskList() {
+    ArrayList<Task> getChangedTaskList() {
         return changedTaskList;
     }
     
-    public void performUndo() {
-        for (UndoRedoAction ura: actionList) {
+    void performUndo() {
+        for (UndoRedoAction ura: actions) {
             ura.undo();
         }
     }
     
-    public void performRedo() {
-        for (UndoRedoAction ura: actionList) {
+    void performRedo() {
+        for (UndoRedoAction ura: actions) {
             ura.redo();
         }
     }
     
-    public boolean isEmpty() {
-        return actionList.isEmpty();
+    boolean isEmpty() {
+        return actions.isEmpty();
     }
 }

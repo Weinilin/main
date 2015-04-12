@@ -1,11 +1,6 @@
-/*
- *@author A0114463M
- */
-
+//@author A0114463M
 package logic;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +18,7 @@ import application.TaskComparator;
  * (description or time) and index. If no field is selected, the whole
  * task will be updated. Index refers to the index of task in
  * the ArrayList then the information that is intended to change
- * @author A0114463M
+ *
  *
  */
 class EditHandler extends UndoableCommandHandler {
@@ -35,8 +30,6 @@ class EditHandler extends UndoableCommandHandler {
     private static String CHANGE_MESSAGE = "Updated %1$s to %2$s\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("edit", "e", "update"));
-    private static final Logger editLogger =
-            Logger.getLogger(DeleteHandler.class.getName());
     Task oldTask, newTask = null;
     String feedback = "";
     @Override
@@ -56,7 +49,6 @@ class EditHandler extends UndoableCommandHandler {
         IndexParser ip = new IndexParser(parameter);		
         int index = ip.getIndex() - 1;
         if (index < 0 || index > taskList.size()) {
-            editLogger.log(Level.WARNING, "Invalid number " + index);
             return INVALID_INDEX_MESSAGE;
         }
 
@@ -68,6 +60,7 @@ class EditHandler extends UndoableCommandHandler {
 
         switch (token[0].toLowerCase()) {
             case "description":
+            case "des":
                 EditDescriptionHandler edh = new EditDescriptionHandler();
                 return edh.execute(token[0], parameter.replaceFirst(token[0], "").trim(), taskList);
             case "time":
@@ -77,7 +70,6 @@ class EditHandler extends UndoableCommandHandler {
                 try {
                     index = ip.getIndex() - 1;
                 } catch (NumberFormatException nfe) {
-                    editLogger.log(Level.WARNING, "Not a number entered for edit", nfe);
                     return INVALID_INDEX_MESSAGE;
                 }  
                 try {
@@ -105,7 +97,8 @@ class EditHandler extends UndoableCommandHandler {
     /**
      * reset the handler when it is called
      */
-    private void reset() {
+    @Override
+    void reset() {
         newTask = null;
         oldTask = null;
         feedback = "";

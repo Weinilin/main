@@ -1,13 +1,10 @@
-/**
- * @author A0114463M
- */
+//@author A0114463M
 package application;
 
 import parser.MainParser;
 /**
  * A constructor for task objects, returns feedback when constructing the new 
  * object to its caller
- * @author A0114463M
  *
  */
 public class TaskCreator {

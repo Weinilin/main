@@ -1,12 +1,8 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.text.ParseException;
 import application.Task;
 import parser.MainParser;
@@ -18,8 +14,6 @@ import parser.MainParser;
  * showing all tasks in the taskList by passing no
  * parameters OR search for tasks containing the 
  * keyword
- * 
- * @author A0114463M
  */
 class ShowHandler extends CommandHandler{
 
@@ -33,8 +27,6 @@ class ShowHandler extends CommandHandler{
     private static final String FOUND_MESSAGE = "Showing all tasks containing \"%1$s\"\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("show", "s", "display", "search"));
-    private static final Logger showLogger =
-            Logger.getLogger(DeleteHandler.class.getName());
 
     @Override
     protected ArrayList<String> getAliases() {
@@ -50,14 +42,14 @@ class ShowHandler extends CommandHandler{
         }
 
         if (isSearchStatus(parameter)) {
-            return searchByStatus(parameter, taskList);
+            return searchStatus(parameter, taskList);
         }
         
-        MainParser parser = new MainParser(parameter);
+        MainParser parser = new MainParser(parameter.replaceFirst(" week", " Monday to Friday"));
         String searchType = parser.getTaskType();
         if (isKeywordSearch(searchType)) {
             String keyword = parser.getDescription();
-            return searchByKeyword(keyword, taskList);            
+            return searchKeyword(keyword, taskList);            
         }    
         else if (searchType.equals("deadline")) {
             if (parser.getEndTime().equals("23:59")) {
@@ -96,7 +88,7 @@ class ShowHandler extends CommandHandler{
      * @param taskList - tasklist to be shown to user
      * @return feedback of search result
      */
-    private String searchByKeyword(String keyword, ArrayList<Task> taskList) {
+    private String searchKeyword(String keyword, ArrayList<Task> taskList) {
         ArrayList<Task> searchList = memory.searchDescription(keyword);
         if (searchList.isEmpty()) {
             return String.format(NOT_FOUND_MESSAGE, keyword);
@@ -219,10 +211,10 @@ class ShowHandler extends CommandHandler{
      * @param taskList taskList to be displayed
      * @return feedback string
      */
-    private String searchByStatus(String parameter, ArrayList<Task> taskList) {
+    private String searchStatus(String parameter, ArrayList<Task> taskList) {
         String feedback = new String();
         if (isEmpty(parameter) || isUndone(parameter)) {
-            showUndoneTasks(taskList);
+            searchUndoneTasks(taskList);
             if (taskList.isEmpty()) {
                 feedback = String.format(EMPTY_LIST_MESSAGE, "undone ");
             }
@@ -232,7 +224,7 @@ class ShowHandler extends CommandHandler{
         }
         else {
             if (isDone(parameter)) {
-                showDoneTasks(taskList);
+                searchDoneTasks(taskList);
                 if (taskList.isEmpty()) {
                     feedback = String.format(EMPTY_LIST_MESSAGE, "done ");
                 }
@@ -241,7 +233,7 @@ class ShowHandler extends CommandHandler{
                 }
             } 
             else if (isAll(parameter)){
-                showAllTasks(taskList);
+                searchAllTasks(taskList);
                 if (taskList.isEmpty()) {
                     feedback = String.format(EMPTY_LIST_MESSAGE, "");
                 }
@@ -275,7 +267,7 @@ class ShowHandler extends CommandHandler{
      * show all the tasks that has the status of done
      * @param taskList
      */
-    private void showDoneTasks(ArrayList<Task> taskList) {
+    private void searchDoneTasks(ArrayList<Task> taskList) {
         taskList.clear();
         taskList.addAll(0, memory.searchStatus("done"));
     }
@@ -284,7 +276,7 @@ class ShowHandler extends CommandHandler{
      * show all the tasks that has the status of undone
      * @param taskList
      */
-    private void showUndoneTasks(ArrayList<Task> taskList) {
+    private void searchUndoneTasks(ArrayList<Task> taskList) {
         taskList.clear();
         taskList.addAll(0, memory.searchStatus("undone"));
     }
@@ -293,7 +285,7 @@ class ShowHandler extends CommandHandler{
      * show all the tasks 
      * @param taskList
      */
-    private void showAllTasks(ArrayList<Task> taskList) {
+    private void searchAllTasks(ArrayList<Task> taskList) {
         taskList.clear();
         taskList.addAll(0, memory.getTaskList());
     }

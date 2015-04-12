@@ -1,9 +1,7 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
+
 package logic;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +17,6 @@ import application.TaskCreator;
  * in CommandHandler abstract class through various parsers.
  * The new task is added to the memory 
  * 
- * @author A0114463M
  *
  */
 class AddHandler extends UndoableCommandHandler {
@@ -92,7 +89,8 @@ class AddHandler extends UndoableCommandHandler {
     /**
      * reset the handler when it is called
      */
-    private void reset() {
+    @Override
+    void reset() {
         newTask = null;
     }
 

@@ -1,6 +1,5 @@
-/*
- *@author A0114463M
- */
+
+//@author A0114463M
 package logic;
 
 import static org.junit.Assert.*;
@@ -65,7 +64,7 @@ public class AddHandlerTest {
 	    try {
 	        ah.execute("add", "help mom for dinner 6pm to 7pm", taskTest);
 	    } catch (Exception e) {
-	        fail("Unable to access the file for storage");
+	        
 	    }
         assertEquals(taskTest, expected);
 	    
