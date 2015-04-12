@@ -16,7 +16,7 @@ class ClearHandler extends UndoableCommandHandler {
     private static final String ALL_CLEAR_MESSAGE = "All tasks cleared\n";
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("clear", "clr", "dall", "deleteall"));
-    private ArrayList<Task> oldTaskList;
+    private ArrayList<Task> oldTaskList = new ArrayList<Task>();
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;
