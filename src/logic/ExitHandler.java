@@ -10,9 +10,6 @@ import java.util.Arrays;
 import application.Task;
 /**
  * exit command for CommandHandler
- * 
- * @author A0114463M
- *
  */
 public class ExitHandler extends CommandHandler {
 

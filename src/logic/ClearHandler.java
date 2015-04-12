@@ -1,6 +1,4 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import application.Task;
 /**
  * CommandHandler for "clear" function
  * 
- * @author A0114463M 
  */
 
 class ClearHandler extends UndoableCommandHandler {
@@ -27,6 +24,7 @@ class ClearHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) {
+        reset();
         oldTaskList = new ArrayList<Task>(taskList);
         recordChanges(taskList);
         memory.removeAll();
@@ -56,5 +54,9 @@ class ClearHandler extends UndoableCommandHandler {
         return HELP_MESSAGE;
     }
 
+    @Override
+    void reset() {
+        oldTaskList.clear();
+    }
 
 }

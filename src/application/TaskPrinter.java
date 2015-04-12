@@ -15,18 +15,18 @@ import java.util.ArrayList;
 public final class TaskPrinter {
 
     
-    private static final char BORDER_TOP_LEFT = '╔';
-    private static final char BORDER_TOP_RIGHT = '╗';
-    private static final char BORDER_TOP_MID = '╦';
+    private static final char BORDER_TOP_LEFT = '-';
+    private static final char BORDER_TOP_RIGHT = '-';
+    private static final char BORDER_TOP_MID = '-';
     
-    private static final char BORDER_BOTTOM_LEFT = '╚';
-    private static final char BORDER_BOTTOM_RIGHT = '╝';
-    private static final char BORDER_BOTTOM_MID = '╩';
+    private static final char BORDER_BOTTOM_LEFT = '-';
+    private static final char BORDER_BOTTOM_RIGHT = '-';
+    private static final char BORDER_BOTTOM_MID = '-';
 
 
     
-    private static final char HORIZONTAL_BORDER = '═';
-    private static final char VERTICAL_BORDER = '║';
+    private static final char HORIZONTAL_BORDER = '-';
+    private static final char VERTICAL_BORDER = '-';
 
     private static final String DEFAULT_AS_NULL = "-";
 

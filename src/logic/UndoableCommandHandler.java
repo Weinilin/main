@@ -1,6 +1,4 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
@@ -14,12 +12,16 @@ import application.Task;
  * UndoRedoManager is provided in this class such that the changes made to memory
  * by handlers are recorded, which is allowed to undo or redo these actions for 
  * UndoHandler and RedoHandler
- * @author A0114463M
  *
  */
 abstract class UndoableCommandHandler extends CommandHandler {
     
     UndoRedoManager undoRedoManager = UndoRedoManager.getInstance();
+    
+    /**
+     * reset the handler for recording new changes
+     */
+    abstract void reset();
     
     @Override
     abstract protected ArrayList<String> getAliases();

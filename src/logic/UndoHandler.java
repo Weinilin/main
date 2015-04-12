@@ -1,6 +1,4 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
@@ -13,8 +11,6 @@ import parser.IndexParser;
  * This class will access the undoRedoManager and see if undo actions can be
  * executed. Prompt message to user if no action or not enough actions can be undone,
  * otherwise revert the changes of memory and tasklist in LogicController.
- * 
- * @author A0114463M
  *
  */
 class UndoHandler extends UndoableCommandHandler {
@@ -22,6 +18,11 @@ class UndoHandler extends UndoableCommandHandler {
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("undo", "u"));
     private static final String UNDO_STEPS_MESSAGE = "Revoked last %1$s changes\n";
+    
+    @Override
+    void reset() {
+        
+    }
     @Override
     protected ArrayList<String> getAliases() {
         return aliases;

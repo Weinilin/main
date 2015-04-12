@@ -1,7 +1,4 @@
-/*
- *@author A0114463M
- */
-
+//@author A0114463M
 package logic;
 
 import java.util.ArrayList;
@@ -16,16 +13,13 @@ import application.TaskComparator;
  * CommandHandler for "edit time" function.
  * 
  * only the time fields (deadline, start and end) will change while others remains
- * 
- * @author A0114463M
  *
  */
 class EditTimeHandler extends UndoableCommandHandler {
     private static final String INVALID_INDEX_MESSAGE = "Invalid index! Please check your input\n";
     private static final String HELP_MESSAGE = "edit time <index> <new time>\n\t update the task time only\n";
     private static String CHANGE_MESSAGE = "Updated the time of %1$s to %2$s\n";
-    private ArrayList<String> aliases = new ArrayList<String>(
-                                            Arrays.asList("et"));
+    private ArrayList<String> aliases = new ArrayList<String>(Arrays.asList("et", "etime"));
     Task oldTask, newTask = null;
     String feedback = "";
     @Override
@@ -93,7 +87,8 @@ class EditTimeHandler extends UndoableCommandHandler {
     /**
      * reset the handler when it is called
      */
-    private void reset() {
+    @Override
+    void reset() {
         newTask = null;
         oldTask = null;
         feedback = "";
