@@ -256,6 +256,10 @@ public class DateTimeNattyParser {
 
             int day = NumberParser.getNumber(date);
 
+            if(day == 0){
+                break;
+            }
+            
             int year = YearParser.getYear(date);
 
             testValidMonth(month);
