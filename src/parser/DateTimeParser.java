@@ -251,7 +251,7 @@ public class DateTimeParser {
 
     /**
      * get the feedback for overdue date like start date or time keyed is before
-     * current date but end time and date
+     * current date but not end time and date
      * 
      * @return feedback for overdue date to logic
      */
