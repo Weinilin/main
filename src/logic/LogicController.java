@@ -1,7 +1,4 @@
-/*
- *@author A0114463M
- */
-
+//@author A0114463M
 package logic;
 
 import java.util.regex.Pattern;
@@ -18,8 +15,7 @@ import application.TaskComparator;
 /**
  * The main component that takes charge of deciding which 
  * handlers to call and execute
- * 
- * @author A0114463M
+ * A string is returned to the user after each execution of command
  */
 public class LogicController {
     private static LogicController logicController;
@@ -36,6 +32,7 @@ public class LogicController {
                                          new ExitHandler(),
                                          new MarkHandler(),
                                          new UndoHandler(),
+                                         new UnmarkHandler(),
                                          new RedoHandler(),
                                          new SetLocationHandler(),
                                          new ShowHandler()};
@@ -60,6 +57,7 @@ public class LogicController {
     /**
      * Take the input from user from UI and call respective
      * handlers. Return the feedback to UI after each execution
+     * if the command is unknown, add handler is called by default
      * @param userCommand
      * @return - feedback to user
      */
@@ -67,15 +65,7 @@ public class LogicController {
         String[] inputToken = userCommand.trim().split(" ");
         
         if (isHelp(inputToken[0])) {
-            if (isHelpOnly(inputToken)) {
-                return showAllHelps();
-            }
-            else if ((isUnknownCommand(inputToken[1]))) {
-                return executeAddByDefault(userCommand);
-            }
-            else {
-                return handlerTable.get(inputToken[1]).getHelp();
-            }
+            return executeHelp(userCommand, inputToken);
         }
         
         if (isUnknownCommand(inputToken[0])) {
@@ -97,7 +87,27 @@ public class LogicController {
 
 
     /**
-     * @return
+     * execute help if a valid help inquiry is entered
+     * @param userCommand
+     * @param inputToken
+     * @return help message if a valid help inquiry, otherwise return the result
+     * of executing add
+     */
+    private String executeHelp(String userCommand, String[] inputToken) {
+        if (isHelpOnly(inputToken)) {
+            return showAllHelps();
+        }
+        else if ((isUnknownCommand(inputToken[1]))) {
+            return executeAddByDefault(userCommand);
+        }
+        else {
+            return handlerTable.get(inputToken[1]).getHelp();
+        }
+    }
+
+
+    /**
+     * @return help messages for all handlers
      */
     private String showAllHelps() {
         String help = "";
@@ -157,7 +167,7 @@ public class LogicController {
 
     /**
      * return the taskList in LogicController
-     * @return 
+     * @return taskList stored in LogicController
      */
     public ArrayList<Task> getTaskList() {
         return taskList;

@@ -1,6 +1,4 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
 package logic;
 
 import application.Task;
@@ -10,17 +8,15 @@ import storage.Memory;
  * when they perform a single change to memory class. There are two methods
  * in this class: undo and redo. 
  * 
- * @author A0114463M
- *
  */
 class UndoRedoAction {
     public static enum ActionType {
-        ADD, DELETE, EDIT, MARK
+        ADD, DELETE, EDIT, MARK, UNMARK
     };
     Memory memory = Memory.getInstance();
     private ActionType action;
     private Task oldTask, newTask;
-    private String oldPath, newPath;
+//  private String oldPath, newPath;
 
     /**
      * Construct a new new record associating with task changes of edit
@@ -29,70 +25,77 @@ class UndoRedoAction {
      * @param newTask - task that has been added to memory
      * 
      */
-    public UndoRedoAction(ActionType action, Task oldTask, Task newTask) {
+    UndoRedoAction(ActionType action, Task oldTask, Task newTask) {
         this.action = action;
         this.oldTask = oldTask;
         this.newTask = newTask;
     }
 
-    /**
-     * Construct a new record associating with path changes
-     * @param action - Actiontype SETLOCATION
-     * @param oldPath - old path of storage
-     * @param newPath - new path of storage
-     */
-    public UndoRedoAction(ActionType action, String oldPath, String newPath) {
-        this.action = action;
-        this.oldPath = oldPath;
-        this.newPath = newPath;
-    }
+//    /**
+//     * not implementing undo or redo for set location  
+//     * Construct a new record associating with path changes
+//     * @param action - Actiontype SETLOCATION
+//     * @param oldPath - old path of storage
+//     * @param newPath - new path of storage
+//     */
+//    UndoRedoAction(ActionType action, String oldPath, String newPath) {
+//        this.action = action;
+//        this.oldPath = oldPath;
+//        this.newPath = newPath;
+//    }
 
-    public ActionType getActionType() {
+    ActionType getActionType() {
         return action;
     }
 
-    public Task getOldTask() {
+    Task getOldTask() {
         return oldTask;
     }
 
-    public Task getNewTask() {
+    Task getNewTask() {
         return newTask;
     }
+    
+//  * not implementing undo or redo for set location 
+//    public String getOldPath() {
+//        return oldPath;
+//    }
+//
+//    public String getNewPath() {
+//        return newPath;
+//    }
 
-    public String getOldPath() {
-        return oldPath;
-    }
-
-    public String getNewPath() {
-        return newPath;
-    }
-
-    public boolean undo() {
+    boolean undo() {
         switch (action) {
             case ADD:
-                return (memory.removeTask(newTask) != null);
+                return (memory.removeTask(getNewTask()) != null);
             case DELETE:
-                return (memory.addTask(oldTask) == 1);                
+                return (memory.addTask(getOldTask()) >= 0);                
             case EDIT:
-                return ((memory.addTask(oldTask) == 1 && (memory.removeTask(newTask) != null)));
+                return ((memory.addTask(getOldTask()) == 1 && (memory.removeTask(getNewTask()) != null)));
             case MARK:
-                memory.markUndone(oldTask);
+                memory.markUndone(getOldTask());
                 return true;
+            case UNMARK:
+                memory.markDone(getOldTask());
             default:
                 return false;
         }
     }
 
-    public boolean redo() {
+    boolean redo() {
         switch (action) {
             case ADD:
-                return (memory.addTask(newTask) == 1);
+                return (memory.addTask(getNewTask()) >= 0);
             case DELETE:
-                return (memory.removeTask(oldTask) != null);
+                return (memory.removeTask(getOldTask()) != null);
             case EDIT:
-                return ((memory.addTask(newTask) == 1 && (memory.removeTask(oldTask) != null)));
+                return ((memory.addTask(getNewTask()) == 1 && (memory.removeTask(getOldTask()) != null)));
             case MARK:
-                memory.markDone(newTask);
+                memory.markDone(getNewTask());
+                return true;
+            case UNMARK:
+                memory.markUndone(getNewTask());
                 return true;
             default:
                 return false;

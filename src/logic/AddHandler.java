@@ -1,9 +1,7 @@
-/*
- *@author A0114463M
- */
+//@author A0114463M
+
 package logic;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +17,6 @@ import application.TaskCreator;
  * in CommandHandler abstract class through various parsers.
  * The new task is added to the memory 
  * 
- * @author A0114463M
  *
  */
 class AddHandler extends UndoableCommandHandler {
@@ -92,15 +89,16 @@ class AddHandler extends UndoableCommandHandler {
     /**
      * reset the handler when it is called
      */
-    private void reset() {
+    @Override
+    void reset() {
         newTask = null;
     }
 
 
     /**
      * check if the argument user typed is empty
-     * @param parameter
-     * @return
+     * @param string
+     * @return true if the string given is empty
      */
     private boolean isEmpty(String string) {
         return string.trim().equals("");
@@ -109,7 +107,7 @@ class AddHandler extends UndoableCommandHandler {
     /**
      * chech if user is looking for help
      * @param token the string tokens extracted from user input
-     * @return
+     * @return true if the string contains the word help only
      */
     private boolean isHelpOnly(String[] token) {
         return ((token.length == 1) && (token[0].toLowerCase().trim().equals("help")));

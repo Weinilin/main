@@ -1,6 +1,5 @@
-/*
- *@author A0114463M
- */
+
+//@author A0114463M
 
 package logic;
 

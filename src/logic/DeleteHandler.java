@@ -1,10 +1,6 @@
-/*
- *  @author A0114463M
- */
+//@author A0114463M
 package logic;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,8 +14,6 @@ import parser.MainParser;
  * Deleting task is achieved by "delete [index]"
  * The task is removed from memory upon a success removal and the task
  * is returned in String. null is returned for failed removal.
- * 
- * @author A0114463M
  *
  */
 class DeleteHandler extends UndoableCommandHandler {
@@ -29,8 +23,6 @@ class DeleteHandler extends UndoableCommandHandler {
     private static final String BADFEEDBACK_MESSAGE = "Invalid input %1$s\n";	
     private ArrayList<String> aliases = new ArrayList<String>(
             Arrays.asList("delete", "d", "remove", "-"));
-    private static final Logger deleteLogger = 
-            Logger.getLogger(DeleteHandler.class.getName());
     private ArrayList<Task> removedTask = new ArrayList<Task>();
     private String goodFeedback = new String(), 
                    badFeedback = new String(),
@@ -44,7 +36,6 @@ class DeleteHandler extends UndoableCommandHandler {
 
     @Override
     protected String execute(String command, String parameter, ArrayList<Task> taskList) throws Exception{
-        deleteLogger.entering(getClass().getName(), "preparing for delete");
 
         reset();
         String[] token = parameter.split(" ");
@@ -62,7 +53,7 @@ class DeleteHandler extends UndoableCommandHandler {
             index = ip.getIndex() - 1;
             deleteByIndex(taskList, token);
         } catch (NumberFormatException nfe) {
-            deleteByKeyword(parameter, taskList);
+            deleteByKeyword(taskList, parameter);
         }
         
         recordChanges(taskList);
@@ -79,11 +70,11 @@ class DeleteHandler extends UndoableCommandHandler {
 
     /**
      * remove the first occurence of the task containing the keyword
-     * @param parameter - the keyword that user intend to delete
      * @param taskList - tasklist shown to user
+     * @param parameter - the keyword that user intend to delete
      * @throws Exception
      */
-    private void deleteByKeyword(String parameter, ArrayList<Task> taskList)
+    private void deleteByKeyword(ArrayList<Task> taskList, String parameter)
             throws Exception {
         MainParser parser = new MainParser(parameter);
         ArrayList<Task> searchList = memory.searchDescription(parser.getDescription());
@@ -120,7 +111,6 @@ class DeleteHandler extends UndoableCommandHandler {
             try {
                 removedTask.add(taskList.get(index));				
                 goodFeedback = appendFeedback(goodFeedback, t);
-                deleteLogger.log(Level.FINE, "Removed " + removedTask.toString() + "\n");
             } catch (IndexOutOfBoundsException iob) {
                 badFeedback = appendFeedback(badFeedback, t);
             } 
@@ -144,7 +134,8 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * reset the status of handler
      */
-    private void reset() {
+    @Override
+    void reset() {
         removedTask.clear();
         goodFeedback = "";
         badFeedback = "";
@@ -153,7 +144,7 @@ class DeleteHandler extends UndoableCommandHandler {
     }
     /**
      * append the indexes for valid deletion or invalid input
-     * @param goodFeedback
+     * @param feedback
      * @param index
      * @return - feedback string
      */
@@ -166,7 +157,7 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * decide whether is delete all
      * @param token
-     * @return
+     * @return true if the world given is all
      */
     private boolean isDeleteAll(String[] token) {
         return token[0].toLowerCase().trim().equals("all");
@@ -176,7 +167,7 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * check if the argument user typed is empty
      * @param parameter
-     * @return
+     * @return true if the parameter given is empty
      */
     private boolean isEmptyParameter(String parameter) {
         return parameter.trim().equals("");
@@ -186,10 +177,10 @@ class DeleteHandler extends UndoableCommandHandler {
     /**
      * check if user is looking for help
      * @param token
-     * @return
+     * @return true if the parameter given is help only
      */
     private boolean isHelp(String[] token) {
-        return token[0].toLowerCase().trim().equals("help");
+        return token.length == 1 && token[0].toLowerCase().trim().equals("help");
     }
 
     @Override
